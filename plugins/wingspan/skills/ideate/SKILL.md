@@ -52,7 +52,7 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 ### 2. Capture the design document
 
-Write a brainstorm document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-design-doc.md`.
+Write a brainstorm document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
 **Document structure:** See the `brainstorming` skill for the template format. Key sections: What We're Building, Why This Approach, Key Decisions, Open Questions.
 
@@ -69,7 +69,7 @@ When complete, display:
 ```
 Brainstorm complete!
 
-Document: wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-design-doc.md
+Document: wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
 
 Key decisions:
 - [Decision 1]
