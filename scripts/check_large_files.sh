@@ -10,7 +10,7 @@ while IFS= read -r file; do
     echo "::warning file=$file::File is ${size_kb}KB (limit: ${MAX_KB}KB). Large files consume context window tokens."
     oversized=$((oversized + 1))
   fi
-done < < (find . -name "*.md" -not -path "./git/*")
+done < <(find . -name "*.md" -not -path "./.git/*")
 
 if [[ $oversized -gt 0 ]]; then
   echo "⚠️  $oversized file(s) exceed ${MAX_KB}KB. Consider splitting them."
