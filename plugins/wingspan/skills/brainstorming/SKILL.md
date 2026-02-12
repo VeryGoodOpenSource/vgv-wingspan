@@ -28,6 +28,7 @@ Brainstorming can be skipped when:
 Before diving into questions, assess whether brainstorming is needed.
 
 **Signals that requirements are clear:**
+
 - User provided specific acceptance criteria
 - User referenced existing patterns to follow
 - User described exact behavior expected

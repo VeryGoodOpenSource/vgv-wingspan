@@ -76,7 +76,7 @@ When `refine-approach` is complete, return to this step to ask about next steps 
 
 When complete, display:
 
-```
+```md
 Brainstorm complete!
 
 Document: wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
