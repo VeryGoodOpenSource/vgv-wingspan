@@ -15,6 +15,7 @@ jobs:
         uses: DavidAnson/markdownlint-cli2-action@v19
         with:
           globs: '**/*.md'
+          config: 'config/custom.markdownlint.jsonc'
       - name: Spell Check
         uses: streetsidesoftware/cspell-action@v6
         with:
