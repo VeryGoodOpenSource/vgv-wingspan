@@ -60,7 +60,17 @@ Ensure `wingspan/brainstorms/` directory exists before writing.
 
 ### 3. Handoff
 
-Done for now.
+Use **AskUserQuestion tool** to consider next steps:
+
+**Question**: "Ideation complete! What would you like to do next?"
+
+**Options:**
+1. **Review and refine approach:** Improve the document using structured review
+2. **Done for now**
+
+**If the user selects "Review and refine approach"** then load apply the @refine-approach skill to the document in question.
+
+When `refine-approach` is complete, return to this step to ask about next steps again.
 
 ## Output Summary
 
