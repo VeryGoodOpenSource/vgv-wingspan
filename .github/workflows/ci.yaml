@@ -6,15 +6,16 @@ on:
       - main
 
 jobs:
-  name: 📝 Markdown Quality
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - name: Lint Markdown
-      uses: DavidAnson/markdownlint-cli2-action@v19
-      with:
-        globs: '**/*.md'
-    - name: Spell Check
-      uses: streetsideofsoftware/cspell-action@v6
-      with:
-        files: '**/*.md'
+  markdown:
+    name: 📝 Markdown Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '**/*.md'
+      - name: Spell Check
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          files: '**/*.md'
