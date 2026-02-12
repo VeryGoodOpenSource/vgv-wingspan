@@ -20,7 +20,7 @@ Read the document, then ask and clarify:
 - What decision is being avoided?
 - What assumptions are not stated or developed?
 - What risks are not addressed?
-- What part of the scope has been understimated?
+- What part of the scope has been under-estimated?
 
 Do not fix yet anything. Simply take notes about what you find to inform what you do in `Step 3. Evaluate and score`.
 

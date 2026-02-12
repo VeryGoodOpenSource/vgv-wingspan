@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  markdown:
+    name: 📝 Markdown Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '**/*.md'
+          config: 'config/custom.markdownlint.jsonc'
+      - name: Spell Check
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          files: '**/*.md'
+          config: 'config/cspell.json'
