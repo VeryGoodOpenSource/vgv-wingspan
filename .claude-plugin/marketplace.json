@@ -1,0 +1,29 @@
+{
+  "name": "wingspan-marketplace",
+  "owner": {
+    "name": "Very Good Ventures",
+    "url": "https://verygood.ventures"
+  },
+  "metadata": {
+    "description": "Wingspan - AI-native workflows for Flutter and Dart following Very Good Ventures best practices.",
+    "version": "0.0.1"
+  },
+  "plugins": [
+    {
+      "name": "wingspan",
+      "description": "Wingspan - AI-native workflows for Flutter and Dart following Very Good Ventures best practices.",
+      "version": "0.0.1",
+      "homepage": "https://github.com/VeryGoodOpenSource/wingspan",
+      "source": "./plugins/wingspan",
+      "tags": [
+        "flutter",
+        "dart",
+        "best practices",
+        "flow automation",
+        "code generation",
+        "planning",
+        "ai assisted engineering"
+      ]
+    }
+  ]
+}

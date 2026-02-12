@@ -11,5 +11,5 @@ AI-assisted workflows for Flutter and Dart that follow Very Good Ventures best p
 ```bash
 git clone git@github.com:VeryGoodOpenSource/wingspan.git
 cd /to/your/project
-claude --plugin-dir <wingspan-path>
+claude --plugin-dir <wingspan-path>/plugins/wingspan
 ```
