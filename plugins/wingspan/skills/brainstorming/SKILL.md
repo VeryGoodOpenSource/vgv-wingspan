@@ -3,7 +3,7 @@ name: brainstorming
 description: This skill should be used before implementing features, building components, or making changes. It guides exploring user intent, approaches, and design decisions before planning. Triggers on "let's brainstorm", "help me think through", "what should we build", "explore approaches", ambiguous feature requests, or when the user's request has multiple valid interpretations that need clarification.
 ---
 
-# Brainstoming
+# Brainstorming
 
 This skill provides detailed process knowledge for effective brainstorming sessions that clarify **WHAT** to build before diving into **HOW** to build it.
 
@@ -123,9 +123,8 @@ Sections to cover (skip what isn't relevant):
 - Use @ elements-of-style-optimized skill to ensure clear, concise writing
 - Include diagrams if helpful
 
-**Design documment structure**
+**Design document structure**
 
-```markdown
 ```markdown
 ---
 date: YYYY-MM-DD

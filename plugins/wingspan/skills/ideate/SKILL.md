@@ -31,13 +31,13 @@ Evaluate if brainstorming is needed based on the feature description.
 
 ### 1. Understand the idea
 
-### 2. Collaborative conversation
+#### 1.1. Collaborative conversation
 
 Use the **AskUserQuestion tool** to ask questions one at a time. Follow the guidelines in the @brainstorming skill for question techniques, and validate assumptions explicitly.
 
 **Exit condition:** Continue until the idea is clear OR user says "proceed".
 
-### 2. Explore approaches
+#### 1.2. Explore approaches
 
 Propose **2-3 concrete approaches** based on research and conversation.
 
@@ -50,7 +50,7 @@ Lead with your recommendation and explain why. Apply YAGNI—prefer simpler solu
 
 Use **AskUserQuestion tool** to ask which approach the user prefers.
 
-### 3: Capture the design document
+### 2. Capture the design document
 
 Write a brainstorm document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-design-doc.md`.
 
@@ -58,7 +58,7 @@ Write a brainstorm document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topi
 
 Ensure `wingspan/brainstorms/` directory exists before writing.
 
-### 4. Handoff
+### 3. Handoff
 
 Done for now.
 
