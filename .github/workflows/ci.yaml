@@ -21,3 +21,10 @@ jobs:
         with:
           files: '**/*.md'
           config: 'config/cspell.json'
+  structure:
+    name: 📂 Structure Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Large Files
+        run: bash ./scripts/check_large_files.sh
