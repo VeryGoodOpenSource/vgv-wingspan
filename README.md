@@ -13,3 +13,7 @@ git clone git@github.com:VeryGoodOpenSource/wingspan.git
 cd /to/your/project
 claude --plugin-dir <wingspan-path>/plugins/wingspan
 ```
+
+### Vision
+
+![wingspan vision](./assets/vision.png)
