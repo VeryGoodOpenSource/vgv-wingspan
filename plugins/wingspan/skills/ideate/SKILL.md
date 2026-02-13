@@ -31,7 +31,7 @@ Evaluate if brainstorming is needed based on the feature description.
 
 ### 1. Understand the idea
 
-#### 1.1. Lighweight project research
+#### 1.1. Lightweight project research
 
 Run a quick project review to understand existing patterns:
 
