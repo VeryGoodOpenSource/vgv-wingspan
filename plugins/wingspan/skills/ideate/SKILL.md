@@ -31,13 +31,21 @@ Evaluate if brainstorming is needed based on the feature description.
 
 ### 1. Understand the idea
 
-#### 1.1. Collaborative conversation
+#### 1.1. Lighweight project research
+
+Run a quick project review to understand existing patterns:
+
+- Task @flutter-codebase-review-agent("Understand existing patterns related to: <feature_description>")
+
+Focus on: similar features, established patterns, CLAUDE.md guidance.
+
+#### 1.2. Collaborative conversation
 
 Use the **AskUserQuestion tool** to ask questions one at a time. Follow the guidelines in the @brainstorming skill for question techniques, and validate assumptions explicitly.
 
 **Exit condition:** Continue until the idea is clear OR user says "proceed".
 
-#### 1.2. Explore approaches
+#### 1.3. Explore approaches
 
 Propose **2-3 concrete approaches** based on research and conversation.
 
