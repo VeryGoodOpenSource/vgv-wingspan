@@ -224,8 +224,8 @@ Apply best practices for clarity and actionability, making the issue easy to sca
 
 **Filename:** Use the date and kebab-case filename from Step 2 Title & Categorization: `wingspan/plans/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`
 
-
 Examples:
+
 - ✅ `wingspan/plans/2026-01-15-feat-user-authentication-flow-plan.md`
 - ✅ `wingspan/plans/2026-02-03-fix-checkout-race-condition-plan.md`
 - ✅ `wingspan/plans/2026-03-10-refactor-api-client-extraction-plan.md`
