@@ -4,9 +4,7 @@ type: [feat|fix|refactor]
 date: YYYY-MM-DD
 ---
 
-# Standard 
-
-[Issue Title]
+## [Issue Title] - Standard
 
 ## Overview
 

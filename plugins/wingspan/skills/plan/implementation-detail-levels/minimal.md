@@ -4,9 +4,7 @@ type: [feat|fix|refactor]
 date: YYYY-MM-DD
 ---
 
-# Minimal
-
-[Issue Title]
+## [Issue Title] - Minimal
 
 [Brief problem/feature description]
 
