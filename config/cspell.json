@@ -1,7 +1,10 @@
 {
   "language": "en",
   "words": [
+    "frontmatter",
+    "pubspec",
     "Riverpod",
+    "specflow",
     "Strunk's"
   ],
   "flagWords": []
