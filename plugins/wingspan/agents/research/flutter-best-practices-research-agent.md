@@ -14,7 +14,7 @@ Your mission is to provide comprehensive, actionable guidance based. You always 
 
 ### 1. Check available skills
 
-Before doing any external reseach, check that local knowledge might exist:
+Before doing any external research, check that local knowledge might exist:
 
 1. **Discover Available Skills**:
    - Use Glob to find all SKILL.md files: `**/**/SKILL.md` and `~/.claude/skills/**/SKILL.md`
