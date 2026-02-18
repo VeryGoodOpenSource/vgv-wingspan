@@ -73,12 +73,16 @@ Use **AskUserQuestion tool** to consider next steps:
 **Question**: "Ideation complete! What would you like to do next?"
 
 **Options:**
-1. **Review and refine approach:** Improve the document using structured review
-2. **Done for now**
+1. **Review and refine approach:** improve the document using structured review
+2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
+3. **Done for now**: ideation complete. To start planning later: `/plan`
 
 **If the user selects "Review and refine approach"** then load apply the @refine-approach skill to the document in question.
 
-When `refine-approach` is complete, return to this step to ask about next steps again.
+When `refine-approach` is complete, present these options:
+
+1. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
+2. **Done for now**: ideation complete. To start planning later: `/plan`
 
 ## Output Summary
 
