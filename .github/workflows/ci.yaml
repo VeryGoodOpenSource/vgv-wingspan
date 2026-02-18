@@ -31,5 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for Large Files
+      - name: Check for Large Files (under 50KB)
         run: bash ./scripts/check_large_files.sh
+      - name: Check Lines of Code (SKILL files under 500 lines)
+        run: bash ./scripts/check_lines_of_code.sh
