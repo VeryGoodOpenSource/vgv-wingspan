@@ -20,9 +20,10 @@ Take a plan from `wingspan/plans/` and turn it into shipped code: implement feat
 ```bash
 ls -la wingspan/plans/*.md 2>/dev/null | head -20
 ```
+Then:
 
-2. If plans exist, use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
-3. If no plans exist, tell the user: "No plans found in `wingspan/plans/`. Run `/plan` first to create an implementation plan."
+1. If plans exist, use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
+2. If no plans exist, tell the user: "No plans found in `wingspan/plans/`. Run `/plan` first to create an implementation plan."
 
 Do not proceed without a plan.
 
@@ -81,9 +82,9 @@ Every new Bloc, Cubit, repository, widget, and data model must have a test file.
 
 ### Step 3: Validate
 
-After implementing each task:
+After implementing each task, in order:
 
-1. Run static analysis:
+- Run static analysis:
 
 ```bash
 dart analyze --fatal-infos
@@ -91,7 +92,7 @@ dart analyze --fatal-infos
 flutter analyze
 ```
 
-2. Run tests:
+- Run tests:
 
 ```bash
 dart test
@@ -99,12 +100,12 @@ dart test
 flutter test
 ```
 
-3. If failures occur:
+- If failures occur:
    - Fix the issue and re-run
    - Up to 3 attempts per failure
    - After 3 failed attempts, use **AskUserQuestion** to ask the user for guidance with context on what failed and what you tried
 
-4. Fix all lint warnings before proceeding.
+- Fix all lint warnings before proceeding.
 
 ### Step 4: Checkpoint
 
