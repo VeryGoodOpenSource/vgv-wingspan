@@ -1,6 +1,6 @@
 ---
 name: refine-approach
-description: This skill should used to review and refine proposed brainstorms and planning documents before proceeding to implementation. It can be used to identify gaps, clarify assumptions, and ensure the approach is well thought out in an already existing document. 
+description: This skill should be used to review and refine proposed brainstorms and planning documents before proceeding to implementation. It identifies gaps, clarifies assumptions, and ensures the approach is well thought out.
 ---
 
 # Refine Approach
@@ -10,6 +10,8 @@ Improve brainstorm and/or planning documents through structured review.
 ## Step 1. Get the document that needs review
 
 **If a document is provided** then proceed to `Step 2. Assess`.
+
+**If no document is provided**, ask the user which document to review. Check `wingspan/brainstorms/` and `wingspan/plans/` for recent documents to suggest.
 
 ## Step 2. Assess
 

@@ -5,7 +5,7 @@ description: Turn high-level brainstorming and ideas into well-structured, actio
 
 # Create a new implementation plan (or bug fix)
 
-Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files issues that follow project conventions and best practices. This command provides flexible detail levels to match your needs.
+Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow project conventions and best practices. This command provides flexible detail levels to match your needs.
 
 ## Feature Description
 
@@ -19,7 +19,7 @@ Do not proceed until you have a clear feature description from the user.
 
 **Check for brainstorm output first:**
 
-Before asking questions, look for recent brainstorm documents in `docs/brainstorms/` that match this feature:
+Before asking questions, look for recent brainstorm documents in `wingspan/brainstorms/` that match this feature:
 
 ```bash
 ls -la wingspan/brainstorms/*.md 2>/dev/null | head -10
@@ -29,7 +29,6 @@ ls -la wingspan/brainstorms/*.md 2>/dev/null | head -10
 
 - The topic (from filename or YAML frontmatter) semantically matches the feature description
 - Created within the last 7 days
-- If multiple candidates match, use **AskUserQuestion tool** to ask which brainstorm to use.
 
 **If a relevant brainstorm exists:**
 
@@ -47,10 +46,6 @@ ls -la wingspan/brainstorms/*.md 2>/dev/null | head -10
 ### 1. Tasks to complete
 
 #### 1.1 Local research (always runs, and runs in parallel)
-
-<thinking>
-First, I need to understand the project's conventions, existing patterns, and any documented learnings. This is fast and local - it informs whether external research is needed.
-</thinking>
 
 Run the following **agents locally in parallel** to gather context:
 
@@ -87,7 +82,7 @@ Run these agents in parallel to gather external information:
 After all research steps complete, consolidate findings:
 
 - Document relevant file paths from repo research (e.g., `app/authentication/forms/authentication_form.dart:42`)
-- **Include relevant institutional learnings** from `wingspan/solutions/` (key insights, gotchas to avoid)
+- **Include relevant institutional learnings** from project documentation (key insights, gotchas to avoid)
 - Note external documentation URLs and best practices (if external research was done)
 - List related issues or PRs discovered
 - Capture CLAUDE.md conventions
@@ -96,16 +91,14 @@ After all research steps complete, consolidate findings:
 
 ### 2. Issue planning and structure
 
-<thinking>
-Think like a product manager - what would make this issue clear and actionable? Consider multiple perspectives
-</thinking>
+Think like a product manager — what would make this issue clear and actionable?
 
 **Title & Categorization:**
 
-- [ ] Draft clear, searchable issue title using the conventional commits format (e.g., `feat: Add user authentication`, `fix: Cart total calculation`)
+- [ ] Draft clear, searchable issue title using the conventional commits format (e.g., `feat: add user authentication`, `fix: cart total calculation`)
 - [ ] Determine issue type: enhancement, bug, refactor
 - [ ] Convert title to filename: add today's date prefix, strip prefix colon, kebab-case, add `-plan` suffix
-  - Example: `feat: Add User Authentication` → `2026-01-21-feat-add-user-authentication-plan.md`
+  - Example: `feat: add user authentication` → `2026-01-21-feat-add-user-authentication-plan.md`
   - Keep it descriptive (3-5 words after prefix) so plans are findable by context
 
 **Stakeholder Analysis:**
@@ -120,19 +113,19 @@ Think like a product manager - what would make this issue clear and actionable? 
 - [ ] Gather supporting materials (error logs, screenshots, design mockups)
 - [ ] Prepare code examples or reproduction steps if applicable, name the mock filenames in the lists
 
-### 3. SpecFlow Analysis
+### 3. User Flow Analysis
 
-After planning the issue structure, run the **specflow-analysis-agent** to analyze the plan and suggest improvements based on SpecFlow principles:
+After planning the issue structure, run the **user-flow-analysis-agent** to analyze the plan for flow completeness and gap identification:
 
-- Task @specflow-analysis-agent(feature_description, research_findings)
+- Task @user-flow-analysis-agent(feature_description, research_findings)
 
-**SpecFlow Analyzer Output:**
+**Flow Analysis Output:**
 
-- [ ] Review SpecFlow analysis results
+- [ ] Review flow analysis results
 - [ ] Incorporate any identified gaps or edge cases into the issue
-- [ ] Update acceptance criteria based on SpecFlow findings
+- [ ] Update acceptance criteria based on flow analysis findings
 
-### 3. Select implementation detail template
+### 4. Select implementation detail template
 
 #### Minimal
 
@@ -178,11 +171,7 @@ It includes:
 
 Use the `implementation-detail-levels/extensive.md` template for this level.
 
-### 4. Issue creation and formatting
-
-<thinking>
-Apply best practices for clarity and actionability, making the issue easy to scan and understand
-</thinking>
+### 5. Issue creation and formatting
 
 **Content Formatting:**
 
@@ -208,7 +197,7 @@ Apply best practices for clarity and actionability, making the issue easy to sca
 - [ ] Emphasize comprehensive testing given rapid implementation
 - [ ] Document any AI-generated code that needs human review
 
-### 5. Final review
+### 6. Final review
 
 **Pre-submission Checklist:**
 
@@ -246,7 +235,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 Based on selection:
 
-- **Open plan in editor** → Run `open docs/plans/<plan_filename>.md` to open the file in the user's default editor
+- **Open plan in editor** → Run `open wingspan/plans/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
 - **Review and refine** → Load `refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes

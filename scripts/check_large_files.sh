@@ -1,6 +1,6 @@
 #!/bin/bash
 # Claude Code loads these files into context - large files waste
-# tokens and can degrate performance.
+# tokens and can degrade performance.
 MAX_KB=50
 echo "Checking for files larger than ${MAX_KB}KB..."
 oversized=0
