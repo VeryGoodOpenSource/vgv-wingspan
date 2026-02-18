@@ -1,6 +1,6 @@
 ---
 name: plan-technical-review
-description: Conducts a comprehensive technical review of the implementation, ensuring it meets all requirements, follows best practices, and is ready for production deployment.
+description: Conducts a comprehensive technical review of the plan, ensuring it meets requirements, follows best practices, and is ready for implementation.
 ---
 
 # Plan technical review

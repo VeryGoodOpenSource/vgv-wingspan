@@ -1,5 +1,5 @@
 ---
-name: elements-of-style-optimized
+name: elements-of-style
 description: Apply Strunk's Elements of Style principles when writing or editing prose. Use when creating documents, editing text, reviewing writing, drafting emails, or any task requiring clear, vigorous English. Triggers on requests to "write clearly," "edit for style," "improve writing," or produce professional prose.
 ---
 

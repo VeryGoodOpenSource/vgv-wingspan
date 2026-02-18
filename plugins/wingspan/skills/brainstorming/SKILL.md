@@ -121,7 +121,7 @@ Sections to cover (skip what isn't relevant):
 ### 4. Capture a design document
 
 - Write the validated design document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`
-- Use @ elements-of-style-optimized skill to ensure clear, concise writing
+- Use @elements-of-style skill to ensure clear, concise writing
 - Include diagrams if helpful
 
 **Design document structure**

@@ -19,13 +19,7 @@ DO NOT proceed until you have a description from the user.
 
 ### 0. Assess clarity of requirements
 
-Evaluate if brainstorming is needed based on the feature description. 
-
-**Signals that indicate clarity in requirements:**
-- User provided specific acceptance criteria
-- User referenced existing patterns to follow
-- User described exact behavior expected
-- Scope is constrained and well-defined
+Evaluate if brainstorming is needed. Use the clarity signals defined in the @brainstorming skill.
 
 **If requirements are clear:** Use **AskUserQuestion tool** to let the user know: "Your requirements seem clear. Consider proceeding directly to planning or implementation."
 
@@ -47,14 +41,7 @@ Use the **AskUserQuestion tool** to ask questions one at a time. Follow the guid
 
 #### 1.3. Explore approaches
 
-Propose **2-3 concrete approaches** based on research and conversation.
-
-For each approach, provide:
-- Brief description (2-3 sentences)
-- Pros and cons
-- When it's best suited
-
-Lead with your recommendation and explain why. Apply YAGNI—prefer simpler solutions.
+Propose **2-3 concrete approaches** following the structure and guidelines defined in the @brainstorming skill. Lead with your recommendation and explain why.
 
 Use **AskUserQuestion tool** to ask which approach the user prefers.
 
@@ -77,7 +64,7 @@ Use **AskUserQuestion tool** to consider next steps:
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Done for now**: ideation complete. To start planning later: `/plan`
 
-**If the user selects "Review and refine approach"** then load apply the @refine-approach skill to the document in question.
+**If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
 
 When `refine-approach` is complete, present these options:
 
