@@ -8,14 +8,21 @@ Apply VGV's best practices and standards for scalable Flutter apps to AI-assiste
 
 ## Workflow
 
-The plugin supports two phases so far:
+The plugin supports three phases:
 
 1. **`/ideate`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
+3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
-Supporting skills: `/plan-technical-review` (validate plans), `/refine-approach` (iterative document improvement).
+Supporting skills:
 
-Code generation is not yet implemented.
+- `/plan-technical-review` (validate plans)
+- `/refine-approach` (iterative document improvement)
+
+Quality-review agents:
+
+- `test-quality-review-agent`
+- `architecture-review-agent`
 
 ## Output Directories
 
