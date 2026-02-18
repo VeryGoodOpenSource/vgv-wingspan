@@ -232,12 +232,14 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 1. **Open the plan file in my code editor**: open the plan file for review
 2. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
 3. **Review and refine**: improve the plan through self-review
+4. **Start building**: execute this plan with `/build`
 
 Based on selection:
 
 - **Open plan in editor** → Run `open wingspan/plans/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
 - **Review and refine** → Load `refine-approach` skill.
+- **Start building** → Call the `/build` skill with the plan file path
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
 ## Important
