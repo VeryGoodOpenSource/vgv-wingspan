@@ -54,7 +54,7 @@ First, I need to understand the project's conventions, existing patterns, and an
 
 Run the following **agents locally in parallel** to gather context:
 
-- **flutter-codebase-review-agent**: Conduct a thorough review of the codebase to understand architecture, patterns, and conventions.
+- **codebase-review-agent**: Conduct a thorough review of the codebase to understand architecture, patterns, and conventions.
 
 ##### 1.1.1 Research decision
 
@@ -236,4 +236,21 @@ Examples:
 
 ## Post-Generation Options
 
-After writing the plan file, let the use know where the plan file is ready for review.
+After writing the plan file, use the **AskUserQuestion tool** and present the following options:
+
+**Options:**
+
+1. **Open the plan file in my code editor**: open the plan file for review
+2. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
+3. **Review and refine**: improve the plan through self-review
+
+Based on selection:
+
+- **Open plan in editor** → Run `open docs/plans/<plan_filename>.md` to open the file in the user's default editor
+- **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
+- **Review and refine** → Load `refine-approach` skill.
+- **Other** (automatically provided) → Accept free text for rework or specific changes
+
+## Important
+
+NEVER CODE at this stage. Only focus on producing a plan.

@@ -35,7 +35,7 @@ Evaluate if brainstorming is needed based on the feature description.
 
 Run a quick project review to understand existing patterns:
 
-- Task @flutter-codebase-review-agent("Understand existing patterns related to: <feature_description>")
+- Task @codebase-review-agent("Understand existing patterns related to: <feature_description>")
 
 Focus on: similar features, established patterns, CLAUDE.md guidance.
 
