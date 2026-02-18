@@ -55,7 +55,7 @@ Examples:
 - API client would be located in `packages/api_client`
 - Database client would be located in `packages/db_client`
 
-**Antipractice**:
+**DO NOT DO / BAD PRACTICE**:
 
 Data packages should not depend on other data packages, repository packages, or presentation code, or the UI toolkit of the app.
 
@@ -67,19 +67,19 @@ These packages are named following the pattern `<domain_area>_repository`, and t
 
 Repository packages can depend on multiple data packages.
 
-**Antipractice**:
+**DO NOT DO / BAD PRACTICE**:
 
 Repository packages should not depend on other repository packages, or presentation code, or the UI toolkit of the app.
 
 #### 1.3 Design System & Widget Catalog
 
-Isolated and reusable widgets, themeing information, or other UI elements that don't need to make of complex state management with Bloc/Cubit, should be located in the `app_ui` package, under `packages`.
+Isolated and reusable widgets, theming information, or other UI elements that don't need to make of complex state management with Bloc/Cubit, should be located in the `app_ui` package, under `packages`.
 
 In Atomic Design, these would include your atoms, molecules, and occasionally organisms.
 
 This module should be as independent and portable as possible.
 
-**Antipractice**:
+**DO NOT DO / BAD PRACTICE**:
 
 `app_ui` should never depend on repositories, data packages, or anything.
 
