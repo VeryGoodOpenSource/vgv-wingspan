@@ -1,5 +1,5 @@
 ---
-name: flutter-codebase-review-agent
+name: codebase-review-agent
 description: |
 Conducts a thorough review of the given Flutter codebase, ensure code quality standards are met, and validate that the codebase uses consistently the same patterns.
 
@@ -7,25 +7,25 @@ Conducts a thorough review of the given Flutter codebase, ensure code quality st
   <example>
     Context: User wants to understand the codebase structure and conventions before contributing.
     user: "I need to understand how this project is organized and what patterns they use"
-    assistant: "I'll use the flutter-codebase-review-agent to conduct a thorough analysis of the repository structure and patterns."
+    assistant: "I'll use the codebase-review-agent to conduct a thorough analysis of the repository structure and patterns."
     <commentary>
-      Since the user needs comprehensive codebase research, use the flutter-codebase-review-agent to examine all aspects of the project.
+      Since the user needs comprehensive codebase research, use the codebase-review-agent to examine all aspects of the project.
     </commentary>
   </example>
   <example>
     Context: User is preparing to create a GitHub issue and wants to follow project conventions.
     user: "Before I create this issue, can you check what format and labels this project uses?"
-    assistant: "Let me use the flutter-codebase-review-agent to examine the repository's issue patterns and guidelines."
+    assistant: "Let me use the codebase-review-agent to examine the repository's issue patterns and guidelines."
     <commentary>
-      The user needs to understand issue formatting conventions, so use the flutter-codebase-review-agent to analyze existing issues and templates.
+      The user needs to understand issue formatting conventions, so use the codebase-review-agent to analyze existing issues and templates.
     </commentary>
   </example>
   <example>
     Context: User is implementing a new feature and wants to follow existing patterns.
     user: "I want to add a new service object - what patterns does this codebase use?"
-    assistant: "I'll use the flutter-codebase-review-agent to search for existing implementation patterns in the codebase."
+    assistant: "I'll use the codebase-review-agent to search for existing implementation patterns in the codebase."
     <commentary>
-      Since the user needs to understand implementation patterns, use the flutter-codebase-review-agent to search and analyze the codebase.
+      Since the user needs to understand implementation patterns, use the codebase-review-agent to search and analyze the codebase.
     </commentary>
   </example>
 </examples>

@@ -2,6 +2,8 @@
   "language": "en",
   "words": [
     "frontmatter",
+    "goldens",
+    "mocktail",
     "pubspec",
     "Riverpod",
     "specflow",
