@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD041 — PR templates don't need a top-level heading -->
+
 ## Description
 
 <!--- Describe what changed and why. -->
