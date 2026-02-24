@@ -47,9 +47,15 @@ ls -la wingspan/brainstorms/*.md 2>/dev/null | head -10
 
 #### 1.1 Local research (always runs, and runs in parallel)
 
-Run the following **agents locally in parallel** to gather context:
+**Do not re-run `codebase-review-agent` here.** Codebase context was already captured in the brainstorm from `/ideate`.
 
-- **codebase-review-agent**: Conduct a thorough review of the codebase to understand architecture, patterns, and conventions.
+Instead, extract what's needed from the brainstorm and run targeted searches:
+
+1. **From the brainstorm doc**: Extract the architecture patterns, conventions, and relevant file paths already identified.
+2. **Targeted codebase search**: Use Glob and Grep to search only the areas this plan will touch — the specific packages, layers, or features mentioned in the feature description and brainstorm.
+   - Example: If planning a new repository, search for existing repository patterns in the relevant package.
+   - Example: If planning a Bloc, search for existing Bloc implementations in the same feature area.
+3. **Read referenced files**: Read any specific files called out in the brainstorm as relevant context.
 
 ##### 1.1.1 Research decision
 
