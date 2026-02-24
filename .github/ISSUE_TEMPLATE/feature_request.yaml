@@ -1,0 +1,28 @@
+name: Feature Request
+description: Suggest a new feature or enhancement.
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: >
+        What must be true for this feature to be complete?
+        Consider markdown lint, spell check, and structure validation.
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about the request.
+    validations:
+      required: false

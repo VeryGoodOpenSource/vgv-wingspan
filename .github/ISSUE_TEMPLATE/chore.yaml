@@ -1,0 +1,28 @@
+name: Chore
+description: Maintenance task, dependency update, or housekeeping.
+title: "chore: "
+labels: ["chore"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the chore.
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: >
+        What must be true for this change to be complete?
+        Consider markdown lint, spell check, and structure validation.
+    validations:
+      required: false
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about the request.
+    validations:
+      required: false
