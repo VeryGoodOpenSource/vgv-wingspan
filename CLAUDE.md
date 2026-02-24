@@ -26,8 +26,8 @@ Quality-review agents:
 
 ## Output Directories
 
-- `wingspan/brainstorms/` — Brainstorm documents from `/ideate`
-- `wingspan/plans/` — Implementation plans from `/plan`
+- `docs/ideate/` — Brainstorm documents from `/ideate`
+- `docs/plan/` — Implementation plans from `/plan`
 
 ## Key Conventions
 

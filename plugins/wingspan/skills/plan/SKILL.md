@@ -19,10 +19,10 @@ Do not proceed until you have a clear feature description from the user.
 
 **Check for brainstorm output first:**
 
-Before asking questions, look for recent brainstorm documents in `wingspan/brainstorms/` that match this feature:
+Before asking questions, look for recent brainstorm documents in `docs/ideate` that match this feature:
 
 ```bash
-ls -la wingspan/brainstorms/*.md 2>/dev/null | head -10
+ls -la docs/ideate/*.md 2>/dev/null | head -10
 ```
 
 **Relevance criteria:** A brainstorm is relevant if:
@@ -211,17 +211,17 @@ Use the `implementation-detail-levels/extensive.md` template for this level.
 
 ## Output Format
 
-**Filename:** Use the date and kebab-case filename from Step 2 Title & Categorization: `wingspan/plans/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`
+**Filename:** Use the date and kebab-case filename from Step 2 Title & Categorization: `docs/plan/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`
 
 Examples:
 
-- ✅ `wingspan/plans/2026-01-15-feat-user-authentication-flow-plan.md`
-- ✅ `wingspan/plans/2026-02-03-fix-checkout-race-condition-plan.md`
-- ✅ `wingspan/plans/2026-03-10-refactor-api-client-extraction-plan.md`
-- ❌ `wingspan/plans/2026-01-15-feat-thing-plan.md` (not descriptive - what "thing"?)
-- ❌ `wingspan/plans/2026-01-15-feat-new-feature-plan.md` (too vague - what feature?)
-- ❌ `wingspan/plans/2026-01-15-feat: user auth-plan.md` (invalid characters - colon and space)
-- ❌ `wingspan/plans/feat-user-auth-plan.md` (missing date prefix)
+- ✅ `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`
+- ✅ `docs/plan/2026-02-03-fix-checkout-race-condition-plan.md`
+- ✅ `docs/plan/2026-03-10-refactor-api-client-extraction-plan.md`
+- ❌ `docs/plan/2026-01-15-feat-thing-plan.md` (not descriptive - what "thing"?)
+- ❌ `docs/plan/2026-01-15-feat-new-feature-plan.md` (too vague - what feature?)
+- ❌ `docs/plan/2026-01-15-feat: user auth-plan.md` (invalid characters - colon and space)
+- ❌ `docs/plan/feat-user-auth-plan.md` (missing date prefix)
 
 ## Post-Generation Options
 
@@ -236,7 +236,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 Based on selection:
 
-- **Open plan in editor** → Run `open wingspan/plans/<plan_filename>.md` to open the file in the user's default editor
+- **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
 - **Review and refine** → Load `refine-approach` skill.
 - **Start building** → Call the `/build` skill with the plan file path
