@@ -5,7 +5,7 @@ description: Execute an implementation plan — write code and tests and run qua
 
 # Execute an implementation plan
 
-Take a plan from `wingspan/plans/` and turn it into shipped code: implement features, write tests, and validate quality.
+Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
 
 ## Plan Input
 
@@ -18,13 +18,13 @@ Take a plan from `wingspan/plans/` and turn it into shipped code: implement feat
 1. List available plans:
 
 ```bash
-ls -la wingspan/plans/*.md 2>/dev/null | head -20
+ls -la docs/plan/*.md 2>/dev/null | head -20
 ```
 
 Then:
 
 1. If plans exist, use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
-2. If no plans exist, tell the user: "No plans found in `wingspan/plans/`. Run `/plan` first to create an implementation plan."
+2. If no plans exist, tell the user: "No plans found in `docs/plan/`. Run `/plan` first to create an implementation plan."
 
 Do not proceed without a plan.
 
@@ -50,10 +50,13 @@ Do not proceed until the user selects "Start building."
 
 ## Phase 1 — Setup
 
-1. Run **@codebase-review-agent** to understand:
-   - Current project structure and patterns
-   - Existing conventions referenced in the plan
-   - Related code that the implementation will interact with
+**Do not run `codebase-review-agent` here.** The plan was already informed by codebase context from `/ideate` and `/plan`.
+
+Instead, use the plan itself as your guide:
+
+1. **Read referenced files**: Read every file listed in the plan's tasks (files to create or modify) plus their immediate neighbors (e.g., sibling files in the same directory) for implementation context.
+2. **Extract conventions**: If the plan includes a codebase context or conventions section, use it as your source of truth for patterns and style.
+3. **Targeted searches only**: If the plan references a pattern or convention you need a concrete example of, use Grep or Glob to find a single representative example — do not do a broad sweep.
 
 ## Phase 2 — Execute
 
@@ -130,12 +133,12 @@ After all implementation tasks are complete, run 5 review agents **in parallel**
 
 Each agent prompt must include these instructions:
 
-> Write your full detailed report to `wingspan/reviews/<name>.md` (create the directory if needed).
+> Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
 > Then return ONLY a short structured summary to the parent context in this format:
 >
 > ```markdown
 > ## <Agent Name> Summary
-> **Report**: `wingspan/reviews/<name>.md` (<word_count> words)
+> **Report**: `docs/reviews/<name>.md` (<word_count> words)
 > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
 > ### Findings
 > - [Critical] <one-line description>
@@ -149,11 +152,11 @@ The 5 agents and their report filenames:
 
 | Agent | Report file |
 |-------|------------|
-| **@vgv-review-agent** | `wingspan/reviews/vgv-review.md` |
-| **@code-simplicity-review-agent** | `wingspan/reviews/code-simplicity-review.md` |
-| **@test-quality-review-agent** | `wingspan/reviews/test-quality-review.md` |
-| **@architecture-review-agent** | `wingspan/reviews/architecture-review.md` |
-| **@pr-readiness-review-agent** | `wingspan/reviews/pr-readiness-review.md` |
+| **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
+| **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
+| **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
+| **@architecture-review-agent** | `docs/reviews/architecture-review.md` |
+| **@pr-readiness-review-agent** | `docs/reviews/pr-readiness-review.md` |
 
 ### After all reviews complete
 
@@ -164,7 +167,7 @@ The 5 agents and their report filenames:
 
 2. **Auto-fix minor issues**: formatting (`dart format`), missing `const`, lint warnings. Stage and commit fixes.
 
-3. **Fix critical issues**: Read the specific report file (e.g., `wingspan/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (`dart analyze`, `dart test`), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
+3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (`dart analyze`, `dart test`), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
 
 4. **Present important issues** to the user via **AskUserQuestion**:
    - **Fix all**: address every important issue (read relevant report files for details)
