@@ -133,7 +133,7 @@ Each agent prompt must include these instructions:
 > Write your full detailed report to `wingspan/reviews/<name>.md` (create the directory if needed).
 > Then return ONLY a short structured summary to the parent context in this format:
 >
-> ```
+> ```markdown
 > ## <Agent Name> Summary
 > **Report**: `wingspan/reviews/<name>.md` (<word_count> words)
 > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
