@@ -28,6 +28,7 @@ Quality-review agents:
 
 - `wingspan/brainstorms/` — Brainstorm documents from `/ideate`
 - `wingspan/plans/` — Implementation plans from `/plan`
+- `wingspan/reviews/` — Review reports from `/build`
 
 ## Key Conventions
 
