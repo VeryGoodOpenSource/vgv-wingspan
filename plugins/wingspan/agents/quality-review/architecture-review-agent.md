@@ -200,3 +200,12 @@ For each new or modified package, verify:
 - Dependencies flow one way. If you need something from a "lower" layer in a "higher" one, you have an abstraction problem.
 - Every package earns its existence. If a package has one file, it probably belongs in an existing package.
 - Flag violations with specific file paths and line numbers. Vague feedback is not actionable.
+
+## Output Instructions
+
+If a file path is specified in your task prompt, write your full review to that file path and return ONLY a brief summary to the caller covering:
+- Verdict (ready to merge / needs work / needs rethink)
+- Count of critical and important issues
+- One-line description of each critical issue
+
+If no file path is specified, return the full review in your response as usual.

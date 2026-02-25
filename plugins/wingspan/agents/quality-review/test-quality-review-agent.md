@@ -126,3 +126,12 @@ Flag these immediately:
 - `blocTest` and `mocktail` are the VGV standards. Other patterns need strong justification.
 - A test with no assertions is worse than no test — it inflates coverage metrics without catching bugs.
 - Test names are documentation. They should describe what the code does, not how it does it.
+
+## Output Instructions
+
+If a file path is specified in your task prompt, write your full review to that file path and return ONLY a brief summary to the caller covering:
+- Verdict (ready to merge / needs work / needs rethink)
+- Count of critical and important issues
+- One-line description of each critical issue
+
+If no file path is specified, return the full review in your response as usual.
