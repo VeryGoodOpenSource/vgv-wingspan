@@ -1,29 +1,8 @@
 ---
 name: flutter-accessibility-expert
-description: |
-  Applies WCAG 2.1 AA fixes to Flutter files, writes widget tests, and updates
-  accessibility docs. Run after the accessibility-audit skill.
-
-  <examples>
-    <example>
-      Context: The user ran the accessibility-audit skill and has a report.
-      user: "Here's the audit report — fix everything."
-      assistant: "I'll use the flutter-accessibility-expert agent to triage and apply all fixes."
-      <commentary>
-        The agent should read the audit report, prioritize CRITICAL → MAJOR → MINOR,
-        apply fixes directly to source files, and add widget tests for CRITICAL/MAJOR items.
-      </commentary>
-    </example>
-    <example>
-      Context: The user wants fixes applied to a specific screen.
-      user: "Fix accessibility issues in lib/features/checkout/view/checkout_page.dart"
-      assistant: "I'll run the accessibility expert on that file."
-      <commentary>
-        When no audit report is provided, the agent audits the file mentally first, then fixes.
-      </commentary>
-    </example>
-  </examples>
-model: inherit
+model: sonnet
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, WebSearch
+description: Applies WCAG 2.1 AA fixes to Flutter files, writes widget tests, and updates accessibility docs. Run after the accessibility-audit skill.
 ---
 
 # Flutter Accessibility Expert Agent
