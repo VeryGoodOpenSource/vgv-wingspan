@@ -50,7 +50,7 @@ Do not proceed until the user selects "Start building."
 
 ## Phase 1 — Setup
 
-**Do not run `codebase-review-agent` here.** The plan was already informed by codebase context from `/ideate` and `/plan`.
+**Do not run `codebase-review-agent` here.** The plan was already informed by codebase context from `/brainstorm` and `/plan`.
 
 Instead, use the plan itself as your guide:
 

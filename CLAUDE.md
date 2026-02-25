@@ -10,7 +10,7 @@ Apply VGV's best practices and standards for scalable Flutter apps to AI-assiste
 
 The plugin supports three phases:
 
-1. **`/ideate`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
+1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
@@ -26,7 +26,7 @@ Quality-review agents:
 
 ## Output Directories
 
-- `wingspan/brainstorms/` — Brainstorm documents from `/ideate`
+- `wingspan/brainstorms/` — Brainstorm documents from `/brainstorm`
 - `wingspan/plans/` — Implementation plans from `/plan`
 
 ## Key Conventions

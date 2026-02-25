@@ -38,7 +38,7 @@ Apply the following criteria to evaluate the document:
 | **YAGNI** | No hypothetical features, simplest approach chosen |
 | **Scope** | Scope is well defined and constrained, not overly ambitious |
 
-If invoked during an ideation phase (after `/ideate`), validate that the document reflects with fidelity the user intent.
+If invoked during a brainstorm phase (after `/brainstorm`), validate that the document reflects with fidelity the user intent.
 
 ## Step 4. Critical improvements
 
