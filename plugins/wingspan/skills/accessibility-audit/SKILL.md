@@ -3,6 +3,8 @@ name: accessibility-audit
 description: Audits Flutter Dart files for WCAG 2.1 AA accessibility issues. Platform-agnostic. Run on any widget, screen, or feature before merging UI changes.
 ---
 
+# Accessibility Audit
+
 Run a Flutter accessibility audit on the provided file(s) or, if none specified, all `lib/**/*_view.dart` and `lib/**/*_page.dart` files.
 
 ## Scope
@@ -16,6 +18,7 @@ Severity: **CRITICAL** · **MAJOR** · **MINOR**
 ---
 
 ### A · Semantics & Screen Reader
+
 Patterns: `Image`, `GestureDetector`, `InkWell`, `IconButton`, `Icon`, `Semantics`, `ExcludeSemantics`, `MergeSemantics`
 
 - `Image` → must have `semanticLabel` or `Semantics(label:)` · WCAG 1.1.1
@@ -26,12 +29,14 @@ Patterns: `Image`, `GestureDetector`, `InkWell`, `IconButton`, `Icon`, `Semantic
 - Empty `semanticLabel: ''` on meaningful content → CRITICAL
 
 ### B · Touch Target Sizes
+
 Patterns: `GestureDetector`, `InkWell`, `IconButton`, `TextButton`, `ElevatedButton`
 
 - Minimum 48 × 48 dp for all interactive elements · WCAG 2.5.5
 - If constrained by a `SizedBox` or `Container` smaller than 48 dp → flag and suggest wrapping with `SizedBox(width: 48, height: 48)` or adding `padding`
 
 ### C · Focus & Keyboard
+
 Patterns: `FocusTraversalGroup`, `Focus`, `FocusNode`, `GestureDetector`
 
 - `GestureDetector` without a `Focus` wrapper → not keyboard-accessible · WCAG 2.1.1
@@ -41,6 +46,7 @@ Patterns: `FocusTraversalGroup`, `Focus`, `FocusNode`, `GestureDetector`
 - Custom focus indicators must meet 3:1 contrast · WCAG 2.4.11
 
 ### D · Color Contrast
+
 Patterns: `Color(`, `Colors.`, `TextStyle(color:`
 
 - Normal text (< 18 pt / 14 pt bold): ≥ 4.5:1 · WCAG 1.4.3
@@ -49,6 +55,7 @@ Patterns: `Color(`, `Colors.`, `TextStyle(color:`
 - Color as sole differentiator (no label/icon/shape) → MAJOR · WCAG 1.4.1
 
 ### E · Text Scaling
+
 Patterns: `TextStyle`, `Text`, `SizedBox` with fixed height near text
 
 - Hardcoded `textScaleFactor` or `textScaler` that clamps user prefs → MAJOR · WCAG 1.4.4
@@ -56,6 +63,7 @@ Patterns: `TextStyle`, `Text`, `SizedBox` with fixed height near text
 - `TextOverflow.clip` without visible fallback → MINOR
 
 ### F · Animation & Motion
+
 Patterns: `AnimationController`, `AnimatedContainer`, `AnimatedOpacity`, `Hero`, `PageRoute`
 
 - Animations not gated on `MediaQuery.of(context).disableAnimations` → MAJOR · WCAG 2.3.3
@@ -65,7 +73,7 @@ Patterns: `AnimationController`, `AnimatedContainer`, `AnimatedOpacity`, `Hero`,
 
 ## Output Format
 
-```
+```text
 # Flutter Accessibility Audit
 
 Files audited: [list]

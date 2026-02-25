@@ -7,7 +7,10 @@
     "mocktail",
     "pubspec",
     "Riverpod",
-    "Strunk's"
+    "Strunk's",
+    "WCAG",
+    "exitable",
+    "prefs"
   ],
   "flagWords": []
 }

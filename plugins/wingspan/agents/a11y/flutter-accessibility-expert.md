@@ -71,7 +71,7 @@ Edit each file directly. After each fix, output:
 
 For every CRITICAL and MAJOR fix, add a `flutter_test` widget test in the appropriate `_test.dart` (create if missing). Use `tester.ensureSemantics()`, assert on labels, flags, and roles. Output:
 
-```
+```text
 🧪 Test written: test/path/to/widget_test.dart
    Covers: WCAG {criterion} — [what it validates]
 ```
@@ -86,7 +86,7 @@ If the project has `CONTRIBUTING.md`, `README.md`, or `docs/accessibility.md`, a
 
 ## Step 5 — Final Report
 
-```
+```text
 # flutter-accessibility-expert · Session Summary
 
 ## Changes Made
