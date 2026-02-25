@@ -50,10 +50,13 @@ Do not proceed until the user selects "Start building."
 
 ## Phase 1 — Setup
 
-1. Run **@codebase-review-agent** to understand:
-   - Current project structure and patterns
-   - Existing conventions referenced in the plan
-   - Related code that the implementation will interact with
+**Do not run `codebase-review-agent` here.** The plan was already informed by codebase context from `/ideate` and `/plan`.
+
+Instead, use the plan itself as your guide:
+
+1. **Read referenced files**: Read every file listed in the plan's tasks (files to create or modify) plus their immediate neighbors (e.g., sibling files in the same directory) for implementation context.
+2. **Extract conventions**: If the plan includes a codebase context or conventions section, use it as your source of truth for patterns and style.
+3. **Targeted searches only**: If the plan references a pattern or convention you need a concrete example of, use Grep or Glob to find a single representative example — do not do a broad sweep.
 
 ## Phase 2 — Execute
 
