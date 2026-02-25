@@ -37,7 +37,7 @@ ls -la docs/ideate/*.md 2>/dev/null | head -10
 3. Extract key decisions, chosen approach, and open questions
 4. Use brainstorm decisions as input to the research phase
 
-**If no brainstorm found (or not relevant):** run @ideate to clarify the idea before proceeding.
+**If no brainstorm found (or not relevant):** Call @ideate to clarify the idea before proceeding.
 
 **If multiple brainstorms found:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate.
 
@@ -176,6 +176,12 @@ It includes:
   - Documentation requirements
 
 Use the `implementation-detail-levels/extensive.md` template for this level.
+
+### 4.1. Set up workspace
+
+Before writing the plan file, ensure the session is on a feature branch:
+
+- Call @create-branch to check and optionally create a working branch or worktree.
 
 ### 5. Issue creation and formatting
 
