@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__very_good_cli__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/check-vgv-cli.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
