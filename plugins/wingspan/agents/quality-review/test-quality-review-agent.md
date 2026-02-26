@@ -42,7 +42,6 @@ Prefer the `very_good_cli` MCP server's **`test`** tool when available — it su
 
 Never use raw `flutter test` or `dart test` shell commands.
 
-
 ## Review Process
 
 ### 1. Coverage Audit
