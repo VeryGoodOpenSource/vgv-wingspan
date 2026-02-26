@@ -5,7 +5,7 @@ description: Execute an implementation plan — write code and tests and run qua
 
 # Execute an implementation plan
 
-Take a plan from `wingspan/plans/` and turn it into shipped code: implement features, write tests, and validate quality.
+Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
 
 ## Plan Input
 
@@ -18,13 +18,13 @@ Take a plan from `wingspan/plans/` and turn it into shipped code: implement feat
 1. List available plans:
 
 ```bash
-ls -la wingspan/plans/*.md 2>/dev/null | head -20
+ls -la docs/plan/*.md 2>/dev/null | head -20
 ```
 
 Then:
 
 1. If plans exist, use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
-2. If no plans exist, tell the user: "No plans found in `wingspan/plans/`. Run `/plan` first to create an implementation plan."
+2. If no plans exist, tell the user: "No plans found in `docs/plan/`. Run `/plan` first to create an implementation plan."
 
 Do not proceed without a plan.
 

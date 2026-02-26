@@ -107,9 +107,9 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 ### 2. Capture the design document
 
-Write a brainstorm document to `wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
+Write a brainstorm document to `docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
-Ensure `wingspan/brainstorms/` directory exists before writing.
+Ensure `docs/ideate/` directory exists before writing.
 
 **Document structure:**
 
@@ -160,7 +160,7 @@ When complete, display:
 ```md
 Brainstorm complete!
 
-Document: wingspan/brainstorms/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
+Document: docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
 
 Key decisions:
 - [Decision 1]
