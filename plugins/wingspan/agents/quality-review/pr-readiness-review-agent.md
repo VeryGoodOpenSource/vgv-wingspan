@@ -105,7 +105,7 @@ Check for:
 
 For generated files, verify `.gitignore` includes:
 
-```
+```gitignore
 *.g.dart
 *.freezed.dart
 .dart_tool/
