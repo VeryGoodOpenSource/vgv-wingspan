@@ -37,7 +37,7 @@ ls -la docs/ideate/*.md 2>/dev/null | head -10
 3. Extract key decisions, chosen approach, and open questions
 4. Use brainstorm decisions as input to the research phase
 
-**If no brainstorm found (or not relevant):** run @ideate to clarify the idea before proceeding.
+**If no brainstorm found (or not relevant):** run @brainstorm to clarify the idea before proceeding.
 
 **If multiple brainstorms found:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate.
 
@@ -47,7 +47,7 @@ ls -la docs/ideate/*.md 2>/dev/null | head -10
 
 #### 1.1 Local research (always runs, and runs in parallel)
 
-**Do not re-run `codebase-review-agent` here.** Codebase context was already captured in the brainstorm from `/ideate`.
+**Do not re-run `codebase-review-agent` here.** Codebase context was already captured in the brainstorm from `/brainstorm`.
 
 Instead, extract what's needed from the brainstorm and run targeted searches:
 
