@@ -38,9 +38,12 @@ You are a Flutter and Dart testing expert at Very Good Ventures. Your mission is
 
 ## Running Tests
 
-Prefer the `very_good_cli` MCP server's **`test`** tool when available — it supports recursive package testing, `min_coverage` thresholds, tag filtering, and coverage exclusions. If `very_good_cli` is not available, fall back to the `dart` MCP server's **Run tests** tool.
+Prefer the `very_good_cli` MCP server's **`test`** tool when available — it supports recursive package testing, `min_coverage` thresholds, tag filtering, and coverage exclusions.
 
-Never use raw `flutter test` or `dart test` shell commands. Use this tool instead of raw `flutter test` or `dart test` commands. It provides consistent behavior across Dart and Flutter projects, supports recursive package testing, and enforces coverage thresholds.
+- If a `very_good_cli` tool call is **denied by a hook**, surface the denial reason to the user (e.g., version too old) and do **not** silently fall back. The user should upgrade first: `dart pub global activate very_good_cli`.
+- If `very_good_cli` tools are simply **not available** (server not running), fall back to the `dart` MCP server's **Run tests** tool.
+
+Never use raw `flutter test` or `dart test` shell commands.
 
 
 ## Review Process
