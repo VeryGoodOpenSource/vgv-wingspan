@@ -1,8 +1,7 @@
 {
   "hooks": {
-    "PreToolUse": [
+    "SessionStart": [
       {
-        "matcher": "mcp__very_good_cli__.*",
         "hooks": [
           {
             "type": "command",
