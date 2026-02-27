@@ -1,7 +1,7 @@
 ---
 name: vgv-scaffold-agent
 description: |
-  Scaffolds new Dart and Flutter projects using the VeryGoodCLI MCP tools. Enforces VGV conventions for project structure, naming, and organization, then verifies the scaffold with dependency resolution and an initial test run.
+  Scaffolds new Dart and Flutter projects using the Very Good CLI  MCP tools. Enforces VGV conventions for project structure, naming, and organization, then verifies the scaffold with dependency resolution and an initial test run.
 
   <examples>
     <example>
