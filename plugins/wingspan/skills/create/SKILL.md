@@ -64,7 +64,7 @@ Summarize:
 Use the **AskUserQuestion tool** to ask: "What would you like to do next?"
 
 Options:
-- **`/ideate`** — Brainstorm the first feature for this project
+- **`/brainstorm`** — Brainstorm the first feature for this project
 - **`/plan`** — Plan an implementation if requirements are already clear
 - **Done** — Finish here
 
