@@ -127,27 +127,50 @@ After each logical unit of work:
 
 ## Phase 3 — Quality Review
 
-After all implementation tasks are complete, run 5 review agents **in parallel**:
+After all implementation tasks are complete, run 5 review agents **in parallel**.
 
-- **@vgv-review-agent** — VGV standards, conventions, and patterns
-- **@code-simplicity-review-agent** — YAGNI audit and simplification opportunities
-- **@test-quality-review-agent** — Test coverage and quality
-- **@architecture-review-agent** — Layer separation and Bloc/Cubit correctness
-- **@pr-readiness-review-agent** — Formatting, analysis, debug artifacts, commit hygiene
+### Agent instructions
 
-After all reviews complete:
+Each agent prompt must include these instructions:
 
-1. **Consolidate findings** into three categories:
+> Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
+> Then return ONLY a short structured summary to the parent context in this format:
+>
+> ```markdown
+> ## <Agent Name> Summary
+> **Report**: `docs/reviews/<name>.md` (<word_count> words)
+> **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
+> ### Findings
+> - [Critical] <one-line description>
+> - [Important] <one-line description>
+> - [Suggestion] <one-line description>
+> ```
+>
+> Do NOT return the full report text. Only return the summary above.
+
+The 5 agents and their report filenames:
+
+| Agent | Report file |
+|-------|------------|
+| **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
+| **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
+| **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
+| **@architecture-review-agent** | `docs/reviews/architecture-review.md` |
+| **@pr-readiness-review-agent** | `docs/reviews/pr-readiness-review.md` |
+
+### After all reviews complete
+
+1. **Consolidate findings** from all summaries into three categories:
    - **Critical** (must fix before merge): Bugs, missing tests, layer violations, broken analysis
    - **Important** (should fix): Convention deviations, test gaps, naming issues
    - **Suggestions** (note for PR): Style improvements, minor simplifications
 
 2. **Auto-fix minor issues**: formatting (`dart format`), missing `const`, lint warnings. Stage and commit fixes.
 
-3. **Fix critical issues**: Address each critical finding, re-run validation (`dart analyze`, `dart test`), and commit.
+3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (`dart analyze`, `dart test`), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
 
 4. **Present important issues** to the user via **AskUserQuestion**:
-   - **Fix all**: address every important issue
+   - **Fix all**: address every important issue (read relevant report files for details)
    - **Review the list first**: show the full list for the user to decide
    - **Skip to shipping**: note them in the PR description instead
 
@@ -167,6 +190,14 @@ dart test
 ```
 
 If anything fails, fix it before proceeding.
+
+### Cleanup                                                                                       
+
+Remove the review reports — their findings have already been addressed or recorded:                                       
+
+```bash                                                                                     
+rm -rf docs/reviews/
+```
 
 ### Post-Ship
 
