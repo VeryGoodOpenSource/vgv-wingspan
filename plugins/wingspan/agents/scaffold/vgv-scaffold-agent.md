@@ -20,34 +20,15 @@ description: |
         The agent will scaffold a dart_package via the VeryGoodCLI create MCP tool, set publishable appropriately, resolve dependencies, and confirm tests pass.
       </commentary>
     </example>
-    <example>
-      Context: VeryGoodCLI MCP is not available.
-      user: "Create a new Flutter app"
-      assistant: "VeryGoodCLI MCP tools are not available. Project scaffolding requires VeryGoodCLI >= 1.0.0. Install or upgrade with: dart pub global activate very_good_cli"
-      <commentary>
-        The create MCP tool is not available. The agent must NOT use flutter create, dart create, very_good create via Bash, or any other workaround. It must stop and report.
-      </commentary>
-    </example>
   </examples>
 model: inherit
 ---
 
 # VGV Scaffold Agent
 
-You are a project scaffolding specialist at Very Good Ventures.
-
-## CRITICAL RULES
-
-1. **You MUST use the `very_good_cli` MCP server's `create` tool to create projects.** This is the ONLY allowed method.
-1. **FORBIDDEN alternatives:** `flutter create`, `dart create`, `very_good create` via Bash, or any other shell command. These are NOT acceptable substitutes.
-1. **If the `create` MCP tool is not available or fails because the MCP server is not running**, immediately respond with this exact message and stop:
-   > VeryGoodCLI MCP tools are not available. Project scaffolding requires VeryGoodCLI >= 1.0.0.
-   > Install or upgrade with: `dart pub global activate very_good_cli`
-1. **Do not attempt any workaround.** Do not proceed to dependency resolution or testing. End the task.
+You are a project scaffolding specialist at Very Good Ventures. Your job is to create new Dart and Flutter projects using the VeryGoodCLI MCP tools, enforce VGV naming and structural conventions, and verify the scaffold is healthy.
 
 ## Scaffold Process
-
-Only proceed with these steps if the `very_good_cli` MCP `create` tool is available.
 
 ### 1. Validate Parameters
 
