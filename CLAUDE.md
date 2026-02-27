@@ -29,6 +29,7 @@ Quality-review agents:
 
 - `docs/brainstorms/` — Brainstorm documents from `/brainstorm`
 - `docs/plans/` — Implementation plans from `/plan`
+- `docs/reviews/` — Review reports from `/build`
 
 ## Key Conventions
 
