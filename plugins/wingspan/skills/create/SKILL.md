@@ -1,6 +1,6 @@
 ---
 name: create
-description: Scaffold a new Dart or Flutter project using VeryGoodCLI templates with VGV conventions
+description: Scaffold a new Dart or Flutter project using Very Good CLI  templates with VGV conventions
 ---
 
 # Create a new Dart or Flutter project
