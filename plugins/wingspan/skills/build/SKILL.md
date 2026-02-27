@@ -88,21 +88,11 @@ Every new Bloc, Cubit, repository, widget, and data model must have a test file.
 
 After implementing each task, in order:
 
-Run static analysis:
+1. **Format**: Use the `dart` MCP server's **Format** tool to fix formatting issues.
+2. **Analyze**: Use the `dart` MCP server's **Analyze** tool to run static analysis with `--fatal-infos`.
+3. **Test**: Use the `very_good_cli` MCP server's **test** tool (supports recursive testing and coverage). If unavailable, fall back to the `dart` MCP server's **Run tests** tool.
 
-```bash
-dart analyze --fatal-infos
-# or for Flutter projects:
-flutter analyze
-```
-
-Run tests:
-
-```bash
-dart test
-# or for Flutter projects:
-flutter test
-```
+Never use `dart`, `flutter`, or `very_good` shell commands for formatting, analysis, or testing. Only use MCP tools.
 
 If failures occur:
 - Fix the issue and re-run
@@ -165,9 +155,9 @@ The 5 agents and their report filenames:
    - **Important** (should fix): Convention deviations, test gaps, naming issues
    - **Suggestions** (note for PR): Style improvements, minor simplifications
 
-2. **Auto-fix minor issues**: formatting (`dart format`), missing `const`, lint warnings. Stage and commit fixes.
+2. **Auto-fix minor issues**: Use the `dart` MCP server's **Format** tool for formatting, fix missing `const` and lint warnings. Stage and commit fixes.
 
-3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (`dart analyze`, `dart test`), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
+3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation using the `dart` MCP **Analyze** and **Run tests** tools, and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
 
 4. **Present important issues** to the user via **AskUserQuestion**:
    - **Fix all**: address every important issue (read relevant report files for details)
@@ -180,14 +170,11 @@ The 5 agents and their report filenames:
 
 ### Final Validation
 
-Run the full suite one last time:
+Run the full suite one last time using MCP tools:
 
-```bash
-dart format --set-exit-if-changed .
-dart analyze --fatal-infos
-dart test
-# or flutter equivalents
-```
+1. **Format**: `dart` MCP **Format** tool
+2. **Analyze**: `dart` MCP **Analyze** tool with `--fatal-infos`
+3. **Test**: `very_good_cli` MCP **test** tool (fall back to `dart` MCP **Run tests** if unavailable)
 
 If anything fails, fix it before proceeding.
 
