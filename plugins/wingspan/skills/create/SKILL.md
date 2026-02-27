@@ -5,7 +5,7 @@ description: Scaffold a new Dart or Flutter project using VeryGoodCLI templates 
 
 # Create a new Dart or Flutter project
 
-Scaffold a new project using VeryGoodCLI templates. Enforce VGV conventions, resolve dependencies, verify the scaffold, and check license compliance.
+Scaffold a new project using Very Good CLI templates. Enforce VGV conventions, resolve dependencies, verify the scaffold, and check license compliance.
 
 ## Project request
 
