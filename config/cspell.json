@@ -8,7 +8,9 @@
     "oneline",
     "pubspec",
     "Riverpod",
-    "Strunk's"
+    "Strunk's",
+    "worktree",
+    "worktrees"
   ],
   "flagWords": []
 }

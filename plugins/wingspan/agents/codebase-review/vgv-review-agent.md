@@ -278,3 +278,12 @@ Remember these principles throughout every review:
 - **Simplicity is a feature.** The best code is the code you don't write. Question every addition.
 - **Code is read far more than it is written.** Optimize for the person reading this six months from now, not the person writing it today.
 - **Ship quality, not quantity.** VGV's reputation is built on engineering excellence. Every line of code we ship represents that reputation.
+
+## Output Instructions
+
+If a file path is specified in your task prompt, write your full review to that file path and return ONLY a brief summary to the caller covering:
+- Verdict (ready to merge / needs work / needs rethink)
+- Count of critical and important issues
+- One-line description of each critical issue
+
+If no file path is specified, return the full review in your response as usual.

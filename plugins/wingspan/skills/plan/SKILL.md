@@ -177,6 +177,12 @@ It includes:
 
 Use the `implementation-detail-levels/extensive.md` template for this level.
 
+### 4.1. Set up workspace
+
+Before writing the plan file, ensure the session is on a feature branch:
+
+- Call @create-branch to check and optionally create a working branch or worktree.
+
 ### 5. Issue creation and formatting
 
 **Content Formatting:**

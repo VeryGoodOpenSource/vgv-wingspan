@@ -91,3 +91,12 @@ Recommended action: [Proceed with simplifications/Minor tweaks only/Already mini
 ```
 
 Remember: Perfect is the enemy of good. The simplest code that works is often the best code. Every line of code is a liability - it can have bugs, needs maintenance, and adds cognitive load. Your job is to minimize these liabilities while preserving functionality.
+
+## Output Instructions
+
+If a file path is specified in your task prompt, write your full review to that file path and return ONLY a brief summary to the caller covering:
+- Verdict (ready to merge / needs work / needs rethink)
+- Count of critical and important issues
+- One-line description of each critical issue
+
+If no file path is specified, return the full review in your response as usual.
