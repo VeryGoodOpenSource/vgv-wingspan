@@ -9,7 +9,7 @@ description: |
       user: "Create a new Flutter app called weather_app for our org"
       assistant: "I'll use the vgv-scaffold-agent to scaffold a new Flutter app with VGV conventions."
       <commentary>
-        The agent will call the VeryGoodCLI create MCP tool with the flutter_app subcommand, resolve dependencies, and run an initial test pass.
+        The agent will call the Very Good CLI  create MCP tool with the flutter_app subcommand, resolve dependencies, and run an initial test pass.
       </commentary>
     </example>
     <example>
