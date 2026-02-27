@@ -37,7 +37,7 @@ ls -la docs/ideate/*.md 2>/dev/null | head -10
 3. Extract key decisions, chosen approach, and open questions
 4. Use brainstorm decisions as input to the research phase
 
-**If no brainstorm found (or not relevant):** Call @ideate to clarify the idea before proceeding.
+**If no brainstorm found (or not relevant):** Call @brainstorm to clarify the idea before proceeding.
 
 **If multiple brainstorms found:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate.
 
