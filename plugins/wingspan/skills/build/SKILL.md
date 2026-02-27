@@ -191,6 +191,14 @@ dart test
 
 If anything fails, fix it before proceeding.
 
+### Cleanup                                                                                       
+
+Remove the review reports — their findings have already been addressed or recorded:                                       
+
+```bash                                                                                     
+rm -rf docs/reviews/
+```
+
 ### Post-Ship
 
 Use **AskUserQuestion** to present options:
