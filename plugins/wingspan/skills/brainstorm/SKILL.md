@@ -1,9 +1,9 @@
 ---
-name: ideate
+name: brainstorm
 description: Explore requirements and approaches through collaborative dialogue before planning implementation
 ---
 
-# Ideate and brainstorm a feature or improvement
+# Brainstorm a feature or improvement
 
 Clarify **WHAT** to build before diving into **HOW** to build it. Explore user intent, approaches, and design decisions through collaborative dialogue.
 
@@ -11,7 +11,7 @@ Clarify **WHAT** to build before diving into **HOW** to build it. Explore user i
 
 <feature description>$ARGUMENTS</feature description>
 
-**If the feature description above is empty, ask the user**: "What feature would you like to ideate? Describe the idea, problem or feature you are thinking about."
+**If the feature description above is empty, ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
 
 DO NOT proceed until you have a description from the user.
 
@@ -145,12 +145,12 @@ topic: <kebab-case-topic>
 
 Use **AskUserQuestion tool** to consider next steps:
 
-**Question**: "Ideation complete! What would you like to do next?"
+**Question**: "Brainstorm complete! What would you like to do next?"
 
 **Options:**
 1. **Review and refine approach:** improve the document using structured review
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Done for now**: ideation complete. To start planning later: `/plan`
+3. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
 **If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
 
