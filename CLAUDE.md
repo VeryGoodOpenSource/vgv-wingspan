@@ -16,6 +16,7 @@ The plugin supports three phases:
 
 Supporting skills:
 
+- `/create-branch` (workspace setup)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
 
