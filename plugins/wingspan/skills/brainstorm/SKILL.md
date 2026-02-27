@@ -105,6 +105,12 @@ Propose **2-3 concrete approaches** with trade-offs. Lead with your recommendati
 
 Use **AskUserQuestion tool** to ask which approach the user prefers.
 
+#### 1.4. Set up workspace
+
+Before writing any files, ensure the session is on a feature branch:
+
+- Call @create-branch to check and optionally create a working branch or worktree.
+
 ### 2. Capture the design document
 
 Write a brainstorm document to `docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
