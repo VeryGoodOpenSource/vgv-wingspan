@@ -1,9 +1,10 @@
 {
   "mcpServers": {
-    "dart": {
-      "command": "dart",
+    "Dart": {
+      "command": "npx",
       "args": [
-        "mcp-server"
+        "-y", 
+        "mcp-remote", "https://mcp.dartai.com/mcp"
       ]
     },
     "figma": {
