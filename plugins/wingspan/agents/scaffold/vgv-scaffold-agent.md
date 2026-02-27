@@ -17,7 +17,7 @@ description: |
       user: "I need a new Dart package for our API models"
       assistant: "I'll use the vgv-scaffold-agent to create a Dart package following VGV standards."
       <commentary>
-        The agent will scaffold a dart_package via the VeryGoodCLI create MCP tool, set publishable appropriately, resolve dependencies, and confirm tests pass.
+        The agent will scaffold a dart_package via the Very Good CLI create MCP tool, set publishable appropriately, resolve dependencies, and confirm tests pass.
       </commentary>
     </example>
   </examples>
