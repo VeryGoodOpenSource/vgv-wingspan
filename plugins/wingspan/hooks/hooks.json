@@ -7,6 +7,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/dart_analyze.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/dart_format.sh",
             "timeout": 30
           }
