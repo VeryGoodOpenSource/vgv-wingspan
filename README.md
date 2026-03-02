@@ -6,6 +6,8 @@ AI-assisted workflows for Flutter and Dart that follow Very Good Ventures best p
 
 ## Installation
 
+### From the marketplace
+
 **Single session** — loads the plugin for the current session only:
 
 ```bash
@@ -19,9 +21,33 @@ claude --plugin VeryGoodOpenSource/wingspan
 cd /to/your/project
 claude
 # then inside Claude Code:
-/plugin install VeryGoodOpenSource/wingspan
+/plugin marketplace add VeryGoodOpenSource/wingspan
+/plugin install wingspan@wingspan-marketplace
 ```
 
-### Vision
+### For local development
+
+```bash
+git clone git@github.com:VeryGoodOpenSource/wingspan.git
+```
+
+**Single session** — loads the plugin for the current session only:
+
+```bash
+cd /to/your/project
+claude --plugin-dir <wingspan-path>/plugins/wingspan
+```
+
+**Persistent** — installs the plugin so it loads automatically on every session:
+
+```bash
+cd /to/your/project
+claude
+# then inside Claude Code:
+/plugin marketplace add <wingspan-path>
+/plugin install wingspan@wingspan-marketplace
+```
+
+## Vision
 
 ![wingspan vision](./assets/vision.png)
