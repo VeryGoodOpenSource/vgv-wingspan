@@ -113,9 +113,9 @@ Before writing any files, ensure the session is on a feature branch:
 
 ### 2. Capture the design document
 
-Write a brainstorm document to `docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
+Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
-Ensure `docs/ideate/` directory exists before writing.
+Ensure `docs/brainstorm/` directory exists before writing.
 
 **Document structure:**
 
@@ -166,7 +166,7 @@ When complete, display:
 ```md
 Brainstorm complete!
 
-Document: docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
+Document: docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
 
 Key decisions:
 - [Decision 1]
