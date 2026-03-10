@@ -11,7 +11,7 @@ Improve brainstorm and/or planning documents through structured review.
 
 **If a document is provided** then proceed to `Step 2. Assess`.
 
-**If no document is provided**, ask the user which document to review. Check `docs/ideate/` and `docs/plan/` for recent documents to suggest.
+**If no document is provided**, ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
 
 ## Step 2. Assess
 

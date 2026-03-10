@@ -33,8 +33,8 @@ Quality-review agents:
 
 ## Output Directories
 
-- `docs/brainstorms/` — Brainstorm documents from `/brainstorm`
-- `docs/plans/` — Implementation plans from `/plan`
+- `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
+- `docs/plan/` — Implementation plans from `/plan`
 - `docs/reviews/` — Review reports from `/build`
 
 ## Key Conventions
