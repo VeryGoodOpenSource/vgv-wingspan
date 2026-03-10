@@ -19,10 +19,10 @@ Do not proceed until you have a clear feature description from the user.
 
 **Check for brainstorm output first:**
 
-Before asking questions, look for recent brainstorm documents in `docs/ideate` that match this feature:
+Before asking questions, look for recent brainstorm documents in `docs/brainstorm` that match this feature:
 
 ```bash
-ls -la docs/ideate/*.md 2>/dev/null | head -10
+ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 ```
 
 **Relevance criteria:** A brainstorm is relevant if:
