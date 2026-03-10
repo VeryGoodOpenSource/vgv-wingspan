@@ -87,7 +87,7 @@ Run these agents in parallel to gather external information:
 
 After all research steps complete, consolidate findings:
 
-- Document relevant file paths from repo research (e.g., `app/authentication/forms/authentication_form.dart:42`)
+- Document relevant file paths from repo research (e.g., `src/authentication/forms/authentication_form:42`)
 - **Include relevant institutional learnings** from project documentation (key insights, gotchas to avoid)
 - Note external documentation URLs and best practices (if external research was done)
 - List related issues or PRs discovered
