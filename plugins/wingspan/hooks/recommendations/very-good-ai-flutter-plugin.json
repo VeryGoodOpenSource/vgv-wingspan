@@ -4,6 +4,6 @@
     "file": "pubspec.yaml",
     "pattern": "^\\s*flutter:"
   },
-  "marketplace": "VeryGoodOpenSource/very_good_ai_flutter_plugin",
+  "marketplace": "VeryGoodOpenSource/very_good_ai_plugins",
   "description": "Flutter-specific best-practice skills (accessibility, BLoC, testing, theming, navigation, security, i18n, architecture) and automated dart analyze/format hooks."
 }
