@@ -66,16 +66,16 @@ For each finding, report: `file_path:line:col` — `[severity]` `[rule]`: messag
 
 Scan all changed and new source files for artifacts that must not ship:
 
-| Artifact | Example patterns | Why it's wrong |
+| Artifact | What to look for | Why it's wrong |
 | --- | --- | --- |
-| Debug print statements | `print(`, `console.log(`, `fmt.Println(`, `println!`, `pprint(`, `debugPrint(` | Console noise in production |
+| Debug print statements | Calls to standard-output print or log functions meant for ad-hoc debugging | Console noise in production |
 | Debug flags / mode guards | Debug-only guards wrapping production logic | Should be removed or replaced with proper logging |
-| TODO / FIXME in new code | `// TODO`, `// FIXME`, `// HACK`, `# TODO`, `# FIXME` | Unfinished work should not merge |
+| TODO / FIXME in new code | Unfinished-work markers in comments (TODO, FIXME, HACK, etc.) | Unfinished work should not merge |
 | Commented-out code | Blocks of commented lines with code structure | Dead code; use version control instead |
 | Hardcoded secrets | API keys, tokens, passwords in source | Security risk |
-| Merge conflict markers | `<<<<<<<`, `=======`, `>>>>>>>` | Unresolved merge conflict |
-| Temporary test skips | `skip:`, `.skip(`, `@pytest.mark.skip`, `t.Skip(`, `#[ignore]` | Tests must not be silently skipped |
-| Debug-only imports | Imports used only for debugging (e.g., `dart:developer`, `dart:mirrors`, `pdb`, `debugger`) | Not needed in production code |
+| Merge conflict markers | Conflict boundary lines left by version control | Unresolved merge conflict |
+| Temporary test skips | Framework-specific annotations or calls that disable tests | Tests must not be silently skipped |
+| Debug-only imports | Imports used solely for interactive debugging or introspection | Not needed in production code |
 
 For each finding, report: `file_path:line` — `[artifact type]`: description.
 
