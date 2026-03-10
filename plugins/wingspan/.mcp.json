@@ -10,12 +10,6 @@
         "-y",
         "@upstash/context7-mcp@latest"
       ]
-    },
-    "very_good_cli": {
-      "command": "very_good",
-      "args": [
-        "mcp"
-      ]
     }
   }
 }
