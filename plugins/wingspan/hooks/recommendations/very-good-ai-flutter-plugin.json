@@ -1,5 +1,5 @@
 {
-  "plugin": "very_good_ai_flutter_plugin",
+  "plugin": "very-good-ai-flutter-plugin",
   "detect": {
     "file": "pubspec.yaml",
     "pattern": "^\\s*flutter:"
