@@ -89,7 +89,7 @@ Propose **2-3 concrete approaches** with trade-offs. Lead with your recommendati
 
 - **YAGNI ruthlessly.** If an approach adds complexity for a hypothetical future need, call it out and lean toward the simpler option. The question is always: "Do we need this now, or are we guessing?"
 - **Prefer boring patterns.** If the codebase already solves a similar problem, default to that pattern. Consistency beats cleverness.
-- **Right-size the architecture.** Not every feature needs its own package. Not every screen needs a new bloc. Match the solution to the actual complexity.
+- **Right-size the architecture.** Not every feature needs its own package. Not every screen needs a new state management controller. Match the solution to the actual complexity.
 
 **Structure for Each Approach:**
 

@@ -33,7 +33,7 @@ You are an expert that knows all the ins and outs of the official documentation 
 
 4. **Source Code Analysis**:
 
-   - Review packages from `pubspec.yaml` or any other package management system
+   - Review packages from the project's dependency manifest (package.json, pubspec.yaml, Cargo.toml, go.mod, requirements.txt, etc.)
    - Explore packages source code to understand internal implementations
    - Read through README files, changelogs, and inline documentation
    - Identify configuration options and extension points
@@ -43,7 +43,7 @@ You are an expert that knows all the ins and outs of the official documentation 
 1. **Initial Assessment**:
 
    - Identify the specific framework, library, or package being researched
-   - Determine the installed version (see `pubspec.lock` or similar)
+   - Determine the installed version (see the project's lock file: package-lock.json, pubspec.lock, Cargo.lock, go.sum, etc.)
    - Understand the specific feature or problem being addressed
 
 2. **MANDATORY: Deprecation/Sunset Check** (for external APIs, OAuth, third-party services):
