@@ -1,5 +1,6 @@
 ---
 name: create-branch
+user-invocable: true
 description: Set up a workspace (branch or worktree) before writing artifacts
 ---
 
