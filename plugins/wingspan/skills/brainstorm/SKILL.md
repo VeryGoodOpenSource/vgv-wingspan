@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 description: Explore requirements and approaches through collaborative dialogue before planning implementation
+argument-hint: feature or idea to explore
 ---
 
 # Brainstorm a feature or improvement
@@ -148,16 +149,32 @@ Use **AskUserQuestion tool** to consider next steps:
 **Question**: "Brainstorm complete! What would you like to do next?"
 
 **Options:**
-1. **Review and refine approach:** improve the document using structured review
+1. **Clear context and plan**: clear context for a fresh start, then plan
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Done for now**: brainstorm complete. To start planning later: `/plan`
+3. **Review and refine approach:** improve the document using structured review
+4. **Done for now**: brainstorm complete. To start planning later: `/plan`
+
+**If the user selects "Clear context and plan"** → output the following and then stop:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start planning with:
+
+/plan
+```
 
 **If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
 
 When `refine-approach` is complete, present these options:
 
-1. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
-2. **Done for now**: ideation complete. To start planning later: `/plan`
+1. **Clear context and plan**: clear context for a fresh start, then plan
+2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
+3. **Done for now**: ideation complete. To start planning later: `/plan`
+
+**If the user selects "Clear context and plan"** → output the same instructions as above and then stop.
 
 ## Output Summary
 
