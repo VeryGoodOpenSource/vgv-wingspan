@@ -1,6 +1,7 @@
 ---
 name: brainstorm
 description: Explore requirements and approaches through collaborative dialogue before planning implementation
+argument-hint: feature or idea to explore
 ---
 
 # Brainstorm a feature or improvement
