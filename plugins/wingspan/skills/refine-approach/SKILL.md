@@ -1,5 +1,6 @@
 ---
 name: refine-approach
+user-invocable: true
 description: This skill should be used to review and refine proposed brainstorms and planning documents before proceeding to implementation. It identifies gaps, clarifies assumptions, and ensures the approach is well thought out.
 ---
 
@@ -71,14 +72,52 @@ Simplification is purposeful removal of unnecessary complexity, not shortening f
 
 After changes are complete, ask:
 
-1. **Refine again** - Another review pass
-2. **Review complete** - Document is ready
+1. **Refine again** — another review pass
+2. **Review complete** — document is ready
+
+**When invoked directly by the user** (not as part of another skill), also determine the document type and offer clear context handoff as the first option:
+
+**If the document is a brainstorm** (from `docs/brainstorm/`):
+
+1. **Clear context and plan**: clear context for a fresh start, then plan
+2. **Refine again** — another review pass
+3. **Done for now** — document is ready
+
+**If the document is a plan** (from `docs/plan/`):
+
+1. **Clear context and build**: clear context for a fresh start, then build
+2. **Refine again** — another review pass
+3. **Done for now** — document is ready
+
+**If the user selects "Clear context and plan"** → output the following and then stop:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start planning with:
+
+/plan
+```
+
+**If the user selects "Clear context and build"** → output the following (substituting the actual plan file path) and then stop:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start building with:
+
+/build docs/plan/<actual-plan-filename>.md
+```
+
+**When invoked by another skill** (e.g., from `/brainstorm` or `/plan`), only offer "Refine again" and "Review complete", then return control to the caller.
 
 ### Iteration guidance
 
 After 2 refinement passes, recommend completion—diminishing returns are likely. But if the user wants to continue, allow it.
-
-Return control to the caller (workflow or user) after selection.
 
 ## What NOT to Do
 
