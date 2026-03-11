@@ -242,17 +242,30 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 **Options:**
 
-1. **Open the plan file in my code editor**: open the plan file for review
-2. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
-3. **Review and refine**: improve the plan through self-review
-4. **Start building**: execute this plan with `/build`
+1. **Clear context and build**: clear context for a fresh start, then build
+2. **Start building**: execute this plan with `/build`
+3. **Open the plan file in my code editor**: open the plan file for review
+4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
+5. **Review and refine**: improve the plan through self-review
 
 Based on selection:
 
+- **Clear context and build** → Output the following (substituting the actual plan file path) and then stop:
+
+  ```md
+  To continue with a fresh context, run:
+
+  /clear
+
+  Then start building with:
+
+  /build docs/plan/<actual-plan-filename>.md
+  ```
+
+- **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
 - **Review and refine** → Load `refine-approach` skill.
-- **Start building** → Call the `/build` skill with the plan file path
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
 ## Important

@@ -20,6 +20,8 @@ The plugin supports three phases:
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
+Each phase persists its output to `docs/` so the next phase can discover it from a cold start. When a skill offers a forward transition (e.g., brainstorm → plan), it must present **"Clear context and [next step]"** as the first handoff option. When selected, display the `/clear` command followed by the next skill's invocation, then stop. This gives the model a fresh context window without losing work.
+
 Supporting skills:
 
 - `/create-branch` (workspace setup)
