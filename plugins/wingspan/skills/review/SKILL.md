@@ -1,6 +1,7 @@
 ---
 name: review
 description: Run quality review agents on demand — review code, assess quality, and identify issues before merging.
+argument-hint: "[path/to/files/or/directories (optional)]"
 ---
 
 # Review code on demand
