@@ -25,17 +25,17 @@ Parse the review scope above for optional file paths or directories.
 
 1. Detect current branch:
 
-```bash
-git rev-parse --abbrev-ref HEAD
-```
+   ```bash
+   git rev-parse --abbrev-ref HEAD
+   ```
 
 2. Detect default branch:
 
-```bash
-git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'
-```
+   ```bash
+   git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'
+   ```
 
-Fallback: check for `main`, then `master`.
+   Fallback: check for `main`, then `master`.
 
 3. **If on a feature branch** (current branch differs from the default branch):
    - Get changed files: `git diff <default-branch>...HEAD --name-only`
@@ -60,22 +60,23 @@ Each agent prompt must include:
    - A list of changed files (for branch diff scope)
    - An instruction to limit review to specific paths (for path scope)
    - No constraint (for full project review)
+
 2. The report output instructions:
 
-> Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
-> Then return ONLY a short structured summary to the parent context in this format:
->
-> ```markdown
-> ## <Agent Name> Summary
-> **Report**: `docs/reviews/<name>.md` (<word_count> words)
-> **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
-> ### Findings
-> - [Critical] <one-line description>
-> - [Important] <one-line description>
-> - [Suggestion] <one-line description>
-> ```
->
-> Do NOT return the full report text. Only return the summary above.
+   > Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
+   > Then return ONLY a short structured summary to the parent context in this format:
+   >
+   > ```markdown
+   > ## <Agent Name> Summary
+   > **Report**: `docs/reviews/<name>.md` (<word_count> words)
+   > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
+   > ### Findings
+   > - [Critical] <one-line description>
+   > - [Important] <one-line description>
+   > - [Suggestion] <one-line description>
+   > ```
+   >
+   > Do NOT return the full report text. Only return the summary above.
 
 The 4 agents and their report filenames:
 
