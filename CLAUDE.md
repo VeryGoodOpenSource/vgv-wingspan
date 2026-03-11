@@ -20,6 +20,10 @@ The plugin supports three phases:
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
+Standalone:
+
+- **`/review`** — Run quality review agents on demand, independent of the build workflow.
+
 Supporting skills:
 
 - `/create-branch` (workspace setup)
@@ -28,6 +32,8 @@ Supporting skills:
 
 Quality-review agents:
 
+- `vgv-review-agent`
+- `code-simplicity-review-agent`
 - `test-quality-review-agent`
 - `architecture-review-agent`
 
@@ -35,7 +41,7 @@ Quality-review agents:
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build`
+- `docs/reviews/` — Review reports from `/build` and `/review`
 
 ## Key Conventions
 
