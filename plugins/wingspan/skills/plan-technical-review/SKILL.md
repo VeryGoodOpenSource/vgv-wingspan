@@ -1,5 +1,6 @@
 ---
 name: plan-technical-review
+user-invocable: true
 description: Conducts a comprehensive technical review of the plan, ensuring it meets requirements, follows best practices, and is ready for implementation.
 ---
 
@@ -25,3 +26,30 @@ After all agents complete, if the plan-splitting-agent recommends a split:
    - Add a note at the top of the original plan file: ``> **Note:** This plan has been split into parts. See the `-part-N` files in this directory.``
 
 If the plan-splitting-agent reports no split needed: include the scope summary in the review output, no further action.
+
+## Handoff
+
+**When invoked directly by the user**, use **AskUserQuestion** to present next steps after the review is complete:
+
+**Question**: "Technical review complete! What would you like to do next?"
+
+**Options:**
+
+1. **Clear context and build**: clear context for a fresh start, then build
+2. **Start building**: execute the plan with `/build`
+3. **Refine the plan**: improve the plan based on review findings
+4. **Done for now**: review complete
+
+**If the user selects "Clear context and build"** → output the following (substituting the actual plan file path) and then stop:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start building with:
+
+/build docs/plan/<actual-plan-filename>.md
+```
+
+**When invoked by another skill** (e.g., from `/plan`), return control to the caller after the review completes — do not present handoff options.
