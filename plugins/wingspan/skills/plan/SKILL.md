@@ -1,6 +1,7 @@
 ---
 name: plan
 description: Turn high-level brainstorming and ideas into well-structured, actionable plans for implementation that follow VGV conventions and patterns.
+argument-hint: feature, bug fix, or improvement to plan
 ---
 
 # Create a new implementation plan (or bug fix)
