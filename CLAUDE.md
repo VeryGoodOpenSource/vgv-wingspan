@@ -24,6 +24,8 @@ Standalone:
 
 - **`/review`** — Run quality review agents on demand, independent of the build workflow.
 
+Each phase persists its output to `docs/` so the next phase can discover it from a cold start. When a skill offers a forward transition (e.g., brainstorm → plan), it must present **"Clear context and [next step]"** as the first handoff option. When selected, display the `/clear` command followed by the next skill's invocation, then stop. This gives the model a fresh context window without losing work.
+
 Supporting skills:
 
 - `/create-branch` (workspace setup)

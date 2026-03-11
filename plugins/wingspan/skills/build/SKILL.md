@@ -1,6 +1,7 @@
 ---
 name: build
 description: Execute an implementation plan — write code and tests and run quality review, and ship a pull request following VGV conventions.
+argument-hint: plan file path
 ---
 
 # Execute an implementation plan
