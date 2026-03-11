@@ -19,10 +19,10 @@ Do not proceed until you have a clear feature description from the user.
 
 **Check for brainstorm output first:**
 
-Before asking questions, look for recent brainstorm documents in `docs/ideate` that match this feature:
+Before asking questions, look for recent brainstorm documents in `docs/brainstorm` that match this feature:
 
 ```bash
-ls -la docs/ideate/*.md 2>/dev/null | head -10
+ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 ```
 
 **Relevance criteria:** A brainstorm is relevant if:
@@ -87,7 +87,7 @@ Run these agents in parallel to gather external information:
 
 After all research steps complete, consolidate findings:
 
-- Document relevant file paths from repo research (e.g., `app/authentication/forms/authentication_form.dart:42`)
+- Document relevant file paths from repo research (e.g., `src/authentication/forms/authentication_form:42`)
 - **Include relevant institutional learnings** from project documentation (key insights, gotchas to avoid)
 - Note external documentation URLs and best practices (if external research was done)
 - List related issues or PRs discovered
