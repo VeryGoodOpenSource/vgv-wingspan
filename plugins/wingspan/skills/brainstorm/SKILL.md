@@ -155,7 +155,7 @@ Use **AskUserQuestion tool** to consider next steps:
 
 **If the user selects "Clear context and plan"** → output the following and then stop:
 
-```
+```md
 To continue with a fresh context, run:
 
 /clear

@@ -250,7 +250,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 Based on selection:
 
 - **Clear context and build** → Output the following (substituting the actual plan file path) and then stop:
-  ```
+  ```md
   To continue with a fresh context, run:
 
   /clear
