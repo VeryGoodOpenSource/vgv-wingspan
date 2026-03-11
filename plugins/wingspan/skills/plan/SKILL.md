@@ -1,11 +1,11 @@
 ---
 name: plan
-description: Turn high-level brainstorming and ideas into well-structured, actionable plans for implementation that follow your own project conventions and patterns.
+description: Turn high-level brainstorming and ideas into well-structured, actionable plans for implementation that follow VGV conventions and patterns.
 ---
 
 # Create a new implementation plan (or bug fix)
 
-Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow project conventions and best practices. This command provides flexible detail levels to match your needs.
+Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices. This command provides flexible detail levels to match your needs.
 
 ## Feature Description
 
@@ -19,10 +19,10 @@ Do not proceed until you have a clear feature description from the user.
 
 **Check for brainstorm output first:**
 
-Before asking questions, look for recent brainstorm documents in `docs/ideate` that match this feature:
+Before asking questions, look for recent brainstorm documents in `docs/brainstorm` that match this feature:
 
 ```bash
-ls -la docs/ideate/*.md 2>/dev/null | head -10
+ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 ```
 
 **Relevance criteria:** A brainstorm is relevant if:
@@ -54,7 +54,7 @@ Instead, extract what's needed from the brainstorm and run targeted searches:
 1. **From the brainstorm doc**: Extract the architecture patterns, conventions, and relevant file paths already identified.
 2. **Targeted codebase search**: Use Glob and Grep to search only the areas this plan will touch — the specific packages, layers, or features mentioned in the feature description and brainstorm.
    - Example: If planning a new repository, search for existing repository patterns in the relevant package.
-   - Example: If planning a Bloc, search for existing Bloc implementations in the same feature area.
+   - Example: If planning a new state management unit, search for existing implementations in the same feature area.
 3. **Read referenced files**: Read any specific files called out in the brainstorm as relevant context.
 
 ##### 1.1.1 Research decision
@@ -81,13 +81,13 @@ Only run this step if `1.1.1 Research decision` determines that external researc
 Run these agents in parallel to gather external information:
 
 - **official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
-- **flutter-best-practices-research-agent**: Researches and synthesizes Flutter and Dart best practices, following first Very Good Engineering practices, then Effective Dart guidelines, and finally other industry standards.
+- **best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
 
 ##### 1.1.2. Consolidate research findings
 
 After all research steps complete, consolidate findings:
 
-- Document relevant file paths from repo research (e.g., `app/authentication/forms/authentication_form.dart:42`)
+- Document relevant file paths from repo research (e.g., `src/authentication/forms/authentication_form:42`)
 - **Include relevant institutional learnings** from project documentation (key insights, gotchas to avoid)
 - Note external documentation URLs and best practices (if external research was done)
 - List related issues or PRs discovered
@@ -141,7 +141,7 @@ It includes:
 
 - Problem/feature description
 - Acceptance criteria
-- Essential context 
+- Essential context
 
 Use the `implementation-detail-levels/minimal.md` template for this level.
 

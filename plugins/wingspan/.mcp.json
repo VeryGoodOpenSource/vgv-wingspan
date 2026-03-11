@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "dart": {
-      "command": "dart",
-      "args": [
-        "mcp-server"
-      ]
-    },
     "figma": {
       "url": "https://mcp.figma.com/mcp",
       "type": "http"
@@ -15,12 +9,6 @@
       "args": [
         "-y",
         "@upstash/context7-mcp@latest"
-      ]
-    },
-    "very_good_cli": {
-      "command": "very_good",
-      "args": [
-        "mcp"
       ]
     }
   }

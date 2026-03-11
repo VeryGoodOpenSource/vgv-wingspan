@@ -1,6 +1,6 @@
 # Wingspan
 
-AI-assisted workflows for Flutter and Dart that follow Very Good Ventures best practices and standards.
+AI-assisted workflows that follow Very Good Ventures best practices and standards.
 
 ![wingspan logo by very good ventures in blue](./assets/wingspan-logo.png)
 

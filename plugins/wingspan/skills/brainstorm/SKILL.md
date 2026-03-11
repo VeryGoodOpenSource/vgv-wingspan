@@ -89,7 +89,7 @@ Propose **2-3 concrete approaches** with trade-offs. Lead with your recommendati
 
 - **YAGNI ruthlessly.** If an approach adds complexity for a hypothetical future need, call it out and lean toward the simpler option. The question is always: "Do we need this now, or are we guessing?"
 - **Prefer boring patterns.** If the codebase already solves a similar problem, default to that pattern. Consistency beats cleverness.
-- **Right-size the architecture.** Not every feature needs its own package. Not every screen needs a new bloc. Match the solution to the actual complexity.
+- **Right-size the architecture.** Not every feature needs its own package. Not every screen needs a new state management controller. Match the solution to the actual complexity.
 
 **Structure for Each Approach:**
 
@@ -113,9 +113,9 @@ Before writing any files, ensure the session is on a feature branch:
 
 ### 2. Capture the design document
 
-Write a brainstorm document to `docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
+Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
-Ensure `docs/ideate/` directory exists before writing.
+Ensure `docs/brainstorm/` directory exists before writing.
 
 **Document structure:**
 
@@ -166,7 +166,7 @@ When complete, display:
 ```md
 Brainstorm complete!
 
-Document: docs/ideate/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
+Document: docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
 
 Key decisions:
 - [Decision 1]

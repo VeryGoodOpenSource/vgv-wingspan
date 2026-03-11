@@ -66,43 +66,30 @@ Work through each task/phase in the plan, in order. For each task:
 
 Write code following VGV conventions:
 
-- **Layer order**: Data -> Domain -> Presentation. Build dependencies before dependents.
-- **State management**: Bloc/Cubit. Cubit for simple state, Bloc when events add clarity.
-- **Style**: `const` constructors, `final` variables, named parameters for 3+ params, trailing commas.
-- **Naming**: Descriptive. Bloc events end with verbs (`Requested`, `Submitted`). States describe conditions (`Initial`, `Loading`, `Failure`).
-- **File naming**: Follow the project's existing patterns. Match snake_case convention.
+- **Layer order**: Data → Domain → Presentation. Build dependencies before dependents.
+- **State management**: Use the project's chosen state management tool, following VGV conventions.
+- **Style**: Follow VGV naming and style conventions. Detect the project's linter and formatter.
+- **File naming**: Follow the project's existing patterns.
 - **Imports**: Respect layer boundaries. Presentation never imports data directly.
 
 ### Step 2: Test
 
 Tests are non-negotiable. Write them alongside each implementation unit:
 
-- **Bloc/Cubit**: `blocTest` from `bloc_test`, mocks from `mocktail`. Cover success, failure, and edge cases. Seed initial states when testing non-initial conditions.
-- **Widgets**: `pumpWidget` with proper ancestors (`MaterialApp`, `BlocProvider`, etc.). Test all rendered states. Use `tester.tap`, `tester.enterText` for interactions. Call `pump()` after state changes.
-- **Repositories/Data**: Unit tests for serialization (`fromJson`/`toJson`), API calls, error handling, and edge cases.
+- **State management**: Use VGV testing conventions with the project's testing framework. Cover success, failure, and edge cases. Seed initial states when testing non-initial conditions.
+- **UI components**: Follow VGV's UI testing conventions with proper wrappers and providers. Test all rendered states and user interactions. Wait for async state changes before asserting.
+- **Repositories/Data**: Unit tests for serialization, API calls, error handling, and edge cases.
 - **Utilities**: Pure functions get unit tests.
 
-Every new Bloc, Cubit, repository, widget, and data model must have a test file.
+Every new state management unit, repository, UI component, and data model must have a test file.
 
 ### Step 3: Validate
 
 After implementing each task, in order:
 
-Run static analysis:
+Run static analysis — detect and use the project's linter/analyzer.
 
-```bash
-dart analyze --fatal-infos
-# or for Flutter projects:
-flutter analyze
-```
-
-Run tests:
-
-```bash
-dart test
-# or for Flutter projects:
-flutter test
-```
+Run tests — detect and use the project's test runner.
 
 If failures occur:
 - Fix the issue and re-run
@@ -165,9 +152,9 @@ The 5 agents and their report filenames:
    - **Important** (should fix): Convention deviations, test gaps, naming issues
    - **Suggestions** (note for PR): Style improvements, minor simplifications
 
-2. **Auto-fix minor issues**: formatting (`dart format`), missing `const`, lint warnings. Stage and commit fixes.
+2. **Auto-fix minor issues**: formatting (run the project's formatter), lint warnings. Stage and commit fixes.
 
-3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (`dart analyze`, `dart test`), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
+3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (project's linter and test runner), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
 
 4. **Present important issues** to the user via **AskUserQuestion**:
    - **Fix all**: address every important issue (read relevant report files for details)
@@ -180,22 +167,15 @@ The 5 agents and their report filenames:
 
 ### Final Validation
 
-Run the full suite one last time:
-
-```bash
-dart format --set-exit-if-changed .
-dart analyze --fatal-infos
-dart test
-# or flutter equivalents
-```
+Run the full suite one last time — detect and use the project's formatter, linter, and test runner.
 
 If anything fails, fix it before proceeding.
 
-### Cleanup                                                                                       
+### Cleanup
 
-Remove the review reports — their findings have already been addressed or recorded:                                       
+Remove the review reports — their findings have already been addressed or recorded:
 
-```bash                                                                                     
+```bash
 rm -rf docs/reviews/
 ```
 

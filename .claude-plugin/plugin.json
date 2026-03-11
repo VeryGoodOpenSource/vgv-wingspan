@@ -1,6 +1,6 @@
 {
   "name": "wingspan",
-  "description": "Wingspan - AI-native workflows for Flutter and Dart following Very Good Ventures best practices.",
+  "description": "Wingspan - AI-native workflows following Very Good Ventures best practices.",
   "version": "0.0.1",
   "author": {
     "name": "Very Good Ventures",
@@ -9,8 +9,8 @@
   "homepage": "https://github.com/VeryGoodOpenSource/wingspan",
   "repository": "https://github.com/VeryGoodOpenSource/wingspan",
   "keywords": [
-    "flutter",
-    "dart",
+    "software engineering",
+    "workflow",
     "best practices",
     "flow automation",
     "code generation",
