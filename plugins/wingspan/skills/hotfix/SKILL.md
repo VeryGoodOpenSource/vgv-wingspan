@@ -173,7 +173,7 @@ Create a single, cherry-pick-friendly commit:
 - Stage only the files related to the fix (no unrelated changes).
 - Write a commit message in this format:
 
-```
+```text
 fix: <concise description of what was fixed>
 
 <Root cause explanation in 1-2 sentences>
