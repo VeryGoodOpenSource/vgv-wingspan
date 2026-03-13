@@ -90,7 +90,7 @@ Generate concrete, assignable follow-ups. Each action item must be:
 - **Categorized by type**:
   - **Prevent**: Changes that would have prevented this incident (e.g., add validation, add test)
   - **Detect**: Changes that would have caught it sooner (e.g., add monitoring, add CI check)
-  - **Respond**: Changes that would have made recovery faster (e.g., add runbook, add feature flag)
+  - **Respond**: Changes that would have made recovery faster (e.g., add run book, add feature flag)
 
 Action items are recorded in the document only. They become separate tickets — the debrief skill does not make code changes.
 
