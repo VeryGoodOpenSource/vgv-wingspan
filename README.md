@@ -56,7 +56,7 @@ Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Ea
 
 Start here. Describe what you want to build and run:
 
-```
+```text
 /brainstorm
 ```
 
@@ -66,7 +66,7 @@ This opens a collaborative dialogue to explore requirements, constraints, and ap
 
 Once you're happy with the brainstorm, turn it into an actionable implementation plan:
 
-```
+```text
 /plan
 ```
 
@@ -76,7 +76,7 @@ This reviews your codebase, references the brainstorm, and produces a step-by-st
 
 Execute the plan — write code, write tests, run quality review, and open a PR:
 
-```
+```text
 /build
 ```
 
