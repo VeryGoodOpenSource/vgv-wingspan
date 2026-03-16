@@ -82,6 +82,7 @@ Write the minimal change that addresses the root cause:
 
 - **Minimal diff**: change only what is necessary. No drive-by refactors, no "while I'm here" improvements.
 - **Scope guard**: if you find yourself touching code unrelated to the bug, stop and flag it to the user as scope creep.
+- **Leave TODOs for follow-up**: if you notice related issues, tech debt, or improvements that are out of scope for this hotfix, add `// TODO(hotfix): <description>` comments in the code so they can be addressed later in a proper `/plan` → `/build` cycle.
 - **Follow existing patterns**: match the style and conventions of the surrounding code.
 
 ### Step 2: Test
@@ -110,6 +111,7 @@ Fix all lint warnings before proceeding.
 - Never skip tests. Every fix gets a regression test.
 - Never add features not related to the bug (YAGNI).
 - If the fix grows beyond the original scope, stop and flag it.
+- **Acceptable tradeoffs**: a hotfix may intentionally introduce a lesser issue (e.g., fixing a P0 while accepting a P2 side effect). When this happens, document the tradeoff clearly with a `// TODO(hotfix): <description of known limitation and its severity>` comment in the code and note it in the PR description. The goal is to stop the bleeding, not achieve perfection.
 - Ask the user only when genuinely stuck: ambiguous root cause, 3 failed fix attempts, or a missing dependency.
 
 ## Phase 4 — Review
