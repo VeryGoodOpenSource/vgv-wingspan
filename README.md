@@ -54,13 +54,13 @@ Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Ea
 
 ### 1. Brainstorm
 
-Start here. Describe what you want to build and run:
+Start here. Give context about what you want to build — the more specific, the better:
 
 ```text
-/brainstorm
+/brainstorm add a scrollable list of recent transactions to the dashboard screen
 ```
 
-This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
+Providing a clear description up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
 
 ### 2. Plan
 
