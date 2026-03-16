@@ -29,6 +29,7 @@ Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt b
 |-------|-------------------|
 | What happened | What was the user-visible impact? What broke? |
 | When | When did it start? When was it detected? When was it resolved? |
+| Where | What platform, environment, or service? (e.g., prod vs staging, iOS vs Android, specific API) |
 | Severity | How many users/systems were affected? Was data lost? |
 | Detection | How was it discovered? Alert, user report, or manual observation? |
 | Resolution | What was the fix? Is it deployed? Is it a temporary workaround? |
