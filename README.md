@@ -91,11 +91,11 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | Skill | Command | Description |
 |-------|---------|-------------|
 | **Brainstorm** | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
+| **Refine Approach** | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
 | **Plan** | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a structured implementation plan |
+| **Plan Technical Review** | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
 | **Build** | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
-| **Plan Technical Review** | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
-| **Refine Approach** | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
 
 ## Vision
 
