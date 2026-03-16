@@ -53,7 +53,7 @@ Parse the review scope above for optional file paths or directories.
 
 ## Step 2 — Run Reviews
 
-Run 4 review agents **in parallel**.
+Run the **default review agents** listed below **in parallel**. Projects may define additional review agents in their `CLAUDE.md` — if any are specified, include them alongside the defaults. Projects may also replace the default set entirely by specifying their own list.
 
 Each agent prompt must include:
 
@@ -79,7 +79,7 @@ Each agent prompt must include:
    >
    > Do NOT return the full report text. Only return the summary above.
 
-The 4 agents and their report filenames:
+Default agents and their report filenames:
 
 | Agent | Report file |
 |-------|------------|
