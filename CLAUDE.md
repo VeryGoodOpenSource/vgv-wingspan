@@ -32,6 +32,8 @@ Supporting skills:
 
 Quality-review agents:
 
+- `vgv-review-agent`
+- `code-simplicity-review-agent`
 - `test-quality-review-agent`
 - `architecture-review-agent`
 
