@@ -9,6 +9,8 @@ argument-hint: incident description, PR/commit refs, or error context
 
 Produce a structured, blameless debrief document after an incident, failed release, or significant bug. Capture what happened, why, and what to change — while the context is still fresh.
 
+**Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
+
 ## Incident Context
 
 <incident_context>$ARGUMENTS</incident_context>
