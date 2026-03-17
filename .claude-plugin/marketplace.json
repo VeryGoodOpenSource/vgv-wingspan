@@ -14,7 +14,7 @@
       "description": "Wingspan - AI-native workflows following Very Good Ventures best practices.",
       "version": "0.0.1",
       "homepage": "https://github.com/VeryGoodOpenSource/wingspan",
-      "source": "./plugins/wingspan",
+      "source": ".",
       "tags": [
         "software engineering",
         "workflow",
