@@ -9,6 +9,20 @@ user-invocable: true
 
 Produce a clean, conventional commit message for staged changes and commit them.
 
+## Important
+
+- Do not push to remote.
+- Create multiple commits one at a time in order.
+- This skill commits only already-staged changes. If the user asks to stage files, remind them to run `git add <files>` first.
+
+## When to use
+
+Use this skill when:
+
+- The user asks to commit staged changes.
+- The user asks to "create a commit", "commit this", or similar.
+- Work on a task is complete and there are staged changes ready to be committed.
+
 ## Context
 
 <context>$ARGUMENTS</context>
@@ -30,44 +44,12 @@ git branch --show-current
 
 ## Step 2: Propose commit message(s)
 
-### Conventional Commits format
-
-`type(scope)!: short description`
-
-| Type | When to use |
-|------|-------------|
-| `feat` | New feature visible to the user |
-| `fix` | Bug fix |
-| `refactor` | Code restructuring, no behavior change |
-| `test` | Adding or updating tests only |
-| `docs` | Documentation only |
-| `chore` | Maintenance tasks (deps, config, tooling) |
-| `build` | Build system or external dependencies |
-| `ci` | CI/CD pipeline changes |
-| `perf` | Performance improvement |
-| `revert` | Reverts a previous commit |
-| `style` | Formatting — no logic change |
-
-**Scope:** use the feature folder, package name, or layer (`feat(auth)`, `fix(verify_email)`, `chore(deps)`). Omit only when the change is truly global.
-
-**Subject line rules:**
-- Imperative mood, present tense: "add", "fix", "remove"
-- No capital letter after the colon
-- No period at the end
-- Max 72 characters
-- Use `!` for breaking changes: `feat(auth)!: remove legacy login flow`
-
-**Body (optional but recommended):**
-- Blank line between subject and body
-- Explain **what** and **why**, not how
-- Wrap at 72 characters per line
-- Ticket in footer: `Refs: VGV-123` or `Closes: VGV-123`
+Follow Conventional Commits. Consult `references/conventional-commits.md` for the full spec.
 
 ### Splitting heuristics
 
 Actively look for reasons to split into multiple commits. Propose **multiple commits** when any of the following is true:
 
-- **≥ 5 files changed** — large diffs almost always contain separable concerns
 - **Mixed types** — e.g. production code (`feat`/`fix`) mixed with tests (`test`) or config (`chore`/`build`)
 - **Multiple packages or layers touched** — e.g. `packages/` changes alongside `lib/` changes
 - **Logically independent concerns** — e.g. a new API method + UI update + localization strings
@@ -123,8 +105,3 @@ EOF
 ```
 
 After each commit, show `git log --oneline -1`.
-
-## Important
-
-- Create multiple commits one at a time in order.
-- Do not push to remote.
