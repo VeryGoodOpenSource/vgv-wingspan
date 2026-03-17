@@ -54,20 +54,20 @@ Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Ea
 
 ### 1. Brainstorm
 
-Start here. Give context about what you want to build — the more specific, the better:
+Start here. Describe the problem or idea — the bigger and more open-ended, the more value brainstorm adds:
 
 ```text
-/brainstorm add a scrollable list of recent transactions to the dashboard screen
+/brainstorm how should we add authentication to this app?
 ```
 
-Providing a clear description up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
+Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
 
 ### 2. Plan
 
 Once you're happy with the brainstorm, turn it into an actionable implementation plan:
 
 ```text
-/plan
+/plan add email/password and OAuth login using the auth approach from our brainstorm
 ```
 
 This reviews your codebase, references the brainstorm, and produces a step-by-step plan saved to `docs/plan/`.
@@ -77,7 +77,7 @@ This reviews your codebase, references the brainstorm, and produces a step-by-st
 Execute the plan — write code, write tests, run quality review, and open a PR:
 
 ```text
-/build
+/build docs/plan/add-authentication.md
 ```
 
 ### Tips
