@@ -26,6 +26,7 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 Supporting skills:
 
+- `/create` (project creation — routes to companion plugins)
 - `/create-branch` (workspace setup)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
