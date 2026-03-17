@@ -24,7 +24,7 @@ DO NOT proceed until you have a project description.
 
 Use Glob to find recommendation files:
 
-```
+```text
 plugins/wingspan/hooks/recommendations/*.json
 ```
 
@@ -45,7 +45,7 @@ Use Grep to search for the plugin name in these settings files (check each that 
 
 **If NOT installed**, tell the user:
 
-```
+```text
 The `<plugin-name>` plugin is needed. Install it:
 
 /plugin marketplace add <marketplace>
