@@ -1,7 +1,7 @@
 ---
 name: create-branch
 user-invocable: true
-description: Set up a workspace (branch or worktree) before writing artifacts
+description: Set up a workspace branch or worktree before writing artifacts. Use when user says "create a branch", "set up workspace", "start a feature branch", or "new branch".
 ---
 
 # Create a working branch
