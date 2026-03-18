@@ -1,14 +1,14 @@
 ---
 name: create
 user-invocable: true
-description: Scaffold a new project by routing to the right companion plugin. Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
+description: Scaffold a new project by routing to the right companion plugin's create skill. Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
 argument-hint: what to create (e.g., "flutter app", "dart package")
-allowed-tools: Grep, Glob
+allowed-tools: Skill
 ---
 
 # Create a new project
 
-Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it discovers which companion plugin handles the requested project type and delegates to it.
+Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it finds the installed companion plugin skill that handles the requested project type and delegates to it.
 
 ## Project description
 
@@ -21,52 +21,23 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 
 DO NOT proceed until you have a project description.
 
-## Step 1: Find a matching companion plugin
+## Step 1: Find a matching create skill
 
-Use Glob to find recommendation files:
+The available skills are listed in the system-reminder in your conversation context. Find a skill from a companion plugin that handles project creation for the type described by the user.
 
-```text
-plugins/wingspan/hooks/recommendations/*.json
-```
+Match the user's project description against skill names and descriptions (case-insensitive). Look for skills that mention project creation, scaffolding, or template generation for the requested technology stack.
 
-Read each file. Skip files without a `create` field. For those that have one, check whether any of the `create.keywords` appears in the user's project description (case-insensitive).
+- **No match:** Inform the user no companion plugin with a create skill is installed for this project type. Stop.
+- **Multiple matches:** Pick the most specific match for the requested project type.
+- **Match found:** Proceed to Step 2.
 
-- **No match:** Inform the user no companion plugin handles this project type. Stop.
-- **Match found:** Proceed with the matched recommendation.
+## Step 2: Delegate to the companion plugin's create skill
 
-See `references/recommendation-format.md` for the recommendation file schema.
+Invoke the matched skill using the **Skill tool**, passing the user's full project description as arguments so the plugin can determine the right template and parameters.
 
-## Step 2: Verify the companion plugin is installed
-
-Use Grep to search for the plugin name in these settings files (check each that exists):
-
-1. `.claude/settings.local.json`
-2. `.claude/settings.json`
-3. `$HOME/.claude/settings.json`
-
-**If NOT installed**, tell the user:
-
-```text
-The `<plugin-name>` plugin is needed. Install it:
-
-/plugin marketplace add <marketplace>
-/plugin install <plugin-name>
-
-Then run `/create <original description>` again.
-```
-
-Stop after showing install instructions.
-
-## Step 3: Delegate to the companion plugin
-
-The companion plugin owns template selection, project naming, and all creation details. Hand off by calling the plugin's creation MCP tool. Discover the correct tool name from the available MCP tools — look for a tool from the matched plugin that handles project creation.
-
-Pass the user's full project description so the plugin can determine the right template and parameters.
-
-**If the tool call fails:** Surface the error to the user and suggest running the creation command manually.
+**If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
 
 ## Important
 
 - This skill is a thin router. No technology-specific logic.
-- Do not guess MCP tool names. Discover them from available tools.
 - Every user-facing question must use the **AskUserQuestion tool**.
