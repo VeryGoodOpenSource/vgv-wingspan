@@ -1,7 +1,7 @@
 ---
 name: build
 user-invocable: true
-description: Execute an implementation plan — write code and tests and run quality review, and ship a pull request following VGV conventions.
+description: Execute an implementation plan — write code and tests, run quality review, and ship a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 argument-hint: plan file path
 ---
 
