@@ -2,6 +2,7 @@
 name: refine-approach
 user-invocable: true
 description: This skill should be used to review and refine proposed brainstorms and planning documents before proceeding to implementation. It identifies gaps, clarifies assumptions, and ensures the approach is well thought out.
+argument-hint: path to document to refine
 ---
 
 # Refine Approach
