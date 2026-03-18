@@ -35,7 +35,7 @@ git clone git@github.com:VeryGoodOpenSource/wingspan.git
 
 ```bash
 cd /to/your/project
-claude --plugin-dir <wingspan-path>/plugins/wingspan
+claude --plugin-dir <wingspan-path>
 ```
 
 **Persistent** — installs the plugin so it loads automatically on every session:
