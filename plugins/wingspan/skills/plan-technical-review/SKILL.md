@@ -1,7 +1,12 @@
 ---
 name: plan-technical-review
 user-invocable: true
+<<<<<<< fix/add-trigger-phrases-to-descriptions
 description: Conduct a comprehensive technical review of an implementation plan, ensuring it meets requirements and follows best practices. Use when user says "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+=======
+description: Conducts a comprehensive technical review of the plan, ensuring it meets requirements, follows best practices, and is ready for implementation.
+argument-hint: path to plan file
+>>>>>>> main
 ---
 
 # Plan technical review

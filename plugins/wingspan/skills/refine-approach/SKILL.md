@@ -1,7 +1,12 @@
 ---
 name: refine-approach
 user-invocable: true
+<<<<<<< fix/add-trigger-phrases-to-descriptions
 description: Review and refine brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when user says "refine this", "review my approach", "improve the document", or "is this ready".
+=======
+description: This skill should be used to review and refine proposed brainstorms and planning documents before proceeding to implementation. It identifies gaps, clarifies assumptions, and ensures the approach is well thought out.
+argument-hint: path to document to refine
+>>>>>>> main
 ---
 
 # Refine Approach
