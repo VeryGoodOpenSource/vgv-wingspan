@@ -10,7 +10,7 @@ while IFS= read -r file; do
     echo "::error file=$file::File has ${line_count} lines (limit: ${MAX_LINES}). Consider splitting the skill."
     oversized=$((oversized + 1))
   fi
-done < <(find ./plugins -name "SKILL.md" -not -path "./.git/*")
+done < <(find ./skills -name "SKILL.md" -not -path "./.git/*")
 
 if [[ $oversized -gt 0 ]]; then
   echo "❌ $oversized SKILL.md file(s) exceed ${MAX_LINES} lines."
