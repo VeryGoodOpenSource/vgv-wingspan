@@ -6,7 +6,8 @@
     "goldens",
     "Strunk's",
     "worktree",
-    "worktrees"
+    "worktrees",
+    "pubspec"
   ],
   "flagWords": []
 }

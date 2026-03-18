@@ -1,7 +1,8 @@
 ---
 name: plan-technical-review
 user-invocable: true
-description: Conducts a comprehensive technical review of the plan, ensuring it meets requirements, follows best practices, and is ready for implementation.
+description: Conduct a comprehensive technical review of an implementation plan, ensuring it meets requirements and follows best practices. Use when user says "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+argument-hint: path to plan file
 ---
 
 # Plan technical review
@@ -21,7 +22,7 @@ After all agents complete, if the plan-splitting-agent recommends a split:
    - The **skill** (not the agent) generates the files
    - Naming: `docs/plan/YYYY-MM-DD-<type>-<original-slug>-part-N-plan.md`
    - Each file is a standalone plan following the **same template and detail level** as the original plan
-   - Each file includes all sections `/build` expects: title, type, acceptance criteria, tasks, file references. Reference `plugins/wingspan/skills/plan/implementation-detail-levels/` for template structure.
+   - Each file includes all sections `/build` expects: title, type, acceptance criteria, tasks, file references. Reference `skills/plan/implementation-detail-levels/` for template structure.
    - Each file includes a `## Dependencies` section noting which prior PR(s) must merge first
    - Add a note at the top of the original plan file: ``> **Note:** This plan has been split into parts. See the `-part-N` files in this directory.``
 
