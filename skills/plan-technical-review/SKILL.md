@@ -2,6 +2,7 @@
 name: plan-technical-review
 user-invocable: true
 description: Conducts a comprehensive technical review of the plan, ensuring it meets requirements, follows best practices, and is ready for implementation.
+argument-hint: path to plan file
 ---
 
 # Plan technical review
