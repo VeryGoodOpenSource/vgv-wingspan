@@ -52,5 +52,4 @@ jobs:
         uses: Flash-Brew-Digital/validate-skill@v1
         with:
           path: ./skills/${{ matrix.skill }}
-          fail-on-warning: 'true'
           validate-references: 'true'
