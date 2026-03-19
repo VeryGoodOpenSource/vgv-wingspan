@@ -36,7 +36,7 @@ jobs:
       - name: Discover skill directories
         id: discover
         run: |
-          skills=$(find ./skills -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          skills=$(ls -1 ./skills | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "matrix=$skills" >> "$GITHUB_OUTPUT"
   validate-skills:
     name: 🔍 Validate Skills
