@@ -13,7 +13,6 @@ Produce a clean, conventional commit message for staged changes and commit them.
 
 - Do not push to remote.
 - Create multiple commits one at a time in order.
-- This skill commits only already-staged changes. If the user asks to stage files, remind them to run `git add <files>` first.
 
 ## When to use
 
@@ -40,7 +39,19 @@ git log main..HEAD --oneline
 git branch --show-current
 ```
 
-**If there are no staged changes:** inform the user and stop. Suggest `git add <files>` first.
+### If there are no staged changes
+
+Check `git diff` and `git status --short` for unstaged modifications, deletions, and untracked files.
+
+**If there are unstaged or untracked changes**, use **AskUserQuestion** to present them grouped by type (modified, deleted, untracked) and ask which to stage:
+
+- **All** — stage everything (`git add -A`)
+- **Select** — list each file and ask individually (use AskUserQuestion for each)
+- **Cancel** — stop
+
+Stage the confirmed files, then continue to Step 2.
+
+**If there are no changes at all**, inform the user and stop.
 
 ## Step 2: Propose commit message(s)
 
