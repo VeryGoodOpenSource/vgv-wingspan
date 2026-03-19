@@ -26,12 +26,31 @@ jobs:
         with:
           files: '**/*.md'
           config: 'config/cspell.json'
-  structure:
-    name: 📂 Structure Validation
+  discover-skills:
+    name: 🔎 Discover Skills
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Check for Large Files (under 50KB)
-        run: bash ./scripts/check_large_files.sh
-      - name: Check Lines of Code (SKILL files under 500 lines)
-        run: bash ./scripts/check_lines_of_code.sh
+      - name: Discover skill directories
+        id: discover
+        run: |
+          skills=$(find ./skills -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "matrix=$skills" >> "$GITHUB_OUTPUT"
+  validate-skills:
+    name: 🔍 Validate Skills
+    needs: discover-skills
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        skill: ${{ fromJson(needs.discover-skills.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ${{ matrix.skill }}
+        uses: Flash-Brew-Digital/validate-skill@v1
+        with:
+          path: ./skills/${{ matrix.skill }}
+          fail-on-warning: 'true'
+          validate-references: 'true'
