@@ -54,7 +54,7 @@ git diff
 ```
 
 - If the branch is `main` or `master`, warn the user and stop.
-- If there are no staged or unstaged changes, inform the user there is nothing to commit and skip to Step 4.
+- If there are no staged or unstaged changes, inform the user there is nothing to commit and skip to Step 5.
 
 ## Step 3: Stage and commit
 
@@ -68,7 +68,15 @@ git push -u origin <branch>
 
 If the push fails, report the error and stop.
 
-## Step 5: Open PR
+## Step 5: Run CI checks (conditional)
+
+**Skip this step if `SKIP_CHECKS` is true.**
+
+Consult `references/ci-checks.md` to discover and run checks locally from `.github/workflows/ci.yaml`.
+
+If any check fails, report the errors and stop. Do not proceed until all checks pass.
+
+## Step 6: Open PR
 
 ### Check for existing PR
 
