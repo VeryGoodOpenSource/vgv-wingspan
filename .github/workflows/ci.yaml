@@ -26,30 +26,47 @@ jobs:
         with:
           files: '**/*.md'
           config: 'config/cspell.json'
-  discover-skills:
-    name: 🔎 Discover Skills
+  detect-changed-skills:
+    name: 🔎 Detect Changed Skills
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
+      skills: ${{ steps.changed-skills.outputs.skills }}
     steps:
       - uses: actions/checkout@v4
-      - name: Discover skill directories
-        id: discover
+        with:
+          fetch-depth: 0
+      - name: Get changed skills
+        id: changed-skills
         run: |
-          skills=$(ls -1 ./skills | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "matrix=$skills" >> "$GITHUB_OUTPUT"
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          SKILLS=$(git diff --name-only $BASE $HEAD | \
+            grep 'SKILL.md' | \
+            xargs -I {} dirname {} | \
+            sort -u | \
+            jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "skills=$SKILLS" >> "$GITHUB_OUTPUT"
+          echo "Changed skills: $SKILLS"
   validate-skills:
     name: 🔍 Validate Skills
-    needs: discover-skills
+    needs: detect-changed-skills
+    if: needs.detect-changed-skills.outputs.skills != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        skill: ${{ fromJson(needs.discover-skills.outputs.matrix) }}
+        skill: ${{ fromJson(needs.detect-changed-skills.outputs.skills) }}
     steps:
       - uses: actions/checkout@v4
       - name: Validate ${{ matrix.skill }}
+        id: validate
         uses: Flash-Brew-Digital/validate-skill@v1
         with:
-          path: ./skills/${{ matrix.skill }}
+          path: ${{ matrix.skill }}
           validate-references: 'true'
+      - name: Check results
+        if: always()
+        run: |
+          echo "Valid: ${{ steps.validate.outputs.valid }}"
+          echo "Errors: ${{ steps.validate.outputs.errors }}"
+          echo "Warnings: ${{ steps.validate.outputs.warnings }}"
