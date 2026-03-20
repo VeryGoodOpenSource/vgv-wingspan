@@ -105,7 +105,7 @@ Extract the ticket number from the branch name (e.g. `feat/VGV-59-...` → `VGV-
 
 ### PR title
 
-Follow Conventional Commits summarising the overall change:
+Follow Conventional Commits summarizing the overall change:
 
 `type(scope): short description`
 

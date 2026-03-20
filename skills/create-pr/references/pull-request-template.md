@@ -34,7 +34,7 @@ Default template to use when `.github/PULL_REQUEST_TEMPLATE.md` does not exist i
 ## Filling the template
 
 - **Do not include HTML comments in the output.**
-- **Description:** synthesise the commit bodies into one clear paragraph. Mention the ticket number.
+- **Description:** synthesize the commit bodies into one clear paragraph. Mention the ticket number.
 - **Evidence:** omit the section entirely if there are no UI changes; include a `<details>` placeholder if there are.
 - **Type of Change:** mark the applicable box(es) with `x` based on commit types:
   - `feat` → New feature
