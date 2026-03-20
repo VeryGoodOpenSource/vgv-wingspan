@@ -145,7 +145,7 @@ It includes:
 - Acceptance criteria
 - Essential context
 
-Use the `implementation-detail-levels/minimal.md` template for this level.
+Use the `implementation-detail-levels/minimalsdsfs.md` template for this level.
 
 #### Standard
 
