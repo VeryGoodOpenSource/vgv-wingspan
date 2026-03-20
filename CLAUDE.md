@@ -14,11 +14,15 @@ Technology-specific concerns (linting, formatting, scaffolding, framework conven
 
 ## Workflow
 
-The plugin supports three phases:
+The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
+
+Standalone skills:
+
+- **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
 Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
 
@@ -28,12 +32,15 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 Supporting skills:
 
+- `/create` (project creation — routes to companion plugins)
 - `/create-branch` (workspace setup)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
 
 Quality-review agents:
 
+- `vgv-review-agent`
+- `code-simplicity-review-agent`
 - `test-quality-review-agent`
 - `architecture-review-agent`
 
@@ -42,6 +49,7 @@ Quality-review agents:
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
 - `docs/reviews/` — Review reports from `/build` and `/hotfix`
+- `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Key Conventions
 
