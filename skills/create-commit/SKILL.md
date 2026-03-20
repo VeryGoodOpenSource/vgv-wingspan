@@ -13,6 +13,8 @@ Produce a clean, conventional commit message for staged changes and commit them.
 
 - Do not push to remote.
 - Create multiple commits one at a time in order.
+- **Never stage**: `.env`, `*.key`, `*.pem`, `*secret*`, `*credential*`, `*.p12`, `*.jks`.
+- **Infer commit type**: Look for a plan file in `docs/plan/` and extract the type (feat, fix, refactor, etc.) from the plan title or metadata. If no plan is found, infer from the diff.
 
 ## When to use
 
