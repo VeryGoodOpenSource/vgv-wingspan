@@ -96,6 +96,8 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | **Plan Technical Review** | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
 | **Build** | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
+| **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
+| **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
 
 ## Vision
 
