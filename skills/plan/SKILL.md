@@ -145,7 +145,7 @@ It includes:
 - Acceptance criteria
 - Essential context
 
-Use the [minimal template](implementation-detail-levels/minimal.md) for this level.
+Use the [minimal template](references/minimal.md) for this level.
 
 #### Standard
 
@@ -160,7 +160,7 @@ It includes:
   - Dependencies and risks
   - Basic implementation suggestions
 
-Use the [standard template](implementation-detail-levels/standard.md) for this level.
+Use the [standard template](references/standard.md) for this level.
 
 #### Extensive
 
@@ -177,7 +177,7 @@ It includes:
   - Risk mitigation strategies
   - Documentation requirements
 
-Use the [extensive template](implementation-detail-levels/extensive.md) for this level.
+Use the [extensive template](references/extensive.md) for this level.
 
 ### 4.1. Set up workspace
 
