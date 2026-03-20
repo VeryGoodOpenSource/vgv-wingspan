@@ -140,7 +140,7 @@ Each agent prompt must include these instructions:
 The 5 agents and their report filenames:
 
 | Agent | Report file |
-|-------|------------|
+| ----- | ----------- |
 | **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
 | **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
 | **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |

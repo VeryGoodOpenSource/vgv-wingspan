@@ -9,7 +9,7 @@ Full spec: [conventionalcommits.org](https://www.conventionalcommits.org)
 ## Types
 
 | Type | When to use |
-|------|-------------|
+| ---- | ----------- |
 | `feat` | New feature visible to the user |
 | `fix` | Bug fix |
 | `refactor` | Code restructuring, no behavior change |
