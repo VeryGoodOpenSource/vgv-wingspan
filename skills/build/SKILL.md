@@ -185,7 +185,7 @@ rm -rf docs/reviews/
 
 Call the **create-pr** skill with `skip-checks` (validation already ran above):
 
-```
+```bash
 /create-pr skip-checks
 ```
 
