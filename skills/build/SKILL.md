@@ -181,6 +181,14 @@ Remove the review reports — their findings have already been addressed or reco
 rm -rf docs/reviews/
 ```
 
+### Open PR
+
+Call the **create-pr** skill with `skip-checks` (validation already ran above):
+
+```
+/create-pr skip-checks
+```
+
 ### Post-Ship
 
 Use **AskUserQuestion** to present options:
