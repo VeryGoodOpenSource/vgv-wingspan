@@ -160,7 +160,7 @@ It includes:
   - Dependencies and risks
   - Basic implementation suggestions
 
-Use the [standard template](references/standards.md) for this level.
+Use the [standard template](references/standard.md) for this level.
 
 #### Extensive
 
