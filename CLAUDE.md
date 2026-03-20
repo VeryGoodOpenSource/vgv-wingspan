@@ -32,6 +32,7 @@ Supporting skills:
 
 - `/create` (project creation — routes to companion plugins)
 - `/create-branch` (workspace setup)
+- `/create-commit` (propose and create conventional commit messages for staged changes)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
 
