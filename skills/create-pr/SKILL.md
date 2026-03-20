@@ -1,0 +1,164 @@
+---
+name: create-pr
+description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts optional skip-checks argument to bypass validation when called from /build.
+argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
+user-invocable: true
+---
+
+# Create a pull request
+
+Stage uncommitted changes, commit them, push the branch, and open a pull request on GitHub.
+
+## Important
+
+- Do not push before the user confirms the commit.
+- Use the current branch as the source; target is `BASE_BRANCH`.
+
+## When to use
+
+Use this skill when:
+
+- The user asks to open or create a pull request.
+- The user asks to "create a PR", "open a PR", "submit a PR", or similar.
+- Work on a branch is complete and the user wants to publish it for review.
+
+## Context
+
+<context>$ARGUMENTS</context>
+
+This may include `skip-checks`, a ticket number (e.g. `VGV-123`), a short description, or be empty.
+
+## Step 0: Parse arguments
+
+Check whether the argument contains `skip-checks`. Store as `SKIP_CHECKS` (boolean).
+
+Extract the ticket number or short description from the remaining argument text (if any).
+
+## Step 1: Validate (conditional)
+
+**Skip this step if `SKIP_CHECKS` is true.**
+
+Detect and run the project's formatter, linter, and test runner.
+
+If any command fails, report the error and stop. Do not proceed until all checks pass.
+
+## Step 2: Assess git state
+
+Run in parallel:
+
+```bash
+git branch --show-current
+git status --short
+git diff --cached
+git diff
+```
+
+- If the branch is `main` or `master`, warn the user and stop.
+- If there are no staged or unstaged changes, inform the user there is nothing to commit and skip to Step 4.
+
+## Step 3: Stage and commit
+
+Use the **create-commit** skill to stage files and produce a conventional commit message.
+
+## Step 4: Push
+
+```bash
+git push -u origin <branch>
+```
+
+If the push fails, report the error and stop.
+
+## Step 5: Open PR
+
+### Check for existing PR
+
+```bash
+gh pr view --json url,state 2>/dev/null
+```
+
+If a PR already exists, show its URL and ask the user whether to update the description or stop.
+
+### Determine base branch
+
+Use **AskUserQuestion**:
+
+**Question:** "Which branch should this PR target?"
+
+**Options:**
+1. `main` (default)
+2. `develop`
+3. Other — let the user type a custom branch name
+
+Store as `BASE_BRANCH`.
+
+### Gather commit context
+
+Run in parallel:
+
+```bash
+git log <BASE_BRANCH>..HEAD --oneline
+git log <BASE_BRANCH>..HEAD --format="%s%n%b"
+git diff <BASE_BRANCH>..HEAD --stat
+```
+
+Extract the ticket number from the branch name (e.g. `feat/VGV-59-...` → `VGV-59`) or from the argument.
+
+### PR title
+
+Follow Conventional Commits summarising the overall change:
+
+`type(scope): short description`
+
+- Max 72 characters. Imperative mood, no period, no capital after colon.
+
+### PR description
+
+Check for a template:
+
+```bash
+cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
+```
+
+- **Template exists**: use it as structure; strip HTML comments; pre-fill the **Type of Change** section by checking the checkbox matching the commit type:
+  - `feat` → ✨ New feature
+  - `fix` → 🛠️ Bug fix
+  - `refactor` → ♻️ Refactor
+  - `docs` → 📝 Documentation
+  - `test` → 🧪 Tests
+  - `chore`/`build`/`ci` → 🔧 Maintenance
+- **No template**: consult `references/pull-request-template.md` for the default template and filling rules.
+
+Output the proposed PR:
+
+````markdown
+## Proposed PR
+
+**Title:** `type(scope): short description`
+
+**Description:**
+
+...
+````
+
+### Confirm and create
+
+Use **AskUserQuestion**:
+
+**Question:** "Do you want me to create this PR on GitHub?"
+
+**Options:**
+1. **Yes** — run `gh pr create`
+2. **No** — stop; output the Markdown for manual use
+3. **Edit** — ask what to change, revise, ask again
+
+```bash
+gh pr create \
+  --title "type(scope): short description" \
+  --body "$(cat <<'EOF'
+...
+EOF
+)" \
+  --base <BASE_BRANCH>
+```
+
+After creation, output the PR URL.
