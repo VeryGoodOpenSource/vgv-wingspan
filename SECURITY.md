@@ -40,7 +40,7 @@ Wingspan is a Claude Code plugin with no runtime application code. The security-
 - Outdated or misleading security guidance
 - Recommendations that contradict current best practices
 
-### Hook Shell Scripts (`hooks/scripts/`)
+### Hook Shell Scripts (`hooks/*.sh`)
 
 - Command injection vulnerabilities
 - Unsafe path handling
