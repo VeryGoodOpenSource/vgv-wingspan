@@ -14,10 +14,10 @@ If the file does not exist, skip CI checks entirely.
 
 ## Scope to changed files
 
-Run checks only on files changed relative to `main`:
+Run checks only on files changed relative to `BASE_BRANCH`:
 
 ```bash
-git diff main...HEAD --name-only
+git diff <BASE_BRANCH>...HEAD --name-only
 ```
 
 Filter the changed file list to match the glob pattern each check uses.

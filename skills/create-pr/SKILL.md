@@ -7,12 +7,22 @@ user-invocable: true
 
 # Create a pull request
 
-Stage uncommitted changes, commit them, push the branch, and open a pull request on GitHub.
+Stage uncommitted changes, commit them, push the branch, and open a pull request on the project's Git hosting platform.
+
+## Steps checklist
+
+- [ ] Step 0: Parse arguments
+- [ ] Step 1: Validate (skip if `SKIP_CHECKS`)
+- [ ] Step 2: Assess git state and determine base branch
+- [ ] Step 3: Stage and commit
+- [ ] Step 4: Push
+- [ ] Step 5: Run CI checks (skip if `SKIP_CHECKS`)
+- [ ] Step 6: Open PR
 
 ## Important
 
 - Do not push before the user confirms the commit.
-- Use the current branch as the source; target is `BASE_BRANCH`.
+- Use the current branch as the source; target is `BASE_BRANCH` (determined in Step 2).
 
 ## When to use
 
@@ -42,7 +52,7 @@ Detect and run the project's formatter, linter, and test runner.
 
 If any command fails, report the error and stop. Do not proceed until all checks pass.
 
-## Step 2: Assess git state
+## Step 2: Assess git state and determine base branch
 
 Run in parallel:
 
@@ -54,37 +64,9 @@ git diff
 ```
 
 - If the branch is `main` or `master`, warn the user and stop.
-- If there are no staged or unstaged changes, inform the user there is nothing to commit and skip to Step 5.
-
-## Step 3: Stage and commit
-
-Use the **create-commit** skill to stage files and produce a conventional commit message.
-
-## Step 4: Push
-
-```bash
-git push -u origin <branch>
-```
-
-If the push fails, report the error and stop.
-
-## Step 5: Run CI checks (conditional)
-
-**Skip this step if `SKIP_CHECKS` is true.**
-
-Consult `references/ci-checks.md` to discover and run checks locally from `.github/workflows/ci.yaml`.
-
-If any check fails, report the errors and stop. Do not proceed until all checks pass.
-
-## Step 6: Open PR
-
-### Check for existing PR
-
-```bash
-gh pr view --json url,state 2>/dev/null
-```
-
-If a PR already exists, show its URL and ask the user whether to update the description or stop.
+- If there are no staged or unstaged changes:
+  - Run `git log <BASE_BRANCH>..HEAD --oneline`. If there are no commits ahead of `BASE_BRANCH`, inform the user there is nothing to commit or push, and stop.
+  - Otherwise, inform the user there is nothing new to commit and skip to Step 5.
 
 ### Determine base branch
 
@@ -98,6 +80,24 @@ Use **AskUserQuestion**:
 3. Other — let the user type a custom branch name
 
 Store as `BASE_BRANCH`.
+
+## Step 3: Stage and commit
+
+Use the **create-commit** skill to stage files and produce a conventional commit message.
+
+## Step 4: Push
+
+Consult `references/push.md` to push the branch and handle any failures.
+
+## Step 5: Run CI checks (conditional)
+
+**Skip this step if `SKIP_CHECKS` is true.**
+
+Consult `references/ci-checks.md` to discover and run checks locally from `.github/workflows/ci.yaml`.
+
+If any check fails, report the errors and stop. Do not proceed until all checks pass.
+
+## Step 6: Open PR
 
 ### Gather commit context
 
@@ -152,21 +152,9 @@ Output the proposed PR:
 
 Use **AskUserQuestion**:
 
-**Question:** "Do you want me to create this PR on GitHub?"
+**Question:** "Do you want me to create this PR?"
 
 **Options:**
-1. **Yes** — run `gh pr create`
-2. **No** — stop; output the Markdown for manual use
-3. **Edit** — ask what to change, revise, ask again
-
-```bash
-gh pr create \
-  --title "type(scope): short description" \
-  --body "$(cat <<'EOF'
-...
-EOF
-)" \
-  --base <BASE_BRANCH>
-```
-
-After creation, output the PR URL.
+1. **Yes** — consult `references/pr-cli.md` to detect the available CLI tool, check for an existing PR, and create it.
+2. **No** — stop; the Markdown above is ready for manual use.
+3. **Edit** — ask what to change, revise, ask again.
