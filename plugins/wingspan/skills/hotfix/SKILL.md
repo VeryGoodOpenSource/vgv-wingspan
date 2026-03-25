@@ -122,12 +122,12 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 Each agent prompt must include these instructions:
 
-> Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
+> Write your full detailed report to `docs/hotfix-review/<name>.md` (create the directory if needed).
 > Then return ONLY a short structured summary to the parent context in this format:
 >
 > ```markdown
 > ## <Agent Name> Summary
-> **Report**: `docs/reviews/<name>.md` (<word_count> words)
+> **Report**: `docs/hotfix-review/<name>.md` (<word_count> words)
 > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
 > ### Findings
 > - [Critical] <one-line description>
@@ -141,12 +141,12 @@ The 2 agents and their report filenames:
 
 | Agent | Report file |
 |-------|------------|
-| **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
-| **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
+| **@vgv-review-agent** | `docs/hotfix-review/vgv-review.md` |
+| **@test-quality-review-agent** | `docs/hotfix-review/test-quality-review.md` |
 
 ### After reviews complete
 
-1. **Critical findings** → Read the specific report file (e.g., `docs/reviews/vgv-review.md`) for full details on each critical finding. Fix immediately, re-run validation, and commit. Only read reports that contain critical issues — do not load both reports into context unnecessarily.
+1. **Critical findings** → Read the specific report file (e.g., `docs/hotfix-review/vgv-review.md`) for full details on each critical finding. Fix immediately, re-run validation, and commit. Only read reports that contain critical issues — do not load both reports into context unnecessarily.
 
 2. **Important findings** → use **AskUserQuestion**:
    - **Fix all**: address every important issue (read relevant report files for details)
@@ -159,7 +159,7 @@ The 2 agents and their report filenames:
 Remove review reports after findings are addressed:
 
 ```bash
-rm -rf docs/reviews/
+rm -rf docs/hotfix-review/
 ```
 
 ## Phase 5 — Ship
