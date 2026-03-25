@@ -1,12 +1,12 @@
 ---
 name: review
-description: Run quality review agents on demand — review code, assess quality, and identify issues before merging.
+description: Run quality review agents on demand — review code, assess quality, and identify issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
 ---
 
 # Review code on demand
 
-Run quality review agents independently of `/build`. Review manually written code, assess existing codebases, or check a branch before merging.
+Run quality review agents. Review manually written code, assess existing codebases, or check a branch before merging.
 
 ## Review Scope
 
@@ -64,12 +64,12 @@ Each agent prompt must include:
 
 2. The report output instructions:
 
-   > Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
+   > Write your full detailed report to `docs/code-review/<name>.md` (create the directory if needed).
    > Then return ONLY a short structured summary to the parent context in this format:
    >
    > ```markdown
    > ## <Agent Name> Summary
-   > **Report**: `docs/reviews/<name>.md` (<word_count> words)
+   > **Report**: `docs/code-review/<name>.md` (<word_count> words)
    > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
    > ### Findings
    > - [Critical] <one-line description>
@@ -83,12 +83,10 @@ Default agents and their report filenames:
 
 | Agent | Report file |
 |-------|------------|
-| **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
-| **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
-| **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
-| **@architecture-review-agent** | `docs/reviews/architecture-review.md` |
-
-**Note:** `/build` Phase 3 also references `@pr-readiness-review-agent`, which does not exist in the codebase. `/review` intentionally excludes it — PR readiness is specific to the `/build` shipping context.
+| **@vgv-review-agent** | `docs/code-review/vgv-review.md` |
+| **@code-simplicity-review-agent** | `docs/code-review/code-simplicity-review.md` |
+| **@test-quality-review-agent** | `docs/code-review/test-quality-review.md` |
+| **@architecture-review-agent** | `docs/code-review/architecture-review.md` |
 
 **If an agent fails:** Note the failure, continue with successful agents. After all agents complete, report which (if any) failed and offer to retry.
 
@@ -103,7 +101,7 @@ After all reviews complete:
 
 2. **Present the consolidated summary** to the user with counts per category and the one-line descriptions from each agent.
 
-3. **If no findings:** Code looks good. Reports are at `docs/reviews/`.
+3. **If no findings:** Code looks good. Reports are at `docs/code-review/`.
 
 ## Step 4 — Act
 
@@ -112,7 +110,7 @@ Use **AskUserQuestion** to present post-review options:
 - **Auto-fix critical issues**: Read the specific report files for full details on each critical finding. Fix them, then run the project's linter and test runner for validation. One attempt per fix — if validation fails, present the issue to the user with context on what failed and what was tried, and move on. Only modify files within the original review scope.
 - **Fix all issues (critical + important)**: Same as above but also address important findings. Read relevant report files for details. Only modify files within the original review scope.
 - **Review the list**: Show the full list of findings with report file paths so the user can decide what to address manually.
-- **Keep reports and exit**: Reports remain at `docs/reviews/` for manual review. Done.
+- **Keep reports and exit**: Reports remain at `docs/code-review/` for manual review. Done.
 
 **After fixing (if chosen):**
 
@@ -121,6 +119,6 @@ Use **AskUserQuestion** to present post-review options:
 
 ## Important
 
-- Reports are kept at `docs/reviews/` as untracked working files. Commit or copy them if you need persistence — `/build` cleanup will delete this directory.
+- Reports are kept at `docs/code-review/` as untracked working files. Commit or delete them when no longer needed.
 - This skill is advisory. It presents findings and lets you decide what to act on.
 - When in doubt about a finding, read the full report file for details before deciding.
