@@ -50,7 +50,7 @@ claude
 
 ## Getting Started
 
-Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Each phase produces artifacts that feed into the next, so you can clear context between steps without losing work.
+Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Each phase produces artifacts that feed into the next, so you can clear context between steps without losing work. You can invoke skills explicitly with slash commands or let them activate automatically from natural language — just describe what you need and the right skill will trigger.
 
 ### 1. Brainstorm
 
