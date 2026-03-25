@@ -26,6 +26,8 @@ Standalone skills:
 
 Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
 
+**Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
+
 **Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, display the `/clear` command followed by the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
 
 Supporting skills:
@@ -46,7 +48,7 @@ Quality-review agents:
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build`
+- `docs/reviews/` — Review reports from `/build` and `/hotfix`
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Key Conventions
