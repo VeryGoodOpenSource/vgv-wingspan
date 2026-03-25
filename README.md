@@ -95,6 +95,8 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | **Plan** | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a structured implementation plan |
 | **Plan Technical Review** | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
 | **Build** | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
+| **Review** | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
+| **Hotfix** | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
 | **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
 | **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
