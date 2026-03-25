@@ -20,6 +20,9 @@ The plugin supports three sequential phases:
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
+Standalone Skills:
+
+- **`/review`** — Run quality review agents on demand, independent of the build workflow.
 Standalone skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
@@ -48,7 +51,9 @@ Quality-review agents:
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build` and `/hotfix`
+- `docs/reviews/` — Review reports from `/build` (ephemeral, cleaned up by build)
+- `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Key Conventions
