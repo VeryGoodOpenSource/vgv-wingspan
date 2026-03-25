@@ -1,8 +1,25 @@
 # Pull Request Template Reference
 
-Default template to use when `.github/PULL_REQUEST_TEMPLATE.md` does not exist in the working directory.
+Default template to use when no project-level PR template is found.
 
-## Template
+## Discover template
+
+Check for a project-level template in this order:
+
+1. **GitHub:** `.github/PULL_REQUEST_TEMPLATE.md`
+2. **GitLab:** `.gitlab/merge_request_templates/Default.md`
+3. **Fallback:** use the default template below.
+
+```bash
+cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null \
+  || cat .gitlab/merge_request_templates/Default.md 2>/dev/null
+```
+
+If a project-level template is found, use it as the structure. Strip HTML comments and pre-fill where possible.
+
+## Default template
+
+Use this when no project-level template exists:
 
 ```markdown
 ## Description

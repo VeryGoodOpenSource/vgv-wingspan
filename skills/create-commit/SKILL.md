@@ -2,7 +2,6 @@
 name: create-commit
 description: Propose and create conventional commit messages for staged changes. Follows Conventional Commits spec and VGV workflow.
 argument-hint: "[optional: ticket/issue number e.g. VGV-123]"
-user-invocable: true
 ---
 
 # Create a commit

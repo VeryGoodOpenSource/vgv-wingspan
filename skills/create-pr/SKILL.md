@@ -2,7 +2,7 @@
 name: create-pr
 description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts optional skip-checks argument to bypass validation when called from /build.
 argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
-user-invocable: true
+disable-model-invocation: true
 ---
 
 # Create a pull request

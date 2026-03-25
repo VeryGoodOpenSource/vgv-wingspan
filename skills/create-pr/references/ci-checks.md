@@ -4,13 +4,18 @@ How to discover and run CI checks locally before opening a PR.
 
 ## Discover checks
 
-Read `.github/workflows/ci.yaml` from the project root:
+Check for a CI configuration file in this order:
+
+1. **GitHub Actions:** `.github/workflows/ci.yaml`
+2. **GitLab CI:** `.gitlab-ci.yml`
+3. **Fallback:** no CI configuration found — skip CI checks entirely.
 
 ```bash
-cat .github/workflows/ci.yaml 2>/dev/null
+cat .github/workflows/ci.yaml 2>/dev/null \
+  || cat .gitlab-ci.yml 2>/dev/null
 ```
 
-If the file does not exist, skip CI checks entirely.
+If no file is found, skip CI checks entirely.
 
 ## Scope to changed files
 
@@ -30,7 +35,8 @@ For each job in the workflow, map its steps to a local equivalent:
 | ------- | ------------- |
 | `DavidAnson/markdownlint-cli2-action` | `npx markdownlint-cli2 --config <config> <files>` |
 | `streetsidesoftware/cspell-action` | `npx cspell --config <config> <files>` |
-| `run:` step | Run the script as-is |
+| `run:` step (GitHub Actions) | Run the script as-is |
+| `script:` step (GitLab CI) | Run the script as-is |
 
 Use the `with:` block values (`config`, `globs`, `files`) from the action to fill in the command arguments.
 
