@@ -1,7 +1,7 @@
 ---
 name: plan
 user-invocable: true
-description: Turn high-level brainstorming and ideas into well-structured, actionable plans for implementation that follow VGV conventions and patterns.
+description: Turn high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
 argument-hint: feature, bug fix, or improvement to plan
 ---
 
@@ -145,7 +145,7 @@ It includes:
 - Acceptance criteria
 - Essential context
 
-Use the `implementation-detail-levels/minimal.md` template for this level.
+Use the [minimal template](references/minimal.md) for this level.
 
 #### Standard
 
@@ -160,7 +160,7 @@ It includes:
   - Dependencies and risks
   - Basic implementation suggestions
 
-Use the `implementation-detail-levels/standard.md` template for this level.
+Use the [standard template](references/standard.md) for this level.
 
 #### Extensive
 
@@ -177,7 +177,7 @@ It includes:
   - Risk mitigation strategies
   - Documentation requirements
 
-Use the `implementation-detail-levels/extensive.md` template for this level.
+Use the [extensive template](references/extensive.md) for this level.
 
 ### 4.1. Set up workspace
 
