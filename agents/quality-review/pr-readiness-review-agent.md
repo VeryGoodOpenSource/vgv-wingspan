@@ -1,34 +1,6 @@
 ---
 name: pr-readiness-review-agent
-description: |
-  Checks PR readiness: formatting, static analysis, debug artifacts, and commit hygiene. Use after implementation is complete to catch mechanical issues before opening a pull request.
-
-  <examples>
-    <example>
-      Context: The user has finished implementing and testing a feature and is about to open a PR.
-      user: "Implementation is done — is this PR-ready?"
-      assistant: "I'll use the PR readiness review agent to check formatting, analysis, debug artifacts, and commit hygiene."
-      <commentary>
-        Pre-PR checks catch mechanical issues that slow down code review: formatting drift, analysis warnings, leftover debug code, and messy commit history.
-      </commentary>
-    </example>
-    <example>
-      Context: The user wants a final sanity check after fixing review comments.
-      user: "I addressed all the review comments. Anything left before I push?"
-      assistant: "Let me run the PR readiness review agent to verify formatting, analysis, and that no debug artifacts slipped in."
-      <commentary>
-        Post-fix passes often introduce new issues: a quick print statement for debugging, a missing formatter run, or an unresolved merge conflict marker.
-      </commentary>
-    </example>
-    <example>
-      Context: The build skill runs this agent in parallel with other quality review agents.
-      user: "Run the quality review phase."
-      assistant: "I'll launch all five review agents in parallel, including the PR readiness review agent for formatting, analysis, debug artifacts, and commit hygiene."
-      <commentary>
-        During the build skill's Phase 3, this agent runs alongside VGV, simplicity, test quality, and architecture review agents.
-      </commentary>
-    </example>
-  </examples>
+description: Checks PR readiness — formatting, static analysis, debug artifacts, and commit hygiene — to catch mechanical issues before opening a pull request.
 model: inherit
 ---
 
