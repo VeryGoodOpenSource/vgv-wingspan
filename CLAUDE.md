@@ -66,8 +66,8 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 **How it works:**
 
 1. `hooks/recommend-plugins.sh` fires on the first matched tool call per session (a temp marker at `/tmp/wingspan-recommend-plugins-<hash>` prevents repeats).
-2. The script scans each JSON file in `hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
-3. If the detection file exists and matches the pattern — and the plugin isn't already in the user's settings — the hook emits an `additionalContext` message suggesting installation.
+2. The script scans each JSON file in `hooks/recommendations/` in alphabetical order. Each file declares a detection rule and the plugin to recommend.
+3. The first file whose detection rule matches — and whose plugin isn't already installed — emits an `additionalContext` message suggesting installation. Only one recommendation fires per session.
 
 **Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
 
@@ -88,7 +88,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `marketplace`     | GitHub `owner/repo` for the marketplace registry |
 | `description`     | One-line summary shown in the recommendation     |
 
-**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required.
+**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. Note: files are evaluated in alphabetical order and only the first match wins, so a new file may never fire if an earlier-alphabetical file already matches the project.
 
 ## Key Conventions
 
