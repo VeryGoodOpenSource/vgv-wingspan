@@ -82,10 +82,11 @@ done
 # Emit all recommendations in a single message, then set the marker.
 if [[ ${#RECOMMENDATIONS[@]} -gt 0 ]]; then
   touch "$MARKER"
+  newline=$'\n'
   message=""
   for rec in "${RECOMMENDATIONS[@]}"; do
     if [[ -n "$message" ]]; then
-      message="$message\n\n$rec"
+      message="$message${newline}${newline}$rec"
     else
       message="$rec"
     fi
