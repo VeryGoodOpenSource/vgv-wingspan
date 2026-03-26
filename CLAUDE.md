@@ -65,7 +65,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 
 **How it works:**
 
-1. `hooks/recommend-plugins.sh` fires on the first matched tool call per session (a temp marker at `/tmp/wingspan-recommend-plugins-<hash>` prevents repeats).
+1. `hooks/recommend-plugins.sh` fires on the first matched tool call, then writes a marker file (`/tmp/wingspan-recommend-plugins-<hash>`) to suppress repeats. The marker persists until `/tmp` is cleared (typically on reboot), so recommendations appear at most once per boot cycle, not per Claude Code session.
 2. The script scans each JSON file in `hooks/recommendations/` in alphabetical order. Each file declares a detection rule and the plugin to recommend.
 3. The first file whose detection rule matches — and whose plugin isn't already installed — emits an `additionalContext` message suggesting installation. Only one recommendation fires per session.
 
