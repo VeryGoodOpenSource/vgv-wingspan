@@ -120,22 +120,7 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include these instructions:
-
-> Write your full detailed report to `docs/hotfix-review/<name>.md` (create the directory if needed).
-> Then return ONLY a short structured summary to the parent context in this format:
->
-> ```markdown
-> ## <Agent Name> Summary
-> **Report**: `docs/hotfix-review/<name>.md` (<word_count> words)
-> **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
-> ### Findings
-> - [Critical] <one-line description>
-> - [Important] <one-line description>
-> - [Suggestion] <one-line description>
-> ```
->
-> Do NOT return the full report text. Only return the summary above.
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md).
 
 The 2 agents and their report filenames:
 
@@ -188,24 +173,7 @@ Bug: <original bug description or issue link, truncated if long>
 Push the branch and create a PR using `gh pr create`:
 
 - **Title**: `fix: <concise description>` (under 70 characters)
-- **Body**:
-
-```markdown
-## Summary
-<1-3 bullet points describing the fix>
-
-## Root Cause
-<Brief explanation of what caused the bug>
-
-## Test Plan
-- [ ] <How to verify the fix>
-
-## Notes
-- Cherry-pick friendly: single commit on `hotfix/<slug>`
-- <Any suggestions from review agents>
-
-Generated with [Claude Code](https://claude.com/claude-code) `/hotfix`
-```
+- **Body**: Use the [PR template](references/pr-template.md)
 
 ### Post-Ship
 
