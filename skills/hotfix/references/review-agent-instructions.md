@@ -1,3 +1,5 @@
+# Review Agent Instructions
+
 Write your full detailed report to `docs/hotfix-review/<name>.md` (create the directory if needed).
 Then return ONLY a short structured summary to the parent context in this format:
 
