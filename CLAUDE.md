@@ -1,6 +1,6 @@
 # Wingspan
 
-Wingspan is a collection of AI-assisted engineering tools — skills, agents, subagents, and hooks — released as a Claude Code plugin.
+Wingspan is a collection of AI-assisted engineering tools — skills, agents, and hooks — released as a Claude Code plugin.
 
 ## Philosophy
 
@@ -20,7 +20,9 @@ The plugin supports three sequential phases:
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
-Standalone skills:
+Standalone Skills:
+
+- **`/review`** — Run quality review agents on demand, independent of the build workflow.
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
@@ -48,8 +50,45 @@ Quality-review agents:
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build` and `/hotfix`
+- `docs/reviews/` — Review reports from `/build` (ephemeral, cleaned up by build)
+- `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
+
+## Hooks
+
+Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json`.
+
+### Companion Plugin Recommendations
+
+A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the project type and recommends companion plugins the user hasn't installed yet.
+
+**How it works:**
+
+1. `hooks/recommend-plugins.sh` fires on the first matched tool call, then writes a marker file (`/tmp/wingspan-recommend-plugins-<hash>`) to suppress repeats. The marker persists until `/tmp` is cleared (typically on reboot), so recommendations appear at most once per boot cycle, not per Claude Code session.
+2. The script scans each JSON file in `hooks/recommendations/` in alphabetical order. Each file declares a detection rule and the plugin to recommend.
+3. The first file whose detection rule matches — and whose plugin isn't already installed — emits an `additionalContext` message suggesting installation. Only one recommendation fires per session.
+
+**Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
+
+```json
+{
+  "plugin": "plugin-name",
+  "detect": { "file": "Gemfile", "pattern": "^\\s*gem\\s+['\"]rails['\"]" },
+  "marketplace": "OrgName/repo-name",
+  "description": "What the plugin provides."
+}
+```
+
+| Field             | Purpose                                          |
+|-------------------|--------------------------------------------------|
+| `plugin`          | Plugin name as registered in the marketplace     |
+| `detect.file`     | File whose presence signals the project type     |
+| `detect.pattern`  | Regex grep pattern to confirm the match          |
+| `marketplace`     | GitHub `owner/repo` for the marketplace registry |
+| `description`     | One-line summary shown in the recommendation     |
+
+**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. Note: files are evaluated in alphabetical order and only the first match wins, so a new file may never fire if an earlier-alphabetical file already matches the project.
 
 ## Key Conventions
 
