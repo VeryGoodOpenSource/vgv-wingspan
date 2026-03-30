@@ -13,9 +13,11 @@
 #     "description": "What the plugin provides."
 #   }
 #
-# A per-project temp marker (/tmp/wingspan-recommend-plugins-<hash>) ensures
-# recommendations are emitted at most once per session. Without it, the
-# hook would inject the same context on every matched tool call.
+# All matching recommendations are collected and emitted together in a
+# single message. A per-project temp marker (/tmp/wingspan-recommend-plugins-
+# <hash>) ensures recommendations are emitted at most once per session.
+# Without it, the hook would inject the same context on every matched tool
+# call.
 
 INPUT=$(cat)
 
@@ -26,8 +28,6 @@ MARKER="/tmp/wingspan-recommend-plugins-$PROJECT_HASH"
 if [[ -f "$MARKER" ]]; then
   exit 0
 fi
-
-touch "$MARKER"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RECOMMENDATIONS_DIR="$SCRIPT_DIR/recommendations"
@@ -53,7 +53,9 @@ is_plugin_installed() {
   return 1
 }
 
-# Evaluate each recommendation file.
+# Evaluate each recommendation file and collect all matches.
+RECOMMENDATIONS=()
+
 for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   [[ -f "$rec_file" ]] || continue
 
@@ -73,10 +75,23 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
     continue
   fi
 
-  # Build recommendation message with marketplace-specific install instructions
-  message="The '${plugin}' Claude Code plugin is not installed. It provides: ${description} Recommend the user install it by first adding the marketplace with: /plugin marketplace add ${marketplace} — then installing via: /plugin install ${plugin}"
+  # Collect recommendation
+  RECOMMENDATIONS+=("The '${plugin}' Claude Code plugin is not installed. It provides: ${description} Recommend the user install it by first adding the marketplace with: /plugin marketplace add ${marketplace} — then installing via: /plugin install ${plugin}")
+done
 
-  # Emit recommendation (first match wins, one recommendation per session)
+# Emit all recommendations in a single message, then set the marker.
+if [[ ${#RECOMMENDATIONS[@]} -gt 0 ]]; then
+  touch "$MARKER"
+  newline=$'\n'
+  message=""
+  for rec in "${RECOMMENDATIONS[@]}"; do
+    if [[ -n "$message" ]]; then
+      message="$message${newline}${newline}$rec"
+    else
+      message="$rec"
+    fi
+  done
+
   jq -n \
     --arg ctx "$message" \
     '{
@@ -85,5 +100,4 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
         additionalContext: $ctx
       }
     }'
-  exit 0
-done
+fi
