@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/recommend-plugins.sh",
+            "command": "dart run ${CLAUDE_PLUGIN_ROOT}/hooks/recommend-plugins.dart",
             "timeout": 10
           }
         ]
