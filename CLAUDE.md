@@ -65,9 +65,9 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 
 **How it works:**
 
-1. `hooks/recommend-plugins.sh` fires on the first matched tool call, then writes a marker file (`/tmp/wingspan-recommend-plugins-<hash>`) to suppress repeats. The marker persists until `/tmp` is cleared (typically on reboot), so recommendations appear at most once per boot cycle, not per Claude Code session.
-2. The script scans each JSON file in `hooks/recommendations/` in alphabetical order. Each file declares a detection rule and the plugin to recommend.
-3. The first file whose detection rule matches — and whose plugin isn't already installed — emits an `additionalContext` message suggesting installation. Only one recommendation fires per session.
+1. `hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
+2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message.
+3. A marker file (`/tmp/wingspan-recommend-plugins-<hash>`) is written only when at least one recommendation is emitted, suppressing repeats for the rest of the session. If no plugins are missing, no marker is written and the script re-evaluates on the next tool call — so a newly added recommendation file can still fire later in the same session.
 
 **Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
 
@@ -88,7 +88,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `marketplace`     | GitHub `owner/repo` for the marketplace registry |
 | `description`     | One-line summary shown in the recommendation     |
 
-**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. Note: files are evaluated in alphabetical order and only the first match wins, so a new file may never fire if an earlier-alphabetical file already matches the project.
+**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 
 ## Key Conventions
 
