@@ -4,3 +4,5 @@ node_modules/
 docs/brainstorm/
 docs/plan/
 docs/reviews/
+hooks/bin/*
+!hooks/bin/.gitkeep
