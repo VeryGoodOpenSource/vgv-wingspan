@@ -14,10 +14,12 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 
 <description>$ARGUMENTS</description>
 
-**If the description above is empty**, use the **AskUserQuestion tool**:
+**If the description above is empty:**
 
-- **Question:** "What kind of project would you like to create?"
-- **Options:** "Flutter app", "Dart package", "Dart CLI", "Other"
+1. First, scan recommendation files (Step 1 below) to discover available project types.
+2. Then use **AskUserQuestion tool**:
+   - **Question:** "What kind of project would you like to create?"
+   - **Options:** Build the option list from the discovered companion plugins' descriptions, plus "Other" as the last option.
 
 DO NOT proceed until you have a project description.
 
