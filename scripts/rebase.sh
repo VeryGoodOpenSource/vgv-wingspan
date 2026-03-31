@@ -1,10 +1,8 @@
 #!/bin/bash
-# SessionStart hook: rebase current feature branch onto the base branch.
+# SessionStart hook: check if the current feature branch is behind the base branch.
 #
-# Keeps feature branches up-to-date with main/master/develop to prevent
-# merge conflicts from accumulating. Runs silently when the branch is
-# already up-to-date or when conditions aren't right (e.g., on the base
-# branch itself, uncommitted changes, or rebase conflicts).
+# Advisory only — does not rebase automatically. Emits a message suggesting
+# the user run `/rebase` when the branch is behind.
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
@@ -24,13 +22,8 @@ if [[ -z "$BASE_BRANCH" ]]; then
   exit 0
 fi
 
-# Don't rebase if we're already on the base branch.
+# Don't check if we're already on the base branch.
 if [[ "$CURRENT_BRANCH" == "$BASE_BRANCH" ]]; then
-  exit 0
-fi
-
-# Don't rebase if there are uncommitted changes.
-if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
   exit 0
 fi
 
@@ -45,27 +38,15 @@ if [[ "$LOCAL_BASE" == "$REMOTE_BASE" ]]; then
   exit 0
 fi
 
-# Attempt rebase — abort on conflicts.
-if ! git rebase "origin/$BASE_BRANCH" --quiet 2>/dev/null; then
-  git rebase --abort 2>/dev/null
+# Count how many commits behind.
+BEHIND=$(git rev-list --count HEAD.."origin/$BASE_BRANCH" 2>/dev/null || echo "some")
 
-  jq -n '{
-    hookSpecificOutput: {
-      hookEventName: "SessionStart",
-      additionalContext: "Automatic rebase of this branch onto the base branch failed due to conflicts. Consider resolving them manually with: git rebase origin/'"$BASE_BRANCH"'"
-    }
-  }'
-  exit 0
-fi
-
-# Rebase succeeded — notify the model.
-AHEAD=$(git rev-list --count "origin/$BASE_BRANCH"..HEAD 2>/dev/null || echo "?")
 jq -n \
   --arg base "$BASE_BRANCH" \
-  --arg ahead "$AHEAD" \
+  --arg behind "$BEHIND" \
   '{
     hookSpecificOutput: {
       hookEventName: "SessionStart",
-      additionalContext: ("Branch rebased onto origin/" + $base + ". " + $ahead + " commit(s) ahead.")
+      additionalContext: ("Your branch is " + $behind + " commit(s) behind origin/" + $base + ". Run /rebase to update.")
     }
   }'
