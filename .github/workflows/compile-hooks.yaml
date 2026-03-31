@@ -1,0 +1,50 @@
+name: compile-hooks
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  compile:
+    name: Compile ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - os: darwin
+            arch: arm64
+            runner: macos-latest
+          - os: darwin
+            arch: x64
+            runner: macos-13
+          - os: linux
+            arch: x64
+            runner: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Find and compile Dart scripts
+        run: |
+          mkdir -p hooks/bin
+          for src in hooks/*.dart; do
+            [ -f "$src" ] || continue
+            name=$(basename "$src" .dart)
+            dart compile exe "$src" \
+              -o "hooks/bin/${name}-${{ matrix.os }}-${{ matrix.arch }}"
+          done
+
+      - name: Upload binaries to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for bin in hooks/bin/*; do
+            [ -f "$bin" ] || continue
+            gh release upload "${{ github.event.release.tag_name }}" "$bin"
+          done
