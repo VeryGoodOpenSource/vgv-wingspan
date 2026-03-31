@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v dart >/dev/null 2>&1 && dart run ${CLAUDE_PLUGIN_ROOT}/hooks/recommend_plugins.dart",
+            "command": "OS=$(uname -s | tr '[:upper:]' '[:lower:]'); ARCH=$(uname -m); case $ARCH in aarch64|arm64) ARCH=arm64;; x86_64|amd64) ARCH=x64;; esac; ${CLAUDE_PLUGIN_ROOT}/hooks/bin/recommend_plugins-${OS}-${ARCH}",
             "timeout": 10
           }
         ]
