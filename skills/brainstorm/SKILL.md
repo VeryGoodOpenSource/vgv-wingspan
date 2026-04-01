@@ -19,7 +19,48 @@ DO NOT proceed until you have a description from the user.
 
 ## Execution flow
 
-### 0. Assess clarity of requirements
+### 0. Assess scope and workspace
+
+Before diving into questions, determine whether this is a **new project** or a **feature for the current project**.
+
+**Signals this is a new project:**
+
+- User says "new app", "new project", "create a …", "build a … from scratch"
+- The described work has no relation to the current codebase
+- No existing code, packages, or patterns in the working directory are relevant
+
+**Signals this is a feature for the current project:**
+
+- User references existing code, screens, or modules
+- The idea extends or modifies current functionality
+- The working directory contains a codebase related to the description
+
+**If this appears to be a new project**, use **AskUserQuestion tool**:
+
+**Question:** "This sounds like a new project. Where would you like to work?"
+
+**Options:**
+
+1. **Create project first** — scaffold the project with `/create`, open it in your editor, then brainstorm in that workspace. This keeps all artifacts, plans, and code in the right place from the start.
+2. **Continue here** — brainstorm in the current workspace. You'll need to move artifacts and switch workspaces later.
+
+**If the user selects "Create project first"** → output the following and then stop:
+
+```md
+To get started in the right workspace:
+
+1. Run `/create` to scaffold your project
+2. Open the new project folder in your editor
+3. Run `/brainstorm` in that workspace to continue
+
+This ensures all brainstorm docs, plans, and code land in the correct project from the start.
+```
+
+**If the user selects "Continue here"** → proceed to Step 0.1.
+
+**If this is clearly a feature for the current project** → proceed to Step 0.1 directly. Do not ask.
+
+### 0.1. Assess clarity of requirements
 
 Before diving into questions, assess whether brainstorming is needed.
 
