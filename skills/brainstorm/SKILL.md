@@ -44,16 +44,18 @@ Before diving into questions, determine whether this is a **new project** or a *
 1. **Create project first** — scaffold the project with `/create`, open it in your editor, then brainstorm in that workspace. This keeps all artifacts, plans, and code in the right place from the start.
 2. **Continue here** — brainstorm in the current workspace. You'll need to move artifacts and switch workspaces later.
 
-**If the user selects "Create project first"** → output the following and then stop:
+**If the user selects "Create project first"** → output the following (interpolating the user's feature description into step 3) and then stop:
 
 ```md
 To get started in the right workspace:
 
 1. Run `/create` to scaffold your project
 2. Open the new project folder in your editor
-3. Run `/brainstorm` in that workspace to continue
+3. Run `/brainstorm <original feature description>` in that workspace to continue
 
 This ensures all brainstorm docs, plans, and code land in the correct project from the start.
+
+> If `/create` does not support your project type, you can create the project manually, open it, and then run step 3.
 ```
 
 **If the user selects "Continue here"** → proceed to Step 0.1.
@@ -160,29 +162,7 @@ Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-br
 
 Ensure `docs/brainstorm/` directory exists before writing.
 
-**Document structure:**
-
-```markdown
----
-date: YYYY-MM-DD
-topic: <kebab-case-topic>
----
-
-# <Topic Title>
-
-## What We're Building
-[Concise description -- 1-2 paragraphs max]
-
-## Why This Approach
-[Brief explanation of approaches considered and why this one was chosen]
-
-## Key Decisions
-- [Decision 1]: [Rationale]
-- [Decision 2]: [Rationale]
-
-## Open Questions
-- [Any unresolved questions for the planning phase]
-```
+Use the [brainstorm template](references/template.md) as the document structure.
 
 ### 3. Handoff
 
