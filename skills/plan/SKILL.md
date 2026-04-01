@@ -28,13 +28,22 @@ ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 - Created within the last 7 days
 - If a feature description was provided above, the topic (from filename or YAML frontmatter) semantically matches it
 
-**If exactly one relevant brainstorm exists:**
+**If exactly one relevant brainstorm exists and a feature description was provided:**
 
 1. Read the brainstorm document
 2. Announce: "Found brainstorm from [date]: [topic]. Using as context for planning."
 3. Extract key decisions, chosen approach, and open questions
-4. If no feature description was provided, derive it from the brainstorm topic
-5. Use brainstorm decisions as input to the research phase
+4. Use brainstorm decisions as input to the research phase
+
+**If exactly one relevant brainstorm exists but NO feature description was provided:**
+
+1. Read the brainstorm document
+2. Use **AskUserQuestion tool**: "I found a recent brainstorm: **[topic]** from [date]. Would you like to plan this, or describe something different?"
+   - **Options:**
+     1. **Plan this brainstorm** — use it as context and derive the feature description from it
+     2. **Describe something different** — ignore the brainstorm and ask what to plan instead
+3. If the user selects "Plan this brainstorm": extract key decisions, chosen approach, and open questions. Derive the feature description from the brainstorm topic.
+4. If the user selects "Describe something different": ask "What would you like to plan?" and proceed without the brainstorm.
 
 **If multiple relevant brainstorms exist:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate. Derive the feature description from the selected brainstorm if none was provided.
 
