@@ -6,7 +6,7 @@ description: |
   <examples>
     <example>
       Context: Developer runs /plan-technical-review on a large feature plan.
-      user: "Review this plan for the new authentication flow — it touches API client, repository, Bloc, and three screens."
+      user: "Review this plan for the new authentication flow — it touches API client, repository, state management, and three screens."
       assistant: "I'll run the plan-splitting agent to assess whether this should be split across multiple PRs."
       <commentary>
         Plans spanning multiple layers (data, domain, presentation) with new packages are strong candidates for splitting.
@@ -22,7 +22,7 @@ description: |
     </example>
     <example>
       Context: Developer has a large but tightly coupled plan.
-      user: "Review this plan — it adds a single complex widget with its Bloc, repository, and API client, all interdependent."
+      user: "Review this plan — it adds a single complex component with its state management, repository, and API client, all interdependent."
       assistant: "I'll run the plan-splitting agent to check if this can be split, or if the coupling means it should stay as one PR."
       <commentary>
         Not all large plans can be split. The agent should recognize tight coupling and recommend keeping as a single PR with a scope warning rather than forcing an awkward split.

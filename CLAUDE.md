@@ -1,6 +1,6 @@
 # Wingspan
 
-Wingspan is a collection of AI-assisted engineering tools — skills, agents, subagents, and hooks — released as a Claude Code plugin.
+Wingspan is a collection of AI-assisted engineering tools — skills, agents, and hooks — released as a Claude Code plugin.
 
 ## Philosophy
 
@@ -20,11 +20,15 @@ The plugin supports three sequential phases:
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
 3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
 
-Standalone skills:
+Standalone Skills:
+
+- **`/review`** — Run quality review agents on demand, independent of the build workflow.
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
 Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
+
+**Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
 
 **Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, display the `/clear` command followed by the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
 
@@ -39,6 +43,8 @@ Supporting skills:
 
 Quality-review agents:
 
+- `vgv-review-agent`
+- `code-simplicity-review-agent`
 - `test-quality-review-agent`
 - `architecture-review-agent`
 
@@ -46,8 +52,45 @@ Quality-review agents:
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build`
+- `docs/reviews/` — Review reports from `/build` (ephemeral, cleaned up by build)
+- `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
+
+## Hooks
+
+Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json`.
+
+### Companion Plugin Recommendations
+
+A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the project type and recommends companion plugins the user hasn't installed yet.
+
+**How it works:**
+
+1. `hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
+2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message.
+3. A marker file (`/tmp/wingspan-recommend-plugins-<hash>`) is written only when at least one recommendation is emitted, suppressing repeats for the rest of the session. If no plugins are missing, no marker is written and the script re-evaluates on the next tool call — so a newly added recommendation file can still fire later in the same session.
+
+**Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
+
+```json
+{
+  "plugin": "plugin-name",
+  "detect": { "file": "Gemfile", "pattern": "^\\s*gem\\s+['\"]rails['\"]" },
+  "marketplace": "OrgName/repo-name",
+  "description": "What the plugin provides."
+}
+```
+
+| Field             | Purpose                                          |
+|-------------------|--------------------------------------------------|
+| `plugin`          | Plugin name as registered in the marketplace     |
+| `detect.file`     | File whose presence signals the project type     |
+| `detect.pattern`  | Regex grep pattern to confirm the match          |
+| `marketplace`     | GitHub `owner/repo` for the marketplace registry |
+| `description`     | One-line summary shown in the recommendation     |
+
+**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 
 ## Key Conventions
 
