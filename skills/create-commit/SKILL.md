@@ -1,7 +1,7 @@
 ---
 name: create-commit
 description: Propose and create conventional commit messages for staged changes. Follows Conventional Commits spec and VGV workflow.
-argument-hint: "[optional: ticket/issue number e.g. VGV-123]"
+argument-hint: "[optional: single-commit | ticket/issue number e.g. VGV-123]"
 ---
 
 # Create a commit
@@ -27,7 +27,13 @@ Use this skill when:
 
 <context>$ARGUMENTS</context>
 
-This may be a ticket number (e.g. `VGV-123`), a short description, or empty (the staged diff provides the context).
+This may include `single-commit`, a ticket number (e.g. `VGV-123`), a short description, or be empty.
+
+## Step 0: Parse arguments
+
+Check whether the argument contains `single-commit`. Store as `SINGLE_COMMIT` (boolean).
+
+Extract the ticket number or short description from the remaining argument text (if any).
 
 ## Step 1: Gather context
 
@@ -58,17 +64,22 @@ Stage the confirmed files, then continue to Step 2.
 
 Follow Conventional Commits. Consult `references/conventional-commits.md` for the full spec.
 
-### Splitting heuristics
-
-Actively look for reasons to split into multiple commits. Propose **multiple commits** when any of the following is true:
-
-- **Mixed types** — e.g. production code (`feat`/`fix`) mixed with tests (`test`) or config (`chore`/`build`)
-- **Multiple packages or layers touched** — e.g. `packages/` changes alongside `lib/` changes
-- **Logically independent concerns** — e.g. a new API method + UI update + localization strings
-
-A good split produces commits that could be reverted independently. Prefer more commits over fewer — clean Git history is more valuable than one monolithic commit.
-
 Extract the ticket number from the branch name (e.g. `feat/VGV-59-...` → `VGV-59`) or from the argument passed to the skill.
+
+### If `SINGLE_COMMIT` is true
+
+Always produce a single commit covering all staged changes.
+
+If the diff contains changes that are clearly independent (i.e., each could be reverted without affecting the other), note this and suggest the user consider splitting the work into multiple PRs rather than multiple commits.
+
+### If `SINGLE_COMMIT` is false
+
+Default to a **single commit**. Propose multiple commits only when changes are clearly independent — i.e., each could be reverted without affecting the other:
+
+- **Logically independent concerns** — e.g. a new API method + unrelated bug fix
+- **Mixed types with no shared context** — e.g. a `feat` and an unrelated `chore`
+
+Do not split just because multiple files or packages are touched — cohesive changes belong in one commit.
 
 Output the proposed commit(s):
 

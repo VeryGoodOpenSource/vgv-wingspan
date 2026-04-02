@@ -83,7 +83,7 @@ Store as `BASE_BRANCH`.
 
 ## Step 3: Stage and commit
 
-Use the **create-commit** skill to stage files and produce a conventional commit message.
+Use the **create-commit** skill with the `single-commit` argument to stage files and produce a single conventional commit message.
 
 ## Step 4: Push
 
