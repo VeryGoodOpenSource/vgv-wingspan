@@ -2,7 +2,7 @@
 
 AI-assisted workflows that follow Very Good Ventures best practices and standards.
 
-![wingspan logo by very good ventures in blue](./assets/wingspan-logo.png)
+![wingspan logo by very good ventures in blue](./assets/wingspan-logo.jpeg)
 
 ## Installation
 
@@ -67,7 +67,3 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
 | **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
 | **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
-
-## Vision
-
-![wingspan vision](./assets/vision.png)
