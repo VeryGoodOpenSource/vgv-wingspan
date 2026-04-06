@@ -53,6 +53,7 @@ Only after checking skills **and** verifying API availability, gather additional
 1. **Leverage External Sources**:
 
    - Search the project's referenced standards and documentation
+   - Before using Context7, tell the user which library you are looking up and why, e.g. "Fetching official docs for X via Context7 — you may see a permission prompt to allow the library ID lookup."
    - Use Context7 MCP to access official documentation from GitHub, framework docs, and library references
    - Search the web for recent articles, guides, and community discussions
    - Identify and analyze well-regarded open source projects that demonstrate the practices
