@@ -13,15 +13,11 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 <feature_description> #$ARGUMENTS </feature_description>
 
-**If the feature description above is empty, ask the user:** "What would you like to plan? Please describe the feature, bug fix, or improvement you have in mind."
-
-Do not proceed until you have a clear feature description from the user.
-
 ### 0. Idea Refinement
 
-**Check for brainstorm output first:**
+**Check for brainstorm output first — before asking the user anything:**
 
-Before asking questions, look for recent brainstorm documents in `docs/brainstorm` that match this feature:
+Look for recent brainstorm documents in `docs/brainstorm`:
 
 ```bash
 ls -la docs/brainstorm/*.md 2>/dev/null | head -10
@@ -29,19 +25,33 @@ ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 
 **Relevance criteria:** A brainstorm is relevant if:
 
-- The topic (from filename or YAML frontmatter) semantically matches the feature description
 - Created within the last 7 days
+- If a feature description was provided above, the topic (from filename or YAML frontmatter) semantically matches it
 
-**If a relevant brainstorm exists:**
+**If exactly one relevant brainstorm exists and a feature description was provided:**
 
 1. Read the brainstorm document
 2. Announce: "Found brainstorm from [date]: [topic]. Using as context for planning."
 3. Extract key decisions, chosen approach, and open questions
 4. Use brainstorm decisions as input to the research phase
 
-**If no brainstorm found (or not relevant):** run @brainstorm to clarify the idea before proceeding.
+**If exactly one relevant brainstorm exists but NO feature description was provided:**
 
-**If multiple brainstorms found:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate.
+1. Read the brainstorm document
+2. Use **AskUserQuestion tool**: "I found a recent brainstorm: **[topic]** from [date]. Would you like to plan this, or describe something different?"
+   - **Options:**
+     1. **Plan this brainstorm** — use it as context and derive the feature description from it
+     2. **Describe something different** — ignore the brainstorm and ask what to plan instead
+3. If the user selects "Plan this brainstorm": extract key decisions, chosen approach, and open questions. Derive the feature description from the brainstorm topic.
+4. If the user selects "Describe something different": ask "What would you like to plan?" and proceed without the brainstorm.
+
+**If multiple relevant brainstorms exist:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate. Derive the feature description from the selected brainstorm if none was provided.
+
+**If no brainstorm found (or not relevant) and no feature description was provided:** Ask the user: "What would you like to plan? Please describe the feature, bug fix, or improvement you have in mind."
+
+**If no brainstorm found but a feature description was provided:** run @brainstorm to clarify the idea before proceeding.
+
+Do not proceed until you have a clear feature description — either from the arguments, a brainstorm document, or the user.
 
 **Skip option**: if the description is already detailed enough, ask the user if they want to skip idea refinement and proceed directly to planning.
 

@@ -25,8 +25,9 @@ ls -la docs/plan/*.md 2>/dev/null | head -20
 
 Then:
 
-1. If plans exist, use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
-2. If no plans exist, tell the user: "No plans found in `docs/plan/`. Run `/plan` first to create an implementation plan."
+1. **If exactly one plan exists:** Read the plan, announce "Found plan: [title]. Using this for implementation.", and proceed with it. No need to ask the user.
+2. **If multiple plans exist:** Use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
+3. **If no plans exist:** Tell the user: "No plans found in `docs/plan/`. Run `/plan` first to create an implementation plan."
 
 Do not proceed without a plan.
 
