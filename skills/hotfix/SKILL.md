@@ -54,7 +54,7 @@ git rev-parse --abbrev-ref HEAD
 
 **Otherwise:** infer a branch name in the format `hotfix/<kebab-slug>` where the slug is derived from the bug description (max 60 characters total). Use **AskUserQuestion** to confirm:
 
-1. **Create branch** — `git checkout -b hotfix/<slug>`
+1. **Create branch (Recommended)** — `git checkout -b hotfix/<slug>`
 2. **Skip** — stay on the current branch
 
 ## Phase 3 — Fix

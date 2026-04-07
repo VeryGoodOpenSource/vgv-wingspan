@@ -53,7 +53,7 @@ Use the **AskUserQuestion** tool to confirm the branch name and workspace type:
 
 **Options:**
 
-1. **Create branch** — `git checkout -b <name>` (changes carry over to the new branch)
+1. **Create branch (Recommended)** — `git checkout -b <name>` (changes carry over to the new branch)
 2. **Create worktree** — isolated working directory via `EnterWorktree`
 3. **Skip** — stay on the current branch
 
@@ -85,7 +85,7 @@ git status --porcelain
 
 **Options:**
 
-1. **Continue with worktree** — proceed
+1. **Continue with worktree (Recommended)** — proceed
 2. **Use a regular branch instead** — fall back to `git checkout -b`
 3. **Cancel** — return to caller without changes
 

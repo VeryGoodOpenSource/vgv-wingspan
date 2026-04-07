@@ -172,7 +172,7 @@ Use **AskUserQuestion tool** to consider next steps:
 **Question**: "Brainstorm complete! What would you like to do next?"
 
 **Options:**
-1. **Clear context and plan**: clear context for a fresh start, then plan
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Review and refine approach:** improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`

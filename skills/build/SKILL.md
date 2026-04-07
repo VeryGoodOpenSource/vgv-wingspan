@@ -62,7 +62,7 @@ Do not proceed without a plan.
    - File paths referenced
 2. Summarize the scope to the user: number of tasks, files to create/modify, estimated complexity
 3. Use **AskUserQuestion** to confirm:
-   - **Start building**: proceed with implementation
+   - **Start building (Recommended)**: proceed with implementation
    - **Review the plan first**: open the plan file for the user to review
    - **Adjust scope**: accept user input on what to change
 

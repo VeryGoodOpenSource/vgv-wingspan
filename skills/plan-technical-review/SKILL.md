@@ -37,7 +37,7 @@ If the plan-splitting-agent reports no split needed: include the scope summary i
 
 **Options:**
 
-1. **Clear context and build**: clear context for a fresh start, then build
+1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building**: execute the plan with `/build`
 3. **Refine the plan**: improve the plan based on review findings
 4. **Done for now**: review complete

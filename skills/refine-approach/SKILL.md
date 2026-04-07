@@ -81,13 +81,13 @@ After changes are complete, ask:
 
 **If the document is a brainstorm** (from `docs/brainstorm/`):
 
-1. **Clear context and plan**: clear context for a fresh start, then plan
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
 **If the document is a plan** (from `docs/plan/`):
 
-1. **Clear context and build**: clear context for a fresh start, then build
+1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
