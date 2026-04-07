@@ -177,7 +177,7 @@ Use **AskUserQuestion tool** to consider next steps:
 3. **Review and refine approach:** improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → output the following and then stop:
+**If the user selects "Clear context and plan"** → output the following (substituting the actual brainstorm doc path) and then stop:
 
 ```md
 To continue with a fresh context, run:
@@ -186,7 +186,7 @@ To continue with a fresh context, run:
 
 Then start planning with:
 
-/plan
+/plan docs/brainstorm/<actual-brainstorm-filename>.md
 ```
 
 **If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
