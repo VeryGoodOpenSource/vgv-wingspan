@@ -40,6 +40,7 @@ Supporting skills:
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
+- `/rebase` (sync feature branch with base branch)
 
 Quality-review agents:
 

@@ -11,8 +11,8 @@ AI-assisted workflows that follow Very Good Ventures best practices and standard
 Inside Claude Code:
 
 ```bash
-/plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
-/plugin install wingspan@very_good_claude_marketplace
+/plugin marketplace add VeryGoodOpenSource/wingspan
+/plugin install wingspan@wingspan-marketplace
 ```
 
 ## Getting Started
@@ -66,4 +66,5 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | **Hotfix** | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
 | **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
+| **Rebase** | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
 | **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
