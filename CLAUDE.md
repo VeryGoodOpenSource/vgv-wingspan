@@ -38,6 +38,7 @@ Supporting skills:
 - `/create-branch` (workspace setup)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
+- `/rebase` (sync feature branch with base branch)
 
 Quality-review agents:
 

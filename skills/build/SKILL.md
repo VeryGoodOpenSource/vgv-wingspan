@@ -121,22 +121,7 @@ After all implementation tasks are complete, run 5 review agents **in parallel**
 
 ### Agent instructions
 
-Each agent prompt must include these instructions:
-
-> Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
-> Then return ONLY a short structured summary to the parent context in this format:
->
-> ```markdown
-> ## <Agent Name> Summary
-> **Report**: `docs/reviews/<name>.md` (<word_count> words)
-> **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
-> ### Findings
-> - [Critical] <one-line description>
-> - [Important] <one-line description>
-> - [Suggestion] <one-line description>
-> ```
->
-> Do NOT return the full report text. Only return the summary above.
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md).
 
 The 5 agents and their report filenames:
 
@@ -181,6 +166,25 @@ Remove the review reports — their findings have already been addressed or reco
 ```bash
 rm -rf docs/reviews/
 ```
+
+### Commit
+
+Stage all implementation and fix changes. Write a commit message:
+
+```text
+<type>: <concise description of what was built>
+
+Implements <plan title or summary>.
+```
+
+Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.).
+
+### Pull Request
+
+Push the branch and create a PR using `gh pr create`:
+
+- **Title**: `<type>: <concise description>` (under 70 characters)
+- **Body**: Use the [PR template](references/pr-template.md)
 
 ### Post-Ship
 
