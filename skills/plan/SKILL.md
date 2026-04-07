@@ -193,7 +193,7 @@ Use the [extensive template](references/extensive.md) for this level.
 
 Before writing the plan file, ensure the session is on a feature branch:
 
-- Call @create-branch to check and optionally create a working branch or worktree.
+- Call /create-branch to check and optionally create a working branch or worktree.
 
 ### 5. Issue creation and formatting
 
@@ -276,7 +276,7 @@ Based on selection:
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
-- **Review and refine** → Load `refine-approach` skill.
+- **Review and refine** → Load `/refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
 ## Important
