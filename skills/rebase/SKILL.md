@@ -37,7 +37,7 @@ If there are uncommitted changes, use **AskUserQuestion**:
 
 **Options:**
 
-1. **Stash and rebase** — `git stash` before rebasing, `git stash pop` after
+1. **Stash and rebase (Recommended)** — `git stash` before rebasing, `git stash pop` after
 2. **Cancel** — stop without changes
 
 ## Step 2: Fetch and check

@@ -40,7 +40,7 @@ ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 1. Read the brainstorm document
 2. Use **AskUserQuestion tool**: "I found a recent brainstorm: **[topic]** from [date]. Would you like to plan this, or describe something different?"
    - **Options:**
-     1. **Plan this brainstorm** — use it as context and derive the feature description from it
+     1. **Plan this brainstorm (Recommended)** — use it as context and derive the feature description from it
      2. **Describe something different** — ignore the brainstorm and ask what to plan instead
 3. If the user selects "Plan this brainstorm": extract key decisions, chosen approach, and open questions. Derive the feature description from the brainstorm topic.
 4. If the user selects "Describe something different": ask "What would you like to plan?" and proceed without the brainstorm.
@@ -253,7 +253,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 **Options:**
 
-1. **Clear context and build**: clear context for a fresh start, then build
+1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building**: execute this plan with `/build`
 3. **Open the plan file in my code editor**: open the plan file for review
 4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
