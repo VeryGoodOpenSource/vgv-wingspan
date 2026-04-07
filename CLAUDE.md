@@ -46,7 +46,6 @@ Quality-review agents:
 - `code-simplicity-review-agent`
 - `test-quality-review-agent`
 - `architecture-review-agent`
-- `pr-readiness-review-agent`
 
 ## Output Directories
 
