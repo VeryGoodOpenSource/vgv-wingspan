@@ -95,7 +95,7 @@ Focus on: similar features, established patterns, CLAUDE.md guidance.
 
 #### 1.2. Collaborative conversation
 
-Use the **AskUserQuestion tool** to ask questions one at a time.
+Use the **AskUserQuestion tool** to ask questions one at a time. The tool automatically provides an "Other" option for free-text input — never add your own catch-all option (e.g., "Something else", "None of the above").
 
 **Question Techniques:**
 
