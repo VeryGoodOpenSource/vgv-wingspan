@@ -182,6 +182,39 @@ Remove the review reports — their findings have already been addressed or reco
 rm -rf docs/reviews/
 ```
 
+### Commit
+
+Stage all implementation and fix changes. Write a commit message:
+
+```text
+<type>: <concise description of what was built>
+
+Implements <plan title or summary>.
+```
+
+Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.).
+
+### Pull Request
+
+Push the branch and create a PR using `gh pr create`:
+
+- **Title**: `<type>: <concise description>` (under 70 characters)
+- **Body**:
+
+```markdown
+## Summary
+
+<2-3 bullet points summarizing what was built and why>
+
+## Plan
+
+<link to the plan file or its title>
+
+## Test plan
+
+<bulleted checklist of how to verify the changes>
+```
+
 ### Post-Ship
 
 Use **AskUserQuestion** to present options:
