@@ -1,8 +1,10 @@
 ---
 name: plan
 user-invocable: true
-description: Turn high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+effort: high
 argument-hint: feature, bug fix, or improvement to plan
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Create a new implementation plan (or bug fix)
@@ -11,7 +13,7 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 ## Feature Description
 
-<feature_description> #$ARGUMENTS </feature_description>
+<feature_description>$ARGUMENTS</feature_description>
 
 ### 0. Idea Refinement
 
@@ -145,6 +147,8 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 
 ### 4. Select implementation detail template
 
+**Default to Standard.** Use a different level only when the task clearly warrants it.
+
 #### Minimal
 
 Use for simple bugs, small enhancements, or when the implementation is straightforward and well-understood.
@@ -157,7 +161,7 @@ It includes:
 
 Use the [minimal template](references/minimal.md) for this level.
 
-#### Standard
+#### Standard (default)
 
 Use for most features and bug fixes that require a moderate level of detail to ensure clarity and successful implementation.
 

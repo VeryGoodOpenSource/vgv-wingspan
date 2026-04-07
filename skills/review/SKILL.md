@@ -1,8 +1,9 @@
 ---
 name: review
 user-invocable: true
-description: Run quality review agents on demand — review code, assess quality, and identify issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", "review before merging".
+description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Review code on demand
@@ -11,7 +12,7 @@ Run quality review agents. Review manually written code, assess existing codebas
 
 ## Review Scope
 
-<review_scope> #$ARGUMENTS </review_scope>
+<review_scope>$ARGUMENTS</review_scope>
 
 ## Step 1 — Detect Scope
 
@@ -117,6 +118,13 @@ Use **AskUserQuestion** to present post-review options:
 
 1. Run project linter and test runner for validation (no agent re-run)
 2. Present a brief summary of what was fixed
+
+## Gotchas
+
+- If `docs/code-review/` already exists from a previous review, old reports will be overwritten by agents with the same name. Delete the directory first if you want a clean slate.
+- On the default branch with no diff, the review scope is ambiguous. The skill asks the user to specify — do not default to reviewing the entire project without confirmation.
+- Agent failures are non-fatal. If one agent fails, the others still produce reports. Always report which agents failed so the user knows the review is incomplete.
+- Auto-fix only modifies files within the original review scope. If a fix requires changes outside scope (e.g., updating a shared import), flag it to the user instead of silently expanding scope.
 
 ## Important
 
