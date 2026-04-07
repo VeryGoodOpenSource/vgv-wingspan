@@ -1,7 +1,8 @@
 ---
 name: hotfix
 user-invocable: true
-description: Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases. Use when user says "hotfix", "emergency fix", "quick fix", "urgent bug", "production bug", or "fix this now".
+description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
+effort: high
 argument-hint: bug description, issue link, or error message
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -12,7 +13,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 
 ## Bug Description
 
-<bug_description> #$ARGUMENTS </bug_description>
+<bug_description>$ARGUMENTS</bug_description>
 
 **If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
 

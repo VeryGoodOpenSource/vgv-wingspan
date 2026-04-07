@@ -1,7 +1,8 @@
 ---
 name: build
 user-invocable: true
-description: Execute an implementation plan — write code and tests, run quality review, and ship a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it" — also when the user says "let's start" or "I'm ready to code" after completing planning.
+description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+effort: high
 argument-hint: plan file path
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -10,19 +11,34 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
 
+## Build Progress
+
+Copy this checklist and track your progress:
+
+```
+Build Progress:
+- [ ] Phase 0: Load plan and confirm scope
+- [ ] Phase 1: Read context files
+- [ ] Phase 2: Implement and test each task
+- [ ] Phase 3: Run review agents (5 in parallel)
+- [ ] Phase 4: Final validation, cleanup, and ship
+```
+
 ## Plan Input
 
-<plan_path> #$ARGUMENTS </plan_path>
+<plan_path>$ARGUMENTS</plan_path>
+
+## Available Plans
+
+```!
+ls -1 docs/plan/*.md 2>/dev/null || echo "(no plans found)"
+```
 
 ## Phase 0 — Load Plan
 
 **If the plan path above is empty:**
 
-1. List available plans:
-
-```bash
-ls -la docs/plan/*.md 2>/dev/null | head -20
-```
+1. Check the available plans listed above.
 
 Then:
 

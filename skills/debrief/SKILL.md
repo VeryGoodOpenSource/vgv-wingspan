@@ -1,7 +1,7 @@
 ---
 name: debrief
 user-invocable: true
-description: Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh. Use when user says "debrief", "post-mortem", "incident review", "what went wrong", "root cause analysis", or "RCA".
+description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh. Use when user says "debrief", "post-mortem", "incident review", or "root cause analysis".
 argument-hint: incident description, PR/commit refs, or error context
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---

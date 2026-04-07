@@ -1,7 +1,7 @@
 ---
 name: review
 user-invocable: true
-description: Run quality review agents on demand — review code, assess quality, and identify issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", "review before merging" — also when the user asks to check quality or wants feedback on changes before opening a PR.
+description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -12,7 +12,7 @@ Run quality review agents. Review manually written code, assess existing codebas
 
 ## Review Scope
 
-<review_scope> #$ARGUMENTS </review_scope>
+<review_scope>$ARGUMENTS</review_scope>
 
 ## Step 1 — Detect Scope
 
