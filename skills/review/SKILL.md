@@ -1,5 +1,6 @@
 ---
 name: review
+user-invocable: true
 description: Run quality review agents on demand — review code, assess quality, and identify issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
 ---
