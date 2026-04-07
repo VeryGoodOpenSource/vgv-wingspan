@@ -49,7 +49,7 @@ ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 
 **If no brainstorm found (or not relevant) and no feature description was provided:** Ask the user: "What would you like to plan? Please describe the feature, bug fix, or improvement you have in mind."
 
-**If no brainstorm found but a feature description was provided:** run @brainstorm to clarify the idea before proceeding.
+**If no brainstorm found but a feature description was provided:** run /brainstorm to clarify the idea before proceeding.
 
 Do not proceed until you have a clear feature description — either from the arguments, a brainstorm document, or the user.
 
@@ -92,8 +92,8 @@ Only run this step if `1.1.1 Research decision` determines that external researc
 
 Run these agents in parallel to gather external information:
 
-- **official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
-- **best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
+- **@official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
+- **@best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
 
 ##### 1.1.2. Consolidate research findings
 
