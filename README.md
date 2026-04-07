@@ -66,5 +66,7 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 | **Hotfix** | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
 | **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
+| **Create Commit** | `/create-commit` | Stage and commit changes using conventional commit messages |
+| **Create PR** | `/create-pr` | Stage, commit, push, and open a pull request on the project's Git hosting platform following project conventions |
 | **Rebase** | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
 | **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
