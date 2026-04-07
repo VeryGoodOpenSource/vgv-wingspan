@@ -1,8 +1,9 @@
 ---
 name: brainstorm
 user-invocable: true
-description: Explore requirements and approaches through collaborative dialogue before planning implementation. Use when user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
+description: Explores requirements and approaches through collaborative dialogue before planning implementation. Use when user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
 argument-hint: feature or idea to explore
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Brainstorm a feature or improvement
@@ -94,7 +95,7 @@ Focus on: similar features, established patterns, CLAUDE.md guidance.
 
 #### 1.2. Collaborative conversation
 
-Use the **AskUserQuestion tool** to ask questions one at a time.
+Use the **AskUserQuestion tool** to ask questions one at a time. The tool automatically provides an "Other" option for free-text input — never add your own catch-all option (e.g., "Something else", "None of the above").
 
 **Question Techniques:**
 
@@ -171,7 +172,7 @@ Use **AskUserQuestion tool** to consider next steps:
 **Question**: "Brainstorm complete! What would you like to do next?"
 
 **Options:**
-1. **Clear context and plan**: clear context for a fresh start, then plan
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Review and refine approach:** improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`

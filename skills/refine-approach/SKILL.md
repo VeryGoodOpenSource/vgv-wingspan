@@ -1,8 +1,9 @@
 ---
 name: refine-approach
 user-invocable: true
-description: Review and refine brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when user says "refine this", "review my approach", "improve the document", or "is this ready".
+description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when user says "refine this", "review my approach", or "is this ready".
 argument-hint: path to document to refine
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Refine Approach
@@ -80,13 +81,13 @@ After changes are complete, ask:
 
 **If the document is a brainstorm** (from `docs/brainstorm/`):
 
-1. **Clear context and plan**: clear context for a fresh start, then plan
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
 **If the document is a plan** (from `docs/plan/`):
 
-1. **Clear context and build**: clear context for a fresh start, then build
+1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 

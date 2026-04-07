@@ -1,27 +1,44 @@
 ---
 name: build
 user-invocable: true
-description: Execute an implementation plan — write code and tests, run quality review, and ship a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+effort: high
 argument-hint: plan file path
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Execute an implementation plan
 
 Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
 
+## Build Progress
+
+Copy this checklist and track your progress:
+
+```markdown
+Build Progress:
+- [ ] Phase 0: Load plan and confirm scope
+- [ ] Phase 1: Read context files
+- [ ] Phase 2: Implement and test each task
+- [ ] Phase 3: Run review agents (5 in parallel)
+- [ ] Phase 4: Final validation, cleanup, and ship
+```
+
 ## Plan Input
 
-<plan_path> #$ARGUMENTS </plan_path>
+<plan_path>$ARGUMENTS</plan_path>
+
+## Available Plans
+
+```!
+ls -1 docs/plan/*.md 2>/dev/null || echo "(no plans found)"
+```
 
 ## Phase 0 — Load Plan
 
 **If the plan path above is empty:**
 
-1. List available plans:
-
-```bash
-ls -la docs/plan/*.md 2>/dev/null | head -20
-```
+1. Check the available plans listed above.
 
 Then:
 
@@ -45,7 +62,7 @@ Do not proceed without a plan.
    - File paths referenced
 2. Summarize the scope to the user: number of tasks, files to create/modify, estimated complexity
 3. Use **AskUserQuestion** to confirm:
-   - **Start building**: proceed with implementation
+   - **Start building (Recommended)**: proceed with implementation
    - **Review the plan first**: open the plan file for the user to review
    - **Adjust scope**: accept user input on what to change
 
@@ -199,6 +216,14 @@ Push the branch and create a PR using `gh pr create`:
 Use **AskUserQuestion** to present options:
 
 - **Done**: end the session
+
+## Gotchas
+
+- If the plan references a package or dependency that does not exist yet, install or create it before writing code that imports it. Do not assume dependencies are already available.
+- If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
+- Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
+- If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
+- Review agent reports are written to `docs/reviews/` and deleted after Phase 4. If the build is interrupted, stale reports may remain — delete them manually before the next run.
 
 ## Important
 
