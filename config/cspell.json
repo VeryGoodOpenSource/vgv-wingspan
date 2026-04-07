@@ -1,7 +1,10 @@
 {
   "language": "en",
   "words": [
+    "Anson",
+    "glab",
     "codegen",
+    "conventionalcommits",
     "frontmatter",
     "geolocation",
     "goldens",
@@ -11,6 +14,7 @@
     "pubspec",
     "runbook",
     "Strunk's",
+    "oneline",
     "worktree",
     "pasteable",
     "pubspec",
