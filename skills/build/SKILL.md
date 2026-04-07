@@ -143,7 +143,7 @@ Each agent prompt must include the [review agent instructions](references/review
 The 5 agents and their report filenames:
 
 | Agent | Report file |
-|-------|------------|
+| ----- | ----------- |
 | **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
 | **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
 | **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
@@ -182,6 +182,14 @@ Remove the review reports — their findings have already been addressed or reco
 
 ```bash
 rm -rf docs/reviews/
+```
+
+### Open PR
+
+Call the **create-pr** skill with `skip-checks` (validation already ran above):
+
+```bash
+/create-pr skip-checks
 ```
 
 ### Commit
