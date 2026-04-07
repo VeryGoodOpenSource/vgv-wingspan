@@ -1,7 +1,7 @@
 ---
 name: official-docs-research-agent
 description: Gathers comprehensive documentation and best practices for frameworks, libraries, or dependencies. Use when you need official docs, version-specific constraints, or implementation patterns.
-model: inherit
+model: sonnet
 ---
 
 # Official docs research agent

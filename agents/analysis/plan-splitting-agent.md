@@ -29,7 +29,8 @@ description: |
       </commentary>
     </example>
   </examples>
-model: inherit
+model: sonnet
+effort: medium
 ---
 
 # Plan Splitting Agent

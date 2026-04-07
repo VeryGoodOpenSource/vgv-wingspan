@@ -1,7 +1,7 @@
 ---
 name: best-practices-research-agent
 description: Researches and synthesizes best practices for the project's technology stack, following first VGV conventions and the project's CLAUDE.md, then official language and framework documentation, and finally other industry standards.
-model: inherit
+model: sonnet
 ---
 
 # Best practices research agent

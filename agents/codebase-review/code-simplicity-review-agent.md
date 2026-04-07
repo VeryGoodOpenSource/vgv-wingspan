@@ -1,7 +1,8 @@
 ---
 name: code-simplicity-review-agent
 description: Final review pass to ensure code is as simple and minimal as possible. Use after implementation is complete to identify YAGNI violations and simplification opportunities.
-model: inherit
+model: sonnet
+effort: medium
 ---
 
 # Code simplicity review agent
