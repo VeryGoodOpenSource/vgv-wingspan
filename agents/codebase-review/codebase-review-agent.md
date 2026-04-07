@@ -29,6 +29,8 @@ description: |
       </commentary>
     </example>
   </examples>
+model: sonnet
+effort: medium
 ---
 
 # Codebase Review Agent

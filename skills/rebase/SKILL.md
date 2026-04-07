@@ -3,6 +3,7 @@ name: rebase
 user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop). Use when user says "rebase", "sync branch", or "update branch".
+effort: low
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
 
