@@ -1,8 +1,9 @@
 ---
 name: build
 user-invocable: true
-description: Execute an implementation plan — write code and tests, run quality review, and ship a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+description: Execute an implementation plan — write code and tests, run quality review, and ship a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it" — also when the user says "let's start" or "I'm ready to code" after completing planning.
 argument-hint: plan file path
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Execute an implementation plan
@@ -187,6 +188,14 @@ rm -rf docs/reviews/
 Use **AskUserQuestion** to present options:
 
 - **Done**: end the session
+
+## Gotchas
+
+- If the plan references a package or dependency that does not exist yet, install or create it before writing code that imports it. Do not assume dependencies are already available.
+- If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
+- Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
+- If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
+- Review agent reports are written to `docs/reviews/` and deleted after Phase 4. If the build is interrupted, stale reports may remain — delete them manually before the next run.
 
 ## Important
 

@@ -1,8 +1,9 @@
 ---
 name: hotfix
 user-invocable: true
-description: Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases
+description: Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases. Use when user says "hotfix", "emergency fix", "quick fix", "urgent bug", "production bug", or "fix this now".
 argument-hint: bug description, issue link, or error message
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Hotfix — emergency fix workflow
@@ -180,6 +181,14 @@ Push the branch and create a PR using `gh pr create`:
 Use **AskUserQuestion** to present options:
 
 1. **Done**: end the session
+
+## Gotchas
+
+- If the bug is in a shared dependency or utility, the fix may affect callers you did not expect. Grep for all usages before changing shared code.
+- If the fix requires a migration (database, config, schema), this is likely too large for a hotfix. Recommend switching to `/plan` → `/build`.
+- Hotfix branches use the `hotfix/` prefix, not `fix/`. Other skills use `fix/` — do not mix them.
+- If `docs/hotfix-review/` already exists from a previous interrupted hotfix, delete it before running Phase 4 to avoid stale reports contaminating the review.
+- The blast radius check (Phase 3) uses a threshold of 5 files. A fix that touches exactly 5 files is within threshold; 6 triggers the warning.
 
 ## Important
 

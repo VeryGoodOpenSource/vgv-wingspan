@@ -3,6 +3,7 @@ name: rebase
 user-invocable: true
 description: Rebase the current feature branch onto the base branch (main/master/develop). Use when user says "rebase", "sync branch", "update branch", or when the session start advisory suggests it.
 argument-hint: (none)
+compatibility: Designed for Claude Code (or similar products with git access)
 ---
 
 # Rebase onto base branch
@@ -82,6 +83,13 @@ If changes were stashed in Step 1, restore them with `git stash pop`.
 Inform the user that the rebase had conflicts and suggest resolving manually:
 
 > Automatic rebase failed due to conflicts. To resolve manually, run: `git rebase origin/<base-branch>`
+
+## Gotchas
+
+- If the branch has already been pushed to a remote, rebasing rewrites history. The user will need to force-push (`git push --force-with-lease`) after a successful rebase — warn them.
+- `git stash pop` can itself cause conflicts if stashed changes overlap with rebased commits. If stash pop fails, inform the user and suggest `git stash show` to review the stashed changes.
+- Detached HEAD state (`HEAD` instead of a branch name) means the user is not on any branch. Inform them and stop — do not attempt to rebase.
+- If the base branch does not exist locally but does on the remote, `git fetch` in Step 2 will create the remote tracking ref. The rebase uses `origin/<base-branch>`, not the local branch.
 
 ## Important
 
