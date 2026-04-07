@@ -1,8 +1,10 @@
 ---
 name: plan
 user-invocable: true
-description: Turn high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+effort: high
 argument-hint: feature, bug fix, or improvement to plan
+compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Create a new implementation plan (or bug fix)
@@ -11,7 +13,7 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 ## Feature Description
 
-<feature_description> #$ARGUMENTS </feature_description>
+<feature_description>$ARGUMENTS</feature_description>
 
 ### 0. Idea Refinement
 
@@ -40,7 +42,7 @@ ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 1. Read the brainstorm document
 2. Use **AskUserQuestion tool**: "I found a recent brainstorm: **[topic]** from [date]. Would you like to plan this, or describe something different?"
    - **Options:**
-     1. **Plan this brainstorm** — use it as context and derive the feature description from it
+     1. **Plan this brainstorm (Recommended)** — use it as context and derive the feature description from it
      2. **Describe something different** — ignore the brainstorm and ask what to plan instead
 3. If the user selects "Plan this brainstorm": extract key decisions, chosen approach, and open questions. Derive the feature description from the brainstorm topic.
 4. If the user selects "Describe something different": ask "What would you like to plan?" and proceed without the brainstorm.
@@ -145,6 +147,8 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 
 ### 4. Select implementation detail template
 
+**Default to Standard.** Use a different level only when the task clearly warrants it.
+
 #### Minimal
 
 Use for simple bugs, small enhancements, or when the implementation is straightforward and well-understood.
@@ -157,7 +161,7 @@ It includes:
 
 Use the [minimal template](references/minimal.md) for this level.
 
-#### Standard
+#### Standard (default)
 
 Use for most features and bug fixes that require a moderate level of detail to ensure clarity and successful implementation.
 
@@ -253,7 +257,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 **Options:**
 
-1. **Clear context and build**: clear context for a fresh start, then build
+1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building**: execute this plan with `/build`
 3. **Open the plan file in my code editor**: open the plan file for review
 4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
