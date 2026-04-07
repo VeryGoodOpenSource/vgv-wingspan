@@ -11,8 +11,8 @@ AI-assisted workflows that follow Very Good Ventures best practices and standard
 Inside Claude Code:
 
 ```bash
-/plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
-/plugin install wingspan@very_good_claude_marketplace
+/plugin marketplace add VeryGoodOpenSource/wingspan
+/plugin install wingspan@wingspan-marketplace
 ```
 
 ## Getting Started
