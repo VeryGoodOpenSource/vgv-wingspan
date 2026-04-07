@@ -15,7 +15,7 @@ Take a plan from `docs/plan/` and turn it into shipped code: implement features,
 
 Copy this checklist and track your progress:
 
-```
+```markdown
 Build Progress:
 - [ ] Phase 0: Load plan and confirm scope
 - [ ] Phase 1: Read context files
