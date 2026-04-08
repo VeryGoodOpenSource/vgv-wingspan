@@ -29,7 +29,7 @@ description: |
       </commentary>
     </example>
   </examples>
-model: inherit
+model: sonnet
 ---
 
 # Test Quality Review Agent

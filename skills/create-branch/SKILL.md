@@ -3,6 +3,7 @@ name: create-branch
 user-invocable: true
 description: Sets up a workspace branch or worktree before writing artifacts. Use when user says "create a branch", "set up workspace", "start a feature branch", or "new branch".
 argument-hint: feature name or context
+effort: low
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
