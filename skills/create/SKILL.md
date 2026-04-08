@@ -47,11 +47,33 @@ Compare the user's project description against each recommendation's `plugin` na
 - **Multiple matches:** Pick the most specific match for the requested project type.
 - **Match found:** Proceed to Step 3.
 
-## Step 3: Find and invoke the plugin's create skill
+## Step 3: Verify the plugin is installed
 
-The available skills are listed in the system-reminder in your conversation context. Find a create skill from the matched plugin and invoke it using the **Skill tool**, passing the user's full project description as arguments.
+Check the available skills listed in the system-reminder in your conversation context for any skill prefixed with the matched plugin name (`<plugin-name>:`).
 
-- **No create skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a create skill. Stop.
+If **no skills from that plugin are listed**, the plugin is not installed. Use **AskUserQuestion tool**:
+
+- **Question:** "The companion plugin '`<plugin>`' is needed but not installed. Would you like to install it?"
+- **Options:**
+  1. "Yes, install it" *(default)*
+  2. "No, stop"
+
+If the user chooses to install, output the following commands and **stop**:
+
+```
+/plugin marketplace add <marketplace>
+/plugin install <plugin>
+```
+
+Tell the user to run these commands, then re-invoke `/create` with the same project description. **Do not proceed to Step 4.**
+
+## Step 4: Find and invoke the plugin's project-creation skill
+
+The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed with the matched plugin name (`<plugin-name>:<skill-name>`). Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
+
+Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
+
+- **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
 
 ## Important
