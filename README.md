@@ -1,4 +1,4 @@
-# Wingspan
+# VGV Wingspan
 
 🦋 AI-assisted workflows that follow Very Good Ventures best practices and standards.
 
@@ -12,7 +12,7 @@ Inside Claude Code:
 
 ```bash
 /plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
-/plugin install wingspan@very_good_claude_marketplace
+/plugin install vgv-wingspan@very_good_claude_marketplace
 ```
 
 ## Getting Started
