@@ -11,8 +11,8 @@
 Inside Claude Code:
 
 ```bash
-/plugin marketplace add VeryGoodOpenSource/wingspan
-/plugin install wingspan@wingspan-marketplace
+/plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
+/plugin install wingspan@very_good_claude_marketplace
 ```
 
 ## Getting Started
