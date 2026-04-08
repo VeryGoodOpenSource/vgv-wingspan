@@ -13,6 +13,14 @@
 #     "description": "What the plugin provides."
 #   }
 #
+# The "detect" field can be a single object or an array of objects (OR logic).
+# Each object supports either "file" (exact path) or "files" (shell glob for
+# content search — greps inside every matching file for "pattern"):
+#   "detect": [
+#     { "file": "pubspec.yaml", "pattern": "." },
+#     { "files": "docs/plan/*.md", "pattern": "flutter|dart" }
+#   ]
+#
 # All matching recommendations are collected and emitted together in a
 # single message. A per-project temp marker (/tmp/wingspan-recommend-plugins-
 # <hash>) ensures recommendations are emitted at most once per session.
@@ -60,13 +68,42 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   [[ -f "$rec_file" ]] || continue
 
   plugin=$(jq -r '.plugin' "$rec_file")
-  detect_file=$(jq -r '.detect.file' "$rec_file")
-  detect_pattern=$(jq -r '.detect.pattern' "$rec_file")
   marketplace=$(jq -r '.marketplace' "$rec_file")
   description=$(jq -r '.description' "$rec_file")
 
-  # Project type detection
-  if [[ ! -f "$detect_file" ]] || ! grep -qE "$detect_pattern" "$detect_file" 2>/dev/null; then
+  # Project type detection — supports single object or array of objects (OR logic).
+  # Each object can use "file" (exact path) or "glob" (shell glob pattern).
+  detect_type=$(jq -r '.detect | type' "$rec_file")
+  if [[ "$detect_type" == "array" ]]; then
+    detect_entries=$(jq -c '.detect[]' "$rec_file")
+  else
+    detect_entries=$(jq -c '.detect' "$rec_file")
+  fi
+
+  matched=false
+  while IFS= read -r entry; do
+    entry_file=$(echo "$entry" | jq -r '.file // empty')
+    entry_files=$(echo "$entry" | jq -r '.files // empty')
+    entry_pattern=$(echo "$entry" | jq -r '.pattern')
+
+    if [[ -n "$entry_file" ]]; then
+      # Exact file detection
+      if [[ -f "$entry_file" ]] && grep -qE "$entry_pattern" "$entry_file" 2>/dev/null; then
+        matched=true
+        break
+      fi
+    elif [[ -n "$entry_files" ]]; then
+      # Content search — grep inside files matching the glob pattern
+      for gf in $entry_files; do
+        if [[ -f "$gf" ]] && grep -qiE "$entry_pattern" "$gf" 2>/dev/null; then
+          matched=true
+          break 2
+        fi
+      done
+    fi
+  done <<< "$detect_entries"
+
+  if [[ "$matched" != "true" ]]; then
     continue
   fi
 

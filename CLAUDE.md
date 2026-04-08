@@ -83,13 +83,14 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 }
 ```
 
-| Field             | Purpose                                          |
-|-------------------|--------------------------------------------------|
-| `plugin`          | Plugin name as registered in the marketplace     |
-| `detect.file`     | File whose presence signals the project type     |
-| `detect.pattern`  | Regex grep pattern to confirm the match          |
-| `marketplace`     | GitHub `owner/repo` for the marketplace registry |
-| `description`     | One-line summary shown in the recommendation     |
+| Field             | Purpose                                                        |
+|-------------------|----------------------------------------------------------------|
+| `plugin`          | Plugin name as registered in the marketplace                   |
+| `detect.file`     | Exact file path whose presence signals the project type        |
+| `detect.files`    | Shell glob — greps inside every matching file for `pattern`    |
+| `detect.pattern`  | Regex grep pattern to confirm the match                        |
+| `marketplace`     | GitHub `owner/repo` for the marketplace registry               |
+| `description`     | One-line summary shown in the recommendation                   |
 
 **Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 
