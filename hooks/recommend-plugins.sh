@@ -72,7 +72,7 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   description=$(jq -r '.description' "$rec_file")
 
   # Project type detection — supports single object or array of objects (OR logic).
-  # Each object can use "file" (exact path) or "glob" (shell glob pattern).
+  # Each object can use "file" (exact path) or "files" (shell glob pattern).
   detect_type=$(jq -r '.detect | type' "$rec_file")
   if [[ "$detect_type" == "array" ]]; then
     detect_entries=$(jq -c '.detect[]' "$rec_file")
