@@ -1,4 +1,4 @@
-# Wingspan
+# VGV Wingspan
 
 Wingspan is a collection of AI-assisted engineering tools — skills, agents, and hooks — released as a Claude Code plugin.
 

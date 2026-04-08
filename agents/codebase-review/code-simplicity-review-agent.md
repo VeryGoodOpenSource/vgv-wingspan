@@ -40,7 +40,7 @@ When reviewing code, you will:
    - Eliminate extensibility points without clear use cases
    - Question generic solutions for specific problems
    - Remove "just in case" code
-   - Never flag any documents inside `wingspan` for removal
+   - Never flag any documents inside `docs` for removal
 
 6. **Optimize for Readability**:
 

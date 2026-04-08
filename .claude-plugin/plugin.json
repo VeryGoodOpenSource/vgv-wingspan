@@ -1,13 +1,13 @@
 {
-  "name": "wingspan",
-  "description": "Wingspan - AI-native workflows following Very Good Ventures best practices.",
+  "name": "vgv-wingspan",
+  "description": "VGV Wingspan - AI-native workflows following Very Good Ventures best practices.",
   "version": "0.0.1",
   "author": {
     "name": "Very Good Ventures",
     "url": "https://verygood.ventures"
   },
-  "homepage": "https://github.com/VeryGoodOpenSource/wingspan",
-  "repository": "https://github.com/VeryGoodOpenSource/wingspan",
+  "homepage": "https://github.com/VeryGoodOpenSource/vgv-wingspan",
+  "repository": "https://github.com/VeryGoodOpenSource/vgv-wingspan",
   "keywords": [
     "software engineering",
     "workflow",
