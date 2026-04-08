@@ -59,7 +59,7 @@ As simple as this:
 
 ## Better Together: Working With The Very Good AI Flutter Plugin
 
-Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/very_good_ai_flutter_plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line. 
+Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/very_good_ai_flutter_plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line.
 
 Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
