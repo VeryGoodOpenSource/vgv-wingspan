@@ -1,6 +1,6 @@
 # Wingspan
 
-AI-assisted workflows that follow Very Good Ventures best practices and standards.
+🦋 AI-assisted workflows that follow Very Good Ventures best practices and standards.
 
 ![wingspan logo by very good ventures in blue](./assets/wingspan-logo.jpeg)
 
@@ -17,9 +17,9 @@ Inside Claude Code:
 
 ## Getting Started
 
-Wingspan follows a three-phase workflow: **brainstorm**, **plan**, **build**. Each phase produces artifacts that feed into the next, so you can clear context between steps without losing work. You can invoke skills explicitly with slash commands or let them activate automatically from natural language — just describe what you need and the right skill will trigger.
+Wingspan follows a four-phase workflow: **brainstorm**, **plan**, **build**, and **review**. Each phase produces artifacts that feed into the next, so you can clear context between steps without losing work. You can invoke skills explicitly with slash commands or let them activate automatically from natural language — just describe what you need and the right skill will trigger.
 
-### 1. Brainstorm
+### 1. `/brainstorm`
 
 Start here. Describe the problem or idea — the bigger and more open-ended, the more value brainstorm adds:
 
@@ -29,7 +29,7 @@ Start here. Describe the problem or idea — the bigger and more open-ended, the
 
 Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
 
-### 2. Plan
+### 2. `/plan/
 
 Once you're happy with the brainstorm, turn it into an actionable implementation plan:
 
@@ -39,13 +39,29 @@ Once you're happy with the brainstorm, turn it into an actionable implementation
 
 This reviews your codebase, references the brainstorm, and produces a step-by-step plan saved to `docs/plan/`.
 
-### 3. Build
+### 3. `/build`
 
 Execute the plan — write code, write tests, run quality review, and open a PR:
 
 ```text
 /build docs/plan/add-authentication.md
 ```
+
+### 4. `/review`
+
+Automated review against best practices, test coverage, accessibility, and performance. Catches issues before they reach PR.
+
+As simple as this:
+
+```text
+/review
+```
+
+## Better Together: Working With The Very Good AI Flutter Plugin
+
+Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/very_good_ai_flutter_plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line. 
+
+Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
 ### Tips
 
