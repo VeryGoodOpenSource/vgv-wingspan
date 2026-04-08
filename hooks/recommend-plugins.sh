@@ -88,7 +88,7 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
 
     if [[ -n "$entry_file" ]]; then
       # Exact file detection
-      if [[ -f "$entry_file" ]] && grep -qE "$entry_pattern" "$entry_file" 2>/dev/null; then
+      if [[ -f "$entry_file" ]] && grep -qiE "$entry_pattern" "$entry_file" 2>/dev/null; then
         matched=true
         break
       fi
