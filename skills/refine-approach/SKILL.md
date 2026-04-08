@@ -91,7 +91,7 @@ After changes are complete, ask:
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
-**If the user selects "Clear context and plan"** → output the following and then stop:
+**If the user selects "Clear context and plan"** → output the following (substituting the actual brainstorm doc path) and then stop:
 
 ```md
 To continue with a fresh context, run:
@@ -100,7 +100,7 @@ To continue with a fresh context, run:
 
 Then start planning with:
 
-/plan
+/plan docs/brainstorm/<actual-brainstorm-filename>.md
 ```
 
 **If the user selects "Clear context and build"** → output the following (substituting the actual plan file path) and then stop:
