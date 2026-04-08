@@ -60,7 +60,7 @@ If **no skills from that plugin are listed**, the plugin is not installed. Use *
 
 If the user chooses to install, output the following commands and **stop**:
 
-```
+```bash
 /plugin marketplace add <marketplace>
 /plugin install <plugin>
 ```
