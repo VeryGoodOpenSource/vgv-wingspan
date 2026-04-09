@@ -152,21 +152,7 @@ The 5 agents and their report filenames:
 
 ### After all reviews complete
 
-1. **Consolidate findings** from all summaries into three categories:
-   - **Critical** (must fix before merge): Bugs, missing tests, layer violations, broken analysis
-   - **Important** (should fix): Convention deviations, test gaps, naming issues
-   - **Suggestions** (note for PR): Style improvements, minor simplifications
-
-2. **Auto-fix minor issues**: formatting (run the project's formatter), lint warnings. Stage and commit fixes.
-
-3. **Fix critical issues**: Read the specific report file (e.g., `docs/reviews/architecture-review.md`) for full details on each critical finding. Address each one, re-run validation (project's linter and test runner), and commit. Only read reports that contain critical issues — do not load all 5 reports into context.
-
-4. **Present important issues** to the user via **AskUserQuestion**:
-   - **Fix all**: address every important issue (read relevant report files for details)
-   - **Review the list first**: show the full list for the user to decide
-   - **Skip to shipping**: note them in the PR description instead
-
-5. **Record suggestions** for inclusion in the PR description.
+Follow the [review consolidation procedure](../shared/references/review-consolidation.md): categorize findings, auto-fix minor issues, fix critical issues, present important issues to the user, and record suggestions.
 
 ## Phase 4 — Ship
 

@@ -133,13 +133,7 @@ The 2 agents and their report filenames:
 
 ### After reviews complete
 
-1. **Critical findings** → Read the specific report file (e.g., `docs/hotfix-review/vgv-review.md`) for full details on each critical finding. Fix immediately, re-run validation, and commit. Only read reports that contain critical issues — do not load both reports into context unnecessarily.
-
-2. **Important findings** → use **AskUserQuestion**:
-   - **Fix all**: address every important issue (read relevant report files for details)
-   - **Skip to shipping**: note them in the PR description
-
-3. **Suggestions** → record for PR description.
+Follow the [review consolidation procedure](../shared/references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
 
 ### Cleanup
 
