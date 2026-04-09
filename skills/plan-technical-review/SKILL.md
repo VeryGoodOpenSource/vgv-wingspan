@@ -24,7 +24,7 @@ After all agents complete, if the plan-splitting-agent recommends a split:
    - The **skill** (not the agent) generates the files
    - Naming: `docs/plan/YYYY-MM-DD-<type>-<original-slug>-part-N-plan.md`
    - Each file is a standalone plan following the **same template and detail level** as the original plan
-   - Each file includes all sections `/build` expects: title, type, acceptance criteria, tasks, file references. Use [standard template](references/standard.md) by default; use [minimal](references/minimal.md) for simple parts or [extensive](references/extensive.md) for complex parts.
+   - Each file includes all sections `/build` expects: title, type, acceptance criteria, tasks, file references. Use [standard template](../shared/references/plan-templates/standard.md) by default; use [minimal](../shared/references/plan-templates/minimal.md) for simple parts or [extensive](../shared/references/plan-templates/extensive.md) for complex parts.
    - Each file includes a `## Dependencies` section noting which prior PR(s) must merge first
    - Add a note at the top of the original plan file: ``> **Note:** This plan has been split into parts. See the `-part-N` files in this directory.``
 
