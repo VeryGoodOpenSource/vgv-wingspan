@@ -280,7 +280,7 @@
     </section>
 
     <section id="dependency-graph">
-      <details open>
+      <details>
         <summary>Dependency Graph</summary>
         <div class="section-content">
           <!-- CONTENT:dependency-graph -->
@@ -289,7 +289,7 @@
     </section>
 
     <section id="entry-points">
-      <details open>
+      <details>
         <summary>Entry Points</summary>
         <div class="section-content">
           <!-- CONTENT:entry-points -->
@@ -298,7 +298,7 @@
     </section>
 
     <section id="data-state-flow">
-      <details open>
+      <details>
         <summary>Data & State Flow</summary>
         <div class="section-content">
           <!-- CONTENT:data-state-flow -->
@@ -307,7 +307,7 @@
     </section>
 
     <section id="key-abstractions">
-      <details open>
+      <details>
         <summary>Key Abstractions</summary>
         <div class="section-content">
           <!-- CONTENT:key-abstractions -->
@@ -316,7 +316,7 @@
     </section>
 
     <section id="test-landscape">
-      <details open>
+      <details>
         <summary>Test Landscape</summary>
         <div class="section-content">
           <!-- CONTENT:test-landscape -->
@@ -325,7 +325,7 @@
     </section>
 
     <section id="build-run">
-      <details open>
+      <details>
         <summary>Build & Run Instructions</summary>
         <div class="section-content">
           <!-- CONTENT:build-run -->
@@ -334,7 +334,7 @@
     </section>
 
     <section id="reading-order">
-      <details open>
+      <details>
         <summary>Suggested Reading Order</summary>
         <div class="section-content">
           <!-- CONTENT:reading-order -->
@@ -372,6 +372,8 @@
           e.preventDefault();
           var target = document.querySelector(this.getAttribute('href'));
           if (target) {
+            var details = target.querySelector('details');
+            if (details && !details.open) details.open = true;
             target.scrollIntoView({ behavior: 'smooth' });
             history.pushState(null, '', this.getAttribute('href'));
           }

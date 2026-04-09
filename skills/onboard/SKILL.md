@@ -89,17 +89,20 @@ Parse the agent's markdown output by splitting on `## ` headers. Convert each se
 - `→` in dependency graphs → `<span class="dep-arrow">→</span>`
 - Tables → `<table>` with `<th>` and `<td>`
 
-### 2.4 Assemble and write
+**Cross-linking:** When a section references a concept covered in another section (e.g., a type name in Data & State Flow that's defined in Key Abstractions), add an HTML anchor link: `<a href="#key-abstractions">Key Abstractions</a>`. This helps readers navigate between related sections.
+
+### 2.4 Assemble, validate, and write
 
 1. Replace all `<!-- META:... -->` placeholders with their values
 2. Replace all `<!-- CONTENT:... -->` placeholders with the converted HTML
-3. Ensure `docs/onboard/` directory exists:
+3. **Validate:** Check that no `<!-- CONTENT:` or `<!-- META:` placeholders remain in the assembled HTML. If any do, fill them with `<p>No data available for this section.</p>` for content placeholders or a sensible default for meta placeholders.
+5. Ensure `docs/onboard/` directory exists:
 
    ```bash
    mkdir -p docs/onboard
    ```
 
-4. Write the assembled HTML to:
+6. Write the assembled HTML to:
 
    ```
    docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html
