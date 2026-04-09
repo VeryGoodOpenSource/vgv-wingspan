@@ -177,23 +177,13 @@ Use **AskUserQuestion tool** to consider next steps:
 3. **Review and refine approach:** improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → output the following (substituting the actual brainstorm doc path) and then stop:
-
-```md
-To continue with a fresh context, run:
-
-/clear
-
-Then start planning with:
-
-/plan docs/brainstorm/<actual-brainstorm-filename>.md
-```
+**If the user selects "Clear context and plan"** → Follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
 **If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
 
 When `refine-approach` is complete, present these options:
 
-1. **Clear context and plan**: clear context for a fresh start, then plan
+1. **Clear context and plan**: follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/plan`
 2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Done for now**: ideation complete. To start planning later: `/plan`
 

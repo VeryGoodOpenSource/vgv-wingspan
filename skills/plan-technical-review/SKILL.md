@@ -43,16 +43,6 @@ If the plan-splitting-agent reports no split needed: include the scope summary i
 3. **Refine the plan**: improve the plan based on review findings
 4. **Done for now**: review complete
 
-**If the user selects "Clear context and build"** → output the following (substituting the actual plan file path) and then stop:
-
-```md
-To continue with a fresh context, run:
-
-/clear
-
-Then start building with:
-
-/build docs/plan/<actual-plan-filename>.md
-```
+**If the user selects "Clear context and build"** → Follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
 **When invoked by another skill** (e.g., from `/plan`), return control to the caller after the review completes — do not present handoff options.

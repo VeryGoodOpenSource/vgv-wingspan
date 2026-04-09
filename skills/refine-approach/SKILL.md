@@ -91,29 +91,9 @@ After changes are complete, ask:
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
-**If the user selects "Clear context and plan"** → output the following (substituting the actual brainstorm doc path) and then stop:
+**If the user selects "Clear context and plan"** → Follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
-```md
-To continue with a fresh context, run:
-
-/clear
-
-Then start planning with:
-
-/plan docs/brainstorm/<actual-brainstorm-filename>.md
-```
-
-**If the user selects "Clear context and build"** → output the following (substituting the actual plan file path) and then stop:
-
-```md
-To continue with a fresh context, run:
-
-/clear
-
-Then start building with:
-
-/build docs/plan/<actual-plan-filename>.md
-```
+**If the user selects "Clear context and build"** → Follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
 **When invoked by another skill** (e.g., from `/brainstorm` or `/plan`), only offer "Refine again" and "Review complete", then return control to the caller.
 
