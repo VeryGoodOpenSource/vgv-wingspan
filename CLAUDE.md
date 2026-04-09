@@ -26,6 +26,8 @@ Standalone Skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
+- **`/onboard`** — Generate a self-contained HTML site explaining the repository's structure, architecture, and key abstractions.
+
 Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
@@ -57,6 +59,7 @@ Quality-review agents:
 - `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
 - `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
+- `docs/onboard/` — Onboarding HTML sites from `/onboard`
 
 ## Hooks
 
