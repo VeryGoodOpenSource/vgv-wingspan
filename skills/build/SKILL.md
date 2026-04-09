@@ -138,7 +138,7 @@ After all implementation tasks are complete, run 5 review agents **in parallel**
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md).
+Each agent prompt must include the [review agent instructions](../shared/references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/reviews/`.
 
 The 5 agents and their report filenames:
 

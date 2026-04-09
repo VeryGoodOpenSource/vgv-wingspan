@@ -1,11 +1,11 @@
 # Review Agent Instructions
 
-Write your full detailed report to `docs/reviews/<name>.md` (create the directory if needed).
+Write your full detailed report to `<REPORT_DIR>/<name>.md` (create the directory if needed).
 Then return ONLY a short structured summary to the parent context in this format:
 
 ```markdown
 ## <Agent Name> Summary
-**Report**: `docs/reviews/<name>.md` (<word_count> words)
+**Report**: `<REPORT_DIR>/<name>.md` (<word_count> words)
 **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
 ### Findings
 - [Critical] <one-line description>
