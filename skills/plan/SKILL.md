@@ -265,7 +265,7 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 Based on selection:
 
-- **Clear context and build** → Follow the [clear context handoff](../shared/references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+- **Clear context and build** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
