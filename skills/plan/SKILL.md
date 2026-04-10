@@ -17,43 +17,23 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 ### 0. Idea Refinement
 
-**Check for brainstorm output first — before asking the user anything:**
-
-Look for recent brainstorm documents in `docs/brainstorm`:
+Check for brainstorm output first — before asking the user anything.
 
 ```bash
 ls -la docs/brainstorm/*.md 2>/dev/null | head -10
 ```
 
-**Relevance criteria:** A brainstorm is relevant if:
+A brainstorm is relevant if created within the last 7 days and its topic semantically matches the feature description (if provided).
 
-- Created within the last 7 days
-- If a feature description was provided above, the topic (from filename or YAML frontmatter) semantically matches it
+| Brainstorms found | Feature description provided? | Action |
+|-------------------|------------------------------|--------|
+| One relevant | Yes | Read it, announce "Found brainstorm from [date]: [topic]", extract key decisions, proceed |
+| One relevant | No | **AskUserQuestion**: "Plan this brainstorm?" — (Recommended) use it, or describe something different |
+| Multiple relevant | Either | **AskUserQuestion**: list candidates, ask which to use |
+| None / not relevant | No | Ask: "What would you like to plan?" |
+| None / not relevant | Yes | Run /brainstorm to clarify the idea first |
 
-**If exactly one relevant brainstorm exists and a feature description was provided:**
-
-1. Read the brainstorm document
-2. Announce: "Found brainstorm from [date]: [topic]. Using as context for planning."
-3. Extract key decisions, chosen approach, and open questions
-4. Use brainstorm decisions as input to the research phase
-
-**If exactly one relevant brainstorm exists but NO feature description was provided:**
-
-1. Read the brainstorm document
-2. Use **AskUserQuestion tool**: "I found a recent brainstorm: **[topic]** from [date]. Would you like to plan this, or describe something different?"
-   - **Options:**
-     1. **Plan this brainstorm (Recommended)** — use it as context and derive the feature description from it
-     2. **Describe something different** — ignore the brainstorm and ask what to plan instead
-3. If the user selects "Plan this brainstorm": extract key decisions, chosen approach, and open questions. Derive the feature description from the brainstorm topic.
-4. If the user selects "Describe something different": ask "What would you like to plan?" and proceed without the brainstorm.
-
-**If multiple relevant brainstorms exist:** Use **AskUserQuestion tool** to ask which brainstorm to use, providing a brief summary of each candidate. Derive the feature description from the selected brainstorm if none was provided.
-
-**If no brainstorm found (or not relevant) and no feature description was provided:** Ask the user: "What would you like to plan? Please describe the feature, bug fix, or improvement you have in mind."
-
-**If no brainstorm found but a feature description was provided:** run /brainstorm to clarify the idea before proceeding.
-
-Do not proceed until you have a clear feature description — either from the arguments, a brainstorm document, or the user.
+Do not proceed until you have a clear feature description — from arguments, a brainstorm, or the user.
 
 **Skip option**: if the description is already detailed enough, ask the user if they want to skip idea refinement and proceed directly to planning.
 
@@ -75,18 +55,13 @@ Instead, extract what's needed from the brainstorm and run targeted searches:
 
 Based on the findings from `0. Idea Refinement` and `1.1 Local research`, decide whether external research is needed:
 
-**High-risk topics: always research.** Security, payments, external APIs, personal data, data privacy. The cost of missing something is too high. This takes precedence over speed signals.
+| Signal | Decision |
+|--------|----------|
+| High-risk topic (security, payments, external APIs, personal data) | Always research — cost of missing something is too high |
+| Strong local context (good patterns, CLAUDE.md guidance, clear user intent) | Skip external research |
+| Uncertainty or unfamiliar territory (no codebase examples, new technology) | Research |
 
-**Strong local context: skip external research.** Codebase has good patterns, CLAUDE.md has guidance, user knows what they want. External research adds little value, so don't do it.
-
-**Uncertainty or unfamiliar territory: research.** User is exploring, codebase has no examples, new technology. External perspective is valuable.
-
-**Announce the decision and proceed.** Brief explanation, then continue. User can redirect if needed.
-
-Examples:
-
-- "Your codebase has solid patterns for this. Proceeding without external research."
-- "This involves payment processing, so I'll research current best practices first."
+Announce the decision briefly and proceed. User can redirect if needed.
 
 ###### 1.1.1.1 Conditional external research
 
@@ -149,49 +124,11 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 
 **Default to Standard.** Use a different level only when the task clearly warrants it.
 
-#### Minimal
-
-Use for simple bugs, small enhancements, or when the implementation is straightforward and well-understood.
-
-It includes:
-
-- Problem/feature description
-- Acceptance criteria
-- Essential context
-
-Use the [minimal template](references/minimal.md) for this level.
-
-#### Standard (default)
-
-Use for most features and bug fixes that require a moderate level of detail to ensure clarity and successful implementation.
-
-It includes:
-
-- Everything in Minimal, plus:
-  - Detailed background and motivation
-  - Technical considerations
-  - Success metrics
-  - Dependencies and risks
-  - Basic implementation suggestions
-
-Use the [standard template](references/standard.md) for this level.
-
-#### Extensive
-
-Use for major/complex features, architectural changes, or when the implementation involves significant risk or uncertainty.
-
-It includes:
-
-- Everything in Standard, plus:
-  - Detailed implementation plan with phases
-  - Alternative approaches considered
-  - Extensive technical specifications
-  - Resource requirements and timeline
-  - Future considerations and extensibility
-  - Risk mitigation strategies
-  - Documentation requirements
-
-Use the [extensive template](references/extensive.md) for this level.
+| Level | When to use | Template |
+|-------|-------------|----------|
+| **Minimal** | Simple bugs, small enhancements, straightforward implementation | [minimal](references/minimal.md) |
+| **Standard** (default) | Most features and bug fixes needing moderate detail | [standard](references/standard.md) |
+| **Extensive** | Major features, architectural changes, significant risk or uncertainty | [extensive](references/extensive.md) |
 
 ### 4.1. Set up workspace
 
@@ -201,29 +138,13 @@ Before writing the plan file, ensure the session is on a feature branch:
 
 ### 5. Issue creation and formatting
 
-**Content Formatting:**
+**Formatting checklist:**
 
-- [ ] Use clear, descriptive headings with proper hierarchy (##, ###)
-- [ ] Include code examples in triple backticks with language syntax highlighting
-- [ ] Add screenshots/mockups if UI-related (drag & drop or use image hosting)
-- [ ] Use task lists (- [ ]) for trackable items that can be checked off
-- [ ] Add collapsible sections for lengthy logs or optional details using `<details>` tags
-- [ ] Apply appropriate emoji for visual scanning (🐛 bug, ✨ feature, 📚 docs, ♻️ refactor)
-
-**Cross-Referencing:**
-
-- [ ] Link to related issues/PRs using #number format
-- [ ] Reference specific commits with SHA hashes when relevant
-- [ ] Link to code using GitHub's permalink feature (press 'y' for permanent link)
-- [ ] Mention relevant team members with @username if needed
-- [ ] Add links to external resources with descriptive text
-
-**AI-Era Considerations:**
-
-- [ ] Account for accelerated development with AI-assisted engineering
+- [ ] Clear heading hierarchy (##, ###) and fenced code blocks with language identifiers
+- [ ] Task lists (`- [ ]`) for trackable items; collapsible `<details>` for lengthy content
+- [ ] Link related issues/PRs (`#number`), commits (SHA), and code (GitHub permalinks)
 - [ ] Include prompts or instructions that worked well during research
-- [ ] Emphasize comprehensive testing given rapid implementation
-- [ ] Document any AI-generated code that needs human review
+- [ ] Emphasize comprehensive testing given rapid AI-assisted implementation
 
 ### 6. Final review
 
@@ -244,11 +165,7 @@ Before writing the plan file, ensure the session is on a feature branch:
 Examples:
 
 - ✅ `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`
-- ✅ `docs/plan/2026-02-03-fix-checkout-race-condition-plan.md`
-- ✅ `docs/plan/2026-03-10-refactor-api-client-extraction-plan.md`
-- ❌ `docs/plan/2026-01-15-feat-thing-plan.md` (not descriptive - what "thing"?)
-- ❌ `docs/plan/2026-01-15-feat-new-feature-plan.md` (too vague - what feature?)
-- ❌ `docs/plan/2026-01-15-feat: user auth-plan.md` (invalid characters - colon and space)
+- ❌ `docs/plan/2026-01-15-feat-thing-plan.md` (not descriptive)
 - ❌ `docs/plan/feat-user-auth-plan.md` (missing date prefix)
 
 ## Post-Generation Options
