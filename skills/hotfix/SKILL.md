@@ -122,7 +122,7 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](../shared/references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/hotfix-review/`.
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/hotfix-review/`.
 
 The 2 agents and their report filenames:
 
