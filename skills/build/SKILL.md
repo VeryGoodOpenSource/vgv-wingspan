@@ -152,7 +152,7 @@ The 5 agents and their report filenames:
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](../shared/references/review-consolidation.md): categorize findings, auto-fix minor issues, fix critical issues, present important issues to the user, and record suggestions.
+Follow the [review consolidation procedure](references/review-consolidation.md): categorize findings, auto-fix minor issues, fix critical issues, present important issues to the user, and record suggestions.
 
 ## Phase 4 — Ship
 

@@ -97,7 +97,7 @@ Default agents and their report filenames:
 
 After all reviews complete:
 
-1. [Categorize findings](../shared/references/review-consolidation.md) from all summaries into Critical, Important, and Suggestions.
+1. [Categorize findings](references/review-consolidation.md) from all summaries into Critical, Important, and Suggestions.
 
 2. **Present the consolidated summary** to the user with counts per category and the one-line descriptions from each agent.
 

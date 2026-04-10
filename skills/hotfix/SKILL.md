@@ -133,7 +133,7 @@ The 2 agents and their report filenames:
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](../shared/references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
+Follow the [review consolidation procedure](references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
 
 ### Cleanup
 
