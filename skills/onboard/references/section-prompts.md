@@ -40,12 +40,12 @@ The agent's output must use **exactly** these markdown headers. The skill parses
 **Header:** `## Dependency Graph`
 
 **Must include:**
-- Module-to-module dependency relationships
-- Leaf modules (depended on by many, depend on few)
-- Circular dependencies (if any)
-- Key external dependencies per module
+- The shape of the dependency graph (e.g., hub-and-spoke, layered, flat)
+- Hub modules and leaf modules — what role they play
+- Circular dependencies or surprising relationships (if any)
+- 3-5 most important external dependencies and what role they play
 
-**Format:** Use a markdown table or arrow notation (`module-a → module-b`).
+**Format:** Use arrow notation (`module-a → module-b`) or a simplified diagram. For repos with many modules, describe the pattern rather than listing every relationship — a 15-row table is less useful than a clear description of the graph's shape.
 
 ---
 
@@ -91,11 +91,12 @@ The agent's output must use **exactly** these markdown headers. The skill parses
 **Header:** `## Test Landscape`
 
 **Must include:**
-- Testing framework(s) used
-- Coverage by module (which have tests, which don't)
-- Types of tests present (unit, integration, E2E, visual)
-- Areas with notably thin or absent coverage
+- Testing framework(s) and conventions (e.g., "uses mocktail for mocking, pump for widget tests")
+- Qualitative coverage narrative — which areas are well-tested, which are thin
+- Types of tests present (unit, integration, E2E, visual) and where each type lives
 - Test patterns used (mocks, fixtures, factories)
+
+**Do not** enumerate exact file counts per module. Describe coverage in relative terms ("strong", "minimal", "none found").
 
 ---
 
@@ -104,14 +105,12 @@ The agent's output must use **exactly** these markdown headers. The skill parses
 **Header:** `## Build & Run Instructions`
 
 **Must include:**
-- Prerequisites (tools, runtimes, env vars)
-- Install dependencies
-- Build the project
-- Run locally
-- Run tests
-- Any other common tasks (lint, format, generate)
+- Prerequisites (tools, runtimes, services that must be running)
+- General workflow: install deps → build → run → test
+- Gotchas that will trip up a newcomer (e.g., codegen must run first, multiple SDK versions coexist)
+- Where to find detailed commands (Makefile, package.json scripts, root README)
 
-**Format:** Use code blocks for commands.
+**Do not** reproduce full command sequences that already exist in project files. Point to the source of truth. Focus on what a newcomer needs to know that isn't obvious from the project files themselves.
 
 ---
 
