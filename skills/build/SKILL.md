@@ -105,7 +105,7 @@ Every new state management unit, repository, UI component, and data model must h
 
 ### Step 3: Validate
 
-After implementing each task, follow the [validation and fix procedure](../shared/references/validate-and-fix.md).
+After implementing each task, follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Step 4: Checkpoint
 

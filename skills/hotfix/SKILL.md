@@ -97,7 +97,7 @@ Tests are non-negotiable, even for hotfixes:
 
 ### Step 3: Validate
 
-Follow the [validation and fix procedure](../shared/references/validate-and-fix.md).
+Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Execution Rules
 
