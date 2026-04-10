@@ -1,0 +1,1 @@
+../../shared/references/plan-templates/minimal.md
