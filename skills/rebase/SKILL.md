@@ -15,7 +15,7 @@ Rebase the current feature branch onto the latest base branch to keep it up-to-d
 
 Run these checks in order. If any fail, inform the user and stop.
 
-### Detect current branch
+### Detect current branch and base branch
 
 ```bash
 git rev-parse --abbrev-ref HEAD
@@ -23,9 +23,13 @@ git rev-parse --abbrev-ref HEAD
 
 If the result is `main`, `master`, or `develop` — inform the user they're already on the base branch and stop.
 
-### Detect base branch
+Detect the base branch:
 
-Check for `main`, `master`, `develop` (in that order). Use the first one that exists. If none exist, inform the user and stop.
+```!
+bash scripts/detect-base-branch.sh
+```
+
+If the script exits with an error, inform the user no base branch was found and stop.
 
 ### Check for uncommitted changes
 

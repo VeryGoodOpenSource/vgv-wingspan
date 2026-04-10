@@ -27,32 +27,16 @@ Parse the review scope above for optional file paths or directories.
 
 **If no paths provided:**
 
-1. Detect current branch:
+Run the scope detection script:
 
-   ```bash
-   git rev-parse --abbrev-ref HEAD
-   ```
+```!
+bash scripts/detect-review-scope.sh
+```
 
-2. Detect default branch:
-
-   ```bash
-   git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'
-   ```
-
-   Fallback: check for `main`, then `master`.
-
-3. **If on a feature branch** (current branch differs from the default branch):
-   - Get changed files: `git diff <default-branch>...HEAD --name-only`
-   - Include uncommitted changes: `git diff --name-only` and `git diff --cached --name-only`
-   - Deduplicate the combined file list
-   - Announce scope summary: number of changed files, which areas of the codebase are affected
-   - Proceed to Step 2 — the user invoked `/review`, intent is clear
-
-4. **If on the default branch:**
-   - Tell the user: "You're on `<branch>`. No branch diff available."
-   - Use **AskUserQuestion**: "What would you like to review?" with options:
-     - **Specify files or directories**: accept paths from the user
-     - **Review entire project**: no scope constraint
+- **If `SCOPE=branch`**: use the listed files as review scope. Announce scope summary: number of changed files, which areas of the codebase are affected. Proceed to Step 2.
+- **If `SCOPE=default`**: tell the user: "You're on `<CURRENT_BRANCH>`. No branch diff available." Use **AskUserQuestion**: "What would you like to review?" with options:
+  - **Specify files or directories**: accept paths from the user
+  - **Review entire project**: no scope constraint
 
 ## Step 2 — Run Reviews
 
