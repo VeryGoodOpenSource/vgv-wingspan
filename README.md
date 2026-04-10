@@ -29,7 +29,7 @@ Start here. Describe the problem or idea — the bigger and more open-ended, the
 
 Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
 
-### 2. `/plan/
+### 2. `/plan`
 
 Once you're happy with the brainstorm, turn it into an actionable implementation plan:
 
