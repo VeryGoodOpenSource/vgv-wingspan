@@ -74,7 +74,7 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skill validation | Validates changed `SKILL.md` frontmatter and structure | `Flash-Brew-Digital/validate-skill@v1` |
-| Manifest validation | Validates `.claude-plugin/plugin.json` | `scripts/validate_plugin_manifest.sh` |
+| Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.
 
