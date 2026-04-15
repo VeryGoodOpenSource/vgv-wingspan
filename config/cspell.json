@@ -19,6 +19,7 @@
     "pasteable",
     "pubspec",
     "worktrees",
+    "undiscussed",
     "pipefail"
   ],
   "flagWords": []

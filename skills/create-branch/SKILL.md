@@ -25,9 +25,15 @@ Run:
 git rev-parse --abbrev-ref HEAD
 ```
 
-**If the result is NOT `main`, `master`, or `develop`:** the session is already on a feature branch. Skip silently — return control to the caller without any output.
+Compare the result against the base branch detected by:
 
-**If the result is `main`, `master`, or `develop` (or `HEAD` for detached state):** proceed to Step 2.
+```!
+bash scripts/detect-base-branch.sh
+```
+
+**If the current branch is NOT the base branch (and not `HEAD`):** the session is already on a feature branch. Skip silently — return control to the caller without any output.
+
+**If the current branch IS the base branch (or `HEAD` for detached state):** proceed to Step 2.
 
 ## Step 2: Infer branch name
 
