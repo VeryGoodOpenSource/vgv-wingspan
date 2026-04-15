@@ -26,6 +26,8 @@ Standalone Skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
+- **`/debug`** — Structured, interactive hypothesis-driven debugging. Instruments code to test hypotheses, then removes all debug code after fixing.
+
 Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
