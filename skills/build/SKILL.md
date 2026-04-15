@@ -105,18 +105,7 @@ Every new state management unit, repository, UI component, and data model must h
 
 ### Step 3: Validate
 
-After implementing each task, in order:
-
-Run static analysis — detect and use the project's linter/analyzer.
-
-Run tests — detect and use the project's test runner.
-
-If failures occur:
-- Fix the issue and re-run
-- Up to 3 attempts per failure
-- After 3 failed attempts, use **AskUserQuestion** to ask the user for guidance with context on what failed and what you tried
-
-Fix all lint warnings before proceeding.
+After implementing each task, follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Step 4: Checkpoint
 
