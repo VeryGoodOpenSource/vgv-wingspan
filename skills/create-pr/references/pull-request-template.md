@@ -10,10 +10,7 @@ Check for a project-level template in this order:
 2. **GitLab:** `.gitlab/merge_request_templates/Default.md`
 3. **Fallback:** use the default template below.
 
-```bash
-cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null \
-  || cat .gitlab/merge_request_templates/Default.md 2>/dev/null
-```
+Read whichever file exists first. Use the **Read** tool — do not use `cat`.
 
 If a project-level template is found, use it as the structure. Strip HTML comments and pre-fill where possible.
 
