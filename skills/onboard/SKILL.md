@@ -95,14 +95,14 @@ Parse the agent's markdown output by splitting on `## ` headers. Convert each se
 
 1. Replace all `<!-- META:... -->` placeholders with their values
 2. Replace all `<!-- CONTENT:... -->` placeholders with the converted HTML
-3. **Validate:** Check that no `<!-- CONTENT:` or `<!-- META:` placeholders remain in the assembled HTML. If any do, fill them with `<p>No data available for this section.</p>` for content placeholders or a sensible default for meta placeholders.
-5. Ensure `docs/onboard/` directory exists:
+3. **Validate:** Scan the assembled HTML for any remaining `<!-- CONTENT:` or `<!-- META:` placeholders. Fill missing content placeholders with `<p>No data available for this section.</p>` and missing meta placeholders with a sensible default. Verify that at least the Project Overview and Architecture Map sections contain real content (not just the fallback) — if both are empty, the agent output was likely malformed; report the error and stop.
+4. Ensure `docs/onboard/` directory exists:
 
    ```bash
    mkdir -p docs/onboard
    ```
 
-6. Write the assembled HTML to:
+5. Write the assembled HTML to:
 
    ```
    docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html
