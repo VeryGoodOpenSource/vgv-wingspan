@@ -97,10 +97,7 @@ Default agents and their report filenames:
 
 After all reviews complete:
 
-1. **Consolidate findings** from all summaries into three categories:
-   - **Critical** (must fix before merge): Bugs, missing tests, layer violations, broken analysis
-   - **Important** (should fix): Convention deviations, test gaps, naming issues
-   - **Suggestions** (nice to have): Style improvements, minor simplifications
+1. [Categorize findings](references/review-consolidation.md) from all summaries into Critical, Important, and Suggestions.
 
 2. **Present the consolidated summary** to the user with counts per category and the one-line descriptions from each agent.
 
