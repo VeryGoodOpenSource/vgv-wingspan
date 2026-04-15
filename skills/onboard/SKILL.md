@@ -62,7 +62,7 @@ Determine values for the metadata placeholders:
 
 ### 2.3 Map agent output to HTML sections
 
-Parse the agent's markdown output by splitting on `## ` headers. Convert each section's markdown content to HTML:
+Parse the agent's markdown output by splitting on `##` headers. Convert each section's markdown content to HTML:
 
 | Agent Section Header | HTML Placeholder |
 |----------------------|-----------------|
@@ -104,7 +104,7 @@ Parse the agent's markdown output by splitting on `## ` headers. Convert each se
 
 5. Write the assembled HTML to:
 
-   ```
+   ```text
    docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html
    ```
 

@@ -171,7 +171,7 @@ Based on everything above, recommend an order for a newcomer to read the code:
 
 You MUST structure your output using exactly these section headers. Each section maps to a section in the final HTML output. Use markdown within each section.
 
-```
+```markdown
 ## Project Overview & Tech Stack
 
 [content]
