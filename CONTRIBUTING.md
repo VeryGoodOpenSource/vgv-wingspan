@@ -64,6 +64,95 @@ Add a row to the skills table in `README.md`:
 - **Provide complete, copy-pasteable snippets** — not fragments.
 - **Reference packages by full name** (e.g., `package:mocktail`, not just "mocktail").
 - **Show anti-patterns alongside correct patterns** when helpful, so readers understand both what to do and what to avoid.
+- **Keep prose tight** — every word in a SKILL.md consumes tokens in the model's context window. Verbose instructions reduce the space available for the user's actual work. Apply these techniques:
+  - **Decision tables over prose chains** — replace long if/else narratives with a table or compact bulleted list.
+  - **One sentence per rule** — if a guideline needs a paragraph to explain, it may be too complex or doing too much.
+  - **Cut redundancy** — don't restate in an "Important" footer what the body already says.
+  - **Collapse conditional blocks** — when multiple branches share structure, describe the shared part once and list only what differs.
+
+## Shared Resources & Skill Boundaries
+
+### The skill directory boundary
+
+A skill can only reference files inside its own directory. Paths that escape the skill folder (e.g., `../shared/references/foo.md`) will fail validation with a `reference-exists` error. This applies to both markdown reference links and script paths in `!` blocks.
+
+### Sharing content across skills
+
+When multiple skills need the same content (templates, instructions, procedures), store the canonical file in `skills/shared/` and create a **symlink** inside each skill that needs it.
+
+**Directory layout:**
+
+```text
+skills/
+  shared/
+    references/
+      validate-and-fix.md          # canonical file
+    scripts/
+      detect-base-branch.sh        # canonical file
+  build/
+    references/
+      validate-and-fix.md -> ../../shared/references/validate-and-fix.md
+    SKILL.md
+  hotfix/
+    references/
+      validate-and-fix.md -> ../../shared/references/validate-and-fix.md
+    SKILL.md
+```
+
+**Creating a symlink:**
+
+```bash
+# From the repo root
+ln -s ../../shared/references/validate-and-fix.md skills/build/references/validate-and-fix.md
+```
+
+**Referencing in SKILL.md** — always use the local path:
+
+```markdown
+Follow the [validation and fix procedure](references/validate-and-fix.md).
+```
+
+Never reference `../shared/` directly in a SKILL.md — the symlink makes the shared file appear local.
+
+### Shared scripts
+
+The same boundary rule applies to scripts. Store canonical scripts in `skills/shared/scripts/`, symlink into each skill's `scripts/` directory, and reference them locally.
+
+**Example — adding a shared script to a skill:**
+
+```bash
+mkdir -p skills/my-skill/scripts
+ln -s ../../shared/scripts/detect-base-branch.sh skills/my-skill/scripts/detect-base-branch.sh
+```
+
+**Referencing in SKILL.md:**
+
+````markdown
+```!
+bash scripts/detect-base-branch.sh
+```
+````
+
+### When to use scripts vs inline bash
+
+Use a script when the operation is:
+
+- **Deterministic** — no LLM judgment needed, just structured output
+- **Reusable** — the same logic appears in 2+ skills
+- **Multi-step** — combines several commands with conditional logic
+
+Keep inline bash when:
+
+- It's a single, simple command (e.g., `git rev-parse --abbrev-ref HEAD`)
+- The model needs to see the raw output to make a decision
+- The command is skill-specific and unlikely to be reused
+
+**Script conventions:**
+
+- Use `#!/usr/bin/env bash` and `set -euo pipefail` — this exits on any error (`-e`), treats unset variables as errors (`-u`), and fails the whole pipeline if any command in a pipe fails (`-o pipefail`). Without it, scripts can silently swallow failures.
+- Output structured, parseable text (e.g., `KEY=value` lines)
+- Write errors to stderr, data to stdout
+- Exit 1 on failure with a descriptive message
 
 ## CI Checks
 

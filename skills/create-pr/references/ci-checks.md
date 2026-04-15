@@ -10,10 +10,7 @@ Check for a CI configuration file in this order:
 2. **GitLab CI:** `.gitlab-ci.yml`
 3. **Fallback:** no CI configuration found — skip CI checks entirely.
 
-```bash
-cat .github/workflows/ci.yaml 2>/dev/null \
-  || cat .gitlab-ci.yml 2>/dev/null
-```
+Read whichever file exists first. Use the **Read** tool — do not use `cat`.
 
 If no file is found, skip CI checks entirely.
 

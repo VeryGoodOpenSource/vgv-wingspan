@@ -61,31 +61,15 @@ git rev-parse --abbrev-ref HEAD
 
 ### Blast Radius Check
 
-Before writing any code, outline the planned change:
+Before writing any code, outline which files and layers the fix touches.
 
-- Which files will be modified
-- Which layers are touched
-- Estimated lines changed
+**If >5 files, multiple layers, or new abstractions needed:** warn the user and use **AskUserQuestion**: (1) Proceed with hotfix, (2) Switch to `/plan`.
 
-**If the fix touches more than 5 files, spans multiple layers, or requires new abstractions:** warn the user:
-
-> This fix has a large blast radius (<N> files across <layers>). Consider switching to the full `/plan` → `/build` workflow for a more structured approach.
-
-Use **AskUserQuestion** with options:
-
-1. **Proceed with hotfix** — continue, accepting the risk
-2. **Switch to /plan** — abort hotfix, start planning
-
-**If the fix is contained (≤5 files, single layer or tightly coupled area):** proceed directly.
+**If contained (≤5 files, single layer):** proceed directly.
 
 ### Step 1: Implement
 
-Write the minimal change that addresses the root cause:
-
-- **Minimal diff**: change only what is necessary. No drive-by refactors, no "while I'm here" improvements.
-- **Scope guard**: if you find yourself touching code unrelated to the bug, stop and flag it to the user as scope creep.
-- **Leave TODOs for follow-up**: if you notice related issues, tech debt, or improvements that are out of scope for this hotfix, add `// TODO(hotfix): <description>` comments in the code so they can be addressed later in a proper `/plan` → `/build` cycle.
-- **Follow existing patterns**: match the style and conventions of the surrounding code.
+Write the minimal change that addresses the root cause. Change only what is necessary — no drive-by refactors. If you touch unrelated code, stop and flag scope creep. Leave `// TODO(hotfix): <description>` comments for out-of-scope issues. Match surrounding code style.
 
 ### Step 2: Test
 
@@ -97,16 +81,7 @@ Tests are non-negotiable, even for hotfixes:
 
 ### Step 3: Validate
 
-Run static analysis — detect and use the project's linter/analyzer.
-
-Run tests — detect and use the project's test runner.
-
-If failures occur:
-- Fix the issue and re-run
-- Up to 3 attempts per failure
-- After 3 failed attempts, use **AskUserQuestion** to ask the user for guidance with context on what failed and what you tried
-
-Fix all lint warnings before proceeding.
+Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Execution Rules
 
@@ -122,7 +97,7 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md).
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/hotfix-review/`.
 
 The 2 agents and their report filenames:
 
@@ -133,13 +108,7 @@ The 2 agents and their report filenames:
 
 ### After reviews complete
 
-1. **Critical findings** → Read the specific report file (e.g., `docs/hotfix-review/vgv-review.md`) for full details on each critical finding. Fix immediately, re-run validation, and commit. Only read reports that contain critical issues — do not load both reports into context unnecessarily.
-
-2. **Important findings** → use **AskUserQuestion**:
-   - **Fix all**: address every important issue (read relevant report files for details)
-   - **Skip to shipping**: note them in the PR description
-
-3. **Suggestions** → record for PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
 
 ### Cleanup
 
@@ -155,12 +124,9 @@ rm -rf docs/hotfix-review/
 
 Run the project's formatter, linter, and test runner one last time. Fix any failures before proceeding.
 
-### Commit
+### Ship
 
-Create a single, cherry-pick-friendly commit:
-
-- Stage only the files related to the fix (no unrelated changes).
-- Write a commit message in this format:
+Create a single, cherry-pick-friendly commit. Stage only fix-related files (no unrelated changes). Use this commit format:
 
 ```text
 fix: <concise description of what was fixed>
@@ -170,12 +136,7 @@ fix: <concise description of what was fixed>
 Bug: <original bug description or issue link, truncated if long>
 ```
 
-### Pull Request
-
-Push the branch and create a PR using `gh pr create`:
-
-- **Title**: `fix: <concise description>` (under 70 characters)
-- **Body**: Use the [PR template](references/pr-template.md)
+Push the branch and create a PR. **Title**: `fix: <concise description>` (under 70 chars). **Body**: Use the [PR template](references/pr-template.md).
 
 ### Post-Ship
 
