@@ -36,35 +36,20 @@ ls -1 docs/plan/*.md 2>/dev/null || echo "(no plans found)"
 
 ## Phase 0 — Load Plan
 
-**If the plan path above is empty:**
-
-1. Check the available plans listed above.
-
-Then:
-
-1. **If exactly one plan exists:** Read the plan, announce "Found plan: [title]. Using this for implementation.", and proceed with it. No need to ask the user.
-2. **If multiple plans exist:** Use **AskUserQuestion** to ask which plan to execute, listing each plan filename with a brief summary from the first heading.
-3. **If no plans exist:** Tell the user: "No plans found in `docs/plan/`. Run `/plan` first to create an implementation plan."
+| Plan path | Plans in `docs/plan/` | Action |
+|-----------|-----------------------|--------|
+| Provided | — | Read the file. If missing, suggest running `/plan` |
+| Empty | One | Read it, announce "Found plan: [title]", proceed |
+| Empty | Multiple | **AskUserQuestion**: list each with summary, ask which to use |
+| Empty | None | Tell user to run `/plan` first |
 
 Do not proceed without a plan.
 
-**If the plan path is provided:**
+**After loading the plan:** parse title, type, acceptance criteria, tasks, and file paths. Summarize scope to the user, then use **AskUserQuestion** to confirm:
 
-1. Read the plan file
-2. If the file doesn't exist, tell the user and suggest running `/plan`
-
-**After loading the plan:**
-
-1. Parse the plan and extract:
-   - Title and type (feat, fix, refactor, etc.)
-   - Acceptance criteria
-   - Implementation tasks/phases
-   - File paths referenced
-2. Summarize the scope to the user: number of tasks, files to create/modify, estimated complexity
-3. Use **AskUserQuestion** to confirm:
-   - **Start building (Recommended)**: proceed with implementation
-   - **Review the plan first**: open the plan file for the user to review
-   - **Adjust scope**: accept user input on what to change
+- **Start building (Recommended)**: proceed with implementation
+- **Review the plan first**: open the plan file for review
+- **Adjust scope**: accept user input on what to change
 
 Do not proceed until the user selects "Start building."
 
@@ -84,13 +69,7 @@ Work through each task/phase in the plan, in order. For each task:
 
 ### Step 1: Implement
 
-Write code following VGV conventions:
-
-- **Layer order**: Data → Domain → Presentation. Build dependencies before dependents.
-- **State management**: Use the project's chosen state management tool, following VGV conventions.
-- **Style**: Follow VGV naming and style conventions. Detect the project's linter and formatter.
-- **File naming**: Follow the project's existing patterns.
-- **Imports**: Respect layer boundaries. Presentation never imports data directly.
+Write code following VGV conventions. Build layers in dependency order (Data → Domain → Presentation). Use the project's state management tool, naming patterns, linter, and formatter. Respect layer boundaries — presentation never imports data directly.
 
 ### Step 2: Test
 
@@ -159,17 +138,9 @@ Remove the review reports — their findings have already been addressed or reco
 rm -rf docs/reviews/
 ```
 
-### Open PR
-
-Call the **create-pr** skill with `skip-checks` (validation already ran above):
-
-```bash
-/create-pr skip-checks
-```
-
 ### Commit
 
-Stage all implementation and fix changes. Write a commit message:
+Stage all implementation and fix changes. Use this commit format:
 
 ```text
 <type>: <concise description of what was built>
@@ -179,12 +150,9 @@ Implements <plan title or summary>.
 
 Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.).
 
-### Pull Request
+### Ship
 
-Push the branch and create a PR using `gh pr create`:
-
-- **Title**: `<type>: <concise description>` (under 70 characters)
-- **Body**: Use the [PR template](references/pr-template.md)
+Call `/create-pr skip-checks` to push and open a PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 
 ### Post-Ship
 

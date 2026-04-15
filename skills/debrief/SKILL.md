@@ -47,57 +47,29 @@ The skill must work with partial information. Not every debrief has full CI logs
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
 
-#### 2.1 Git history
+Run these in parallel:
 
-Search for commits and changes related to the incident:
-
-- Identify affected files from the incident description
-- Run `git log` on those files to find recent changes (last 2 weeks or a user-specified time range)
-- Run `git log --all --oneline` with relevant date ranges to find related commits
-- If PR numbers are provided, use `gh pr view <number>` to gather PR details and review comments
-
-#### 2.2 CI/CD evidence
-
-If the user provided CI run references or if recent failures are findable:
-
-- Use `gh run list` to find recent failed CI runs (if applicable)
-- Use `gh run view <id>` for specific runs the user referenced
-- Skip this step if no CI context is available — do not block on missing CI data
-
-#### 2.3 Affected file analysis
-
-For each file identified as part of the incident:
-
-- Check test coverage: are there test files for the affected code? Use Glob to search for corresponding test files.
-- Check recent change frequency: `git log --oneline <file>` to see how often it changed recently
-- Note any files that lack tests or have high churn
+- **Git history**: `git log` on affected files (last 2 weeks or user-specified range), `git log --all --oneline` for related commits, `gh pr view` for referenced PRs
+- **CI/CD evidence**: `gh run list` for recent failures, `gh run view <id>` for referenced runs. Skip if no CI context — do not block on missing data.
+- **Affected file analysis**: Check test coverage (Glob for test files), recent change frequency (`git log --oneline <file>`). Note files lacking tests or with high churn.
 
 ### 3. Analyze root cause
 
-Synthesize the gathered evidence to identify:
+Synthesize the evidence to identify the **root cause** (specific change, gap, or condition — trace to commits or code paths) and **contributing factors** (missing tests, no monitoring, unclear ownership, insufficient review).
 
-1. **Root cause**: The specific change, gap, or condition that caused the incident. Trace to specific commits or code paths where possible.
-2. **Contributing factors**: Conditions that made the incident more likely, harder to detect, or slower to resolve. Examples:
-   - Missing test coverage for the affected path
-   - No monitoring or alerting on the failure mode
-   - Unclear ownership of the affected component
-   - Missing validation or error handling
-   - Insufficient review of the change that introduced the issue
-
-**Blameless framing:** Focus on systems and processes, not individuals. Use "the change" not "developer X's change." Ask "what made this possible?" not "who caused this?"
+**Blameless framing:** Focus on systems and processes, not individuals. Ask "what made this possible?" not "who caused this?"
 
 ### 4. Draft action items
 
-Generate concrete, assignable follow-ups. Each action item must be:
+Generate concrete, assignable follow-ups. Each must be specific (not "improve testing"), linked to code where possible, and categorized:
 
-- **Specific**: "Add integration test for payment webhook retry logic" not "improve testing"
-- **Linked to code where possible**: Reference specific files, functions, or paths that need changes
-- **Categorized by type**:
-  - **Prevent**: Changes that would have prevented this incident (e.g., add validation, add test)
-  - **Detect**: Changes that would have caught it sooner (e.g., add monitoring, add CI check)
-  - **Respond**: Changes that would have made recovery faster (e.g., add runbook, add feature flag)
+| Type | Purpose | Examples |
+|------|---------|----------|
+| **Prevent** | Would have stopped this incident | Add validation, add test |
+| **Detect** | Would have caught it sooner | Add monitoring, add CI check |
+| **Respond** | Would have made recovery faster | Add runbook, add feature flag |
 
-Action items are recorded in the document only. They become separate tickets — the debrief skill does not make code changes.
+Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 

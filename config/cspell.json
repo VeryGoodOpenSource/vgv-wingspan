@@ -18,7 +18,8 @@
     "worktree",
     "pasteable",
     "pubspec",
-    "worktrees"
+    "worktrees",
+    "undiscussed"
   ],
   "flagWords": []
 }

@@ -22,66 +22,28 @@ DO NOT proceed until you have a description from the user.
 
 ### 0. Assess scope and workspace
 
-Before diving into questions, determine whether this is a **new project** or a **feature for the current project**.
+Determine whether this is a **new project** or a **feature for the current project**.
 
-**Signals this is a new project:**
+| Signal | Conclusion |
+|--------|------------|
+| User says "new app", "new project", "build from scratch"; no relevant code in working directory | New project |
+| User references existing code/screens; idea extends current functionality | Feature for current project → skip to Step 0.1 |
 
-- User says "new app", "new project", "create a …", "build a … from scratch"
-- The described work has no relation to the current codebase
-- No existing code, packages, or patterns in the working directory are relevant
+**If new project**, use **AskUserQuestion**: "This sounds like a new project. Where would you like to work?"
 
-**Signals this is a feature for the current project:**
-
-- User references existing code, screens, or modules
-- The idea extends or modifies current functionality
-- The working directory contains a codebase related to the description
-
-**If this appears to be a new project**, use **AskUserQuestion tool**:
-
-**Question:** "This sounds like a new project. Where would you like to work?"
-
-**Options:**
-
-1. **Create project first** — scaffold the project with `/create`, open it in your editor, then brainstorm in that workspace. This keeps all artifacts, plans, and code in the right place from the start.
-2. **Continue here** — brainstorm in the current workspace. You'll need to move artifacts and switch workspaces later.
-
-**If the user selects "Create project first"** → output the following (interpolating the user's feature description into step 3) and then stop:
-
-```md
-To get started in the right workspace:
-
-1. Run `/create` to scaffold your project
-2. Open the new project folder in your editor
-3. Run `/brainstorm <original feature description>` in that workspace to continue
-
-This ensures all brainstorm docs, plans, and code land in the correct project from the start.
-
-> If `/create` does not support your project type, you can create the project manually, open it, and then run step 3.
-```
-
-**If the user selects "Continue here"** → proceed to Step 0.1.
-
-**If this is clearly a feature for the current project** → proceed to Step 0.1 directly. Do not ask.
+1. **Create project first (Recommended)** — output instructions to run `/create`, open the new folder, then `/brainstorm <description>` in that workspace. Then stop.
+2. **Continue here** — proceed to Step 0.1
 
 ### 0.1. Assess clarity of requirements
 
-Before diving into questions, assess whether brainstorming is needed.
+Assess whether brainstorming is needed.
 
-**Signals that requirements are clear:**
+| Requirements are clear | Brainstorming is needed |
+|------------------------|------------------------|
+| Specific acceptance criteria provided | Vague terms ("make it better", "add something like") |
+| Exact behavior described, scope constrained | Multiple reasonable interpretations, trade-offs undiscussed |
 
-- User provided specific acceptance criteria
-- User referenced existing patterns to follow
-- User described exact behavior expected
-- Scope is constrained and well-defined
-
-**Signals that brainstorming is needed:**
-
-- User used vague terms ("make it better", "add something like")
-- Multiple reasonable interpretations exist
-- Trade-offs haven't been discussed
-- User seems unsure about the approach
-
-**If requirements are clear:** Use **AskUserQuestion tool** to let the user know: "Your requirements seem clear. Consider proceeding directly to planning or implementation."
+**If clear:** Use **AskUserQuestion** to suggest proceeding directly to planning.
 
 ### 1. Understand the idea
 
@@ -97,22 +59,7 @@ Focus on: similar features, established patterns, CLAUDE.md guidance.
 
 Use the **AskUserQuestion tool** to ask questions one at a time. The tool automatically provides an "Other" option for free-text input — never add your own catch-all option (e.g., "Something else", "None of the above").
 
-**Question Techniques:**
-
-1. **Prefer multiple choice when natural options exist**
-   - Good: "Should the notification be: (a) email only, (b) in-app only, or (c) both?"
-   - Avoid: "How should users be notified?"
-
-2. **Start broad, then narrow**
-   - First: What is the core purpose?
-   - Then: Who are the users?
-   - Finally: What constraints exist?
-
-3. **Validate assumptions explicitly**
-   - "I'm assuming users will be logged in. Is that correct?"
-
-4. **Ask about success criteria early**
-   - "How will you know this feature is working well?"
+**Question Techniques:** Prefer multiple choice over open-ended. Start broad (purpose, users) then narrow (constraints, edge cases). Validate assumptions explicitly. Ask about success criteria early.
 
 **Key Topics to Explore:**
 
