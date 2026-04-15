@@ -15,13 +15,15 @@
     "oneline",
     "pasteable",
     "prost",
+    "pipefail",
     "pubspec",
     "pyproject",
     "runbook",
     "Strunk's",
     "toplevel",
+    "undiscussed",
     "worktree",
-    "worktrees"
+    "worktrees",
   ],
   "flagWords": []
 }

@@ -1,4 +1,4 @@
-# Wingspan
+# VGV Wingspan
 
 🦋 AI-assisted workflows that follow Very Good Ventures best practices and standards.
 
@@ -11,8 +11,8 @@
 Inside Claude Code:
 
 ```bash
-/plugin marketplace add VeryGoodOpenSource/wingspan
-/plugin install wingspan@wingspan-marketplace
+/plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
+/plugin install vgv-wingspan@very_good_claude_marketplace
 ```
 
 ## Getting Started
@@ -29,7 +29,7 @@ Start here. Describe the problem or idea — the bigger and more open-ended, the
 
 Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
 
-### 2. `/plan/
+### 2. `/plan`
 
 Once you're happy with the brainstorm, turn it into an actionable implementation plan:
 
@@ -59,7 +59,7 @@ As simple as this:
 
 ## Better Together: Working With The Very Good AI Flutter Plugin
 
-Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/very_good_ai_flutter_plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line. 
+Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/very_good_ai_flutter_plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line.
 
 Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
