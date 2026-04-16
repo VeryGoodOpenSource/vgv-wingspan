@@ -1,7 +1,11 @@
 ---
 name: onboard
 user-invocable: true
-description: "Walks a repository and generates a self-contained HTML site summarizing its structure, architecture, and key abstractions. Use when user says \"onboard\", \"explain this repo\", \"codebase overview\", \"help me understand this codebase\", or \"map this codebase\"."
+description: >
+  Walks a repository and generates a self-contained HTML site summarizing its
+  structure, architecture, and key abstractions. Use when user says "onboard",
+  "explain this repo", "codebase overview", "help me understand this codebase",
+  or "map this codebase".
 argument-hint: "[path/to/scope (optional, defaults to repo root)]"
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -10,6 +14,18 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Generate a codebase onboarding site
 
 Walk a repository and generate a self-contained HTML page that explains its structure, architecture, and key abstractions. Focused on understanding — not best practices or framework guidance.
+
+## Onboard Progress
+
+Copy this checklist and track your progress:
+
+```markdown
+Onboard Progress:
+- [ ] Phase 0: Parse scope and detect repo
+- [ ] Phase 1: Analyze codebase (run analysis agent)
+- [ ] Phase 2: Generate HTML (run conversion script, assemble template)
+- [ ] Phase 3: Validate output and hand off
+```
 
 ## Scope
 
@@ -46,67 +62,58 @@ The agent returns structured markdown with exactly 9 section headers. Capture th
 
 ## Phase 2 — Generate HTML
 
-### 2.1 Read the template
+### 2.1 Save the agent output
 
-Read the HTML template from [html-template.html](references/html-template.html).
+Write the agent's markdown output to a temporary file:
 
-### 2.2 Prepare metadata
+```bash
+# Write agent output to a temp file for the conversion script
+cat > /tmp/onboard-agent-output.md << 'AGENT_EOF'
+<paste agent output here>
+AGENT_EOF
+```
 
-Determine values for the metadata placeholders:
+### 2.2 Run the conversion script
 
-| Placeholder | Value |
-|-------------|-------|
-| `<!-- META:repo-name -->` | Repository name from Phase 0 |
-| `<!-- META:date -->` | Today's date in `YYYY-MM-DD` format |
-| `<!-- META:scope -->` | The analysis scope (`.` for full repo, or the provided path) |
+Use [convert-md-to-html.py](scripts/convert-md-to-html.py) to assemble the final HTML:
 
-### 2.3 Map agent output to HTML sections
+```bash
+python3 skills/onboard/scripts/convert-md-to-html.py \
+  --template skills/onboard/references/html-template.html \
+  --input /tmp/onboard-agent-output.md \
+  --repo-name "<repo-name>" \
+  --date "YYYY-MM-DD" \
+  --scope "<scope>" \
+  --output docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html
+```
 
-Parse the agent's markdown output by splitting on `##` headers. Convert each section's markdown content to HTML:
+The script handles:
+- Parsing agent markdown by `## ` headers
+- Converting markdown to HTML (headings, lists, code blocks, tables, bold, dep-arrows)
+- Replacing all `<!-- META:... -->` and `<!-- CONTENT:... -->` placeholders
+- Creating the output directory if needed
+- Cross-linking between sections
 
-| Agent Section Header | HTML Placeholder |
-|----------------------|-----------------|
-| `## Project Overview & Tech Stack` | `<!-- CONTENT:project-overview -->` |
-| `## Architecture Map` | `<!-- CONTENT:architecture-map -->` |
-| `## Dependency Graph` | `<!-- CONTENT:dependency-graph -->` |
-| `## Entry Points` | `<!-- CONTENT:entry-points -->` |
-| `## Data & State Flow` | `<!-- CONTENT:data-state-flow -->` |
-| `## Key Abstractions` | `<!-- CONTENT:key-abstractions -->` |
-| `## Test Landscape` | `<!-- CONTENT:test-landscape -->` |
-| `## Build & Run Instructions` | `<!-- CONTENT:build-run -->` |
-| `## Suggested Reading Order` | `<!-- CONTENT:reading-order -->` |
+### 2.3 Validate
 
-**Markdown to HTML conversion rules:**
+Run the validation loop to verify the generated HTML:
 
-- `### Heading` → `<h3>Heading</h3>`
-- `#### Heading` → `<h4>Heading</h4>`
-- Paragraphs → `<p>...</p>`
-- `- item` → `<ul><li>item</li></ul>`
-- `1. item` → `<ol><li>item</li></ol>`
-- `` `code` `` → `<code>code</code>`
-- Code blocks → `<pre><code>...</code></pre>`
-- `**bold**` → `<strong>bold</strong>`
-- `→` in dependency graphs → `<span class="dep-arrow">→</span>`
-- Tables → `<table>` with `<th>` and `<td>`
+1. Check the output file exists and is non-empty
+2. Verify no `<!-- CONTENT:` or `<!-- META:` placeholders remain in the output
+3. Verify that at least the Project Overview and Architecture Map sections contain real content (not just fallback text)
 
-**Cross-linking:** When a section references a concept covered in another section (e.g., a type name in Data & State Flow that's defined in Key Abstractions), add an HTML anchor link: `<a href="#key-abstractions">Key Abstractions</a>`. This helps readers navigate between related sections.
+```bash
+# Quick validation checks
+test -s docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html && echo "OK: file exists" || echo "FAIL: file missing or empty"
+grep -c '<!-- CONTENT:' docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html && echo "FAIL: unfilled placeholders remain" || echo "OK: all placeholders filled"
+grep -c '<!-- META:' docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html && echo "FAIL: unfilled meta placeholders" || echo "OK: all meta filled"
+```
 
-### 2.4 Assemble, validate, and write
-
-1. Replace all `<!-- META:... -->` placeholders with their values
-2. Replace all `<!-- CONTENT:... -->` placeholders with the converted HTML
-3. **Validate:** Scan the assembled HTML for any remaining `<!-- CONTENT:` or `<!-- META:` placeholders. Fill missing content placeholders with `<p>No data available for this section.</p>` and missing meta placeholders with a sensible default. Verify that at least the Project Overview and Architecture Map sections contain real content (not just the fallback) — if both are empty, the agent output was likely malformed; report the error and stop.
-4. Ensure `docs/onboard/` directory exists:
-
-   ```bash
-   mkdir -p docs/onboard
-   ```
-
-5. Write the assembled HTML to:
-
-   ```text
-   docs/onboard/YYYY-MM-DD-<repo-name>-onboard.html
-   ```
+**If validation fails:**
+- Read the script's error output
+- Fix the issue (re-run the agent if output was malformed, or fix the script arguments)
+- Re-run the conversion script
+- Re-validate — repeat until all checks pass
 
 ## Phase 3 — Handoff
 
@@ -123,9 +130,10 @@ Open it in any browser — the file is fully self-contained with no external dep
 ## Gotchas
 
 - The HTML file must be self-contained: all CSS and JS inline, no external fonts, no CDN scripts. It must work from `file://` with no network.
-- The agent output must use the exact section headers listed above. If a header is missing, leave the corresponding HTML placeholder empty with a `<p>No data available for this section.</p>` fallback.
+- The agent output must use the exact section headers listed above. If a header is missing, the conversion script fills the placeholder with `<p>No data available for this section.</p>`.
 - Large monorepos: the agent should focus on the top-level structure and the most significant modules, not exhaustively document every package. Depth over breadth for the most important areas.
 - The generated file is an untracked working file. The user decides whether to commit it.
+- The conversion script requires Python 3.6+. No external packages needed — it uses only the standard library.
 
 ## Important
 

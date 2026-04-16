@@ -169,45 +169,9 @@ Based on everything above, recommend an order for a newcomer to read the code:
 
 ## Output format
 
-You MUST structure your output using exactly these section headers. Each section maps to a section in the final HTML output. Use markdown within each section.
+You MUST structure your output using exactly the 9 section headers defined in [section-prompts.md](../skills/onboard/references/section-prompts.md). Each header maps to a placeholder in the HTML template — the conversion script splits your output on `## ` boundaries, so using the exact headers is critical.
 
-```markdown
-## Project Overview & Tech Stack
-
-[content]
-
-## Architecture Map
-
-[content — use nested lists to show module hierarchy and boundaries]
-
-## Dependency Graph
-
-[content — use a list or table showing module → depends on relationships]
-
-## Entry Points
-
-[content — list each entry point with its file path and what it does]
-
-## Data & State Flow
-
-[content — describe the primary flows through the system]
-
-## Key Abstractions
-
-[content — list each key type/interface with its file path and why it matters]
-
-## Test Landscape
-
-[content — summary table or list of coverage per module]
-
-## Build & Run Instructions
-
-[content — step-by-step commands]
-
-## Suggested Reading Order
-
-[content — numbered list with file paths and brief rationale]
-```
+Read `section-prompts.md` for the authoritative list of headers and what each section must include. Use markdown within each section.
 
 ## Accuracy rules
 
