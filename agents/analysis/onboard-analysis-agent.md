@@ -169,7 +169,7 @@ Based on everything above, recommend an order for a newcomer to read the code:
 
 ## Output format
 
-You MUST structure your output using exactly the 9 section headers defined in [section-prompts.md](../skills/onboard/references/section-prompts.md). Each header maps to a placeholder in the HTML template — the conversion script splits your output on `## ` boundaries, so using the exact headers is critical.
+You MUST structure your output using exactly the 9 section headers defined in [section-prompts.md](../skills/onboard/references/section-prompts.md). Each header maps to a placeholder in the HTML template — the conversion script splits your output on `##` boundaries, so using the exact headers is critical.
 
 Read `section-prompts.md` for the authoritative list of headers and what each section must include. Use markdown within each section.
 

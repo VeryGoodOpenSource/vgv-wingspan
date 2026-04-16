@@ -88,7 +88,7 @@ python3 skills/onboard/scripts/convert-md-to-html.py \
 ```
 
 The script handles:
-- Parsing agent markdown by `## ` headers
+- Parsing agent markdown by `##` headers
 - Converting markdown to HTML (headings, lists, code blocks, tables, bold, dep-arrows)
 - Replacing all `<!-- META:... -->` and `<!-- CONTENT:... -->` placeholders
 - Creating the output directory if needed
