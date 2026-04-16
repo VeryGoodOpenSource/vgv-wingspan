@@ -79,7 +79,8 @@ Add targeted debug instrumentation to test each hypothesis. Follow these rules:
 - **Label output by hypothesis**: each log statement must identify which hypothesis it tests (e.g., `[H1]`, `[H2]`).
 - **Log values, not just markers**: capture the actual state (variable values, conditions, return values) that confirms or rules out each hypothesis.
 - **Minimize invasiveness**: add logging only — do not change control flow, add dependencies, or modify behavior.
-- **Keep it simple**: use the project's existing logging mechanism or basic print/console output. Do not introduce new dependencies.
+- **Keep it simple**: use the project's existing logging mechanism or standard output. Do not introduce new dependencies.
+- **Prefer companion plugin guidance**: if a companion plugin provides debug or logging conventions for the project's stack, follow those over generic defaults.
 
 If the project uses a build or compilation step, run it to confirm the instrumentation compiles. Fix any build failures before proceeding.
 
