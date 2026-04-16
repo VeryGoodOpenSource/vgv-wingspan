@@ -52,7 +52,7 @@ Based on the code exploration and any user hypotheses, formulate **2-5 concrete 
 
 Present the hypotheses to the user:
 
-```
+```text
 ## Hypotheses
 
 - **H1**: [description] — test by checking [what to observe]
@@ -214,6 +214,7 @@ Root cause: <1-2 sentence explanation>
 ## Evaluation queries
 
 ### Should trigger
+
 1. "Debug this crash — the app dies when I tap the submit button."
 2. "What's causing the test failure in the auth module?"
 3. "Help me find the bug — users report stale data after refresh."
@@ -221,6 +222,7 @@ Root cause: <1-2 sentence explanation>
 5. "Why is this broken? It worked yesterday before the deploy."
 
 ### Should NOT trigger
+
 1. "Add a dark mode toggle to the settings screen."
 2. "Review this PR before I merge it."
 3. "Write unit tests for the checkout flow."
@@ -228,6 +230,7 @@ Root cause: <1-2 sentence explanation>
 5. "Create a plan for the new onboarding feature."
 
 ### Edge cases
+
 1. "This test is flaky — passes locally, fails in CI." (debugging-adjacent; should trigger)
 2. "The build is broken." (may be a config issue, not a code bug; should trigger)
 3. "Performance is slow on the dashboard page." (performance investigation, not a bug; should not trigger — suggest `/brainstorm` instead)
