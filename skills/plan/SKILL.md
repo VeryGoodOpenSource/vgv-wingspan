@@ -20,7 +20,7 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 Check for brainstorm output first — before asking the user anything.
 
 ```bash
-ls -la docs/brainstorm/*.md 2>/dev/null | head -10
+ls docs/brainstorm/
 ```
 
 A brainstorm is relevant if created within the last 7 days and its topic semantically matches the feature description (if provided).

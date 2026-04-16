@@ -28,13 +28,11 @@ Build Progress:
 
 <plan_path>$ARGUMENTS</plan_path>
 
-## Available Plans
-
-```!
-ls -1 docs/plan/*.md 2>/dev/null || echo "(no plans found)"
-```
-
 ## Phase 0 — Load Plan
+
+```bash
+ls docs/plan/
+```
 
 | Plan path | Plans in `docs/plan/` | Action |
 |-----------|-----------------------|--------|
