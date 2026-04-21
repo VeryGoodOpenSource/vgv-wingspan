@@ -40,6 +40,14 @@ bash scripts/detect-review-scope.sh
 
 ## Step 2 — Run Reviews
 
+First, resolve the absolute working directory so parallel agents write reports to the correct location. Subagents may change directories during exploration (especially in git worktrees), so relative paths are unreliable:
+
+```!
+pwd
+```
+
+Let `<PWD>` be the result. The report directory is `<PWD>/docs/code-review/`.
+
 Run the **default review agents** listed below **in parallel**. Projects may define additional review agents in their `CLAUDE.md` — if any are specified, include them alongside the defaults. Projects may also replace the default set entirely by specifying their own list.
 
 Each agent prompt must include:
@@ -49,14 +57,14 @@ Each agent prompt must include:
    - An instruction to limit review to specific paths (for path scope)
    - No constraint (for full project review)
 
-2. The report output instructions:
+2. The report output instructions (substitute `<PWD>` with the absolute path resolved above):
 
-   > Write your full detailed report to `docs/code-review/<name>.md` (create the directory if needed).
+   > Write your full detailed report to `<PWD>/docs/code-review/<name>.md` (create the directory if needed). This is an absolute path — use it exactly as given, do not convert to relative.
    > Then return ONLY a short structured summary to the parent context in this format:
    >
    > ```markdown
    > ## <Agent Name> Summary
-   > **Report**: `docs/code-review/<name>.md` (<word_count> words)
+   > **Report**: `<PWD>/docs/code-review/<name>.md` (<word_count> words)
    > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
    > ### Findings
    > - [Critical] <one-line description>
@@ -66,14 +74,14 @@ Each agent prompt must include:
    >
    > Do NOT return the full report text. Only return the summary above.
 
-Default agents and their report filenames:
+Default agents and their report filenames (substitute `<PWD>` with the absolute path resolved above):
 
 | Agent | Report file |
 |-------|------------|
-| **@vgv-review-agent** | `docs/code-review/vgv-review.md` |
-| **@code-simplicity-review-agent** | `docs/code-review/code-simplicity-review.md` |
-| **@test-quality-review-agent** | `docs/code-review/test-quality-review.md` |
-| **@architecture-review-agent** | `docs/code-review/architecture-review.md` |
+| **@vgv-review-agent** | `<PWD>/docs/code-review/vgv-review.md` |
+| **@code-simplicity-review-agent** | `<PWD>/docs/code-review/code-simplicity-review.md` |
+| **@test-quality-review-agent** | `<PWD>/docs/code-review/test-quality-review.md` |
+| **@architecture-review-agent** | `<PWD>/docs/code-review/architecture-review.md` |
 
 **If an agent fails:** Note the failure, continue with successful agents. After all agents complete, report which (if any) failed and offer to retry.
 
