@@ -4,6 +4,7 @@ user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
 effort: high
 argument-hint: bug description, issue link, or error message
+allowed-tools: Bash(rm -rf docs/hotfix-review*) Bash(rm -rf docs/hotfix-review/*)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 

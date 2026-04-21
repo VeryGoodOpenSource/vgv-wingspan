@@ -116,7 +116,7 @@ Never reference `../shared/` directly in a SKILL.md — the symlink makes the sh
 
 ### Shared scripts
 
-The same boundary rule applies to scripts. Store canonical scripts in `skills/shared/scripts/`, symlink into each skill's `scripts/` directory, and reference them with an absolute path via `${CLAUDE_PLUGIN_ROOT}`.
+The same boundary rule applies to scripts. Store canonical scripts in `skills/shared/scripts/`, symlink into each skill's `scripts/` directory, and reference them with an absolute path via `${CLAUDE_SKILL_DIR}`.
 
 **Example — adding a shared script to a skill:**
 
@@ -125,20 +125,24 @@ mkdir -p skills/my-skill/scripts
 ln -s ../../shared/scripts/detect-base-branch.sh skills/my-skill/scripts/detect-base-branch.sh
 ```
 
-**Referencing in SKILL.md** — use `${CLAUDE_PLUGIN_ROOT}` so the path resolves regardless of the user's working directory, and declare the command in `allowed-tools` to skip the per-invocation permission prompt:
+**Referencing in SKILL.md** — use `${CLAUDE_SKILL_DIR}` so the path resolves regardless of the user's working directory, and declare the exact script in `allowed-tools` to skip the per-invocation permission prompt:
 
 ```yaml
 ---
 name: my-skill
-allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/skills/my-skill/scripts/detect-base-branch.sh)
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh)
 ---
 ```
 
 ````markdown
-```!
-"${CLAUDE_PLUGIN_ROOT}/skills/my-skill/scripts/detect-base-branch.sh"
+Run the detection script:
+
+```bash
+${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
 ```
 ````
+
+Keep scripts executable (`chmod +x`) so they can be invoked directly without a `bash` wrapper. Avoid the fenced `` ```! `` auto-execute form — under stricter permission checks (Claude Code v2.1.98+) it passes the literal block content (including the `!` prefix) to the permission matcher, which no longer aligns with a `Bash(<path>)` pattern.
 
 ### When to use scripts vs inline bash
 

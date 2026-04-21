@@ -2,6 +2,7 @@
 name: create-commit
 description: Propose and create conventional commit messages for staged changes. Follows Conventional Commits spec and VGV workflow.
 argument-hint: "[optional: single-commit | ticket/issue number e.g. VGV-123]"
+allowed-tools: Bash(git commit *) Bash(git add *)
 ---
 
 # Create a commit
