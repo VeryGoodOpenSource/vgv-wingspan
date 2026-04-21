@@ -3,6 +3,7 @@ name: rebase
 user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop). Use when user says "rebase", "sync branch", or "update branch".
+allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/skills/rebase/scripts/detect-base-branch.sh)
 effort: low
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
@@ -26,7 +27,7 @@ If the result is `main`, `master`, or `develop` — inform the user they're alre
 Detect the base branch:
 
 ```!
-bash scripts/detect-base-branch.sh
+"${CLAUDE_PLUGIN_ROOT}/skills/rebase/scripts/detect-base-branch.sh"
 ```
 
 If the script exits with an error, inform the user no base branch was found and stop.

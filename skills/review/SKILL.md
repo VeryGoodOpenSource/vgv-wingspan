@@ -3,6 +3,7 @@ name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
+allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/detect-review-scope.sh)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -30,7 +31,7 @@ Parse the review scope above for optional file paths or directories.
 Run the scope detection script:
 
 ```!
-bash scripts/detect-review-scope.sh
+"${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/detect-review-scope.sh"
 ```
 
 - **If `SCOPE=branch`**: use the listed files as review scope. Announce scope summary: number of changed files, which areas of the codebase are affected. Proceed to Step 2.
