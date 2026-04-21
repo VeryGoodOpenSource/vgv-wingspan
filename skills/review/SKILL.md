@@ -3,7 +3,7 @@ name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
-allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh)
+allowed-tools: Bash(*/scripts/detect-review-scope.sh)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---

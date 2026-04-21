@@ -125,12 +125,12 @@ mkdir -p skills/my-skill/scripts
 ln -s ../../shared/scripts/detect-base-branch.sh skills/my-skill/scripts/detect-base-branch.sh
 ```
 
-**Referencing in SKILL.md** — use `${CLAUDE_SKILL_DIR}` so the path resolves regardless of the user's working directory, and declare the exact script in `allowed-tools` to skip the per-invocation permission prompt:
+**Referencing in SKILL.md** — use `${CLAUDE_SKILL_DIR}` in the skill body (substitutes to an absolute path at skill-load time) and a `*` glob in `allowed-tools` (frontmatter patterns do not substitute variables) to skip the per-invocation permission prompt:
 
 ```yaml
 ---
 name: my-skill
-allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh)
+allowed-tools: Bash(*/scripts/detect-base-branch.sh)
 ---
 ```
 

@@ -3,7 +3,7 @@ name: rebase
 user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop). Use when user says "rebase", "sync branch", or "update branch".
-allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *)
+allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *)
 effort: low
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
