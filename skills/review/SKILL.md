@@ -40,13 +40,13 @@ bash scripts/detect-review-scope.sh
 
 ## Step 2 — Run Reviews
 
-First, resolve the absolute working directory so parallel agents write reports to the correct location. Subagents may change directories during exploration (especially in git worktrees), so relative paths are unreliable:
+First, resolve the absolute working directory. Subagents may change directories during exploration (especially in git worktrees), so relative paths are unreliable. Run the **Bash** tool with:
 
-```!
+```bash
 pwd
 ```
 
-Let `<PWD>` be the result. The report directory is `<PWD>/docs/code-review/`.
+Let `<PWD>` be the absolute path returned. The report directory is `<PWD>/docs/code-review/`.
 
 Run the **default review agents** listed below **in parallel**. Projects may define additional review agents in their `CLAUDE.md` — if any are specified, include them alongside the defaults. Projects may also replace the default set entirely by specifying their own list.
 
