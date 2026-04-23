@@ -3,6 +3,7 @@ name: create-branch
 user-invocable: true
 description: Sets up a workspace branch or worktree before writing artifacts. Use when user says "create a branch", "set up workspace", "start a feature branch", or "new branch".
 argument-hint: feature name or context
+allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git checkout *)
 effort: low
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -25,10 +26,10 @@ Run:
 git rev-parse --abbrev-ref HEAD
 ```
 
-Compare the result against the base branch detected by:
+Compare the result against the base branch detected by running:
 
-```!
-bash scripts/detect-base-branch.sh
+```bash
+${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
 ```
 
 **If the current branch is NOT the base branch (and not `HEAD`):** the session is already on a feature branch. Skip silently — return control to the caller without any output.
