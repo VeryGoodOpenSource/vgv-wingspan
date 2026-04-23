@@ -77,6 +77,7 @@ Default agents and their report filenames (substitute `<PWD>` with the absolute 
 | **@code-simplicity-review-agent** | `<PWD>/docs/code-review/code-simplicity-review.md` |
 | **@test-quality-review-agent** | `<PWD>/docs/code-review/test-quality-review.md` |
 | **@architecture-review-agent** | `<PWD>/docs/code-review/architecture-review.md` |
+| **@accessibility-review-agent** | `<PWD>/docs/code-review/accessibility-review.md` |
 
 **If an agent fails:** Note the failure, continue with successful agents. After all agents complete, report which (if any) failed and offer to retry.
 
