@@ -30,6 +30,7 @@ description: |
     </example>
   </examples>
 model: sonnet
+effort: medium
 ---
 
 # Accessibility Review Agent
