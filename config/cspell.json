@@ -24,7 +24,8 @@
     "undiscussed",
     "unrequested",
     "pipefail",
-    "runnable"
+    "runnable",
+    "WCAG"
   ],
   "flagWords": []
 }
