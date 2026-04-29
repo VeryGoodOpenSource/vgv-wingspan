@@ -103,7 +103,7 @@ Use the **AskUserQuestion tool** to present next steps:
 
 **If the user selects "Generate issue previews"** → read the action items from the written debrief document and render one preview block per item:
 
-```
+```text
 ---
 Title: <specific, actionable title>
 Label: prevent | detect | respond
