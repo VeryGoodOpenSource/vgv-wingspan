@@ -96,10 +96,31 @@ Use the **AskUserQuestion tool** to present next steps:
 **Options:**
 
 1. **Review and refine**: improve the document using structured review
-2. **Create action item tickets**: draft GitHub issues from the action items (not implemented yet — note this)
+2. **Generate issue previews**: format action items as ready-to-copy GitHub issue drafts
 3. **Done**: debrief complete
 
 **If the user selects "Review and refine"** → apply the @refine-approach skill to the document. When refinement is complete, present these options again (without the refine option).
+
+**If the user selects "Generate issue previews"** → read the action items from the written debrief document and render one preview block per item:
+
+```
+---
+Title: <specific, actionable title>
+Label: prevent | detect | respond
+Body:
+  ## Context
+  Debrief: docs/debriefs/YYYY-MM-DD-<topic>-debrief.md
+  Root cause: <one-line summary from debrief>
+
+  ## What happened
+  <relevant excerpt from the debrief timeline or root cause section>
+
+  ## What to do
+  <the action item, specific and linked to code/files where possible>
+---
+```
+
+Render all previews in a single fenced block so the user can copy them. Do not call `gh`, `glab`, or any external CLI — output is display only.
 
 ## Output Summary
 
