@@ -2,7 +2,6 @@
 name: pr-readiness-review-agent
 description: Checks PR readiness — formatting, static analysis, debug artifacts, and commit hygiene — to catch mechanical issues before opening a pull request.
 model: haiku
-effort: low
 ---
 
 # PR Readiness Review Agent

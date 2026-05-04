@@ -9,7 +9,9 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 # Plan technical review
 
-Run the following agents in parallel to conduct a comprehensive technical review of the proposed plan:
+**Plan file:** `$ARGUMENTS` (if empty, ask the user for the plan path or pick the most recent file under `docs/plan/`).
+
+Run the following agents in parallel to conduct a comprehensive technical review of the plan at `$ARGUMENTS`. Pass the plan path to each agent:
 
 - @code-simplicity-review-agent: Review the plan for simplicity and clarity. Ensure the implementation is as straightforward as possible while still meeting all requirements.
 - @vgv-review-agent: Review the plan for adherence to Very Good Engineering practices and project conventions. Ensure the implementation follows our established patterns and conventions.

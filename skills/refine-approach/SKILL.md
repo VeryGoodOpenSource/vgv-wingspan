@@ -12,9 +12,11 @@ Improve brainstorm and/or planning documents through structured review.
 
 ## Step 1. Get the document that needs review
 
-**If a document is provided** then proceed to `Step 2. Assess`.
+**Document path:** `$ARGUMENTS`
 
-**If no document is provided**, ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
+**If `$ARGUMENTS` is non-empty**, treat it as the document path and proceed to `Step 2. Assess`.
+
+**If `$ARGUMENTS` is empty**, ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
 
 ## Step 2. Assess
 
