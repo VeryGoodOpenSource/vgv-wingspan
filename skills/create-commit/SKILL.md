@@ -1,6 +1,7 @@
 ---
 name: create-commit
-description: Propose and create conventional commit messages for staged changes. Follows Conventional Commits spec and VGV workflow. Use when user says "commit this", "create a commit", "write a commit message", or "commit my changes".
+description: Propose and create conventional commit messages for staged changes. Follows Conventional Commits spec and VGV workflow.
+when_to_use: Use when user says "commit this", "create a commit", "write a commit message", or "commit my changes".
 argument-hint: "[optional: single-commit | ticket/issue number e.g. VGV-123]"
 allowed-tools: Bash(git commit *) Bash(git add *)
 compatibility: Designed for Claude Code (or similar products with git access)
