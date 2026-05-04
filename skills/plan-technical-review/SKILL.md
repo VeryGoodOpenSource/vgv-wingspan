@@ -1,7 +1,8 @@
 ---
 name: plan-technical-review
 user-invocable: true
-description: Conducts a comprehensive technical review of an implementation plan, ensuring it meets requirements and follows best practices. Use when user says "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+description: Conducts a comprehensive technical review of an implementation plan, ensuring it meets requirements and follows best practices.
+when_to_use: Use when user says "review the plan", "is this plan ready", "validate my plan", or "check the plan".
 argument-hint: path to plan file
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
