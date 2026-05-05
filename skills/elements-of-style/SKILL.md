@@ -1,7 +1,8 @@
 ---
 name: elements-of-style
 user-invocable: false
-description: Applies Strunk's Elements of Style principles when writing or editing prose. Triggers on "write clearly," "edit for style," "improve writing," or tasks requiring clear, vigorous English — documents, emails, reviews.
+description: Applies Strunk's Elements of Style principles when writing or editing prose.
+when_to_use: Triggers on "write clearly," "edit for style," "improve writing," or tasks requiring clear, vigorous English — documents, emails, reviews.
 compatibility: Designed for Claude Code (or similar products)
 ---
 
