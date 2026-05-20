@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "figma": {
-      "url": "https://mcp.figma.com/mcp",
-      "type": "http"
-    },
     "context7": {
       "command": "npx",
       "args": [

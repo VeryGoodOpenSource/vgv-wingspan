@@ -1,9 +1,11 @@
 ---
 name: build
 user-invocable: true
-description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request.
+when_to_use: Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
+allowed-tools: Bash(rm -rf docs/reviews/)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 

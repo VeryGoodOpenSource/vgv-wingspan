@@ -8,11 +8,17 @@
 
 ### From the Marketplace
 
-Inside Claude Code:
+One-line install from your terminal:
+
+```bash
+claude plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace && claude plugin install vgv-wingspan
+```
+
+Or inside an active Claude Code session:
 
 ```bash
 /plugin marketplace add VeryGoodOpenSource/very_good_claude_marketplace
-/plugin install vgv-wingspan@very_good_claude_marketplace
+/plugin install vgv-wingspan
 ```
 
 ## Getting Started
