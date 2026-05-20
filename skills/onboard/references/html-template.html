@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><!-- META:repo-name --> — Onboard</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f6f8fa;
+      --bg-nav: #f0f2f5;
+      --text: #1f2328;
+      --text-secondary: #656d76;
+      --border: #d0d7de;
+      --accent: #0969da;
+      --accent-light: #ddf4ff;
+      --code-bg: #f6f8fa;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --radius: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-nav: #161b22;
+      --text: #e6edf3;
+      --text-secondary: #8b949e;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-light: #1a3a5c;
+      --code-bg: #161b22;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: var(--bg-nav);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    nav .nav-header {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      margin: 0.1rem 0;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+
+    nav a:hover { background: var(--border); }
+    nav a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+    nav .nav-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.8rem;
+      width: 100%;
+    }
+
+    .theme-toggle:hover { background: var(--border); }
+
+    main {
+      margin-left: 260px;
+      flex: 1;
+      max-width: 900px;
+      padding: 2rem 3rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    section { margin-bottom: 2.5rem; }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    summary::before {
+      content: "\25B6";
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+    }
+
+    details[open] > summary::before { transform: rotate(90deg); }
+    summary::-webkit-details-marker { display: none; }
+
+    .section-content {
+      padding: 1rem 1.25rem;
+    }
+
+    .section-content h3 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    .section-content h4 {
+      font-size: 0.9rem;
+      margin: 1rem 0 0.4rem;
+      color: var(--text-secondary);
+    }
+
+    .section-content p { margin: 0.5rem 0; }
+
+    .section-content ul, .section-content ol {
+      margin: 0.5rem 0 0.5rem 1.5rem;
+    }
+
+    .section-content li { margin: 0.25rem 0; }
+
+    .section-content code {
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+    }
+
+    .section-content pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+
+    .section-content pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .section-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 0.9rem;
+    }
+
+    .section-content th, .section-content td {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .section-content th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+    }
+
+    .dep-arrow { color: var(--text-secondary); }
+
+    footer {
+      margin-left: 260px;
+      padding: 1.5rem 3rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      main, footer { margin-left: 0; padding: 1.5rem; }
+    }
+
+    @media print {
+      nav { display: none; }
+      main, footer { margin-left: 0; }
+      details { border: none; }
+      summary { background: none; }
+      details[open] { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-header"><!-- META:repo-name --></div>
+    <a href="#project-overview">Project Overview & Tech Stack</a>
+    <a href="#architecture-map">Architecture Map</a>
+    <a href="#dependency-graph">Dependency Graph</a>
+    <a href="#entry-points">Entry Points</a>
+    <a href="#data-state-flow">Data & State Flow</a>
+    <a href="#key-abstractions">Key Abstractions</a>
+    <a href="#test-landscape">Test Landscape</a>
+    <a href="#build-run">Build & Run Instructions</a>
+    <a href="#reading-order">Suggested Reading Order</a>
+    <div class="nav-footer">
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle theme</button>
+    </div>
+  </nav>
+
+  <main>
+    <h1><!-- META:repo-name --></h1>
+    <p class="subtitle">Generated <!-- META:date --> &middot; Scope: <!-- META:scope --></p>
+
+    <section id="project-overview">
+      <details open>
+        <summary>Project Overview & Tech Stack</summary>
+        <div class="section-content">
+          <!-- CONTENT:project-overview -->
+        </div>
+      </details>
+    </section>
+
+    <section id="architecture-map">
+      <details open>
+        <summary>Architecture Map</summary>
+        <div class="section-content">
+          <!-- CONTENT:architecture-map -->
+        </div>
+      </details>
+    </section>
+
+    <section id="dependency-graph">
+      <details>
+        <summary>Dependency Graph</summary>
+        <div class="section-content">
+          <!-- CONTENT:dependency-graph -->
+        </div>
+      </details>
+    </section>
+
+    <section id="entry-points">
+      <details>
+        <summary>Entry Points</summary>
+        <div class="section-content">
+          <!-- CONTENT:entry-points -->
+        </div>
+      </details>
+    </section>
+
+    <section id="data-state-flow">
+      <details>
+        <summary>Data & State Flow</summary>
+        <div class="section-content">
+          <!-- CONTENT:data-state-flow -->
+        </div>
+      </details>
+    </section>
+
+    <section id="key-abstractions">
+      <details>
+        <summary>Key Abstractions</summary>
+        <div class="section-content">
+          <!-- CONTENT:key-abstractions -->
+        </div>
+      </details>
+    </section>
+
+    <section id="test-landscape">
+      <details>
+        <summary>Test Landscape</summary>
+        <div class="section-content">
+          <!-- CONTENT:test-landscape -->
+        </div>
+      </details>
+    </section>
+
+    <section id="build-run">
+      <details>
+        <summary>Build & Run Instructions</summary>
+        <div class="section-content">
+          <!-- CONTENT:build-run -->
+        </div>
+      </details>
+    </section>
+
+    <section id="reading-order">
+      <details>
+        <summary>Suggested Reading Order</summary>
+        <div class="section-content">
+          <!-- CONTENT:reading-order -->
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    Generated by <strong>Wingspan /onboard</strong> on <!-- META:date --> &middot; Scope: <code><!-- META:scope --></code>
+  </footer>
+
+  <script>
+    (function() {
+      var theme = localStorage.getItem('onboard-theme') || 'light';
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+      var links = document.querySelectorAll('nav a');
+      var sections = document.querySelectorAll('main section');
+
+      window.addEventListener('scroll', function() {
+        var current = '';
+        sections.forEach(function(section) {
+          if (window.scrollY >= section.offsetTop - 100) {
+            current = section.getAttribute('id');
+          }
+        });
+        links.forEach(function(link) {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+      });
+
+      links.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            var details = target.querySelector('details');
+            if (details && !details.open) details.open = true;
+            target.scrollIntoView({ behavior: 'smooth' });
+            history.pushState(null, '', this.getAttribute('href'));
+          }
+        });
+      });
+    })();
+
+    function toggleTheme() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('onboard-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('onboard-theme', 'dark');
+      }
+    }
+  </script>
+</body>
+</html>
