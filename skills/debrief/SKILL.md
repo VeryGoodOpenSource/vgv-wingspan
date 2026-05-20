@@ -97,10 +97,37 @@ Use the **AskUserQuestion tool** to present next steps:
 **Options:**
 
 1. **Review and refine**: improve the document using structured review
-2. **Create action item tickets**: draft GitHub issues from the action items (not implemented yet — note this)
+2. **Generate issue previews**: format action items as ready-to-copy GitHub issue drafts
 3. **Done**: debrief complete
 
 **If the user selects "Review and refine"** → apply the @refine-approach skill to the document. When refinement is complete, present these options again (without the refine option).
+
+**If the user selects "Generate issue previews"** → read the action items from the written debrief document, then:
+
+1. **Check for issue templates**: look for `.github/ISSUE_TEMPLATE/` in the project root. Read every `.yaml` or `.yml` file found there (skip `config.yml`).
+
+2. **If templates exist**: render one preview block per action item using the most appropriate template. Map each item to a template based on its content (e.g., a missing test or validation gap → bug report; a new monitoring check → feature request; a dependency update or runbook → chore). Populate every required field defined in the template. Include a `Template:` line naming the chosen template file.
+
+3. **If no templates exist**: fall back to the generic format:
+
+```text
+---
+Title: <specific, actionable title>
+Label: prevent | detect | respond
+Body:
+  ## Context
+  Debrief: docs/debriefs/YYYY-MM-DD-<topic>-debrief.md
+  Root cause: <one-line summary from debrief>
+
+  ## What happened
+  <relevant excerpt from the debrief timeline or root cause section>
+
+  ## What to do
+  <the action item, specific and linked to code/files where possible>
+---
+```
+
+Render all previews in a single fenced block so the user can copy them. Do not call `gh`, `glab`, or any external CLI — output is display only.
 
 ## Output Summary
 
