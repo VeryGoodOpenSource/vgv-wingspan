@@ -1,8 +1,10 @@
 ---
 name: review
 user-invocable: true
-description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging. Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
+description: Runs quality review agents on demand — reviews code, assesses quality, and identifies issues before merging.
+when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
+allowed-tools: Bash(*/scripts/detect-review-scope.sh)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -29,8 +31,8 @@ Parse the review scope above for optional file paths or directories.
 
 Run the scope detection script:
 
-```!
-bash scripts/detect-review-scope.sh
+```bash
+${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
 ```
 
 - **If `SCOPE=branch`**: use the listed files as review scope. Announce scope summary: number of changed files, which areas of the codebase are affected. Proceed to Step 2.
@@ -39,6 +41,8 @@ bash scripts/detect-review-scope.sh
   - **Review entire project**: no scope constraint
 
 ## Step 2 — Run Reviews
+
+Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable. The report directory is `<PWD>/docs/code-review/`.
 
 Run the **default review agents** listed below **in parallel**. Projects may define additional review agents in their `CLAUDE.md` — if any are specified, include them alongside the defaults. Projects may also replace the default set entirely by specifying their own list.
 
@@ -49,14 +53,14 @@ Each agent prompt must include:
    - An instruction to limit review to specific paths (for path scope)
    - No constraint (for full project review)
 
-2. The report output instructions:
+2. The report output instructions (substitute `<PWD>` with the absolute path resolved above):
 
-   > Write your full detailed report to `docs/code-review/<name>.md` (create the directory if needed).
+   > Write your full detailed report to `<PWD>/docs/code-review/<name>.md` (create the directory if needed). This is an absolute path — use it exactly as given, do not convert to relative.
    > Then return ONLY a short structured summary to the parent context in this format:
    >
    > ```markdown
    > ## <Agent Name> Summary
-   > **Report**: `docs/code-review/<name>.md` (<word_count> words)
+   > **Report**: `<PWD>/docs/code-review/<name>.md` (<word_count> words)
    > **Critical**: <count> | **Important**: <count> | **Suggestions**: <count>
    > ### Findings
    > - [Critical] <one-line description>
@@ -66,14 +70,14 @@ Each agent prompt must include:
    >
    > Do NOT return the full report text. Only return the summary above.
 
-Default agents and their report filenames:
+Default agents and their report filenames (substitute `<PWD>` with the absolute path resolved above):
 
 | Agent | Report file |
 |-------|------------|
-| **@vgv-review-agent** | `docs/code-review/vgv-review.md` |
-| **@code-simplicity-review-agent** | `docs/code-review/code-simplicity-review.md` |
-| **@test-quality-review-agent** | `docs/code-review/test-quality-review.md` |
-| **@architecture-review-agent** | `docs/code-review/architecture-review.md` |
+| **@vgv-review-agent** | `<PWD>/docs/code-review/vgv-review.md` |
+| **@code-simplicity-review-agent** | `<PWD>/docs/code-review/code-simplicity-review.md` |
+| **@test-quality-review-agent** | `<PWD>/docs/code-review/test-quality-review.md` |
+| **@architecture-review-agent** | `<PWD>/docs/code-review/architecture-review.md` |
 
 **If an agent fails:** Note the failure, continue with successful agents. After all agents complete, report which (if any) failed and offer to retry.
 
