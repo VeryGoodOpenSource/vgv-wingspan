@@ -1,7 +1,8 @@
 ---
 name: debug
 user-invocable: true
-description: Finds and fixes bugs through structured hypothesis testing and code instrumentation. Use when user says "debug", "debug this", "find the bug", "what's causing this", "troubleshoot", or "why is this broken".
+description: Finds and fixes bugs through structured hypothesis testing and code instrumentation.
+when_to_use: Use when user says "debug", "debug this", "find the bug", "what's causing this", "troubleshoot", or "why is this broken".
 argument-hint: bug description, error message, or reproduction steps
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -69,7 +70,7 @@ Use **AskUserQuestion**: "Do these hypotheses look right? I'll instrument the co
 
 Before writing any files, ensure the session is on a working branch:
 
-- Call @create-branch to check and optionally create a working branch or worktree.
+- Call /create-branch to check and optionally create a working branch or worktree.
 
 ## Phase 2 — Instrument
 
@@ -140,7 +141,7 @@ Write the minimal change that addresses the confirmed root cause:
 Remove ALL debug instrumentation added in Phase 2. Search for `WINGSPAN-DEBUG` across the codebase and remove every tagged line or block. Verify none remain:
 
 ```bash
-grep -r "WINGSPAN-DEBUG" .
+git grep -n "WINGSPAN-DEBUG"
 ```
 
 If any remain, remove them. The codebase must contain only the fix — no debug instrumentation.
@@ -174,7 +175,7 @@ Reached when the user stops debugging without a fix.
 Remove ALL debug instrumentation. Search for `WINGSPAN-DEBUG` across the codebase:
 
 ```bash
-grep -r "WINGSPAN-DEBUG" .
+git grep -n "WINGSPAN-DEBUG"
 ```
 
 Remove every match. Confirm to the user that all debug instrumentation has been removed and the codebase is clean.
