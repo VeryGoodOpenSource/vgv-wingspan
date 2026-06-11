@@ -96,7 +96,7 @@ Read the full file content and locate conflict markers (`<<<<<<<`, `=======`, `>
 **Auto-resolve** (the right answer is clear):
 
 - Both sides added imports or list items — combine both sets, deduplicate, maintain sort order
-- Generated files (`.g.dart`, `.freezed.dart`, `.gen.dart`, lock files) — take the current branch version; note that regeneration is needed after rebase completes
+- Generated or lock files (anything produced by a build step or dependency resolver rather than edited by hand) — take the current branch version; note that regeneration is needed after rebase completes
 - Formatting / whitespace-only diffs — accept either side
 - One side added new code, the other didn't touch that region — take the addition
 - One side modified code the other side deleted — prefer the modification, but mention it in the summary so the user can verify the deletion wasn't intentional
