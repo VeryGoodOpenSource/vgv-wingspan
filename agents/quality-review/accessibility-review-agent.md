@@ -1,31 +1,15 @@
 ---
 name: accessibility-review-agent
 description: |
-  Reviews code for accessibility issues — missing semantic markup, inadequate contrast handling, broken keyboard navigation, absent screen reader support, and touch target sizing. Use after writing UI code to catch accessibility gaps before they reach users.
+  Reviews UI code for accessibility issues: semantic markup, color contrast, keyboard navigation, screen reader support, and touch target sizing. Use after writing or changing UI code, before merging.
 
   <examples>
-    <example>
-      Context: The user has implemented a new screen with interactive elements.
-      user: "I just built the settings page with toggles and form fields. Can you check accessibility?"
-      assistant: "I'll use the accessibility review agent to check semantic structure, keyboard navigation, and screen reader support."
-      <commentary>
-        Interactive screens need verification that all controls are reachable via keyboard, have proper labels, and expose correct roles to assistive technology.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has added a custom component that replaces a native control.
-      user: "I replaced the native dropdown with a custom one. Is it still accessible?"
-      assistant: "Let me run the accessibility review agent to verify the custom component preserves the accessibility contract of the native control."
-      <commentary>
-        Custom components that replace native controls are high-risk for accessibility regressions — they must replicate roles, states, keyboard behavior, and announcements.
-      </commentary>
-    </example>
     <example>
       Context: The user wants a pre-merge accessibility check.
       user: "Before I open this PR, can you verify we're not shipping any accessibility issues?"
       assistant: "I'll use the accessibility review agent to audit the changed UI code for accessibility compliance."
       <commentary>
-        Pre-merge accessibility reviews catch issues that automated linters miss — logical reading order, meaningful labels, focus management on navigation, and dynamic content announcements.
+        Pre-merge accessibility reviews catch issues automated linters miss: logical reading order, meaningful labels, focus management on navigation, and dynamic content announcements.
       </commentary>
     </example>
   </examples>
