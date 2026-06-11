@@ -4,8 +4,8 @@ user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop).
 when_to_use: Use when user says "rebase", "sync branch", or "update branch".
-allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *)
-effort: low
+allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit
+effort: medium
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
 
@@ -118,21 +118,23 @@ git add <resolved-file>
 ### 4c. Continue the rebase
 
 ```bash
-git rebase --continue
+GIT_EDITOR=true git rebase --continue
 ```
 
-Multi-commit rebases may produce conflicts at multiple steps. Repeat 4a-4c for each.
+`GIT_EDITOR=true` stops `git` from opening an interactive editor for the commit message, which would otherwise hang with no terminal attached.
+
+Multi-commit rebases may produce conflicts at multiple steps. Repeat 4a-4c for each. If `git rebase --continue` fails for a reason other than conflicts — for example, a pre-commit hook rejects the commit — stop and report the failure rather than looping.
 
 ### 4d. After all conflicts are resolved, report
 
 - Every conflict that was resolved, with a one-line explanation of what you chose
 - Any files flagged for regeneration
-- Suggest running the project's build/test/format/analyze commands to verify correctness
+- Suggest running the project's own build, test, and format/lint checks to verify correctness
 - If the branch was previously pushed, mention that a force-push (`git push --force-with-lease`) will be needed — but do NOT push automatically
 
 If changes were stashed in Step 1, restore them with `git stash pop`. If `stash pop` fails due to conflicts, inform the user and suggest `git stash show` to review the stashed changes.
 
-## Step 5: Recovery
+## Recovery (if needed)
 
 If the rebase enters a bad state or a conflict is too ambiguous to resolve safely:
 
