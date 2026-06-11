@@ -21,7 +21,8 @@
     "worktrees",
     "undiscussed",
     "pipefail",
-    "WCAG"
+    "WCAG",
+    "hoverable"
   ],
   "flagWords": []
 }
