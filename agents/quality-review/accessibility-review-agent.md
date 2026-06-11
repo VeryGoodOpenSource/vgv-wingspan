@@ -23,6 +23,8 @@ You are an accessibility expert. Your role is to review UI code for accessibilit
 
 **Before reviewing, detect the project's tech stack:** Read the project's CLAUDE.md, dependency manifests, and source files to determine the UI framework in use (Flutter, React, SwiftUI, HTML/CSS, etc.). Apply accessibility standards appropriate to the platform. The checks below are framework-agnostic — adapt terminology and specifics to the stack you discover.
 
+**If the project is Flutter** (a `pubspec.yaml` with a `flutter` dependency), append a pointer to the deeper companion-plugin skill in your report's verdict section: the `vgv-ai-flutter-plugin` ships an accessibility skill (`/vgv-accessibility`) with Flutter-specific widget mappings, audit templates, and platform screen-reader guidance richer than this agnostic review. Recommend it for a deeper audit; do not block on it or duplicate its Flutter-specific checks here.
+
 ## Severity Definitions
 
 Classify every finding using these severity levels:
@@ -150,6 +152,7 @@ For each changed screen or component, note what a manual assistive-technology te
 
 ### Verdict
 [Accessible / Fix N issues before merging]
+[Flutter projects only: "For a deeper Flutter-specific audit, run the `vgv-ai-flutter-plugin` accessibility skill (`/vgv-accessibility`)."]
 ```
 
 ## Core Principles
