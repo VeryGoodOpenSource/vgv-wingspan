@@ -37,7 +37,7 @@ Classify every finding using these severity levels:
 
 ## WCAG Conformance Baseline
 
-Apply **WCAG 2.1 Level AA** as the default standard. If the project's CLAUDE.md or documentation specifies a different conformance target (A or AAA), use that instead. Tie every finding to its WCAG success criterion (e.g., "1.1.1 Non-text Content") so findings are verifiable against the spec.
+Apply **WCAG 2.1 Level AA** as the default standard. If the project's CLAUDE.md or documentation specifies a different conformance target (A or AAA), use that instead. Tie every finding to its WCAG success criterion (e.g., "1.1.1 Non-text Content") so findings are verifiable against the spec. The [WCAG Criteria Reference](#wcag-criteria-reference) at the end lists every criterion by level — Level AA includes all Level A criteria, and Level AAA includes all Level A and AA criteria.
 
 ## Review Process
 
@@ -118,6 +118,73 @@ For each changed screen or component, note what a manual assistive-technology te
 - **Interaction**: Can all actions be performed without sight?
 - **State changes**: Are dynamic updates (loading states, errors, confirmations) announced?
 - **Dismissal**: Can dialogs, popovers, and overlays be dismissed via keyboard/assistive tech?
+
+## WCAG Criteria Reference
+
+Use this reference to determine which success criteria apply at the targeted level and to ground each finding. The checks are written to be tech-agnostic — translate them to the framework you detected. Level AA includes all Level A criteria; Level AAA includes all Level A and AA criteria.
+
+### Level A — Core Criteria
+
+| WCAG ID | Criterion | What to verify |
+| --- | --- | --- |
+| 1.1.1 | Non-text Content | Meaningful images and icons have text alternatives; decorative images are excluded from the accessibility tree |
+| 1.3.1 | Info and Relationships | Structure (headings, lists, tables, grouped controls) is exposed programmatically, not by visual styling alone |
+| 1.3.2 | Meaningful Sequence | Reading and focus order match the intended visual order |
+| 1.3.3 | Sensory Characteristics | Instructions do not rely solely on shape, size, position, or sound ("press the round button on the right") |
+| 1.4.1 | Use of Color | Color is never the sole means of conveying information; pair it with text, icon, or pattern |
+| 2.1.1 | Keyboard | All functionality is operable via keyboard or switch access |
+| 2.1.2 | No Keyboard Trap | Focus can always be moved away from any component |
+| 2.3.1 | Three Flashes or Below Threshold | No content flashes more than three times per second |
+| 2.4.1 | Bypass Blocks | A mechanism bypasses repeated blocks of content (web: skip-to-content link, landmarks) |
+| 2.4.2 | Page Titled | Each screen or page has a meaningful, distinct title |
+| 2.4.3 | Focus Order | Focus sequence preserves meaning and operability |
+| 2.5.3 | Label in Name | The accessible name contains the visible label text |
+| 3.3.1 | Error Identification | Input errors are identified and described in text, not by color or position alone |
+| 3.3.2 | Labels or Instructions | Every input has a visible label or instructions |
+| 4.1.2 | Name, Role, Value | Every control exposes correct name, role, state, and value to assistive technology |
+| 4.1.3 | Status Messages | Status changes are announced without moving focus (live regions or platform equivalent) |
+
+### Level AA — Additional Criteria (includes all Level A)
+
+| WCAG ID | Criterion | What to verify |
+| --- | --- | --- |
+| 1.3.4 | Orientation | Content is not locked to a single display orientation unless essential |
+| 1.3.5 | Identify Input Purpose | Inputs collecting personal data declare their purpose (autocomplete, input type) |
+| 1.4.3 | Contrast (Minimum) | Normal text 4.5:1; large text 3:1 against its background |
+| 1.4.4 | Resize Text | Content and functionality preserved at 200% text size |
+| 1.4.5 | Images of Text | Use real text rather than images of text, except for logos or essential cases |
+| 1.4.10 | Reflow | Content reflows at 320 CSS px width without horizontal scrolling |
+| 1.4.11 | Non-text Contrast | UI components, focus indicators, and meaningful graphics meet 3:1 against adjacent colors |
+| 1.4.12 | Text Spacing | No loss of content when line, paragraph, letter, and word spacing are increased |
+| 1.4.13 | Content on Hover or Focus | Hover and focus content is dismissible, hoverable, and persistent |
+| 2.4.5 | Multiple Ways | More than one way exists to locate a screen or page (search, navigation, sitemap) |
+| 2.4.6 | Headings and Labels | Headings and labels are descriptive |
+| 2.4.7 | Focus Visible | The keyboard focus indicator is always visible |
+| 2.4.11 | Focus Appearance | The focus indicator meets 3:1 contrast and an adequate size or outline |
+| 3.1.2 | Language of Parts | Language changes within content are identified programmatically (web) |
+| 3.2.3 | Consistent Navigation | Repeated navigation appears in a consistent relative order across screens |
+| 3.2.4 | Consistent Identification | Components with the same function are identified consistently |
+| 3.3.3 | Error Suggestion | When an input error is detected, a correction is suggested where known |
+| 3.3.4 | Error Prevention | Legal, financial, and data submissions are reversible, checked, or confirmable |
+
+### Level AAA — Additional Criteria (includes all Level A and AA)
+
+| WCAG ID | Criterion | What to verify |
+| --- | --- | --- |
+| 1.4.6 | Contrast (Enhanced) | Normal text 7:1; large text 4.5:1 against its background |
+| 2.1.3 | Keyboard (No Exception) | All functionality is keyboard-operable with no exceptions |
+| 2.2.3 | No Timing | No time limits except for real-time events |
+| 2.2.6 | Timeouts | Users are warned of data loss from inactivity timeouts |
+| 2.3.2 | Three Flashes | No content flashes more than three times per second, with no luminance-threshold exception |
+| 2.3.3 | Animation from Interactions | Motion animation triggered by interaction can be disabled (respect reduced-motion) |
+| 2.4.8 | Location | Users can determine their location within the app or site |
+| 2.4.9 | Link Purpose (Link Only) | Link purpose is clear from the link text alone |
+| 2.4.12 | Focus Appearance (Enhanced) | The focus indicator encloses the component, is at least 2px, and meets 3:1 against adjacent colors |
+| 2.5.5 | Target Size (Enhanced) | Touch targets are at least 44x44 CSS px |
+| 2.5.6 | Concurrent Input Mechanisms | Input is not restricted to a single modality |
+| 3.2.5 | Change on Request | Context changes only on explicit user request |
+| 3.3.5 | Help | Context-sensitive help is available |
+| 3.3.6 | Error Prevention (All) | All submissions are reversible, checked, or confirmable |
 
 ## Output Format
 

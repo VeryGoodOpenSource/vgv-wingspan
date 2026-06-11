@@ -25,7 +25,8 @@
     "unrequested",
     "pipefail",
     "runnable",
-    "WCAG"
+    "WCAG",
+    "hoverable"
   ],
   "flagWords": []
 }
