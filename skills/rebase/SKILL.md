@@ -75,9 +75,10 @@ Report success briefly:
 
 - How many commits were replayed (`git rev-list --count origin/<base-branch>..HEAD`)
 - The branch is now up to date with `origin/<base-branch>`
+- Suggest running the project's own build, test, and format/lint checks — a clean rebase can still introduce semantic conflicts
 - If the branch was previously pushed, mention that a force-push (`git push --force-with-lease`) will be needed to update the remote — but do NOT push automatically
 
-If changes were stashed in Step 1, restore them with `git stash pop`. If stash pop fails due to conflicts, inform the user and suggest `git stash show` to review the stashed changes.
+If changes were stashed in Step 1, restore them with `git stash pop` (see Step 4d if the pop conflicts).
 
 ## Step 4: Handling conflicts
 
@@ -156,6 +157,7 @@ If changes were stashed in Step 1, restore them with `git stash pop`.
 - Never squash, reorder, or edit commits during the rebase — just replay them.
 - Never proceed on a dirty working tree without the user's consent.
 - Prefer keeping both sides' changes when combining — err on the side of inclusion.
-- After resolving conflicts, always recommend running build, test, format, and analyze to verify.
-- This skill only manages git state. Do not modify project files outside of conflict resolution.
+- Stage only the files you resolved — never `git add -A`.
+- After resolving conflicts, always recommend running the project's own build, test, and format/lint checks to verify.
+- Modify project files only to resolve rebase conflicts — make no other code changes.
 - If changes were stashed, always restore them — even if the rebase fails.
