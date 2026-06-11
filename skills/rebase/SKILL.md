@@ -96,16 +96,15 @@ Read the full file content and locate conflict markers (`<<<<<<<`, `=======`, `>
 **Auto-resolve** (the right answer is clear):
 
 - Both sides added imports or list items — combine both sets, deduplicate, maintain sort order
-- Generated or lock files (anything produced by a build step or dependency resolver rather than edited by hand) — take the current branch version; note that regeneration is needed after rebase completes
+- Generated or lock files (anything produced by a build step or dependency resolver rather than edited by hand) — keep your feature branch's version (the change being replayed), then note that regeneration is needed after the rebase completes. Caution: during a rebase `--ours` is the base branch and `--theirs` is your commit — the reverse of a merge — so resolve by reading the content, not by reaching for `--ours`/`--theirs`.
 - Formatting / whitespace-only diffs — accept either side
 - One side added new code, the other didn't touch that region — take the addition
-- One side modified code the other side deleted — prefer the modification, but mention it in the summary so the user can verify the deletion wasn't intentional
+- One side modified code the other side deleted — prefer the modification, but call this out prominently in the summary and ask the user to confirm the deletion wasn't intentional, since keeping the change resurrects a file the other side removed
 
 **Stop and ask the user** (the right answer requires judgment):
 
 - Both sides changed the same function or logic block differently
 - Business logic where correctness depends on product intent
-- Anything you aren't confident about
 
 When in doubt, ask. Losing someone's work is far worse than pausing to check.
 
