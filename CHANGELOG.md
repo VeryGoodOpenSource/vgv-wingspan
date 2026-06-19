@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.0.3](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.2...v0.0.3) (2026-06-19)
+
+
+### Features
+
+* **debrief:** generate issue previews from action items ([#186](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/186)) ([2075131](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/207513101e240c4f1a0dfa852b5800e6c9aaa8b9))
+
+
+### Bug Fixes
+
+* pass absolute report paths to review skill agents ([#177](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/177)) ([941c9f8](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/941c9f80a29e55c74dbc55efcf3566ac987ad195))
+* **skills:** align frontmatter with latest standards and wire $ARGUMENTS ([#187](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/187)) ([542ce83](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/542ce83fccff02cac7add8793cc9ca9891f75ae0))
+* validate-and-fix should prefer MCP tools over shell commands ([#193](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/193)) ([580d24e](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/580d24eab1f8afe327716777d881bc9ea5923dd9))
+* vgv-wingspan installation command on README ([#196](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/196)) ([a0b5bee](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a0b5beea65ae788fbd84de925e2d4777295684da))
+
+
+### Docs
+
+* clarify in-session plugin install steps in README ([#197](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/197)) ([dad78c4](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/dad78c42d89addfd2f35e3e646a3a6d919473515))
+* fix marketplace name in documentation ([#190](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/190)) ([15c1782](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/15c1782aadc7ababa239f6a06be64f533f7e2322))
+
 ## [0.0.2](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.1...v0.0.2) (2026-04-22)
 
 
