@@ -45,17 +45,25 @@ Supporting skills:
 Quality-review agents:
 
 - `vgv-review-agent`
-- `code-simplicity-review-agent`
-- `test-quality-review-agent`
 - `architecture-review-agent`
+- `best-practices-review-agent` (validates against current official docs and best practices, with citations)
+- `test-quality-review-agent`
+- `code-simplicity-review-agent`
+- `pr-readiness-review-agent`
+
+Each agent writes a detailed report to a `raw/` subdirectory and returns a structured
+findings list. The calling skill deduplicates and orders those findings, assigns stable
+`FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
+class), and renders one consolidated report plus a matching chat summary (see
+`skills/shared/references/review-consolidation.md`).
 
 ## Output Directories
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build` (ephemeral, cleaned up by build)
-- `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
-- `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
+- `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
+- `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/code-review/` — Consolidated `<branch>-review.md` + per-agent `raw/` from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Hooks

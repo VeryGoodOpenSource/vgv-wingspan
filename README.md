@@ -62,7 +62,7 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 
 ### 4. `/review`
 
-Automated review against best practices, test coverage, accessibility, and performance. Catches issues before they reach PR.
+Runs specialized agents in parallel — VGV standards, architecture, test quality, simplicity, and a best-practices agent that checks your code against the current official documentation for its stack (deprecated APIs, anti-patterns, and Claude/Anthropic SDK usage) with citations. Findings land in one consolidated report with stable `FINDING-NN` ids, and the chat summary mirrors it exactly so you can act on any finding by number. Catches issues before they reach PR.
 
 As simple as this:
 
