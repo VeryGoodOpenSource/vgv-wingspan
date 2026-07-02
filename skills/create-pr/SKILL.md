@@ -27,14 +27,6 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 - Do not push before the user confirms the commit.
 - Use the current branch as the source; target is `BASE_BRANCH` (determined in Step 2).
 
-## When to use
-
-Use this skill when:
-
-- The user asks to open or create a pull request.
-- The user asks to "create a PR", "open a PR", "submit a PR", or similar.
-- Work on a branch is complete and the user wants to publish it for review.
-
 ## Context
 
 <context>$ARGUMENTS</context>
@@ -86,7 +78,13 @@ Store as `BASE_BRANCH`.
 
 ## Step 3: Stage and commit
 
-Use the **create-commit** skill with the `single-commit` argument to stage files and produce a single conventional commit message.
+Produce a single conventional commit covering all changes.
+
+- **Never stage** secret files: `.env`, `*.key`, `*.pem`, `*secret*`, `*credential*`, `*.p12`, `*.jks`.
+- Stage the remaining changes with `git add`.
+- Propose one commit message following Conventional Commits (`type(scope): subject`). Consult `references/conventional-commits.md` for the full spec. Infer `type` from a plan file in `docs/plan/` if present; otherwise infer from the diff. Extract the ticket number from the branch name (e.g. `feat/VGV-59-...` → `VGV-59`) into a `Refs:` line.
+
+Use **AskUserQuestion** to confirm before committing (**Yes** / **No** / **Edit**). On confirm, commit with a HEREDOC to preserve formatting. Do not push yet.
 
 ## Step 4: Push
 
