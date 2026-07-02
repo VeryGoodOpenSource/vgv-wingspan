@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.4](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.3...v0.0.4) (2026-07-02)
+
+
+### Features
+
+* **agents:** preload elements-of-style skill into prose-heavy agents ([#207](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/207)) ([ae25263](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/ae252635e1565a08717d50e14421dc719f1af8bf))
+
+
+### Docs
+
+* adopt community docs from vgv-ai-flutter-plugin ([#211](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/211)) ([559f5ee](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/559f5eefba3e1d9ee3b5d9b64aa1de06bfa07a5d))
+
 ## [0.0.3](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.2...v0.0.3) (2026-06-19)
 
 
