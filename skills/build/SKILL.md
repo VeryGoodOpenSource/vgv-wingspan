@@ -23,7 +23,7 @@ Build Progress:
 - [ ] Phase 1: Read context files
 - [ ] Phase 2: Implement and test each task
 - [ ] Phase 3: Run review agents (5 in parallel)
-- [ ] Phase 4: Final validation, cleanup, and ship
+- [ ] Phase 4: Final validation, surgical-diff gate, cleanup, and ship
 ```
 
 ## Plan Input
@@ -129,6 +129,10 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 Run the full suite one last time — detect and use the project's formatter, linter, and test runner.
 
 If anything fails, fix it before proceeding.
+
+### Surgical-Diff Gate
+
+Follow the [surgical-diff gate](references/surgical-diff-gate.md): diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Running it here — after Final Validation's formatter and before the ship commit — keeps formatter output traceable and folds any removals into the shipped diff.
 
 ### Cleanup
 
