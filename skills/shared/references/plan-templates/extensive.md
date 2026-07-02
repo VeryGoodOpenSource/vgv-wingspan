@@ -29,42 +29,43 @@ date: YYYY-MM-DD
 #### Phase 1: [Foundation]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 #### Phase 2: [Core Implementation]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 #### Phase 3: [Polish & Optimization]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 ## Alternative Approaches Considered
 
 [Other solutions evaluated and why rejected]
 
-## Acceptance Criteria
+## Success Criteria
 
-### Functional Requirements
+Each criterion names the command that proves it. Use `verify: <command>` (exit 0 = pass) when a command can prove it without human judgment, or `verify: manual <steps>` when only a human can. Reject vacuous criteria like "make it work" — rewrite them as something provable. Fold functional, non-functional, and quality-gate requirements into concrete criteria below.
 
-- [ ] Detailed functional criteria
+```success-criteria
+GOAL: <one sentence describing the intended end state>
 
-### Non-Functional Requirements
+SUCCESS CRITERIA:
+- <functional criterion> | verify: <shell command; exit 0 = pass>
+- <non-functional criterion, e.g. performance/security/accessibility> | verify: <shell command>
+- <quality gate, e.g. coverage threshold> | verify: <shell command>
+- <criterion only a human can check> | verify: manual <numbered human steps>
 
-- [ ] Performance targets
-- [ ] Security requirements
-- [ ] Accessibility standards
+NON-GOALS:
+- <explicitly out of scope>
 
-### Quality Gates
-
-- [ ] Test coverage requirements
-- [ ] Documentation completeness
-- [ ] Code review approval
+VERIFICATION COMMAND: <the non-manual verify commands above joined into one runnable command (e.g. with &&); exit 0 = all green>
+```
 
 ## Success Metrics
 
