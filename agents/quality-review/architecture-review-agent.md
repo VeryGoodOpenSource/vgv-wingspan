@@ -141,9 +141,7 @@ For each new or modified package, verify:
 
 ## Output Instructions
 
-If a file path is specified in your task prompt, write your full review to that file path and return ONLY a brief summary to the caller covering:
-- Verdict (ready to merge / needs work / needs rethink)
-- Count of critical and important issues
-- One-line description of each critical issue
-
-If no file path is specified, return the full review in your response as usual.
+Follow the review agent instructions provided in your task prompt: write the full report to
+the given raw report path, then return only the structured findings list — not the full
+report text, and with no finding ids (the caller assigns those). If no report path is
+provided, return the full review in your response.

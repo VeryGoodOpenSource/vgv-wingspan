@@ -98,18 +98,20 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/hotfix-review/`.
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `docs/hotfix-review/raw` and `<name>` set to the agent's raw report filename below.
 
-The 2 agents and their report filenames:
+The reduced agent set and their raw report filenames:
 
-| Agent | Report file |
-|-------|------------|
-| **@vgv-review-agent** | `docs/hotfix-review/vgv-review.md` |
-| **@test-quality-review-agent** | `docs/hotfix-review/test-quality-review.md` |
+| Agent | Raw report file |
+|-------|-----------------|
+| **@vgv-review-agent** | `raw/vgv-review.md` |
+| **@test-quality-review-agent** | `raw/test-quality-review.md` |
+
+If the fix touches an external API, SDK, or third-party service, also run **@best-practices-review-agent** (`raw/best-practices-review.md`) — a deprecated call is exactly the kind of bug a hotfix must not reintroduce.
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Then fix critical findings by id, present important findings to the user, and record the rest (by id). Print the aligned chat summary — same ids, order, and titles as the file.
 
 ### Cleanup
 
