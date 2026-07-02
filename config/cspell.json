@@ -20,7 +20,9 @@
     "pubspec",
     "worktrees",
     "undiscussed",
-    "pipefail"
+    "pipefail",
+    "WCAG",
+    "hoverable"
   ],
   "flagWords": []
 }
