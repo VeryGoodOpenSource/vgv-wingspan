@@ -1,5 +1,6 @@
 ---
 name: test-quality-review-agent
+skills: [elements-of-style]
 description: |
   Reviews test coverage and quality for implementations. Use after code is written to verify every state management unit, repository, and UI component has proper tests following VGV conventions.
 
