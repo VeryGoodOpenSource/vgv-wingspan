@@ -1,5 +1,6 @@
 ---
 name: codebase-review-agent
+skills: [elements-of-style]
 description: |
   Conducts a thorough review of the given codebase, ensures code quality standards are met, and validates that the codebase uses consistently the same patterns.
 
