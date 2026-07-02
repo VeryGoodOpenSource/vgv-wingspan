@@ -5,6 +5,7 @@
     "glab",
     "codegen",
     "conventionalcommits",
+    "lockfiles",
     "frontmatter",
     "geolocation",
     "goldens",
@@ -20,6 +21,7 @@
     "pubspec",
     "worktrees",
     "undiscussed",
+    "unrequested",
     "pipefail"
   ],
   "flagWords": []
