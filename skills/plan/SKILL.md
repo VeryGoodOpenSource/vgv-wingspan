@@ -197,9 +197,10 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
 5. **Review and refine**: improve the plan through self-review
 
-Based on selection:
+**If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
-- **Clear context and build** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+**For other selections:**
+
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
