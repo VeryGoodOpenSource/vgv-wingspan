@@ -1,6 +1,11 @@
 # VGV Wingspan
 
-🦋 AI-assisted workflows that follow Very Good Ventures best practices and standards.
+[![Very Good Ventures][logo_white]][very_good_ventures_link_dark]
+[![Very Good Ventures][logo_black]][very_good_ventures_link_light]
+
+🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards.
+
+Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 
 ![wingspan logo by very good ventures in blue](./assets/wingspan-logo.jpeg)
 
@@ -86,16 +91,55 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 
 | Skill | Command | Description |
 |-------|---------|-------------|
-| **Brainstorm** | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
-| **Refine Approach** | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
-| **Plan** | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a structured implementation plan |
-| **Plan Technical Review** | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
-| **Build** | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
-| **Review** | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
-| **Hotfix** | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
-| **Create Branch** | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
-| **Create** | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
-| **Create Commit** | `/create-commit` | Stage and commit changes using conventional commit messages |
-| **Create PR** | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |
-| **Rebase** | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
-| **Debrief** | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
+| [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
+| [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
+| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a structured implementation plan |
+| [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
+| [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
+| [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
+| [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
+| [**Create Branch**](skills/create-branch/SKILL.md) | `/create-branch` | Set up a workspace (branch or worktree) before writing artifacts |
+| [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
+| [**Create Commit**](skills/create-commit/SKILL.md) | `/create-commit` | Stage and commit changes using conventional commit messages |
+| [**Create PR**](skills/create-pr/SKILL.md) | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |
+| [**Rebase**](skills/rebase/SKILL.md) | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
+| [**Debrief**](skills/debrief/SKILL.md) | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
+
+## Agents
+
+Wingspan ships subagents that Claude Code dispatches as isolated, specialized reviewers. Unlike skills, agents are **not** invoked as slash commands — the workflow skills dispatch them automatically, or you can ask Claude to run one by name (e.g. "review my changes with the vgv-review-agent").
+
+| Agent | Description |
+| ----- | ----------- |
+| [**VGV Review**](agents/codebase-review/vgv-review-agent.md) | Reviews code against Very Good Ventures engineering standards — architecture, state management conventions, testing quality, and code simplicity |
+| [**Code Simplicity Review**](agents/codebase-review/code-simplicity-review-agent.md) | Final review pass to ensure code is as simple and minimal as possible — identifies YAGNI violations and simplification opportunities |
+| [**Codebase Review**](agents/codebase-review/codebase-review-agent.md) | Conducts a thorough review of the codebase — structure, conventions, and consistent pattern usage |
+| [**Architecture Review**](agents/quality-review/architecture-review-agent.md) | Validates project architecture post-implementation — layer separation, dependency direction, and package structure |
+| [**Test Quality Review**](agents/quality-review/test-quality-review-agent.md) | Reviews test coverage and quality — verifies every testable unit has proper tests following VGV conventions |
+| [**PR Readiness Review**](agents/quality-review/pr-readiness-review-agent.md) | Checks formatting, static analysis, debug artifacts, and commit hygiene before a pull request opens |
+| [**Plan Splitting**](agents/analysis/plan-splitting-agent.md) | Analyzes implementation plans for scope and recommends splitting large plans into independently-mergeable PRs |
+| [**User Flow Analysis**](agents/analysis/user-flow-analysis-agent.md) | Analyzes specs and feature descriptions for flow completeness, edge cases, and requirement gaps |
+| [**Best Practices Research**](agents/research/best-practices-research-agent.md) | Researches best practices for the project's technology stack — VGV conventions first, then official docs and industry standards |
+| [**Official Docs Research**](agents/research/official-docs-research-agent.md) | Gathers documentation for frameworks, libraries, or dependencies — official docs, version constraints, and implementation patterns |
+
+## Hooks
+
+Wingspan includes a `PreToolUse` hook that detects your project type and recommends companion plugins you haven't installed yet.
+
+| Hook | Trigger | Behavior |
+| ---- | ------- | -------- |
+| **Recommend Plugins** (`recommend-plugins.sh`) | PreToolUse (`Read`/`Glob`/`Grep`) | Scans detection rules in `hooks/recommendations/`, recommends missing companion plugins once per session; non-blocking |
+
+### Prerequisites
+
+- **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add or improve skills, test your changes locally, and open a pull request. All contributors are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+[vgv_link]: https://verygood.ventures
+[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
+[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
+[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
+[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only

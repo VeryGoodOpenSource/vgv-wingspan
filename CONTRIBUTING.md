@@ -165,6 +165,103 @@ Keep inline bash when:
 - Write errors to stderr, data to stdout
 - Exit 1 on failure with a descriptive message
 
+## Testing Locally
+
+Editing a skill or hook and pushing straight to a PR only tells you the files
+are valid, not that they work correctly. Load your working copy into a real Claude Code
+session and exercise it before you commit.
+
+### Prerequisites
+
+- **Claude Code CLI** installed (`npm install -g @anthropic-ai/claude-code`).
+- **jq** on your `PATH` — the recommendation hook needs it and skips silently without it.
+
+### Load your local copy
+
+From the repository root, launch Claude Code pointed at this directory:
+
+```bash
+claude --plugin-dir .
+```
+
+`--plugin-dir` loads the plugin for that session only, needs no install or
+marketplace, and overrides any marketplace-installed copy of the same plugin.
+`${CLAUDE_PLUGIN_ROOT}` (used in `hooks/hooks.json`) resolves to the directory
+you pass, so the hook script paths resolve correctly.
+
+### Verify each component loaded
+
+| Component | How to verify |
+| --------- | ------------- |
+| **Skills** | Run `/help`. Skills appear namespaced as `/vgv-wingspan:<skill>` (e.g. `/vgv-wingspan:brainstorm`). Invoke one to confirm it triggers. |
+| **Agents** | Ask Claude to run one by name (e.g. "review this with the vgv-review-agent") and confirm it dispatches. |
+| **Hooks** | In a project with a detectable type (e.g. a Flutter app), have Claude `Read` a file and confirm the plugin recommendation fires. |
+
+The recommendation hook writes a marker file (`/tmp/wingspan-recommend-plugins-<hash>`)
+after it emits a recommendation, suppressing repeats for the session. Delete the
+marker to re-test:
+
+```bash
+rm -f /tmp/wingspan-recommend-plugins-*
+```
+
+### Iterate on changes
+
+After editing a `SKILL.md` or `hooks/hooks.json`, **restart the
+`claude --plugin-dir .` session** to guarantee the change is picked up. Changes
+to `.claude-plugin/plugin.json` always require a restart. Edits to the hook
+`.sh` scripts take effect on the next matching tool call with no restart, since
+each hook runs the script fresh.
+
+### Rehearse the real install (optional)
+
+To mimic the marketplace install flow without pushing anything, register a
+throwaway local marketplace. Create `.claude-plugin/marketplace.json` in a temp
+directory with an **absolute** path to this repo:
+
+```jsonc
+// /tmp/vgv-test-marketplace/.claude-plugin/marketplace.json
+{
+  "plugins": [
+    {
+      "name": "vgv-wingspan",
+      "source": {
+        "type": "directory",
+        "path": "/ABSOLUTE/path/to/wingspan"
+      }
+    }
+  ]
+}
+```
+
+Then, inside a session:
+
+```text
+/plugin marketplace add /tmp/vgv-test-marketplace
+/plugin install vgv-wingspan
+```
+
+### Validate before you push
+
+Run the same check CI runs, from the repository root:
+
+```bash
+claude plugin validate .
+```
+
+This validates the manifest, skill frontmatter, hook JSON, and file references.
+It is static, so it confirms structure but does not replace the live checks above.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| ------- | ------------ | --- |
+| Skill missing from `/help` | Invalid frontmatter | Run `claude plugin validate .` and fix the reported error |
+| Hook never fires | `jq` not installed, marker file left over, or script lacks `+x` / a shebang | Install `jq`; remove the `/tmp/wingspan-recommend-plugins-*` marker; `chmod +x` the script |
+| Skill references a shared file that 404s | Symlink missing or points outside the skill directory | Recreate the symlink per [Sharing content across skills](#sharing-content-across-skills) |
+| `${CLAUDE_PLUGIN_ROOT}` not resolving | Session not launched via `--plugin-dir` (or restart pending) | Restart with `claude --plugin-dir .` from the repo root |
+| Local marketplace won't install | `source.path` is relative | Use an absolute path in `marketplace.json` |
+
 ## CI Checks
 
 Every pull request runs the following checks automatically:
