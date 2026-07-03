@@ -119,9 +119,25 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 
 - [ ] Review flow analysis results
 - [ ] Incorporate any identified gaps or edge cases into the issue
-- [ ] Update acceptance criteria based on flow analysis findings
+- [ ] Update success criteria based on flow analysis findings
 
-### 4. Select implementation detail template
+### 4. Success Criteria Gate
+
+Before selecting a template, derive the plan's success criteria and make each one machine-checkable. This block is the contract `/build` consumes, so it must be precise.
+
+**For each criterion, apply one rule — can a command prove this without human judgment?**
+
+- **Yes** → attach `verify: <command>` (exit code 0 = pass).
+- **No, but a human can check it** → attach `verify: manual <numbered steps>`.
+- **Neither (vacuous or unmeasurable, e.g. "make it work", "code is clean")** → reject it and rewrite it into a concrete, provable criterion.
+
+Surface every rejected or rewritten criterion to the user with **AskUserQuestion** before writing the plan file — do not silently change the spec they approved.
+
+These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
+
+`verify:` commands reflect the project's own toolchain. If the project has a companion verification skill available, its gates are the canonical `verify:` commands.
+
+### 5. Select implementation detail template
 
 **Default to Standard.** Use a different level only when the task clearly warrants it.
 
@@ -131,13 +147,13 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 | **Standard** (default) | Most features and bug fixes needing moderate detail | [standard](references/standard.md) |
 | **Extensive** | Major features, architectural changes, significant risk or uncertainty | [extensive](references/extensive.md) |
 
-### 4.1. Set up workspace
+### 5.1. Set up workspace
 
-Before writing the plan file, ensure the session is on a feature branch:
+Before writing the plan file, ensure the session is not on the base branch:
 
-- Call /create-branch to check and optionally create a working branch or worktree.
+- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
 
-### 5. Issue creation and formatting
+### 6. Issue creation and formatting
 
 **Formatting checklist:**
 
@@ -147,7 +163,7 @@ Before writing the plan file, ensure the session is on a feature branch:
 - [ ] Include prompts or instructions that worked well during research
 - [ ] Emphasize comprehensive testing given rapid AI-assisted implementation
 
-### 6. Final review
+### 7. Final review
 
 **Pre-submission Checklist:**
 
@@ -155,7 +171,7 @@ Before writing the plan file, ensure the session is on a feature branch:
 - [ ] Labels accurately categorize the issue
 - [ ] All template sections are complete
 - [ ] Links and references are working
-- [ ] Acceptance criteria are measurable
+- [ ] Success criteria each carry a `verify:` command (or `verify: manual <steps>`)
 - [ ] Add names of files in pseudo code examples and todo lists
 - [ ] Add an ERD mermaid diagram if applicable for new model changes
 
@@ -181,9 +197,10 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
 5. **Review and refine**: improve the plan through self-review
 
-Based on selection:
+**If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
-- **Clear context and build** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+**For other selections:**
+
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
