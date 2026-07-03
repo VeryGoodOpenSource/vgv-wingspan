@@ -5,6 +5,7 @@
     "glab",
     "codegen",
     "conventionalcommits",
+    "diffstat",
     "lockfiles",
     "frontmatter",
     "geolocation",
