@@ -21,8 +21,7 @@
     "pubspec",
     "worktrees",
     "undiscussed",
-    "pipefail",
-    "unvalidated"
+    "pipefail"
   ],
   "flagWords": []
 }

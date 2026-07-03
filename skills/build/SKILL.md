@@ -22,7 +22,7 @@ Build Progress:
 - [ ] Phase 0: Load plan and confirm scope
 - [ ] Phase 1: Read context files
 - [ ] Phase 2: Implement and test each task
-- [ ] Phase 3: Run review agents (6 in parallel), consolidate into one report
+- [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
 - [ ] Phase 4: Final validation, cleanup, and ship
 ```
 
@@ -102,28 +102,29 @@ After each logical unit of work:
 
 ## Phase 3 — Quality Review
 
-After all implementation tasks are complete, run 6 review agents **in parallel**.
+After all implementation tasks are complete, run 5 review agents **in parallel**.
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `docs/reviews/raw` and `<name>` set to the agent's raw report filename below.
+Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
 
-The 6 agents and their raw report filenames:
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/reviews/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
 
-| Agent | Raw report file |
-| ----- | --------------- |
-| **@vgv-review-agent** | `raw/vgv-review.md` |
-| **@architecture-review-agent** | `raw/architecture-review.md` |
-| **@best-practices-review-agent** | `raw/best-practices-review.md` |
-| **@test-quality-review-agent** | `raw/test-quality-review.md` |
-| **@code-simplicity-review-agent** | `raw/code-simplicity-review.md` |
-| **@pr-readiness-review-agent** | `raw/pr-readiness-review.md` |
+The 5 agents and their report names (`<name>`):
+
+| Agent | Report name |
+| ----- | ----------- |
+| **@vgv-review-agent** | `vgv-review` |
+| **@architecture-review-agent** | `architecture-review` |
+| **@test-quality-review-agent** | `test-quality-review` |
+| **@code-simplicity-review-agent** | `code-simplicity-review` |
+| **@pr-readiness-review-agent** | `pr-readiness-review` |
 
 If an agent fails, note it, continue with the rest, and record the failure in the report header.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `docs/reviews/review.md` using the [report template](references/review-report-template.md). Then auto-fix minor issues, fix critical findings by id, present important findings to the user, and record the rest (by id) for the PR description. Print the aligned chat summary — same ids, order, and titles as the file.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
@@ -151,9 +152,9 @@ Stage all implementation and fix changes. Use this commit format:
 Implements <plan title or summary>.
 ```
 
-Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.). If review
-findings were fixed in Phase 3, add a line referencing them by id, e.g.
-`Addresses FINDING-01, FINDING-03 from review.`
+Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.). Review findings are
+fixed in place during Phase 3 and the report is deleted at Cleanup, so the commit does not
+cite `FINDING-NN` ids (there would be no report left to map them to).
 
 ### Ship
 

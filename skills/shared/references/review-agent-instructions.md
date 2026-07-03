@@ -1,7 +1,9 @@
 # Review Agent Instructions
 
-These instructions are passed to every quality-review agent. Substitute `<RAW_DIR>`
-with the absolute path given in the calling skill (e.g. `<PWD>/docs/code-review/raw`).
+These instructions are passed to every quality-review agent. Substitute `<RAW_DIR>` with the
+absolute raw-reports directory the calling skill provides (each skill gives its own, e.g.
+`docs/reviews/raw`) and `<name>` with the bare report stem from that skill's table (e.g.
+`vgv-review`) — no directory, no `.md` extension.
 
 Each agent produces two outputs:
 
@@ -11,10 +13,11 @@ Each agent produces two outputs:
 
 ## 1 — Write the detailed report
 
-Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed).
-This is an absolute path — use it exactly as given, do not convert to relative.
-Use your normal Output Format. This file is for the user to drill into; it is not
-read back into the caller's context, so be as thorough as you like here.
+Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed) — e.g. with
+`<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. This is an absolute path — use
+it exactly as given, do not convert to relative. Use your normal Output Format. The caller reads this file
+only when acting on a finding needs more than the one-line `fix`, so be thorough but keep it
+scannable.
 
 ## 2 — Return a structured findings list
 
@@ -32,7 +35,7 @@ the caller can render them verbatim without re-reading the report.
 - severity: Critical
   rule: <short kebab-case slug for the check that fired, e.g. "missing-disposal">
   title: <short imperative title, e.g. "Dispose the stream subscription">
-  location: <file:line, or file, or "-" if not file-specific>
+  location: <file:line — or just the file path when the finding spans it>
   why: <one line — the concrete impact>
   fix: <one line — the concrete action to take>
 - severity: Important
@@ -45,12 +48,25 @@ the caller can render them verbatim without re-reading the report.
 
 If you found nothing, return the header with all counts at `0` and no list items.
 
+### Severity
+
+Every finding uses one of three severities. Map your own vocabulary (errors/warnings,
+violations, pass/fail, etc.) onto these — the caller sorts and numbers by them, so consistent
+grading keeps the ids stable:
+
+- **Critical** — must fix before merge: bugs, crashes, security issues, missing tests for a
+  new unit, layer/dependency violations, or a broken build/analysis.
+- **Important** — should fix: convention deviations, test gaps, naming problems, avoidable
+  performance costs.
+- **Suggestion** — nice to have: style, minor simplification, documentation.
+
 ### Rules
 
-- **Every finding must have a `location`.** Prefer `file:line`. This lets the caller
-  deduplicate findings that overlap with other agents and keeps IDs stable.
+- **Every finding must have a `location`** — `file:line`, or the bare `file` path when the
+  finding spans it. Never omit it: the caller deduplicates and sorts by location, so a
+  location-less finding breaks stable numbering.
 - **`rule` names the check, not the instance.** Use a short, reusable kebab-case slug
-  (`missing-null-check`, `deprecated-model-id`, `layer-violation`) — reuse the same slug
+  (`missing-null-check`, `swallowed-error`, `layer-violation`) — reuse the same slug
   every time the same check fires so the caller can namespace it and let users suppress a
   whole class. Do not put a file path or line in the rule.
 - **Titles are the finding's identity.** Write a distinct, specific title per finding —

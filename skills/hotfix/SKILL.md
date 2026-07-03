@@ -98,20 +98,22 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `docs/hotfix-review/raw` and `<name>` set to the agent's raw report filename below.
+Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
 
-The reduced agent set and their raw report filenames:
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/hotfix-review/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
 
-| Agent | Raw report file |
-|-------|-----------------|
-| **@vgv-review-agent** | `raw/vgv-review.md` |
-| **@test-quality-review-agent** | `raw/test-quality-review.md` |
+The reduced agent set and their report names (`<name>`):
 
-If the fix touches an external API, SDK, or third-party service, also run **@best-practices-review-agent** (`raw/best-practices-review.md`) — a deprecated call is exactly the kind of bug a hotfix must not reintroduce.
+| Agent | Report name |
+|-------|-------------|
+| **@vgv-review-agent** | `vgv-review` |
+| **@test-quality-review-agent** | `test-quality-review` |
+
+If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Then fix critical findings by id, present important findings to the user, and record the rest (by id). Print the aligned chat summary — same ids, order, and titles as the file.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### Cleanup
 

@@ -46,7 +46,6 @@ Quality-review agents:
 
 - `vgv-review-agent`
 - `architecture-review-agent`
-- `best-practices-review-agent` (validates against current official docs and best practices, with citations)
 - `test-quality-review-agent`
 - `code-simplicity-review-agent`
 - `pr-readiness-review-agent`
@@ -63,7 +62,7 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/plan/` — Implementation plans from `/plan`
 - `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
 - `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
-- `docs/code-review/` — Consolidated `<branch>-review.md` + per-agent `raw/` from `/review` (standalone, user-managed)
+- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Hooks
