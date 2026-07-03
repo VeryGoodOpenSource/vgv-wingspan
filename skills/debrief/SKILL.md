@@ -74,9 +74,9 @@ Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 
-Before writing the debrief file, ensure the session is on a feature branch:
+Before writing the debrief file, ensure the session is not on the base branch:
 
-- Call @create-branch to check and optionally create a working branch or worktree.
+- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
 
 ### 6. Write the debrief document
 
