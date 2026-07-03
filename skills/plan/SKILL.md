@@ -133,7 +133,7 @@ Before selecting a template, derive the plan's success criteria and make each on
 
 Surface every rejected or rewritten criterion to the user with **AskUserQuestion** before writing the plan file — do not silently change the spec they approved.
 
-These criteria populate the `success-criteria` block that every plan template defines (e.g. [standard](references/standard.md)); fill it in when you write the plan file in Step 6. The template shows the block's shape and the `verify:` convention.
+These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
 
 `verify:` commands reflect the project's own toolchain. If the project has a companion verification skill available, its gates are the canonical `verify:` commands.
 
