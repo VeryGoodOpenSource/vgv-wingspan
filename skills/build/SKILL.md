@@ -45,7 +45,7 @@ ls docs/plan/
 
 Do not proceed without a plan.
 
-**After loading the plan:** parse title, type, acceptance criteria, tasks, and file paths. Summarize scope to the user, then use **AskUserQuestion** to confirm:
+**After loading the plan:** parse title, type, the `success-criteria` block, tasks, and file paths. Summarize scope to the user, then use **AskUserQuestion** to confirm:
 
 - **Start building (Recommended)**: proceed with implementation
 - **Review the plan first**: open the plan file for review

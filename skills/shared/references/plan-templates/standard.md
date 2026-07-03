@@ -24,11 +24,9 @@ date: YYYY-MM-DD
 - Performance implications
 - Security considerations
 
-## Acceptance Criteria
+## Success Criteria
 
-- [ ] Detailed requirement 1
-- [ ] Detailed requirement 2
-- [ ] Testing requirements
+Embed the machine-checkable block defined in [success-criteria.md](success-criteria.md), with the placeholders filled in.
 
 ## Success Metrics
 
