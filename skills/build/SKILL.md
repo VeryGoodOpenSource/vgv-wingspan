@@ -22,7 +22,7 @@ Build Progress:
 - [ ] Phase 0: Load plan and confirm scope
 - [ ] Phase 1: Read context files
 - [ ] Phase 2: Implement, test, and run the surgical-diff gate
-- [ ] Phase 3: Run review agents (5 in parallel)
+- [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
 - [ ] Phase 4: Drive to green, cleanup, and ship
 ```
 
@@ -110,21 +110,25 @@ After all implementation tasks are complete, run 5 review agents **in parallel**
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/reviews/`.
+Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
 
-The 5 agents and their report filenames:
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/reviews/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
 
-| Agent | Report file |
+The 5 agents and their report names (`<name>`):
+
+| Agent | Report name |
 | ----- | ----------- |
-| **@vgv-review-agent** | `docs/reviews/vgv-review.md` |
-| **@code-simplicity-review-agent** | `docs/reviews/code-simplicity-review.md` |
-| **@test-quality-review-agent** | `docs/reviews/test-quality-review.md` |
-| **@architecture-review-agent** | `docs/reviews/architecture-review.md` |
-| **@pr-readiness-review-agent** | `docs/reviews/pr-readiness-review.md` |
+| **@vgv-review-agent** | `vgv-review` |
+| **@architecture-review-agent** | `architecture-review` |
+| **@test-quality-review-agent** | `test-quality-review` |
+| **@code-simplicity-review-agent** | `code-simplicity-review` |
+| **@pr-readiness-review-agent** | `pr-readiness-review` |
+
+If an agent fails, note it, continue with the rest, and record the failure in the report header.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): categorize findings, auto-fix minor issues, fix critical issues, present important issues to the user, and record suggestions.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
@@ -159,7 +163,9 @@ Stage all implementation and fix changes. Use this commit format:
 Implements <plan title or summary>.
 ```
 
-Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.).
+Where `<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.). Review findings are
+fixed in place during Phase 3 and the report is deleted at Cleanup, so the commit does not
+cite `FINDING-NN` ids (there would be no report left to map them to).
 
 ### Ship
 
@@ -177,7 +183,7 @@ Use **AskUserQuestion** to present options:
 - If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
-- Review agent reports are written to `docs/reviews/` and deleted after Phase 4. If the build is interrupted, stale reports may remain — delete them manually before the next run.
+- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
 
 ## Important
 
