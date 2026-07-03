@@ -8,10 +8,9 @@ date: YYYY-MM-DD
 
 [Brief problem/feature description]
 
-## Acceptance Criteria
+## Success Criteria
 
-- [ ] Core requirement 1
-- [ ] Core requirement 2
+Embed the machine-checkable block defined in [success-criteria.md](success-criteria.md), with the placeholders filled in.
 
 ## Context
 

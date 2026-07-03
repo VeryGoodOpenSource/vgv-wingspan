@@ -131,11 +131,11 @@ Use **AskUserQuestion tool** to consider next steps:
 
 When `refine-approach` is complete, present these options:
 
-1. **Clear context and plan**: follow the [clear context handoff](references/clear-context-handoff.md) for `/plan`
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Done for now**: ideation complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → output the same instructions as above and then stop.
+**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
 ## Output Summary
 

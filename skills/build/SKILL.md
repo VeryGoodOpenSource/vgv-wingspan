@@ -21,7 +21,7 @@ Copy this checklist and track your progress:
 Build Progress:
 - [ ] Phase 0: Load plan and confirm scope
 - [ ] Phase 1: Read context files
-- [ ] Phase 2: Implement and test each task
+- [ ] Phase 2: Implement, test, and run the surgical-diff gate
 - [ ] Phase 3: Run review agents (5 in parallel)
 - [ ] Phase 4: Final validation, cleanup, and ship
 ```
@@ -45,7 +45,7 @@ ls docs/plan/
 
 Do not proceed without a plan.
 
-**After loading the plan:** parse title, type, acceptance criteria, tasks, and file paths. Summarize scope to the user, then use **AskUserQuestion** to confirm:
+**After loading the plan:** parse title, type, the `success-criteria` block, tasks, and file paths. Summarize scope to the user, then use **AskUserQuestion** to confirm:
 
 - **Start building (Recommended)**: proceed with implementation
 - **Review the plan first**: open the plan file for review
@@ -99,6 +99,10 @@ After each logical unit of work:
 - Never add features not in the plan (YAGNI).
 - Ask the user only when genuinely stuck: ambiguous architecture decision, 3 failed fix attempts, or a missing dependency not mentioned in the plan.
 - If a task in the plan is unclear, re-read the plan and the relevant codebase context before asking the user.
+
+### Surgical-Diff Gate
+
+Once every task is implemented, tested, and validated, follow the [surgical-diff gate](references/surgical-diff-gate.md) before moving to review: diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Running it here keeps the review phase focused on the diff that belongs, not churn that would be reverted anyway.
 
 ## Phase 3 — Quality Review
 

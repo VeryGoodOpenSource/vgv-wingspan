@@ -29,42 +29,28 @@ date: YYYY-MM-DD
 #### Phase 1: [Foundation]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 #### Phase 2: [Core Implementation]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 #### Phase 3: [Polish & Optimization]
 
 - Tasks and deliverables
-- Success criteria
+- Phase exit condition
 - Estimated effort
 
 ## Alternative Approaches Considered
 
 [Other solutions evaluated and why rejected]
 
-## Acceptance Criteria
+## Success Criteria
 
-### Functional Requirements
-
-- [ ] Detailed functional criteria
-
-### Non-Functional Requirements
-
-- [ ] Performance targets
-- [ ] Security requirements
-- [ ] Accessibility standards
-
-### Quality Gates
-
-- [ ] Test coverage requirements
-- [ ] Documentation completeness
-- [ ] Code review approval
+Embed the machine-checkable block defined in [success-criteria.md](success-criteria.md), with the placeholders filled in. For an extensive plan, cover functional, non-functional, and quality-gate requirements as concrete criteria.
 
 ## Success Metrics
 
