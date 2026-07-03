@@ -4,23 +4,52 @@ Post selected review findings to the branch's pull request as comments. Findings
 `FINDING-NN` ids and `<category>/<rule>` from the [consolidation procedure](review-consolidation.md),
 so a PR comment maps back to the consolidated report unambiguously.
 
-Outward-facing action: only post after the user has selected findings in Step 1 below. Never
-post without an explicit selection.
+This is a **two-step decision**, and nothing is posted until both are made:
 
-## Step 1 — Choose which findings
+1. **What to post** — the user picks which findings are worth a comment (Step 1).
+2. **How to post** — the user then decides how those findings reach the PR, including *not*
+   posting and taking the drafted text to post themselves (Step 2).
+
+AI reviews run long; keep each comment to its one-line `why` and `fix` so the PR does not
+drown in prose, and never post without an explicit choice at both steps.
+
+## Step 1 — Choose which findings (what to post)
 
 Use **AskUserQuestion**: "Which findings should I file on the PR?"
 
 - **All** — every finding in the report.
 - **Critical + Important** — skip Suggestions.
 - **Pick specific** — present the findings as one or more multi-select lists (batches of up to
-  four, by `FINDING-NN` id + title) and post only the checked ones.
+  four, by `FINDING-NN` id + title) and keep only the checked ones.
 
-If the user picks none, stop without posting.
+If the user picks none, stop.
 
-## Step 2 — Detect the platform and PR
+## Step 2 — Choose how to post (how to deliver)
 
-Run in parallel:
+First **draft** the comments for the selected findings and show them to the user as a compact
+preview, so they see exactly what would go out before anything is posted:
+
+```markdown
+**FINDING-03 · 🟡 Important · `vgv/force-unwrap`**
+
+Why: <why line>
+Fix: <fix line>
+```
+
+Then use **AskUserQuestion**: "How should I post these <N> findings?"
+
+- **Inline comments** — one comment per finding, anchored to its `file:line` (a finding whose
+  line isn't on the diff falls back into the summary comment).
+- **One summary comment** — all selected findings in a single PR comment, grouped by severity.
+- **Print for manual posting** — post nothing; output the drafted markdown so the user posts
+  it (or edits it) themselves.
+
+Do not auto-post: apply only the method the user picks. If they pick "Print for manual
+posting", skip Steps 3–4 and just output the markdown.
+
+## Step 3 — Detect the platform and PR
+
+Only when the user chose to post. Run in parallel:
 
 ```bash
 gh --version 2>/dev/null
@@ -34,23 +63,14 @@ current branch:
 | -------- | ------- |
 | `gh` | `gh pr view --json number,url,headRefOid` |
 | `glab` | `glab mr view` |
-| `none` | No CLI — go to the fallback in Step 4. |
+| `none` | No CLI — print the drafted markdown instead and tell the user. |
 
-If no PR exists for the branch, tell the user and offer the fallback (print the comments as
-markdown to paste manually). Do not create a PR from here.
+If no PR exists for the branch, tell the user and print the markdown instead. Do not create a
+PR from here.
 
-## Step 3 — Post the comments
+## Step 4 — Post (using the chosen method)
 
-Prefer **inline** comments anchored to each finding's `file:line`. Comment out of these fields:
-
-```markdown
-**FINDING-03 · 🟡 Important · `vgv/force-unwrap`**
-
-Why: <why line>
-Fix: <fix line>
-```
-
-### gh (GitHub)
+### Inline comments — gh (GitHub)
 
 Resolve `OWNER_REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)`,
 `PR=$(gh pr view --json number -q .number)`, `SHA=$(gh pr view --json headRefOid -q .headRefOid)`.
@@ -61,19 +81,21 @@ gh api "repos/$OWNER_REPO/pulls/$PR/comments" \
   -f body="$COMMENT" -f commit_id="$SHA" -f path="$FILE" -F line=$LINE -f side=RIGHT
 ```
 
-### glab (GitLab)
+Findings whose line isn't on the diff go into the summary comment instead of being dropped.
+
+### Inline comments — glab (GitLab)
 
 Post each finding as a note on the MR: `glab mr note <id> -m "$COMMENT"` (include the
-`file:line` in the comment text, since inline positions need the diff SHAs).
+`file:line` in the text, since inline positions need the diff SHAs).
 
-### Fallback (no line on the diff, `PR_CLI=none`, or no PR)
+### One summary comment
 
-Collect the leftover findings into **one** summary comment and post it once
-(`gh pr comment --body-file <file>` / `glab mr note -m ...`), or print it for manual paste
-when there is no CLI/PR. Group by severity; keep the ids.
+Render the selected findings into a single body (grouped by severity, ids kept) and post once:
+`gh pr comment --body-file <file>` / `glab mr note -m ...`.
 
-## Step 4 — Report
+## Step 5 — Report
 
-Tell the user how many comments were posted, how many fell back to the summary, and the PR
-URL. If any `gh api` call failed (e.g. the line was not in the diff), report which findings
-and include them in the summary comment rather than dropping them.
+Tell the user what happened: how many comments were posted (or that the markdown was printed
+for manual posting), how many fell back to the summary, and the PR URL. If a post call fails
+(e.g. the line wasn't on the diff), report which findings and include them in the summary or
+the printed markdown rather than dropping them.

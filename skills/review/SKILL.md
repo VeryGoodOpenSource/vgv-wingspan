@@ -103,9 +103,9 @@ present post-review options (the ids and rules follow the consolidation procedur
 - **Fix critical + important**: same, plus Important findings.
 - **Fix specific findings**: accept ids from the user (e.g. "FINDING-01, FINDING-04"), or a
   rule id to act on a whole class (e.g. "fix every `tests/missing-test-file`").
-- **File findings on the PR as comments**: post selected findings to the branch's pull
-  request, following [file findings on the PR](references/file-findings-on-pr.md) — it asks
-  which findings to include and posts them as inline comments (with a summary fallback).
+- **File findings on the PR as comments**: follow [file findings on the PR](references/file-findings-on-pr.md)
+  — a two-step flow that first asks which findings to include, then how to deliver them
+  (inline comments, one summary comment, or print the drafts for the user to post manually).
 - **Keep report and exit**: the report stays at `docs/code-review/<slug>/` for manual review.
 
 **After fixing (if chosen):** re-run linter + test runner (no agent re-run), then present a
