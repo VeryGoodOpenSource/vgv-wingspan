@@ -4,7 +4,7 @@ user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
 when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
-allowed-tools: Bash(*/scripts/detect-review-scope.sh)
+allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -103,6 +103,9 @@ present post-review options (the ids and rules follow the consolidation procedur
 - **Fix critical + important**: same, plus Important findings.
 - **Fix specific findings**: accept ids from the user (e.g. "FINDING-01, FINDING-04"), or a
   rule id to act on a whole class (e.g. "fix every `tests/missing-test-file`").
+- **File findings on the PR as comments**: post selected findings to the branch's pull
+  request, following [file findings on the PR](references/file-findings-on-pr.md) — it asks
+  which findings to include and posts them as inline comments (with a summary fallback).
 - **Keep report and exit**: the report stays at `docs/code-review/<slug>/` for manual review.
 
 **After fixing (if chosen):** re-run linter + test runner (no agent re-run), then present a
