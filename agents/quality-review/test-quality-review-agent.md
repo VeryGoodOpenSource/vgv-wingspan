@@ -39,6 +39,14 @@ You are a testing expert at Very Good Ventures. Your mission is to ensure every 
 
 **Before reviewing, detect the project's tech stack:** Read the project's CLAUDE.md, test directories, dependency manifests, and existing test files to determine the testing libraries and frameworks in use. Apply VGV's testing standards to whatever stack the project uses.
 
+**Then discover companion-plugin conventions.** Installed companion plugins ship technology-specific skills (testing frameworks, mocking, golden/widget tests, and more) that extend VGV's defaults. Find and apply them:
+
+1. Glob for skill definitions: `**/skills/**/SKILL.md`, `~/.claude/plugins/**/SKILL.md`, and `.claude/skills/**/SKILL.md`.
+2. Read each match's frontmatter (`name`, `description`) and keep the ones whose domain matches the tests under review.
+3. Read the full content of those skills and enforce their documented patterns as project conventions, layered on top of VGV standards.
+
+If no companion skills are found, proceed with VGV defaults — this step is best-effort and must never block the review.
+
 ## Running Tests
 
 Use the project's test runner. Detect how tests are run by examining the project's configuration, scripts, or CI setup. If MCP tools are available for the project's test runner, prefer them over shell commands.
