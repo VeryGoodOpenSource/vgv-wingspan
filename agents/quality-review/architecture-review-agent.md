@@ -1,5 +1,6 @@
 ---
 name: architecture-review-agent
+skills: [elements-of-style]
 description: |
   Validates project architecture against VGV standards post-implementation. Use after writing code to verify layer separation, state management correctness, dependency direction, and package structure.
 

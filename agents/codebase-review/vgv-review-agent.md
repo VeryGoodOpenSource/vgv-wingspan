@@ -1,5 +1,6 @@
 ---
 name: vgv-review-agent
+skills: [elements-of-style]
 description: |
   Reviews code against Very Good Ventures engineering standards. Use after implementing features, modifying code, creating new packages, or before opening PRs. Enforces architecture, state management conventions, testing quality, and code simplicity.
 
