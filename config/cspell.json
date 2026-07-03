@@ -22,7 +22,8 @@
     "worktrees",
     "undiscussed",
     "unrequested",
-    "pipefail"
+    "pipefail",
+    "runnable"
   ],
   "flagWords": []
 }
