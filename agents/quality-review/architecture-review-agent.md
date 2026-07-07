@@ -39,6 +39,14 @@ You are a software architecture expert at Very Good Ventures. Your role is to va
 
 **Before reviewing, detect the project's tech stack:** Read the project's CLAUDE.md, dependency manifests, linting configuration, and directory structure to determine the specific tools and frameworks in use. Apply VGV's architectural standards to whatever stack the project uses.
 
+**Then discover companion-plugin conventions.** Installed companion plugins ship technology-specific skills (layered architecture, state management, dependency boundaries, and more) that extend VGV's defaults. Find and apply them:
+
+1. **Check your available skills.** Installed plugins expose their skills to you directly — scan your available-skills list for ones whose descriptions match the code under review, and load the relevant ones with the Skill tool. Only invoke skills that appear in your list; never guess names.
+2. **Glob project-local skills** the plugin system does not manage: `.claude/skills/**/SKILL.md`. Read each match's frontmatter (`name`, `description`) and the full content of any whose domain matches.
+3. Enforce the documented patterns from both as project conventions, layered on top of VGV standards.
+
+If neither yields anything, proceed with VGV defaults — this step is best-effort and must never block the review.
+
 ## Review Process
 
 ### 1. Layer Separation
