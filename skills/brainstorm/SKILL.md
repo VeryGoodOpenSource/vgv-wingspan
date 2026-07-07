@@ -101,9 +101,9 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 #### 1.4. Set up workspace
 
-Before writing any files, ensure the session is on a feature branch:
+Before writing any files, ensure the session is not on the base branch:
 
-- Call @create-branch to check and optionally create a working branch or worktree.
+- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
 
 ### 2. Capture the design document
 
@@ -131,11 +131,11 @@ Use **AskUserQuestion tool** to consider next steps:
 
 When `refine-approach` is complete, present these options:
 
-1. **Clear context and plan**: follow the [clear context handoff](references/clear-context-handoff.md) for `/plan`
+1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
 3. **Done for now**: ideation complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → output the same instructions as above and then stop.
+**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
 ## Output Summary
 

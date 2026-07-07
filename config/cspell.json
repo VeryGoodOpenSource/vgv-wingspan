@@ -5,6 +5,7 @@
     "glab",
     "codegen",
     "conventionalcommits",
+    "diffstat",
     "lockfiles",
     "frontmatter",
     "geolocation",
@@ -22,7 +23,8 @@
     "worktrees",
     "undiscussed",
     "unrequested",
-    "pipefail"
+    "pipefail",
+    "runnable"
   ],
   "flagWords": []
 }

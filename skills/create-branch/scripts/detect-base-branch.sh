@@ -1,1 +1,0 @@
-../../shared/scripts/detect-base-branch.sh

@@ -98,18 +98,22 @@ Run review agents **in parallel** to validate the fix. Use a reduced set — spe
 
 ### Agent instructions
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `REPORT_DIR` set to `docs/hotfix-review/`.
+Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
 
-The 2 agents and their report filenames:
+Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/hotfix-review/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
 
-| Agent | Report file |
-|-------|------------|
-| **@vgv-review-agent** | `docs/hotfix-review/vgv-review.md` |
-| **@test-quality-review-agent** | `docs/hotfix-review/test-quality-review.md` |
+The reduced agent set and their report names (`<name>`):
+
+| Agent | Report name |
+|-------|-------------|
+| **@vgv-review-agent** | `vgv-review` |
+| **@test-quality-review-agent** | `test-quality-review` |
+
+If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): fix critical issues, present important issues to the user, and record suggestions.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### Cleanup
 
@@ -121,9 +125,9 @@ rm -rf docs/hotfix-review/
 
 ## Phase 5 — Ship
 
-### Final Validation
+### Drive to green
 
-Run the project's formatter, linter, and test runner one last time. Fix any failures before proceeding.
+A hotfix has no plan, so there is no `success-criteria` block. Follow the [drive to green procedure](references/drive-to-green.md) with the detected project suite (formatter, linter, test runner) as both the gate set and the authoritative command run once. It loops until green by real output, delegates to a matching installed verification skill when one exists, and escalates only on un-runnable or self-contradictory failures — never on an ordinary, fixable one. Do not proceed until it is green.
 
 ### Ship
 

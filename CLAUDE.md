@@ -35,8 +35,6 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 Supporting skills:
 
 - `/create` (project creation — routes to companion plugins)
-- `/create-branch` (workspace setup)
-- `/create-commit` (propose and create conventional commit messages for staged changes)
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
 - `/plan-technical-review` (validate plans)
 - `/refine-approach` (iterative document improvement)
@@ -45,17 +43,24 @@ Supporting skills:
 Quality-review agents:
 
 - `vgv-review-agent`
-- `code-simplicity-review-agent`
-- `test-quality-review-agent`
 - `architecture-review-agent`
+- `test-quality-review-agent`
+- `code-simplicity-review-agent`
+- `pr-readiness-review-agent`
+
+Each agent writes a detailed report to a `raw/` subdirectory and returns a structured
+findings list. The calling skill deduplicates and orders those findings, assigns stable
+`FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
+class), and renders one consolidated report plus a matching chat summary (see
+`skills/shared/references/review-consolidation.md`).
 
 ## Output Directories
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Review reports from `/build` (ephemeral, cleaned up by build)
-- `docs/hotfix-review/` — Review reports from `/hotfix` (ephemeral, cleaned up by hotfix)
-- `docs/code-review/` — Review reports from `/review` (standalone, user-managed)
+- `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
+- `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Hooks
@@ -78,19 +83,21 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 {
   "plugin": "plugin-name",
   "detect": { "file": "Gemfile", "pattern": "^\\s*gem\\s+['\"]rails['\"]" },
+  "verificationSkill": "plugin-name:green-gate",
   "marketplace": "OrgName/repo-name",
   "description": "What the plugin provides."
 }
 ```
 
-| Field             | Purpose                                                        |
-|-------------------|----------------------------------------------------------------|
-| `plugin`          | Plugin name as registered in the marketplace                   |
-| `detect.file`     | Exact file path whose presence signals the project type        |
-| `detect.files`    | Shell glob — greps inside every matching file for `pattern`    |
-| `detect.pattern`  | Regex grep pattern to confirm the match                        |
-| `marketplace`     | GitHub `owner/repo` for the marketplace registry               |
-| `description`     | One-line summary shown in the recommendation                   |
+| Field               | Purpose                                                        |
+|---------------------|----------------------------------------------------------------|
+| `plugin`            | Plugin name as registered in the marketplace                   |
+| `detect.file`       | Exact file path whose presence signals the project type        |
+| `detect.files`      | Shell glob — greps inside every matching file for `pattern`    |
+| `detect.pattern`    | Regex grep pattern to confirm the match                        |
+| `verificationSkill` | Optional. Skill the `/build` and `/hotfix` ship gate delegates to when this file's `detect` matches and the skill is installed |
+| `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
+| `description`       | One-line summary shown in the recommendation                   |
 
 **Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 
