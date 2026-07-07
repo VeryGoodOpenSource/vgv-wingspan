@@ -28,13 +28,9 @@ Embed this block verbatim, one `### Phase N` per phase, filling in the placehold
 - **Acceptance criteria:** <observable proof this phase is complete>
 - **Validation:** `<command; exit 0 = pass>` — or `manual <numbered steps>`
 
-### Phase 2: <short name>
+### Phase N: <short name>
 
-- **Status:** Not started
-- **Scope:** <1-2 sentences>
-- **Files touched:** `<path>`, `<path>`
-- **Acceptance criteria:** <observable proof this phase is complete>
-- **Validation:** `<command; exit 0 = pass>` — or `manual <numbered steps>`
+- Same fields as above — one block per phase.
 ```
 
 `**Status:**` starts at `Not started`. `/build` sets it to `Done` after it commits the phase,
