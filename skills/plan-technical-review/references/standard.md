@@ -1,1 +1,0 @@
-../../shared/references/plan-templates/standard.md

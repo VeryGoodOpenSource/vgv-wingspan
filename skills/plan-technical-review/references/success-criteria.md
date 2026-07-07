@@ -1,1 +1,0 @@
-../../shared/references/plan-templates/success-criteria.md

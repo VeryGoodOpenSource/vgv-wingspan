@@ -24,6 +24,10 @@ date: YYYY-MM-DD
 - Performance implications
 - Security considerations
 
+## Implementation Phases
+
+Optional. Embed the block defined in [implementation-phases.md](implementation-phases.md) when the plan is large enough to warrant phased execution. A small plan omits this section, and `/build` runs it as a single phase.
+
 ## Success Criteria
 
 Embed the machine-checkable block defined in [success-criteria.md](success-criteria.md), with the placeholders filled in.
