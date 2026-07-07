@@ -24,25 +24,9 @@ date: YYYY-MM-DD
 
 [Detailed technical design]
 
-### Implementation Phases
+## Implementation Phases
 
-#### Phase 1: [Foundation]
-
-- Tasks and deliverables
-- Phase exit condition
-- Estimated effort
-
-#### Phase 2: [Core Implementation]
-
-- Tasks and deliverables
-- Phase exit condition
-- Estimated effort
-
-#### Phase 3: [Polish & Optimization]
-
-- Tasks and deliverables
-- Phase exit condition
-- Estimated effort
+Embed the block defined in [implementation-phases.md](implementation-phases.md), one phase per split boundary. `/build` executes one phase per context window.
 
 ## Alternative Approaches Considered
 

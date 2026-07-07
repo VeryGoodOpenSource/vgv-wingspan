@@ -17,8 +17,8 @@ Technology-specific concerns (linting, formatting, scaffolding, framework conven
 The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
-2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, and flow analysis.
-3. **`/build`** — Execute implementation plans: write code and tests, run quality review, and ship a pull request.
+2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, flow analysis, and a mandatory quality review of the draft. Splits large plans into phases so `/build` executes one phase per context window.
+3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits or full manual control — decided up front or from a saved preference.
 
 Standalone Skills:
 
@@ -36,7 +36,7 @@ Supporting skills:
 
 - `/create` (project creation — routes to companion plugins)
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
-- `/plan-technical-review` (validate plans)
+- `/plan-technical-review` (review externally-authored plans; `/plan` reviews the plans it creates inline)
 - `/refine-approach` (iterative document improvement)
 - `/rebase` (sync feature branch with base branch)
 

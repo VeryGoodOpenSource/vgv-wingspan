@@ -1,7 +1,7 @@
 ---
 name: plan-splitting-agent
 description: |
-  Analyzes implementation plans for scope and recommends splitting large plans into multiple independently-mergeable PRs. Use during plan technical review to catch oversized plans before development begins.
+  Analyzes implementation plans for scope and recommends splitting large plans into multiple independently-mergeable PRs. Use during plan creation and technical review to catch oversized plans before development begins.
 
   <examples>
     <example>

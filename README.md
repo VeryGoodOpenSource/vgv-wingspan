@@ -55,7 +55,7 @@ Once you're happy with the brainstorm, turn it into an actionable implementation
 /plan add email/password and OAuth login using the auth approach from our brainstorm
 ```
 
-This reviews your codebase, references the brainstorm, and produces a step-by-step plan saved to `docs/plan/`.
+This reviews your codebase, references the brainstorm, runs a mandatory quality pass on the draft, and produces a phased, step-by-step plan saved to `docs/plan/`. Large plans are split into phases so `/build` can execute one phase per context window.
 
 ### 3. `/build`
 
@@ -93,8 +93,8 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
 | [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
-| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a structured implementation plan |
-| [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review` | Validate that a plan meets requirements and follows best practices |
+| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
+| [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
 | [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |

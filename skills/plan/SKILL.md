@@ -185,17 +185,25 @@ Examples:
 - ❌ `docs/plan/2026-01-15-feat-thing-plan.md` (not descriptive)
 - ❌ `docs/plan/feat-user-auth-plan.md` (missing date prefix)
 
+## Plan Review
+
+After writing the plan file and before presenting options, run a mandatory quality pass on it. This replaces the separate `/plan-technical-review` step — plans created here are reviewed here.
+
+- **Minimal template** → skip this section. The overhead is not worth it for a small plan.
+- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases or split it into part-N files.
+
+Return here once the review completes, then present the options below.
+
 ## Post-Generation Options
 
-After writing the plan file, use the **AskUserQuestion tool** and present the following options:
+After the review completes, use the **AskUserQuestion tool** and present the following options:
 
 **Options:**
 
 1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building**: execute this plan with `/build`
 3. **Open the plan file in my code editor**: open the plan file for review
-4. **Run `/plan-technical-review` on this plan**: run the technical review skill to validate the plan
-5. **Review and refine**: improve the plan through self-review
+4. **Review and refine**: improve the plan through self-review
 
 **If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
@@ -203,7 +211,6 @@ After writing the plan file, use the **AskUserQuestion tool** and present the fo
 
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
-- **`/plan-technical-review`** → Call the `/plan-technical-review` skill with the plan file path
 - **Review and refine** → Load `/refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
