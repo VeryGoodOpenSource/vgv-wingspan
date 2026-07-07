@@ -47,12 +47,12 @@ Do not proceed without a plan.
 
 **After loading the plan:** parse title, type, the `success-criteria` block, tasks, file paths, and the `## Implementation Phases` section if present.
 
-**Commit autonomy:** decide once how this build commits, and carry the choice through the whole run. Honor a stated user preference (Claude memory or a CLAUDE.md instruction) if one exists; otherwise use **AskUserQuestion**:
+**Commit autonomy:** decide once how this build commits, and carry the choice through the whole run. Honor a saved preference if one exists (Claude memory or the user's personal settings); otherwise use **AskUserQuestion**:
 
 - **Auto-commit each phase (Recommended)**: commit automatically as each phase completes. Pushing and opening the PR still pause for approval (Phase 4).
 - **I'll commit myself**: build one phase, then stop so the user reviews and commits. Nothing is committed or pushed without the user.
 
-Offer to save the choice (memory or CLAUDE.md) so future builds skip this question.
+Offer to save the choice to Claude memory (a personal preference) so future builds skip this question. Save it as the user's own preference — never write it to the project's CLAUDE.md, since committing this is a per-developer choice, not a repo convention.
 
 **Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
 
@@ -219,11 +219,11 @@ cite `FINDING-NN` ids (there would be no report left to map them to).
 
 Whatever commits this build produced are local. Pushing and opening a PR is outward-facing, so gate it on the user's preference — separately from the commit-autonomy choice:
 
-- **User has a stated preference to push automatically** (in Claude's memory or a CLAUDE.md instruction) → push and open the PR without asking.
+- **User has a saved preference to push automatically** (Claude memory or personal settings) → push and open the PR without asking.
 - **No such preference** → use **AskUserQuestion** before anything leaves the machine:
   1. **Review locally first (Recommended)**: stop here. The commits stay local; the user pushes and opens the PR when ready. Do not call `/create-pr`.
   2. **Push and open the PR now**: proceed this once.
-  3. **Always push automatically**: proceed, and save the preference (to memory or a CLAUDE.md instruction) so future builds skip this prompt.
+  3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
 
 To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 
