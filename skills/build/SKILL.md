@@ -23,7 +23,7 @@ Build Progress:
 - [ ] Phase 1: Read context files
 - [ ] Phase 2: Implement, test, and run the surgical-diff gate
 - [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
-- [ ] Phase 4: Final validation, cleanup, and ship
+- [ ] Phase 4: Drive to green, cleanup, and ship
 ```
 
 ## Plan Input
@@ -132,11 +132,18 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 
 ## Phase 4 — Ship
 
-### Final Validation
+### Drive to green
 
-Run the full suite one last time — detect and use the project's formatter, linter, and test runner.
+The plan's `success-criteria` block is the ship gate. Parse it, then handle these cases before looping:
 
-If anything fails, fix it before proceeding.
+| Case | Action |
+| ---- | ------ |
+| Block present with a `VERIFICATION COMMAND` | Gate set = the non-manual `verify:` commands; authoritative command = the `VERIFICATION COMMAND`. |
+| Block present, `VERIFICATION COMMAND` missing but non-manual `verify:` lines exist | Synthesize the authoritative command by joining those `verify:` commands with `&&`. |
+| Only `verify: manual` criteria, no runnable command | Skip the loop; go straight to the manual-criteria checklist. Never treat an empty runnable set as green. |
+| No `success-criteria` block (plan predates it) | Fall back to the detected project suite (formatter, linter, test runner) as the gate, and warn the user the plan has no machine-checkable criteria. Never treat an absent block as green. |
+
+Then follow the [drive to green procedure](references/drive-to-green.md) with that gate set and authoritative command. It loops until every gate is green by real output, delegates to a matching installed verification skill when one exists, runs the authoritative command as the final check, and escalates only on un-runnable or self-contradictory criteria. Do not proceed to cleanup until the authoritative gate is green and any manual criteria are confirmed.
 
 ### Cleanup
 

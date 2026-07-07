@@ -125,9 +125,9 @@ rm -rf docs/hotfix-review/
 
 ## Phase 5 — Ship
 
-### Final Validation
+### Drive to green
 
-Run the project's formatter, linter, and test runner one last time. Fix any failures before proceeding.
+A hotfix has no plan, so there is no `success-criteria` block. Follow the [drive to green procedure](references/drive-to-green.md) with the detected project suite (formatter, linter, test runner) as both the gate set and the authoritative command run once. It loops until green by real output, delegates to a matching installed verification skill when one exists, and escalates only on un-runnable or self-contradictory failures — never on an ordinary, fixable one. Do not proceed until it is green.
 
 ### Ship
 
