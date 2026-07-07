@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.0.4](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.3...v0.0.4) (2026-07-07)
+
+
+### Features
+
+* **agents:** discover companion-plugin skills in review agents ([#215](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/215)) ([d26b283](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/d26b2834b9b5d7c3fa4634baf696263c5ae22d3b))
+* **agents:** preload elements-of-style skill into prose-heavy agents ([#207](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/207)) ([ae25263](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/ae252635e1565a08717d50e14421dc719f1af8bf))
+* **build:** loop-until-verified ship gate for build and hotfix ([#216](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/216)) ([ab0fd18](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/ab0fd180292d809da8442ba0f13a5c8796d49516))
+* **build:** surgical-diff + YAGNI gate before ship ([#213](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/213)) ([f2b2b0f](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/f2b2b0f30e4e4be263ae4c8814ecda98d5259e70))
+* **plan:** add machine-checkable success-criteria gate ([#209](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/209)) ([65e6347](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/65e6347747012d7e457b537c152aee29f8428883))
+* **plan:** merge plan-technical-review into /plan and split work into phases ([#219](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/219)) ([fef4286](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/fef42866721fa26dcbb7aef0fea2993d79d1f888))
+* **review:** add option to file findings on the PR as comments ([#214](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/214)) ([91fe71b](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/91fe71bb96adff1fc52b0c2f99b2acad21fc6c21))
+* **review:** consolidate output into one numbered report with best-practices checks ([#210](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/210)) ([47774b2](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/47774b248f7de906c8fa9becba80de1bdd1ca2d4))
+
+
+### Bug Fixes
+
+* make /build handoff command single-click copyable  ([#166](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/166)) ([4b0759c](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/4b0759c56e8491b26ff055fcdcdf9252b1338ac5))
+
+
+### Refactors
+
+* **skills:** remove create-branch and create-commit skills ([#212](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/212)) ([7691c77](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/7691c7786cd787fae04f247dfc71ce06a53a0c72))
+
+
+### Docs
+
+* adopt community docs from vgv-ai-flutter-plugin ([#211](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/211)) ([559f5ee](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/559f5eefba3e1d9ee3b5d9b64aa1de06bfa07a5d))
+
 ## [0.0.3](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.2...v0.0.3) (2026-06-19)
 
 
