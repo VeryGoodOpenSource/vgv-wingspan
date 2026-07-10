@@ -22,7 +22,7 @@ The plugin supports three sequential phases:
 
 Standalone Skills:
 
-- **`/review`** — Run quality review agents on demand, independent of the build workflow.
+- **`/quality-review`** — Run quality review agents on demand, independent of the build workflow. (Named `quality-review`, not `review`, to avoid GitHub Copilot CLI's built-in `/review` command.)
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
@@ -60,12 +60,12 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/plan/` — Implementation plans from `/plan`
 - `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
 - `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
-- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
+- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/quality-review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
 ## Host Support
 
-Wingspan is single-source, dual-host. `.claude-plugin/plugin.json` is the Claude Code manifest; `.github/plugin/plugin.json` is the GitHub Copilot CLI manifest (same metadata, plus explicit `skills`/`agents`/`hooks`/`mcpServers` component paths — Copilot does not discover agents in subdirectories without them). Release tooling bumps both versions. Copilot CLI reads Claude-format hooks, matchers, and `${CLAUDE_PLUGIN_ROOT}` natively, ignores unknown SKILL.md frontmatter, and accepts Claude agent frontmatter (`model: sonnet/haiku/inherit`, `effort`, `skills:`). Skill bodies stay Claude-first but carry short fallbacks where hosts differ: `$ARGUMENTS` substitution, `${CLAUDE_SKILL_DIR}` script paths, `ask_user` as the AskUserQuestion equivalent, `vgv-wingspan:`-prefixed agent names, and the `/plan` + `/review` built-in slash collisions on Copilot.
+Wingspan is single-source, dual-host. `.claude-plugin/plugin.json` is the Claude Code manifest; `.github/plugin/plugin.json` is the GitHub Copilot CLI manifest (same metadata, plus explicit `skills`/`agents`/`hooks`/`mcpServers` component paths — Copilot does not discover agents in subdirectories without them). Release tooling bumps both versions. Copilot CLI reads Claude-format hooks, matchers, and `${CLAUDE_PLUGIN_ROOT}` natively, ignores unknown SKILL.md frontmatter, and accepts Claude agent frontmatter (`model: sonnet/haiku/inherit`, `effort`, `skills:`). Skill bodies stay Claude-first but carry short fallbacks where hosts differ: `$ARGUMENTS` substitution, `${CLAUDE_SKILL_DIR}` script paths, `ask_user` as the AskUserQuestion equivalent, and `vgv-wingspan:`-prefixed agent names. The one built-in slash collision on Copilot is `/review`, which is why the standalone review skill is named `quality-review` (its bare name is slash-reachable on both hosts); `/plan` is not a Copilot built-in and works as-is.
 
 ## Hooks
 

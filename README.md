@@ -42,7 +42,7 @@ copilot plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketpl
 copilot plugin install vgv-wingspan@very-good-claude-code-marketplace
 ```
 
-Skills, agents, the recommendation hook, and the bundled MCP server all load on Copilot CLI. Two naming caveats: `/plan` and `/review` are Copilot built-in commands, so invoke those two Wingspan skills by name instead (e.g. "use the wingspan plan skill to …" or "run the wingspan review skill"); all other skills work as slash commands (`/brainstorm`, `/build`, `/hotfix`, …).
+Skills, agents, the recommendation hook, and the bundled MCP server all load on Copilot CLI, and every skill is invocable as a slash command (`/brainstorm`, `/plan`, `/build`, `/hotfix`, …). The standalone review skill is named **`/quality-review`** on both hosts, because Copilot ships its own built-in `/review` command — so the Wingspan review runs as `/quality-review`.
 
 ## Getting Started
 
@@ -76,15 +76,17 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 /build docs/plan/add-authentication.md
 ```
 
-### 4. `/review`
+### 4. `/quality-review`
 
 Runs specialized agents in parallel — VGV standards, architecture, test quality, and simplicity. Findings land in one consolidated report with stable `FINDING-NN` ids, and the chat summary mirrors it so you can act on any finding by number. Catches issues before they reach PR.
 
 As simple as this:
 
 ```text
-/review
+/quality-review
 ```
+
+(Named `/quality-review` rather than `/review` so it works as a slash command on GitHub Copilot CLI, whose built-in `/review` would otherwise shadow it.)
 
 ## Better Together: Working With The Very Good AI Flutter Plugin
 
@@ -107,7 +109,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 | [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
 | [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
 | [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
-| [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
+| [**Quality Review**](skills/quality-review/SKILL.md) | `/quality-review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
 | [**Create PR**](skills/create-pr/SKILL.md) | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |

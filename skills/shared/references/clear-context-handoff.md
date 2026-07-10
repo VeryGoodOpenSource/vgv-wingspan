@@ -17,7 +17,5 @@ Where:
 - `<NEXT_SKILL>` — the skill to invoke (e.g., `plan`, `build`)
 - `<DOC_PATH>` — the full path to the document produced in the current phase
 
-**On GitHub Copilot CLI**, `/clear` and `/<skill-name>` work the same, except
-`/plan` and `/review` are reserved by built-in commands. When the next skill is
-one of those, replace the second command with a plain-language first message
-instead: `Use the vgv-wingspan <NEXT_SKILL> skill: <DOC_PATH>`.
+`/clear` and `/<skill-name>` work the same on Claude Code and GitHub Copilot CLI. The
+forward-transition skills (`plan`, `build`) are slash-reachable on both hosts.

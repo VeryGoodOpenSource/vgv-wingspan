@@ -274,7 +274,7 @@ Then, in an interactive `copilot` session:
 | **Agents** | `/agent` — plugin agents appear as `vgv-wingspan:<agent-name>`. |
 | **Hooks** | Same as Claude Code: `Read` a file in a detectable project and watch for the recommendation. The same `/tmp/wingspan-recommend-plugins-*` marker applies. |
 
-When finished: `copilot plugin uninstall vgv-wingspan`. Note that Copilot CLI reads Claude-format hooks and matchers natively, exports `${CLAUDE_PLUGIN_ROOT}` to hook commands, and ignores unknown SKILL.md frontmatter — so most changes need no Copilot-specific work. `/plan` and `/review` are Copilot built-ins; invoke those two skills by name in prose instead.
+When finished: `copilot plugin uninstall vgv-wingspan`. Note that Copilot CLI reads Claude-format hooks and matchers natively, exports `${CLAUDE_PLUGIN_ROOT}` to hook commands, and ignores unknown SKILL.md frontmatter — so most changes need no Copilot-specific work. One naming rule to keep: Copilot ships a built-in `/review` command, so the standalone review skill is named `quality-review` to stay slash-reachable. If you add a skill, avoid Copilot's built-in command names (`/review` is the one that currently affects Wingspan; `/plan` is **not** a built-in and is fine).
 
 ### Validate before you push
 
