@@ -1,11 +1,11 @@
 {
-  "plugin": "very-good-ai-flutter-plugin",
+  "plugin": "vgv-ai-flutter-plugin",
   "detect": [
     { "file": "pubspec.yaml", "pattern": "." },
     { "files": "docs/plan/*.md", "pattern": "flutter|dart" },
     { "files": "docs/brainstorm/*.md", "pattern": "flutter|dart" }
   ],
-  "verificationSkill": "very-good-ai-flutter-plugin:green-gate",
-  "marketplace": "VeryGoodOpenSource/very_good_claude_code_marketplace",
+  "verificationSkill": "vgv-ai-flutter-plugin:green-gate",
+  "marketplace": "VeryGoodOpenSource/very-good-claude-code-marketplace",
   "description": "Dart and Flutter best-practice skills (accessibility, BLoC, testing, theming, navigation, security, i18n, architecture) and automated dart analyze/format hooks."
 }
