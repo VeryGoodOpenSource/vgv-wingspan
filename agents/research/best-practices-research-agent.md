@@ -17,8 +17,8 @@ Your mission is to provide comprehensive, actionable guidance based on establish
 Before doing any external research, check that local knowledge might exist:
 
 1. **Discover Available Skills**:
-   - Use Glob to find all SKILL.md files: `**/**/SKILL.md` and `~/.claude/skills/**/SKILL.md`
-   - Also check project-level skills: `.claude/skills/**/SKILL.md`
+   - Use Glob to find all SKILL.md files: `**/**/SKILL.md`, plus the host's personal skill dirs (`~/.claude/skills/**/SKILL.md`, `~/.copilot/skills/**/SKILL.md`, `~/.agents/skills/**/SKILL.md`)
+   - Also check project-level skills: `.claude/skills/**/SKILL.md`, `.github/skills/**/SKILL.md`, and `.agents/skills/**/SKILL.md`
    - Read the skill descriptions to understand what each covers
 
 2. **Extract Patterns from Skills**:

@@ -20,5 +20,14 @@
     "software development lifecyle",
     "claude code",
     "github copilot cli"
-  ]
+  ],
+  "skills": "skills",
+  "agents": [
+    "agents/analysis",
+    "agents/codebase-review",
+    "agents/quality-review",
+    "agents/research"
+  ],
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
 }

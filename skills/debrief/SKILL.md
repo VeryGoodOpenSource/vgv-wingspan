@@ -5,7 +5,7 @@ description: Produces a structured post-incident analysis — timeline, root cau
 when_to_use: Use when user says "debrief", "post-mortem", "incident review", or "root cause analysis".
 argument-hint: incident description, PR/commit refs, or error context
 effort: high
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Post-incident debrief
@@ -18,6 +18,8 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 <incident_context>$ARGUMENTS</incident_context>
 
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
+
 **If the incident context above is empty, ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
 
 DO NOT proceed until you have a description from the user.
@@ -26,7 +28,7 @@ DO NOT proceed until you have a description from the user.
 
 ### 1. Gather initial information
 
-Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt based on what the user already provided — skip questions whose answers are already clear from the incident context.
+Use the **AskUserQuestion tool** (GitHub Copilot CLI: `ask_user`) to fill in gaps one question at a time. Adapt based on what the user already provided — skip questions whose answers are already clear from the incident context.
 
 **Key questions to resolve:**
 

@@ -1,6 +1,6 @@
 # VGV Wingspan
 
-Wingspan is a collection of AI-assisted engineering tools — skills, agents, and hooks — released as a Claude Code plugin.
+Wingspan is a collection of AI-assisted engineering tools — skills, agents, and hooks — released as a plugin for both Claude Code and GitHub Copilot CLI.
 
 ## Philosophy
 
@@ -63,9 +63,13 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 
+## Host Support
+
+Wingspan is single-source, dual-host. `.claude-plugin/plugin.json` is the Claude Code manifest; `.github/plugin/plugin.json` is the GitHub Copilot CLI manifest (same metadata, plus explicit `skills`/`agents`/`hooks`/`mcpServers` component paths — Copilot does not discover agents in subdirectories without them). Release tooling bumps both versions. Copilot CLI reads Claude-format hooks, matchers, and `${CLAUDE_PLUGIN_ROOT}` natively, ignores unknown SKILL.md frontmatter, and accepts Claude agent frontmatter (`model: sonnet/haiku/inherit`, `effort`, `skills:`). Skill bodies stay Claude-first but carry short fallbacks where hosts differ: `$ARGUMENTS` substitution, `${CLAUDE_SKILL_DIR}` script paths, `ask_user` as the AskUserQuestion equivalent, `vgv-wingspan:`-prefixed agent names, and the `/plan` + `/review` built-in slash collisions on Copilot.
+
 ## Hooks
 
-Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json`.
+Wingspan uses hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json` (Claude Code format — GitHub Copilot CLI executes the same file natively).
 
 ### Companion Plugin Recommendations
 
@@ -74,7 +78,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 **How it works:**
 
 1. `hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
-2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message.
+2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message. The script detects its host (Copilot CLI exports `COPILOT_CLI`/`COPILOT_PLUGIN_ROOT` to hook commands), checks that host's plugin settings (`.claude/` settings files on Claude Code; `~/.copilot` config and `.github/copilot/settings.json` on Copilot), and phrases the install commands for that host.
 3. A marker file (`/tmp/wingspan-recommend-plugins-<hash>`) is written only when at least one recommendation is emitted, suppressing repeats for the rest of the session. If no plugins are missing, no marker is written and the script re-evaluates on the next tool call — so a newly added recommendation file can still fire later in the same session.
 
 **Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
@@ -96,7 +100,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `detect.files`      | Shell glob — greps inside every matching file for `pattern`    |
 | `detect.pattern`    | Regex grep pattern to confirm the match                        |
 | `verificationSkill` | Optional. Skill the `/build` and `/hotfix` ship gate delegates to when this file's `detect` matches and the skill is installed |
-| `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
+| `marketplace`       | GitHub `owner/repo` for the marketplace registry. Use the canonical repo path — on Copilot CLI the install spec is derived as `<plugin>@<repo-name>`, which must match the marketplace.json `name` |
 | `description`       | One-line summary shown in the recommendation                   |
 
 **Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.

@@ -15,6 +15,8 @@ Pass `<PLAN_PATH>` to each. Run all three concurrently:
 - **@vgv-review-agent** — review the plan for adherence to Very Good Engineering practices and project conventions.
 - **@plan-splitting-agent** — assess plan scope and report whether the work is too large for a single reviewable PR.
 
+On GitHub Copilot CLI, plugin agents are listed with a `vgv-wingspan:` prefix — match by name suffix.
+
 ## 2. Apply findings inline
 
 Fold the simplicity and VGV findings into the plan file directly — tighten scope, close

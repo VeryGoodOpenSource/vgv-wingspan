@@ -3,7 +3,7 @@
 [![Very Good Ventures][logo_white]][very_good_ventures_link_dark]
 [![Very Good Ventures][logo_black]][very_good_ventures_link_light]
 
-🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards.
+🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards. Runs as a plugin on both **Claude Code** and **GitHub Copilot CLI**.
 
 Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 
@@ -11,7 +11,7 @@ Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 
 ## Installation
 
-### From the Marketplace
+### Claude Code
 
 One-line install from your terminal:
 
@@ -32,6 +32,17 @@ Or inside an active Claude Code session, run these as **two separate commands** 
    ```text
    /plugin install vgv-wingspan
    ```
+
+### GitHub Copilot CLI
+
+The same marketplace works on [GitHub Copilot CLI](https://docs.github.com/copilot/concepts/agents/copilot-cli/about-copilot-cli) (v1.0.64 or later recommended). From your terminal:
+
+```bash
+copilot plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketplace
+copilot plugin install vgv-wingspan@very-good-claude-code-marketplace
+```
+
+Skills, agents, the recommendation hook, and the bundled MCP server all load on Copilot CLI. Two naming caveats: `/plan` and `/review` are Copilot built-in commands, so invoke those two Wingspan skills by name instead (e.g. "use the wingspan plan skill to …" or "run the wingspan review skill"); all other skills work as slash commands (`/brainstorm`, `/build`, `/hotfix`, …).
 
 ## Getting Started
 
@@ -105,7 +116,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 
 ## Agents
 
-Wingspan ships subagents that Claude Code dispatches as isolated, specialized reviewers. Unlike skills, agents are **not** invoked as slash commands — the workflow skills dispatch them automatically, or you can ask Claude to run one by name (e.g. "review my changes with the vgv-review-agent").
+Wingspan ships subagents that the host dispatches as isolated, specialized reviewers. Unlike skills, agents are **not** invoked as slash commands — the workflow skills dispatch them automatically, or you can ask by name (e.g. "review my changes with the vgv-review-agent"). On GitHub Copilot CLI they appear namespaced as `vgv-wingspan:<agent-name>` in the `/agent` picker.
 
 | Agent | Description |
 | ----- | ----------- |
@@ -122,7 +133,7 @@ Wingspan ships subagents that Claude Code dispatches as isolated, specialized re
 
 ## Hooks
 
-Wingspan includes a `PreToolUse` hook that detects your project type and recommends companion plugins you haven't installed yet.
+Wingspan includes a `PreToolUse` hook that detects your project type and recommends companion plugins you haven't installed yet. It runs on both Claude Code and GitHub Copilot CLI, and tailors its install instructions to the host it is running on.
 
 | Hook | Trigger | Behavior |
 | ---- | ------- | -------- |
