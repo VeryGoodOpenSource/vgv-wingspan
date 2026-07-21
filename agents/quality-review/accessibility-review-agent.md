@@ -37,7 +37,7 @@ Classify every finding using these severity levels:
 
 ## WCAG Conformance Baseline
 
-Apply **WCAG 2.1 Level AA** as the default standard. If the project's CLAUDE.md or documentation specifies a different conformance target (A or AAA), use that instead. Tie every finding to its WCAG success criterion (e.g., "1.1.1 Non-text Content") so findings are verifiable against the spec. The [WCAG Criteria Reference](#wcag-criteria-reference) at the end lists every criterion by level — Level AA includes all Level A criteria, and Level AAA includes all Level A and AA criteria.
+Apply **WCAG 2.2 Level AA** as the default standard. If the project's CLAUDE.md or documentation specifies a different conformance target (A or AAA), use that instead. Tie every finding to its WCAG success criterion (e.g., "1.1.1 Non-text Content") so findings are verifiable against the spec. The [WCAG Criteria Reference](#wcag-criteria-reference) at the end lists every criterion by level — Level AA includes all Level A criteria, and Level AAA includes all Level A and AA criteria.
 
 ## Review Process
 
@@ -57,7 +57,7 @@ Scan all changed UI files for proper semantic markup and widget usage.
 
 For each violation, report: `file_path:line` — [WCAG criterion] [Description].
 
-### 2. Interactive Controls (WCAG 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.5, 2.5.8)
+### 2. Interactive Controls (WCAG 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.8)
 
 Verify every interactive element is operable by all input methods.
 
@@ -68,7 +68,7 @@ Verify every interactive element is operable by all input methods.
 | Activation | Buttons/links respond to Enter/Space (or platform equivalent) | Pointer-only handlers with no keyboard equivalent |
 | Focus order (2.4.3) | Focus sequence matches logical reading order | Tab order jumps unpredictably |
 | Focus visibility (2.4.7) | Visible focus indicator on all focusable elements — AA requires 3:1 contrast ratio for the indicator | Focus indicator removed, invisible, or low-contrast |
-| Touch targets (2.5.5, 2.5.8) | Minimum 44x44 CSS px / 48x48 dp (platform-dependent) | Undersized tap targets |
+| Touch targets (2.5.8) | Minimum 24x24 CSS px, with spacing/inline/essential exceptions | Undersized tap targets with no spacing offset |
 | Custom controls (4.1.2) | Custom components expose correct role, name, value, and state | Missing role or state — assistive tech can't interact |
 | Orientation (1.3.4) | Content not restricted to a single display orientation unless essential | Layout breaks or is locked in portrait/landscape only |
 
@@ -139,8 +139,10 @@ Use this reference to determine which success criteria apply at the targeted lev
 | 2.4.2 | Page Titled | Each screen or page has a meaningful, distinct title |
 | 2.4.3 | Focus Order | Focus sequence preserves meaning and operability |
 | 2.5.3 | Label in Name | The accessible name contains the visible label text |
+| 3.2.6 | Consistent Help | A help mechanism (contact info, chat, FAQ), where present, appears in the same relative order across screens |
 | 3.3.1 | Error Identification | Input errors are identified and described in text, not by color or position alone |
 | 3.3.2 | Labels or Instructions | Every input has a visible label or instructions |
+| 3.3.7 | Redundant Entry | Information previously entered is auto-populated or available for reuse, not re-requested |
 | 4.1.2 | Name, Role, Value | Every control exposes correct name, role, state, and value to assistive technology |
 | 4.1.3 | Status Messages | Status changes are announced without moving focus (live regions or platform equivalent) |
 
@@ -160,12 +162,15 @@ Use this reference to determine which success criteria apply at the targeted lev
 | 2.4.5 | Multiple Ways | More than one way exists to locate a screen or page (search, navigation, sitemap) |
 | 2.4.6 | Headings and Labels | Headings and labels are descriptive |
 | 2.4.7 | Focus Visible | The keyboard focus indicator is always visible |
-| 2.4.11 | Focus Appearance | The focus indicator meets 3:1 contrast and an adequate size or outline |
+| 2.4.11 | Focus Not Obscured (Minimum) | The focused component is not entirely hidden by author-created content (e.g., sticky headers, overlays) |
+| 2.5.7 | Dragging Movements | Any drag-based interaction has a single-pointer alternative that doesn't require dragging |
+| 2.5.8 | Target Size (Minimum) | Pointer targets are at least 24x24 CSS px, or have equivalent spacing, unless inline, essential, or user-agent controlled |
 | 3.1.2 | Language of Parts | Language changes within content are identified programmatically (web) |
 | 3.2.3 | Consistent Navigation | Repeated navigation appears in a consistent relative order across screens |
 | 3.2.4 | Consistent Identification | Components with the same function are identified consistently |
 | 3.3.3 | Error Suggestion | When an input error is detected, a correction is suggested where known |
 | 3.3.4 | Error Prevention | Legal, financial, and data submissions are reversible, checked, or confirmable |
+| 3.3.8 | Accessible Authentication (Minimum) | Authentication doesn't rely solely on a cognitive function test (e.g., password recall) unless an alternative exists |
 
 ### Level AAA — Additional Criteria (includes all Level A and AA)
 
@@ -179,12 +184,14 @@ Use this reference to determine which success criteria apply at the targeted lev
 | 2.3.3 | Animation from Interactions | Motion animation triggered by interaction can be disabled (respect reduced-motion) |
 | 2.4.8 | Location | Users can determine their location within the app or site |
 | 2.4.9 | Link Purpose (Link Only) | Link purpose is clear from the link text alone |
-| 2.4.12 | Focus Appearance (Enhanced) | The focus indicator encloses the component, is at least 2px, and meets 3:1 against adjacent colors |
+| 2.4.12 | Focus Not Obscured (Enhanced) | No part of the focused component is hidden by author-created content |
+| 2.4.13 | Focus Appearance | The focus indicator encloses the component, is at least 2px thick, and meets 3:1 contrast against adjacent colors |
 | 2.5.5 | Target Size (Enhanced) | Touch targets are at least 44x44 CSS px |
 | 2.5.6 | Concurrent Input Mechanisms | Input is not restricted to a single modality |
 | 3.2.5 | Change on Request | Context changes only on explicit user request |
 | 3.3.5 | Help | Context-sensitive help is available |
 | 3.3.6 | Error Prevention (All) | All submissions are reversible, checked, or confirmable |
+| 3.3.9 | Accessible Authentication (Enhanced) | Authentication doesn't rely on a cognitive function test, with no exceptions |
 
 ## Output Format
 
