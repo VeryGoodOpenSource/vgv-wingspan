@@ -4,8 +4,8 @@ user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop).
 when_to_use: Use when user says "rebase", "sync branch", or "update branch".
-allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *)
-effort: low
+allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit
+effort: medium
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
 
@@ -69,36 +69,95 @@ If they match, the branch is already up-to-date. Inform the user and stop.
 git rebase origin/<base-branch>
 ```
 
-### On success
+### Clean rebase (no conflicts)
 
-Report how many commits ahead of the base branch:
+Report success briefly:
+
+- How many commits were replayed (`git rev-list --count origin/<base-branch>..HEAD`)
+- The branch is now up to date with `origin/<base-branch>`
+- Suggest running the project's own build, test, and format/lint checks — a clean rebase can still introduce semantic conflicts
+- If the branch was previously pushed, mention that a force-push (`git push --force-with-lease`) will be needed to update the remote — but do NOT push automatically
+
+If changes were stashed in Step 1, restore them with `git stash pop` (see Step 4d if the pop conflicts).
+
+## Step 4: Handling conflicts
+
+When `git rebase` stops with conflicts:
+
+### 4a. Identify conflicted files
 
 ```bash
-git rev-list --count origin/<base-branch>..HEAD
+git diff --name-only --diff-filter=U
 ```
 
-### On conflict
+### 4b. Resolve each conflicted file
 
-Abort the rebase:
+Read the full file content and locate conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`). For each conflict chunk, decide:
+
+**Auto-resolve** (the right answer is clear):
+
+- Both sides added imports or list items — combine both sets, deduplicate, maintain sort order
+- Generated or lock files (anything produced by a build step or dependency resolver rather than edited by hand) — keep your feature branch's version (the change being replayed), then note that regeneration is needed after the rebase completes. Caution: during a rebase `--ours` is the base branch and `--theirs` is your commit — the reverse of a merge — so resolve by reading the content, not by reaching for `--ours`/`--theirs`.
+- Formatting / whitespace-only diffs — accept either side
+- One side added new code, the other didn't touch that region — take the addition
+- One side modified code the other side deleted — prefer the modification, but call this out prominently in the summary and ask the user to confirm the deletion wasn't intentional, since keeping the change resurrects a file the other side removed
+
+**Stop and ask the user** (the right answer requires judgment):
+
+- Both sides changed the same function or logic block differently
+- Business logic where correctness depends on product intent
+
+When in doubt, ask. Losing someone's work is far worse than pausing to check.
+
+After resolving all conflicts in a file, write the clean version and stage it:
+
+```bash
+git add <resolved-file>
+```
+
+### 4c. Continue the rebase
+
+```bash
+GIT_EDITOR=true git rebase --continue
+```
+
+`GIT_EDITOR=true` stops `git` from opening an interactive editor for the commit message, which would otherwise hang with no terminal attached.
+
+Multi-commit rebases may produce conflicts at multiple steps. Repeat 4a-4c for each. If `git rebase --continue` fails for a reason other than conflicts — for example, a pre-commit hook rejects the commit — stop and report the failure rather than looping.
+
+### 4d. After all conflicts are resolved, report
+
+- Every conflict that was resolved, with a one-line explanation of what you chose
+- Any files flagged for regeneration
+- Suggest running the project's own build, test, and format/lint checks to verify correctness
+- If the branch was previously pushed, mention that a force-push (`git push --force-with-lease`) will be needed — but do NOT push automatically
+
+If changes were stashed in Step 1, restore them with `git stash pop`. If `stash pop` fails due to conflicts, inform the user and suggest `git stash show` to review the stashed changes.
+
+## Recovery (if needed)
+
+If the rebase enters a bad state or a conflict is too ambiguous to resolve safely:
 
 ```bash
 git rebase --abort
 ```
 
+This restores the branch to its exact pre-rebase state — nothing is lost. Explain what went wrong so the user can decide how to proceed.
+
 If changes were stashed in Step 1, restore them with `git stash pop`.
-
-Inform the user that the rebase had conflicts and suggest resolving manually:
-
-> Automatic rebase failed due to conflicts. To resolve manually, run: `git rebase origin/<base-branch>`
 
 ## Gotchas
 
-- If the branch has already been pushed to a remote, rebasing rewrites history. The user will need to force-push (`git push --force-with-lease`) after a successful rebase — warn them.
-- `git stash pop` can itself cause conflicts if stashed changes overlap with rebased commits. If stash pop fails, inform the user and suggest `git stash show` to review the stashed changes.
 - Detached HEAD state (`HEAD` instead of a branch name) means the user is not on any branch. Inform them and stop — do not attempt to rebase.
 - If the base branch does not exist locally but does on the remote, `git fetch` in Step 2 will create the remote tracking ref. The rebase uses `origin/<base-branch>`, not the local branch.
 
-## Important
+## Rules
 
-- This skill only manages git state. Do not modify project files.
+- Never force-push unless the user explicitly asks.
+- Never squash, reorder, or edit commits during the rebase — just replay them.
+- Never proceed on a dirty working tree without the user's consent.
+- Prefer keeping both sides' changes when combining — err on the side of inclusion.
+- Stage only the files you resolved — never `git add -A`.
+- After resolving conflicts, always recommend running the project's own build, test, and format/lint checks to verify.
+- Modify project files only to resolve rebase conflicts — make no other code changes.
 - If changes were stashed, always restore them — even if the rebase fails.
