@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.5](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.4...v0.0.5) (2026-07-15)
+
+
+### Bug Fixes
+
+* correct stale plugin and marketplace names in Flutter recommendation ([#222](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/222)) ([325f33e](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/325f33eb532abb3184bb31abe433b6fdc1061d19))
+
 ## [0.0.4](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.3...v0.0.4) (2026-07-07)
 
 
