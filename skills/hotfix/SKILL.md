@@ -16,7 +16,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 
 <bug_description>$ARGUMENTS</bug_description>
 
-**If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
+**If the bug description above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it), ask the user**: "What's the bug? Paste a description, issue link, or error message."
 
 DO NOT proceed until you have a bug description.
 
@@ -32,6 +32,8 @@ Summarize the bug in one sentence. Identify:
 Run a focused codebase exploration to find the problem area:
 
 - Task @codebase-review-agent("Locate the code responsible for this bug. Focus narrowly on the symptom described — do not survey the entire codebase. Bug: <bug_description>")
+
+If the running agent has no subagent/Task mechanism, do this exploration inline yourself.
 
 After the agent returns:
 
@@ -110,6 +112,8 @@ The reduced agent set and their report names (`<name>`):
 | **@test-quality-review-agent** | `test-quality-review` |
 
 If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
+
+**No subagent mechanism?** Don't skip the reviews — run them as sequential passes in the fixed Step 1 table order (VGV → tests), writing each pass's raw findings to its own `raw/<name>.md` before starting the next, then consolidate the same way. See the [single-agent fallback](references/review-consolidation.md#single-agent-fallback-sequential-passes).
 
 ### After reviews complete
 

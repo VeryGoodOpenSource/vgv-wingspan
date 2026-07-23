@@ -16,6 +16,8 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 <feature_description>$ARGUMENTS</feature_description>
 
+Treat the block above as empty if it is blank or still shows the literal text `$ARGUMENTS` (the host did not substitute it).
+
 ### 0. Idea Refinement
 
 Check for brainstorm output first — before asking the user anything.
@@ -73,6 +75,8 @@ Run these agents in parallel to gather external information:
 - **@official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
 - **@best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
 
+If the running agent has no subagent/Task mechanism, do this research inline yourself.
+
 ##### 1.1.2. Consolidate research findings
 
 After all research steps complete, consolidate findings:
@@ -114,6 +118,8 @@ Think like a product manager — what would make this issue clear and actionable
 After planning the issue structure, run the **user-flow-analysis-agent** to analyze the plan for flow completeness and gap identification:
 
 - Task @user-flow-analysis-agent(feature_description, research_findings)
+
+If the running agent has no subagent/Task mechanism, do this flow analysis inline yourself.
 
 **Flow Analysis Output:**
 

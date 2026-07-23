@@ -15,7 +15,7 @@ Clarify **WHAT** to build before diving into **HOW** to build it. Explore user i
 
 <feature description>$ARGUMENTS</feature description>
 
-**If the feature description above is empty, ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
+**If the feature description above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it), ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
 
 DO NOT proceed until you have a description from the user.
 
@@ -53,6 +53,8 @@ Assess whether brainstorming is needed.
 Run a quick project review to understand existing patterns:
 
 - Task @codebase-review-agent("Understand existing patterns related to: <feature_description>")
+
+If the running agent has no subagent/Task mechanism, do this exploration inline yourself.
 
 Focus on: similar features, established patterns, CLAUDE.md guidance.
 

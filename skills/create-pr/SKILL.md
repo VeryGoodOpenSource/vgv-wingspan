@@ -12,6 +12,11 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 Stage uncommitted changes, commit them, push the branch, and open a pull request on the project's Git hosting platform.
 
+<!-- portability:destructive-guard -->
+<!-- portability:ask-fallback -->
+
+> **Cross-harness guards.** This skill pushes and opens a pull request. `disable-model-invocation: true` blocks description-activation on Claude Code, but other hosts ignore that field — if this skill was activated by description rather than an explicit user instruction to create a PR, stop and confirm in plain text before anything is pushed or opened. Every confirmation gate below uses `AskUserQuestion`; on a host without it, ask the same question as plain numbered text and never auto-proceed on a default before a commit, push, force-push, or PR. See [interaction fallbacks](references/interaction-fallbacks.md).
+
 ## Steps checklist
 
 - [ ] Step 0: Parse arguments
@@ -31,7 +36,7 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 
 <context>$ARGUMENTS</context>
 
-This may include `skip-checks`, a ticket number (e.g. `VGV-123`), a short description, or be empty.
+This may include `skip-checks`, a ticket number (e.g. `VGV-123`), a short description, or be empty. If it still shows the literal text `$ARGUMENTS` (the host did not substitute it), treat it as empty.
 
 ## Step 0: Parse arguments
 

@@ -13,6 +13,11 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating.
 
+<!-- portability:destructive-guard -->
+<!-- portability:ask-fallback -->
+
+> **Cross-harness guards.** This skill rewrites branch history and may require a force-push. `disable-model-invocation: true` blocks description-activation on Claude Code, but other hosts ignore that field — if activated by description rather than an explicit user instruction to rebase, stop and confirm in plain text first. The uncommitted-changes gate below uses `AskUserQuestion`; on a host without it, ask in plain numbered text and never rewrite history or force-push without an explicit user go-ahead. See [interaction fallbacks](references/interaction-fallbacks.md).
+
 ## Step 1: Validate preconditions
 
 Run these checks in order. If any fail, inform the user and stop.
@@ -32,6 +37,8 @@ ${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
 ```
 
 If the script exits with an error, inform the user no base branch was found and stop.
+
+> **Fallback** — if `${CLAUDE_SKILL_DIR}` is not substituted (the command still contains the literal text), run `scripts/detect-base-branch.sh` from this skill's own directory instead. If script execution is unavailable, detect the base branch inline: use the first of `main`, `master`, `develop` that resolves via `git rev-parse --verify <branch>` or `git rev-parse --verify origin/<branch>`; if none exist, stop.
 
 ### Check for uncommitted changes
 

@@ -18,7 +18,7 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 <incident_context>$ARGUMENTS</incident_context>
 
-**If the incident context above is empty, ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
+**If the incident context above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it), ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
 
 DO NOT proceed until you have a description from the user.
 

@@ -30,36 +30,31 @@ jobs:
             **/*.md
             !CHANGELOG.md
           config: 'config/cspell.json'
-  detect-changed-skills:
-    name: 🔎 Detect Changed Skills
+  list-skills:
+    name: 🔎 List Skills
     runs-on: ubuntu-latest
     outputs:
-      skills: ${{ steps.changed-skills.outputs.skills }}
+      skills: ${{ steps.list-skills.outputs.skills }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - name: Get changed skills
-        id: changed-skills
+      - name: List all skills
+        id: list-skills
         run: |
-          BASE=${{ github.event.pull_request.base.sha }}
-          HEAD=${{ github.event.pull_request.head.sha }}
-          SKILLS=$(git diff --name-only --diff-filter=d $BASE $HEAD | \
-            { grep 'SKILL.md' || true; } | \
+          SKILLS=$(find skills -name SKILL.md -type f | \
             xargs -I {} dirname {} | \
             sort -u | \
             jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "skills=$SKILLS" >> "$GITHUB_OUTPUT"
-          echo "Changed skills: $SKILLS"
+          echo "Skills: $SKILLS"
   validate-skills:
     name: 🔍 Validate Skills
-    needs: detect-changed-skills
-    if: needs.detect-changed-skills.outputs.skills != '[]'
+    needs: list-skills
+    if: needs.list-skills.outputs.skills != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        skill: ${{ fromJson(needs.detect-changed-skills.outputs.skills) }}
+        skill: ${{ fromJson(needs.list-skills.outputs.skills) }}
     steps:
       - uses: actions/checkout@v7
       - name: Validate ${{ matrix.skill }}
@@ -69,7 +64,11 @@ jobs:
           path: ${{ matrix.skill }}
           validate-references: 'true'
           fail-on-warning: 'true'
-          ignore-rules: 'name-match-directory,unknown-field'
+          # unknown-field stays ignored: Wingspan carries Claude Code extras
+          # (when_to_use, user-invocable, disable-model-invocation, effort,
+          # argument-hint) that the Agent Skills spec does not define. name must
+          # match the directory per the spec, so that rule is enforced.
+          ignore-rules: 'unknown-field'
       - name: Check results
         if: always()
         run: |

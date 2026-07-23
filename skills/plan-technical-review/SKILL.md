@@ -14,7 +14,7 @@ Review a plan that was not created by `/plan`. `/plan` runs this same review inl
 creation, so use this skill for externally-authored plans — hand-written, from another tool,
 or from a teammate.
 
-**Plan file:** `$ARGUMENTS` (if empty, ask the user for the plan path or pick the most recent file under `docs/plan/`).
+**Plan file:** `$ARGUMENTS` (if empty, or if it still shows the literal text `$ARGUMENTS` because the host did not substitute it, ask the user for the plan path or pick the most recent file under `docs/plan/`).
 
 ## Review
 
