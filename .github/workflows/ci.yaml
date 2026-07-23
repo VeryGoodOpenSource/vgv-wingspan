@@ -85,3 +85,66 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code
       - name: Validate Plugin
         run: claude plugin validate .
+  copilot-manifest:
+    name: 🐙 Copilot Manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate Copilot manifest and metadata parity
+        run: |
+          set -euo pipefail
+          GH=.github/plugin/plugin.json
+          CC=.claude-plugin/plugin.json
+
+          # 1. Both manifests are valid JSON.
+          jq empty "$GH"
+          jq empty "$CC"
+
+          # 2. name is present and kebab-case (Copilot's only hard manifest rule).
+          NAME=$(jq -r '.name' "$GH")
+          echo "$NAME" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$' \
+            || { echo "::error::.github/plugin/plugin.json name '$NAME' is not kebab-case"; exit 1; }
+          [ "${#NAME}" -le 64 ] || { echo "::error::plugin name exceeds 64 chars"; exit 1; }
+
+          # 3. Shared metadata is identical across both manifests (only the
+          #    Copilot manifest's component-path fields may differ).
+          if ! diff <(jq -S 'del(.skills,.agents,.hooks,.mcpServers,.commands,.extensions,.lspServers)' "$GH") \
+                    <(jq -S . "$CC"); then
+            echo "::error::Metadata drift between .github/plugin/plugin.json and .claude-plugin/plugin.json"
+            exit 1
+          fi
+
+          # 4. Every component path the Copilot manifest declares exists on disk.
+          for key in skills hooks mcpServers; do
+            p=$(jq -r --arg k "$key" '.[$k]' "$GH")
+            [ -e "$p" ] || { echo "::error::$key path '$p' does not exist"; exit 1; }
+          done
+          jq -r '.agents[]' "$GH" | while read -r d; do
+            [ -d "$d" ] || { echo "::error::agents path '$d' does not exist"; exit 1; }
+          done
+          echo "Copilot manifest OK: metadata in parity, all component paths present."
+  copilot-loader:
+    name: 🐙 Copilot Loader Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install GitHub Copilot CLI
+        # Plugin-management subcommands need no auth or Copilot seat, so this
+        # smoke test runs on any PR (including forks) with no secrets. Pin the
+        # version because direct local-path installs are on a deprecation path.
+        run: npm install -g @github/copilot@1.0.70
+      - name: Install plugin and assert every skill loads
+        run: |
+          set -euo pipefail
+          copilot --version
+          copilot plugin install ./
+          copilot skill list --json > skills.json
+          jq -r '.[] | select(.source=="plugin") | .name' skills.json | sort
+          # Copilot namespaces a skill to "vgv-wingspan:<name>" only if another
+          # installed plugin defines the same name; accept either form so the
+          # check is robust to unrelated plugins in the environment.
+          for skill in brainstorm plan build quality-review hotfix debrief create create-pr rebase refine-approach plan-technical-review elements-of-style; do
+            jq -e --arg s "$skill" 'any(.[]; .name == $s or .name == "vgv-wingspan:" + $s)' skills.json >/dev/null \
+              || { echo "::error::Copilot did not load the '$skill' skill from the plugin"; exit 1; }
+          done
+          echo "All 12 Wingspan skills loaded on Copilot CLI."

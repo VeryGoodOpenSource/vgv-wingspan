@@ -27,6 +27,8 @@ Read the plugin's `hooks/recommendations/*.json`. A file participates only if it
 
 If more than one file matches, first match wins. Prefer the project's MCP analyzer and test tools over shell commands when they are available.
 
+`verificationSkill` values use Claude Code's `plugin-name:skill-name` form. On hosts that list plugin skills under bare names (GitHub Copilot CLI), match the part after the `:`.
+
 ## Step 2 — Drive to green
 
 - **Delegated** — invoke the companion skill and let it run its own verify-fix-rerun loop. Do not wrap it in a second loop of your own.

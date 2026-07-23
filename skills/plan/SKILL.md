@@ -5,7 +5,7 @@ description: Turns high-level brainstorming and ideas into well-structured, acti
 when_to_use: Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
 effort: high
 argument-hint: feature, bug fix, or improvement to plan
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Create a new implementation plan (or bug fix)
@@ -15,6 +15,8 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 ## Feature Description
 
 <feature_description>$ARGUMENTS</feature_description>
+
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 ### 0. Idea Refinement
 
@@ -29,7 +31,7 @@ A brainstorm is relevant if created within the last 7 days and its topic semanti
 | Brainstorms found | Feature description provided? | Action |
 |-------------------|------------------------------|--------|
 | One relevant | Yes | Read it, announce "Found brainstorm from [date]: [topic]", extract key decisions, proceed |
-| One relevant | No | **AskUserQuestion**: "Plan this brainstorm?" — (Recommended) use it, or describe something different |
+| One relevant | No | **AskUserQuestion** (GitHub Copilot CLI: `ask_user`): "Plan this brainstorm?" — (Recommended) use it, or describe something different |
 | Multiple relevant | Either | **AskUserQuestion**: list candidates, ask which to use |
 | None / not relevant | No | Ask: "What would you like to plan?" |
 | None / not relevant | Yes | Run /brainstorm to clarify the idea first |
@@ -72,6 +74,8 @@ Run these agents in parallel to gather external information:
 
 - **@official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
 - **@best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
+
+On GitHub Copilot CLI, plugin agents are listed with a `vgv-wingspan:` prefix — match agents by name suffix.
 
 ##### 1.1.2. Consolidate research findings
 

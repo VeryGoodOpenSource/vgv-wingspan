@@ -6,7 +6,7 @@ description: Rebases the current feature branch onto the base branch (main/maste
 when_to_use: Use when user says "rebase", "sync branch", or "update branch".
 allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *)
 effort: low
-compatibility: Designed for Claude Code (or similar products with git access)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with git access)
 ---
 
 # Rebase onto base branch
@@ -31,6 +31,8 @@ Detect the base branch:
 ${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
 ```
 
+If the path above appears unexpanded (e.g., on GitHub Copilot CLI, which does not substitute this variable), run the script from this skill's own `scripts/` directory instead.
+
 If the script exits with an error, inform the user no base branch was found and stop.
 
 ### Check for uncommitted changes
@@ -39,7 +41,7 @@ If the script exits with an error, inform the user no base branch was found and 
 git status --porcelain
 ```
 
-If there are uncommitted changes, use **AskUserQuestion**:
+If there are uncommitted changes, use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`):
 
 **Question:** "You have uncommitted changes. Rebase requires a clean working tree. What would you like to do?"
 
