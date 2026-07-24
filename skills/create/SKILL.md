@@ -30,7 +30,7 @@ DO NOT proceed until you have a project description.
 
 **On Claude Code (has `Glob` and the plugin root):** use **Glob** to find all `*.json` files in `hooks/recommendations/` (relative to the Wingspan plugin root), then **Read** each file.
 
-**Off Claude Code (no plugin-root access, or `Glob` finds nothing):** a skills.sh install ships this skill but not the plugin-root `hooks/` directory, so the recommendation files are not present. Fall back to the inline [companion catalog](#companion-catalog-inline-fallback) below — it mirrors the same `plugin`/`marketplace`/`description` metadata. `allowed-tools` here lists `Read Glob Skill`, but use whatever tools the task needs; the list is a Claude Code hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
+**Off Claude Code (no plugin-root access, or `Glob` finds nothing):** fall back to the inline [companion catalog](#companion-catalog-inline-fallback) below — it mirrors the same `plugin`/`marketplace`/`description` metadata. `allowed-tools` here lists `Read Glob Skill`, but use whatever tools the task needs; the list is a Claude Code hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 Each recommendation file has this structure:
 
@@ -44,7 +44,7 @@ Each recommendation file has this structure:
 
 ## Companion catalog (inline fallback)
 
-Used only when the recommendation files are not reachable (off Claude Code). Keep this table in sync with `hooks/recommendations/*.json` — the same metadata, no technology-specific commands.
+Used only when the recommendation files are not reachable (off Claude Code).
 
 | Plugin | Marketplace | Provides |
 |--------|-------------|----------|

@@ -22,5 +22,4 @@ Where:
 `/clear` and `/<skill>` are Claude Code slash commands. On a host that activates skills
 by description rather than typed commands, keep the intent and drop the syntax: tell the
 user to **start a fresh session or clear the context**, then to **ask for `<NEXT_ACTION>`
-referencing `<DOC_PATH>`** — the next skill activates from that request's description. The
-slash form stays as the Claude Code convenience.
+referencing `<DOC_PATH>`** — the next skill activates from that request's description.
