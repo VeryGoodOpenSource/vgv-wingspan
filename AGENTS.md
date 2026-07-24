@@ -10,7 +10,7 @@ Apply VGV's best practices and standards for scalable software to AI-assisted wo
 
 Wingspan handles the software development lifecycle — brainstorming, planning, building, and quality review. It does not enforce or assume any specific programming language, framework, or toolchain.
 
-Technology-specific concerns (linting, formatting, scaffolding, framework conventions) belong in companion plugins. In Claude Code, Wingspan's recommendation hook detects project types and suggests the appropriate companion plugin automatically. On other harnesses, choose the matching companion plugin yourself.
+Technology-specific concerns (linting, formatting, scaffolding, framework conventions) belong in companion plugins. In Claude Code, Wingspan's recommendation hook detects project types and suggests the appropriate companion plugin automatically.
 
 ## Workflow
 
@@ -32,7 +32,7 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
 
-**Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, display the `/clear` command followed by the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
+**Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, clear the context, then present the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
 
 Supporting skills:
 
