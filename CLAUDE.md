@@ -1,5 +1,8 @@
 @AGENTS.md
 
+<!-- First line is the @AGENTS.md import (Claude Code memory), not a heading. -->
+<!-- markdownlint-disable-file MD041 -->
+
 ## Hooks
 
 Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json`.
