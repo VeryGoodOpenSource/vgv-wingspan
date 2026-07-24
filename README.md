@@ -65,14 +65,14 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 /build docs/plan/add-authentication.md
 ```
 
-### 4. `/quality-review`
+### 4. `/review`
 
 Runs specialized agents in parallel — VGV standards, architecture, test quality, and simplicity. Findings land in one consolidated report with stable `FINDING-NN` ids, and the chat summary mirrors it so you can act on any finding by number. Catches issues before they reach PR.
 
 As simple as this:
 
 ```text
-/quality-review
+/review
 ```
 
 ## Better Together: Working With The Very Good AI Flutter Plugin
@@ -96,7 +96,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 | [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
 | [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
 | [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
-| [**Quality Review**](skills/quality-review/SKILL.md) | `/quality-review [path]` | Run quality review agents on demand — assess code quality and identify issues |
+| [**Quality Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
 | [**Create PR**](skills/create-pr/SKILL.md) | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |

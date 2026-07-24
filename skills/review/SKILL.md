@@ -1,5 +1,5 @@
 ---
-name: quality-review
+name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
 when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
@@ -14,6 +14,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 Run quality review agents. Review manually written code, assess existing codebases, or
 check a branch before merging. Output is **one consolidated report** with stable,
 numbered findings the user can act on by id.
+
+> **Cross-harness note.** Some hosts (Codex, GitHub Copilot) ship a built-in `/review`
+> slash command that shadows this skill's bare name. This skill activates by its
+> **description**, not by a typed slash command, so a request like "review this code" or
+> "review the branch" triggers it regardless of the built-in. To invoke it explicitly on
+> such a host, use that host's namespaced skill invocation rather than the bare `/review`.
 
 ## Review Scope
 

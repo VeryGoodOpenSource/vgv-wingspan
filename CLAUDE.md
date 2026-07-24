@@ -22,7 +22,7 @@ The plugin supports three sequential phases:
 
 Standalone Skills:
 
-- **`/quality-review`** — Run quality review agents on demand, independent of the build workflow.
+- **`/review`** — Run quality review agents on demand, independent of the build workflow.
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
@@ -60,12 +60,8 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/plan/` — Implementation plans from `/plan`
 - `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
 - `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
-- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/quality-review` (standalone, user-managed)
+- `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
-
-## Reference Docs
-
-- `docs/portability/` — Maintained cross-harness reference (reserved-command audit, agent conversion spec); not a workflow output directory.
 
 ## Hooks
 

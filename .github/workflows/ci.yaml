@@ -64,10 +64,6 @@ jobs:
           path: ${{ matrix.skill }}
           validate-references: 'true'
           fail-on-warning: 'true'
-          # unknown-field stays ignored: Wingspan carries Claude Code extras
-          # (when_to_use, user-invocable, disable-model-invocation, effort,
-          # argument-hint) that the Agent Skills spec does not define. name must
-          # match the directory per the spec, so that rule is enforced.
           ignore-rules: 'unknown-field'
       - name: Check results
         if: always()

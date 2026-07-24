@@ -191,7 +191,7 @@ from the conversation).
 from the skill root** (`scripts/x.sh`), one level deep. Prefer that form. Claude
 Code needs the absolute `${CLAUDE_SKILL_DIR}` only to match the `allowed-tools`
 permission pattern and resolve outside the skill's directory, so keep it as the
-primary form but add the relative-path fallback. See the `rebase` and `quality-review`
+primary form but add the relative-path fallback. See the `rebase` and `review`
 skills.
 
 **Frontmatter** — an agent silently skips a skill whose frontmatter is malformed.
@@ -213,9 +213,18 @@ web search) when the server is not connected. Never block on an MCP server.
 **Subagents** — subagents are not part of the Agent Skills standard. A skill that
 dispatches one (`Task @<agent>(...)`) must pair the dispatch with a fallback so the
 step still runs on an agent without subagents — see the "no subagent mechanism?"
-notes in `build`, `quality-review`, `hotfix`, `plan`, `brainstorm`, and the shared
+notes in `build`, `review`, `hotfix`, `plan`, `brainstorm`, and the shared
 `plan-review`. Keep the `Task @<agent>` line intact (Claude Code uses it); the
 fallback is additive.
+
+**Reserved slash-command names** — a few skill names collide with host built-in slash
+commands: `review` shadows a built-in `/review` on Codex and GitHub Copilot. On the Agent
+Skills standard skills activate by **description**, not by a typed slash command, so the
+collision only bites hosts that also expose skills as slash commands, and only the typed
+form — description-activation still reaches the skill. Do not rename to dodge the collision:
+the bare name is the Claude Code command and the spec ties `name` to the directory. Instead
+the affected skill carries an in-body cross-harness note telling the user to invoke it by
+request (or the host's namespaced form) where the bare command is shadowed.
 
 **Shared content via symlinks** — references and scripts are symlinked into each
 skill for DRY. `npx skills` dereferences symlinks when it copies a cloned/local
@@ -227,13 +236,6 @@ with a real `npx skills add github:VeryGoodOpenSource/vgv-wingspan` that the sha
 files arrive intact. If they do not, materialize them (dereference the symlinks
 into real files at publish time, or vendor real copies) — no need to do it before
 that check confirms it.
-
-**Portability reference docs** — the reserved-command collision audit (which
-skill names are shadowed by host built-ins, and the rename decision rule) lives
-in [docs/portability/reserved-command-audit.md](docs/portability/reserved-command-audit.md);
-the agent-definition conversion spec (md → Codex TOML / Gemini md / OpenCode
-md) lives in
-[docs/portability/agent-definition-conversion.md](docs/portability/agent-definition-conversion.md).
 
 ## Testing Locally
 
