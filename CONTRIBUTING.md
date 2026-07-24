@@ -231,12 +231,16 @@ request (or the host's namespaced form) where the bare command is shadowed.
 **Shared content via symlinks** — references and scripts are symlinked into each
 skill for DRY. A real `npx skills add <path> --copy` (verified locally with the
 skills CLI v1.5.20) dereferenced every shared symlink into a real file, exec bits
-preserved and zero dangling links, so the clone / local-copy install path works
-as-is. The `skills.sh/api/download` blob snapshot (the only install that would not
-clone) is allowlist-only, so a non-allowlisted repo like this one always installs
-via the clone+copy path. Only the blob snapshot stays unverified, and this repo does
-not hit it. If a future install path ever ships dangling `../../shared/…` links,
-materialize them (dereference into real files at publish time, or vendor real copies).
+preserved and zero dangling links, so the copy install path works as-is. The CLI's
+`fetchSkillDownload` tries a download endpoint first
+(`${DOWNLOAD_BASE_URL}/api/download/<owner>/<repo>/<slug>`, defaulting to
+`https://skills.sh`, or a custom URL for a few allowlisted repos), but skills.sh does
+not serve it today (that path returns 404), so a `github:` install falls back to
+fetching the files from GitHub and copying them. Still unverified for us is a full
+end-to-end `github:` install: the copy-and-dereference step is confirmed, the
+GitHub-fetch source step is not. If any install path ever ships dangling
+`../../shared/…` links, materialize them (dereference into real files at publish time,
+or vendor real copies).
 
 ## Testing Locally
 
@@ -323,7 +327,7 @@ claude plugin validate .
 ```
 
 ```bash
-bash scripts/ci/check-frontmatter.sh
+bash .github/scripts/check-frontmatter.sh
 ```
 
 The first validates the manifest, skill frontmatter, hook JSON, and file
@@ -350,7 +354,7 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skill validation | Validates **every** `SKILL.md`'s frontmatter and structure against the Agent Skills spec, so a malformed skill fails the build instead of silently vanishing on another host | `Flash-Brew-Digital/validate-skill@v1` |
-| Frontmatter guard | Fails on a UTF-8 BOM in any `SKILL.md` or agent file (Gemini-fatal, passes validate-skill) and validates `agents/**/*.md` frontmatter, which no other check covers | `scripts/ci/check-frontmatter.sh` |
+| Frontmatter guard | Fails on a UTF-8 BOM in any `SKILL.md` or agent file (Gemini-fatal, passes validate-skill) and validates `agents/**/*.md` frontmatter, which no other check covers | `.github/scripts/check-frontmatter.sh` |
 | Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.
