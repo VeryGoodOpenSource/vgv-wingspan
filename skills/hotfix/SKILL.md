@@ -147,6 +147,8 @@ Bug: <original bug description or issue link, truncated if long>
 
 Push the branch and create a PR. **Title**: `fix: <concise description>` (under 70 chars). **Body**: Use the [PR template](references/pr-template.md).
 
+> **Cross-harness guard** — pushing and opening a PR are irreversible, outward-facing operations. On a host without `AskUserQuestion`, or when running headless, stop before this step, state what will be pushed, and wait for an explicit user go-ahead — never push on a default. See [interaction fallbacks](references/interaction-fallbacks.md).
+
 ### Post-Ship
 
 Use **AskUserQuestion** to present options:

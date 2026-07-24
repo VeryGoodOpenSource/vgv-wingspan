@@ -40,7 +40,7 @@ jobs:
       - name: List all skills
         id: list-skills
         run: |
-          SKILLS=$(find skills -name SKILL.md -type f | \
+          SKILLS=$(find -L skills -name SKILL.md -type f | \
             xargs -I {} dirname {} | \
             sort -u | \
             jq -R -s -c 'split("\n") | map(select(length > 0))')
@@ -75,6 +75,16 @@ jobs:
           echo "Valid: ${{ steps.validate.outputs.valid }}"
           echo "Errors: ${{ steps.validate.outputs.errors }}"
           echo "Warnings: ${{ steps.validate.outputs.warnings }}"
+  frontmatter-guard:
+    name: 🛡️ Frontmatter Guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # Covers what validate-skills cannot: UTF-8 BOM detection (Gemini-fatal,
+      # passes validate-skill) and agents/**/*.md frontmatter (validate-skill
+      # only accepts files named SKILL.md).
+      - name: Check frontmatter portability
+        run: bash scripts/ci/check-frontmatter.sh
   plugin-validate:
     name: 📦 Plugin Validation
     runs-on: ubuntu-latest

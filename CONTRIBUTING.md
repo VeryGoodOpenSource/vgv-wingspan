@@ -191,7 +191,7 @@ from the conversation).
 from the skill root** (`scripts/x.sh`), one level deep. Prefer that form. Claude
 Code needs the absolute `${CLAUDE_SKILL_DIR}` only to match the `allowed-tools`
 permission pattern and resolve outside the skill's directory, so keep it as the
-primary form but add the relative-path fallback. See the `rebase` and `review`
+primary form but add the relative-path fallback. See the `rebase` and `quality-review`
 skills.
 
 **Frontmatter** — an agent silently skips a skill whose frontmatter is malformed.
@@ -213,7 +213,7 @@ web search) when the server is not connected. Never block on an MCP server.
 **Subagents** — subagents are not part of the Agent Skills standard. A skill that
 dispatches one (`Task @<agent>(...)`) must pair the dispatch with a fallback so the
 step still runs on an agent without subagents — see the "no subagent mechanism?"
-notes in `build`, `review`, `hotfix`, `plan`, `brainstorm`, and the shared
+notes in `build`, `quality-review`, `hotfix`, `plan`, `brainstorm`, and the shared
 `plan-review`. Keep the `Task @<agent>` line intact (Claude Code uses it); the
 fallback is additive.
 
@@ -227,6 +227,13 @@ with a real `npx skills add github:VeryGoodOpenSource/vgv-wingspan` that the sha
 files arrive intact. If they do not, materialize them (dereference the symlinks
 into real files at publish time, or vendor real copies) — no need to do it before
 that check confirms it.
+
+**Portability reference docs** — the reserved-command collision audit (which
+skill names are shadowed by host built-ins, and the rename decision rule) lives
+in [docs/portability/reserved-command-audit.md](docs/portability/reserved-command-audit.md);
+the agent-definition conversion spec (md → Codex TOML / Gemini md / OpenCode
+md) lives in
+[docs/portability/agent-definition-conversion.md](docs/portability/agent-definition-conversion.md).
 
 ## Testing Locally
 
@@ -306,14 +313,20 @@ Then, inside a session:
 
 ### Validate before you push
 
-Run the same check CI runs, from the repository root:
+Run the same checks CI runs, from the repository root:
 
 ```bash
 claude plugin validate .
 ```
 
-This validates the manifest, skill frontmatter, hook JSON, and file references.
-It is static, so it confirms structure but does not replace the live checks above.
+```bash
+bash scripts/ci/check-frontmatter.sh
+```
+
+The first validates the manifest, skill frontmatter, hook JSON, and file
+references. The second is the frontmatter guard (BOM + agent frontmatter).
+Both are static, so they confirm structure but do not replace the live checks
+above.
 
 ### Troubleshooting
 
@@ -334,6 +347,7 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skill validation | Validates **every** `SKILL.md`'s frontmatter and structure against the Agent Skills spec, so a malformed skill fails the build instead of silently vanishing on another host | `Flash-Brew-Digital/validate-skill@v1` |
+| Frontmatter guard | Fails on a UTF-8 BOM in any `SKILL.md` or agent file (Gemini-fatal, passes validate-skill) and validates `agents/**/*.md` frontmatter, which no other check covers | `scripts/ci/check-frontmatter.sh` |
 | Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.

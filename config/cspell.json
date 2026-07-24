@@ -26,7 +26,10 @@
     "undiscussed",
     "unrequested",
     "pipefail",
-    "runnable"
+    "runnable",
+    "opencode",
+    "geminicli",
+    "serde"
   ],
   "flagWords": []
 }

@@ -1,7 +1,5 @@
 # Interaction fallbacks
 
-<!-- portability:ask-fallback -->
-
 Cross-harness fallbacks for the Claude-specific interaction constructs. A strong host
 (Claude Code) uses the primary construct and ignores these notes; a weaker host follows
 them. Each is a diff against the primary path, not a replacement.

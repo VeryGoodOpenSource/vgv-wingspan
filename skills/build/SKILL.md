@@ -223,7 +223,6 @@ cite `FINDING-NN` ids (there would be no report left to map them to).
 
 Whatever commits this build produced are local. Pushing and opening a PR is outward-facing, so gate it on the user's preference — separately from the commit-autonomy choice:
 
-<!-- portability:ask-fallback -->
 > **No structured-question tool?** The push/PR decision below uses `AskUserQuestion`. On a host without it, ask in plain numbered text and default to *review locally first* — never push or open a PR without an explicit user go-ahead. `allowed-tools` here is narrow (`Bash(rm -rf docs/reviews/)`); use whatever tools the build needs — it is a Claude Code hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 - **User has a saved preference to push automatically** (Claude memory or personal settings) → push and open the PR without asking.

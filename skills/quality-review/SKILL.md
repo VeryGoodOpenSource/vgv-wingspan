@@ -1,5 +1,5 @@
 ---
-name: review
+name: quality-review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
 when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".

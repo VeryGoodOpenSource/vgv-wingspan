@@ -112,7 +112,7 @@ Index — never paraphrased.
 
 ## Step 6 — Acting on findings
 
-Each calling skill defines its own post-review menu (`/review` is advisory and asks first;
+Each calling skill defines its own post-review menu (`/quality-review` is advisory and asks first;
 `/build` and `/hotfix` fix before shipping). This section only fixes the shared vocabulary
 those menus use.
 
@@ -122,6 +122,6 @@ those menus use.
 - **By rule** — a rule id acts on a whole class ("fix every `tests/missing-test-file`",
   "ignore all `simplicity/inline-single-use`"). Apply the action to every finding sharing it.
 - **Commit trace** — when fixes are committed and the consolidated report is kept (as in
-  `/review`), reference the ids in the commit body, e.g. `Addresses FINDING-01, FINDING-03
+  `/quality-review`), reference the ids in the commit body, e.g. `Addresses FINDING-01, FINDING-03
   from review.` Skills that delete the report after acting (`/build`, `/hotfix`) fix findings
   in place and do not cite ids, since the report they would point to no longer exists.
