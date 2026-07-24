@@ -34,7 +34,7 @@ argument-hint: "feature or idea to explore"
 
 | Field | Required | Rules |
 | ----- | -------- | ----- |
-| `name` | Yes | Lowercase letters, numbers, and hyphens only |
+| `name` | Yes | Lowercase letters, numbers, and hyphens only; no leading, trailing, or consecutive hyphen; 1-64 chars; **must match the skill's directory name** (full rules in [Cross-harness portability](#cross-harness-portability) → Frontmatter) |
 | `user-invocable` | Yes | `true` if the user can invoke this skill directly, `false` otherwise |
 | `description` | Yes | Describes when the skill should be triggered |
 | `argument-hint` | No | Placeholder hint shown to the user |
@@ -165,6 +165,83 @@ Keep inline bash when:
 - Write errors to stderr, data to stdout
 - Exit 1 on failure with a descriptive message
 
+## Cross-harness portability
+
+Skills are authored for Claude Code but target the [Agent Skills open
+standard](https://agentskills.io/specification) (the skills.sh / `npx skills`
+format, supported by 70+ agents). Under that standard a skill is a **static
+instruction set**: the agent loads it by matching its `description`, then reads
+the body — there is no argument or template substitution. `$ARGUMENTS` and
+`${CLAUDE_SKILL_DIR}` are Claude Code conveniences, not spec features, so a body
+that uses them must still work when they arrive unsubstituted.
+
+**`$ARGUMENTS`** — not a spec concept; on a plain Agent Skill it is never
+substituted and stays literal. Always pair it with a fallback that fires when it
+is empty *or still shows the literal text* `$ARGUMENTS`:
+
+```markdown
+<feature_description>$ARGUMENTS</feature_description>
+
+**If the feature description above is empty or still shows the literal text
+`$ARGUMENTS` (the host did not substitute it), ask the user** for it (or read it
+from the conversation).
+```
+
+**`${CLAUDE_SKILL_DIR}`** — the spec references bundled files by **relative path
+from the skill root** (`scripts/x.sh`), one level deep. Prefer that form. Claude
+Code needs the absolute `${CLAUDE_SKILL_DIR}` only to match the `allowed-tools`
+permission pattern and resolve outside the skill's directory, so keep it as the
+primary form but add the relative-path fallback. See the `rebase` and `review`
+skills.
+
+**Frontmatter** — an agent silently skips a skill whose frontmatter is malformed.
+Keep the opening `---` on line 1, close the block with `---`, and include a
+non-empty `name:` (kebab-case, **matching the directory name**) and
+`description:`. The spec also allows `license`, `compatibility`, `metadata`, and
+`allowed-tools`. Claude Code extras (`when_to_use`, `user-invocable`,
+`disable-model-invocation`, `effort`, `argument-hint`) are not spec fields. `npx
+skills` parses frontmatter without an allow-list (observed in its `src/frontmatter.ts`)
+and other agents ignore unknown keys, so keeping them top-level lets Claude Code read
+them without breaking other hosts. (The spec's optional `skills-ref` linter is stricter,
+rejecting any top-level field outside the six it allows; skills.sh does not run it, and
+nesting these under `metadata:` is the escape hatch if strict conformance is ever needed.) The `Skill validation` CI job
+(`Flash-Brew-Digital/validate-skill@v1`) enforces the spec (incl.
+name-matches-directory) across every skill on each pull request.
+
+**MCP references** — MCP servers (only `context7` today) are optional. A skill or
+agent that uses one must skip it silently and fall back to a built-in path (e.g.
+web search) when the server is not connected. Never block on an MCP server.
+
+**Subagents** — subagents are not part of the Agent Skills standard. A skill that
+dispatches one (`Task @<agent>(...)`) must pair the dispatch with a fallback so the
+step still runs on an agent without subagents — see the "no subagent mechanism?"
+notes in `build`, `review`, `hotfix`, `plan`, `brainstorm`, and the shared
+`plan-review`. Keep the `Task @<agent>` line intact (Claude Code uses it); the
+fallback is additive.
+
+**Reserved slash-command names** — a few skill names collide with host built-in slash
+commands: `review` shadows a built-in `/review` on Codex and GitHub Copilot. On the Agent
+Skills standard skills activate by **description**, not by a typed slash command, so the
+collision only bites hosts that also expose skills as slash commands, and only the typed
+form — description-activation still reaches the skill. Do not rename to dodge the collision:
+the bare name is the Claude Code command and the spec ties `name` to the directory. Instead
+the affected skill carries an in-body cross-harness note telling the user to invoke it by
+request (or the host's namespaced form) where the bare command is shadowed.
+
+**Shared content via symlinks** — references and scripts are symlinked into each
+skill for DRY. A real `npx skills add <path> --copy` (verified locally with the
+skills CLI v1.5.20) dereferenced every shared symlink into a real file, exec bits
+preserved and zero dangling links, so the copy install path works as-is. The CLI's
+`fetchSkillDownload` tries a download endpoint first
+(`${DOWNLOAD_BASE_URL}/api/download/<owner>/<repo>/<slug>`, defaulting to
+`https://skills.sh`, or a custom URL for a few allowlisted repos), but skills.sh does
+not serve it today (that path returns 404), so a `github:` install falls back to
+fetching the files from GitHub and copying them. Still unverified for us is a full
+end-to-end `github:` install: the copy-and-dereference step is confirmed, the
+GitHub-fetch source step is not. If any install path ever ships dangling
+`../../shared/…` links, materialize them (dereference into real files at publish time,
+or vendor real copies).
+
 ## Testing Locally
 
 Editing a skill or hook and pushing straight to a PR only tells you the files
@@ -243,14 +320,20 @@ Then, inside a session:
 
 ### Validate before you push
 
-Run the same check CI runs, from the repository root:
+Run the same checks CI runs, from the repository root:
 
 ```bash
 claude plugin validate .
 ```
 
-This validates the manifest, skill frontmatter, hook JSON, and file references.
-It is static, so it confirms structure but does not replace the live checks above.
+```bash
+bash .github/scripts/check-frontmatter.sh
+```
+
+The first validates the manifest, skill frontmatter, hook JSON, and file
+references. The second is the frontmatter guard (BOM + agent frontmatter).
+Both are static, so they confirm structure but do not replace the live checks
+above.
 
 ### Troubleshooting
 
@@ -270,7 +353,8 @@ Every pull request runs the following checks automatically:
 | ----- | ------------ | ------ |
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
-| Skill validation | Validates changed `SKILL.md` frontmatter and structure | `Flash-Brew-Digital/validate-skill@v1` |
+| Skill validation | Validates **every** `SKILL.md`'s frontmatter and structure against the Agent Skills spec, so a malformed skill fails the build instead of silently vanishing on another host | `Flash-Brew-Digital/validate-skill@v1` |
+| Frontmatter guard | Fails on a UTF-8 BOM in any `SKILL.md` or agent file (Gemini-fatal, passes validate-skill) and validates `agents/**/*.md` frontmatter, which no other check covers | `.github/scripts/check-frontmatter.sh` |
 | Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.

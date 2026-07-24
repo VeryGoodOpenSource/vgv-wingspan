@@ -21,7 +21,7 @@ numbered findings the user can act on by id.
 
 ## Step 1 — Detect Scope
 
-Parse the review scope above for optional file paths or directories.
+Parse the review scope above for optional file paths or directories. Treat it as no paths provided if it is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it).
 
 **If paths are provided:**
 
@@ -38,6 +38,10 @@ Run the scope detection script:
 ```bash
 ${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
 ```
+
+> **Fallback** — if `${CLAUDE_SKILL_DIR}` is not substituted (the command still contains the literal text), run `scripts/detect-review-scope.sh` from this skill's own directory instead. If script execution is unavailable, detect scope inline: resolve the base branch (first of `main`/`master`/`develop` that exists), and if the current branch differs, use the files from `git diff <base>...HEAD --name-only` plus uncommitted and staged changes; otherwise treat scope as `default`.
+
+**Tool-permission note (cross-harness).** `allowed-tools` here lists only the scope script and `gh`/`glab`; if a host treats that as an exhaustive allow-list, use whatever read/write tools the review needs anyway — the list is a Claude Code permission hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 - **If `SCOPE=branch`**: use the listed files as scope. The scope slug is the current
   branch name with `/` replaced by `-`. Announce scope summary (changed-file count, areas
@@ -76,6 +80,8 @@ Default agents and their report names (`<name>`):
 
 **If an agent fails:** note it, continue with the successful agents, and record the failure
 in the report header and chat summary so the user knows the review is incomplete. Offer to retry.
+
+**No subagent mechanism?** Don't skip the reviews — run them as sequential passes in the fixed Step 1 table order (VGV → architecture → tests → simplicity), writing each pass's raw findings to its own `raw/<name>.md` before starting the next, then consolidate the same way. See the [single-agent fallback](references/review-consolidation.md#single-agent-fallback-sequential-passes).
 
 ## Step 3 — Consolidate & Present
 

@@ -16,7 +16,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 
 <bug_description>$ARGUMENTS</bug_description>
 
-**If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
+**If the bug description above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it), ask the user**: "What's the bug? Paste a description, issue link, or error message."
 
 DO NOT proceed until you have a bug description.
 
@@ -32,6 +32,8 @@ Summarize the bug in one sentence. Identify:
 Run a focused codebase exploration to find the problem area:
 
 - Task @codebase-review-agent("Locate the code responsible for this bug. Focus narrowly on the symptom described — do not survey the entire codebase. Bug: <bug_description>")
+
+If the running agent has no subagent/Task mechanism, do this exploration inline yourself.
 
 After the agent returns:
 
@@ -111,6 +113,8 @@ The reduced agent set and their report names (`<name>`):
 
 If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 
+**No subagent mechanism?** Don't skip the reviews — run them as sequential passes in the fixed Step 1 table order (VGV → tests), writing each pass's raw findings to its own `raw/<name>.md` before starting the next, then consolidate the same way. See the [single-agent fallback](references/review-consolidation.md#single-agent-fallback-sequential-passes).
+
 ### After reviews complete
 
 Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
@@ -142,6 +146,8 @@ Bug: <original bug description or issue link, truncated if long>
 ```
 
 Push the branch and create a PR. **Title**: `fix: <concise description>` (under 70 chars). **Body**: Use the [PR template](references/pr-template.md).
+
+> **Cross-harness guard** — pushing and opening a PR are irreversible, outward-facing operations. On a host without `AskUserQuestion`, or when running headless, stop before this step, state what will be pushed, and wait for an explicit user go-ahead — never push on a default. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 ### Post-Ship
 

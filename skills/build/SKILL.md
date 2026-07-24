@@ -30,6 +30,8 @@ Build Progress:
 
 <plan_path>$ARGUMENTS</plan_path>
 
+Treat the plan path above as empty if it is blank or still shows the literal text `$ARGUMENTS` (the host did not substitute it).
+
 ## Phase 0 — Load Plan
 
 ```bash
@@ -171,6 +173,8 @@ The 5 agents and their report names (`<name>`):
 
 If an agent fails, note it, continue with the rest, and record the failure in the report header.
 
+**No subagent mechanism?** Don't skip the reviews — run them as sequential passes in the fixed Step 1 table order (VGV → architecture → tests → simplicity → PR readiness), writing each pass's raw findings to its own `raw/<name>.md` before starting the next, then consolidate the same way. See the [single-agent fallback](references/review-consolidation.md#single-agent-fallback-sequential-passes).
+
 ### After all reviews complete
 
 Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
@@ -218,6 +222,8 @@ cite `FINDING-NN` ids (there would be no report left to map them to).
 ### Ship
 
 Whatever commits this build produced are local. Pushing and opening a PR is outward-facing, so gate it on the user's preference — separately from the commit-autonomy choice:
+
+> **No structured-question tool?** The push/PR decision below uses `AskUserQuestion`. On a host without it, ask in plain numbered text and default to *review locally first* — never push or open a PR without an explicit user go-ahead. `allowed-tools` here is narrow (`Bash(rm -rf docs/reviews/)`); use whatever tools the build needs — it is a Claude Code hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 - **User has a saved preference to push automatically** (Claude memory or personal settings) → push and open the PR without asking.
 - **No such preference** → use **AskUserQuestion** before anything leaves the machine:
