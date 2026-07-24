@@ -34,7 +34,7 @@ argument-hint: "feature or idea to explore"
 
 | Field | Required | Rules |
 | ----- | -------- | ----- |
-| `name` | Yes | Lowercase letters, numbers, and hyphens only |
+| `name` | Yes | Lowercase letters, numbers, and hyphens only; no leading, trailing, or consecutive hyphen; 1-64 chars; **must match the skill's directory name** (full rules in [Cross-harness portability](#cross-harness-portability) → Frontmatter) |
 | `user-invocable` | Yes | `true` if the user can invoke this skill directly, `false` otherwise |
 | `description` | Yes | Describes when the skill should be triggered |
 | `argument-hint` | No | Placeholder hint shown to the user |
@@ -199,10 +199,12 @@ Keep the opening `---` on line 1, close the block with `---`, and include a
 non-empty `name:` (kebab-case, **matching the directory name**) and
 `description:`. The spec also allows `license`, `compatibility`, `metadata`, and
 `allowed-tools`. Claude Code extras (`when_to_use`, `user-invocable`,
-`disable-model-invocation`, `effort`, `argument-hint`) are not spec fields, but
-`npx skills` and other agents ignore unknown frontmatter — keep them top-level so
-Claude Code reads them and nothing else breaks. (The spec's optional `skills-ref`
-linter is stricter; skills.sh does not run it.) The `Skill validation` CI job
+`disable-model-invocation`, `effort`, `argument-hint`) are not spec fields. `npx
+skills` parses frontmatter without an allow-list (observed in its `src/frontmatter.ts`)
+and other agents ignore unknown keys, so keeping them top-level lets Claude Code read
+them without breaking other hosts. (The spec's optional `skills-ref` linter is stricter,
+rejecting any top-level field outside the six it allows; skills.sh does not run it, and
+nesting these under `metadata:` is the escape hatch if strict conformance is ever needed.) The `Skill validation` CI job
 (`Flash-Brew-Digital/validate-skill@v1`) enforces the spec (incl.
 name-matches-directory) across every skill on each pull request.
 
@@ -227,15 +229,14 @@ the affected skill carries an in-body cross-harness note telling the user to inv
 request (or the host's namespaced form) where the bare command is shadowed.
 
 **Shared content via symlinks** — references and scripts are symlinked into each
-skill for DRY. `npx skills` dereferences symlinks when it copies a cloned/local
-skill (`cp` with `dereference: true`), so those install paths work as-is. The
-default GitHub install instead pulls a server-side snapshot from
-`skills.sh/api/download`, whose handling of relative symlinks pointing outside the
-skill (`../../shared/…`) is not documented. Before relying on skills.sh, verify
-with a real `npx skills add github:VeryGoodOpenSource/vgv-wingspan` that the shared
-files arrive intact. If they do not, materialize them (dereference the symlinks
-into real files at publish time, or vendor real copies) — no need to do it before
-that check confirms it.
+skill for DRY. A real `npx skills add <path> --copy` (verified locally with the
+skills CLI v1.5.20) dereferenced every shared symlink into a real file, exec bits
+preserved and zero dangling links, so the clone / local-copy install path works
+as-is. The `skills.sh/api/download` blob snapshot (the only install that would not
+clone) is allowlist-only, so a non-allowlisted repo like this one always installs
+via the clone+copy path. Only the blob snapshot stays unverified, and this repo does
+not hit it. If a future install path ever ships dangling `../../shared/…` links,
+materialize them (dereference into real files at publish time, or vendor real copies).
 
 ## Testing Locally
 

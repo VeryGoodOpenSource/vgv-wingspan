@@ -38,6 +38,8 @@ A brainstorm is relevant if created within the last 7 days and its topic semanti
 
 Do not proceed until you have a clear feature description — from arguments, a brainstorm, or the user.
 
+> **No structured-question tool?** Present the options as plain numbered text and take the reply as the choice. See [interaction fallbacks](references/interaction-fallbacks.md).
+
 **Skip option**: if the description is already detailed enough, ask the user if they want to skip idea refinement and proceed directly to planning.
 
 ### 1. Tasks to complete

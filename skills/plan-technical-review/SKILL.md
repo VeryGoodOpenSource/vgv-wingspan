@@ -24,7 +24,7 @@ findings to the plan inline, and resolves any scope-splitting recommendation.
 
 ## Handoff
 
-After the review completes, use **AskUserQuestion** to present next steps:
+After the review completes, use **AskUserQuestion** to present next steps (or, with no structured-question tool, plain numbered text per [interaction fallbacks](references/interaction-fallbacks.md)):
 
 **Question**: "Technical review complete! What would you like to do next?"
 
