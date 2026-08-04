@@ -102,6 +102,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 | [**Create PR**](skills/create-pr/SKILL.md) | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |
 | [**Rebase**](skills/rebase/SKILL.md) | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
 | [**Debrief**](skills/debrief/SKILL.md) | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
+| [**Elements of Style**](skills/elements-of-style/SKILL.md) | Applied automatically | Apply Strunk's principles to prose Wingspan writes — brainstorms, plans, reviews, and PR descriptions |
 
 ## Agents
 
@@ -131,6 +132,18 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 ### Prerequisites
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
+
+## Evals
+
+Skill evals ask whether Claude routes to a skill and follows it. [promptfoo](https://www.promptfoo.dev) sends each case's prompt through the Claude Agent SDK twice — once with this plugin loaded, once sealed with nothing loaded — so a grader that passes in both columns is measuring the model rather than the skill. They authenticate through your local Claude Code session, so they need no API key.
+
+```bash
+npx promptfoo@latest eval -c evals/promptfooconfig.yaml
+```
+
+They run locally and are not wired into CI. Run them before opening a PR that changes a skill.
+
+See [evals/README.md](evals/README.md) for the case format, the assertion reference, prerequisites, and what these evals deliberately do not cover.
 
 ## Contributing
 

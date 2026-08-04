@@ -39,6 +39,11 @@ Supporting skills:
 - `/plan-technical-review` (review externally-authored plans; `/plan` reviews the plans it creates inline)
 - `/refine-approach` (iterative document improvement)
 - `/rebase` (sync feature branch with base branch)
+- `elements-of-style` (Strunk's principles for the prose Wingspan writes; `user-invocable: false`, so it has no slash command)
+
+`create-pr` and `rebase` declare `disable-model-invocation: true`. That keeps them off the
+model's skill list entirely, so **no skill can call them** — they run only when the user
+types them. A skill needing that work does it inline or hands the user the command.
 
 Quality-review agents:
 
@@ -53,6 +58,51 @@ findings list. The calling skill deduplicates and orders those findings, assigns
 `FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
 class), and renders one consolidated report plus a matching chat summary (see
 `skills/shared/references/review-consolidation.md`).
+
+## Evals
+
+Evals ask whether Claude routes to a skill and follows it. `evals/README.md` is the single
+source of truth for the case format, the assertion reference, prerequisites, and what
+makes a case worth having — read it before writing a case, and put new eval documentation
+there rather than here.
+
+[promptfoo](https://www.promptfoo.dev) over the Claude Agent SDK; config
+`evals/promptfooconfig.yaml`, cases `evals/tests/<skill>.yaml`. Run with
+`npx promptfoo@latest eval -c evals/promptfooconfig.yaml`. Uses the local Claude Code
+session, so no API key. Read the per-column split, not the total: the `sealed-baseline`
+column is supposed to fail.
+
+```text
+evals/
+  README.md                     # Case format, assertion reference, how to add a case
+  promptfooconfig.yaml          # Claude Agent SDK provider + the two ablation columns
+  tests/                        # Eval cases, one YAML file per skill
+    brainstorm.yaml             # Graded on the artifact the skill produces
+    plan.yaml
+    review.yaml
+    debrief.yaml
+    refine-approach.yaml
+    plan-technical-review.yaml
+    elements-of-style.yaml
+    build.yaml                  # Graded on the decisions the skill narrates
+    hotfix.yaml
+    create.yaml
+    create-pr.yaml              # Graded through the slash-command path
+    rebase.yaml
+  assertions/
+    success-criteria-block.js   # The one custom promptfoo assertion we own
+  fixture/                      # Neutral project skeleton used as working-directory context
+```
+
+`create-pr` and `rebase` are covered through the slash-command path rather than by routing.
+`disable-model-invocation: true` means `skill-used` can never be satisfied, so their prompts
+start with a literal `/create-pr` or `/rebase` and assert on the expansion instead — the sealed
+column answers `Unknown command`, which makes the column separation the sharpest in the suite.
+
+Evals are **local only** — nothing eval-related runs in CI. Run them by hand before
+opening a PR. Isolation between the two columns is held by the provider keys in
+`promptfooconfig.yaml` and nothing checks it automatically, so treat any change to
+`tools`, `working_dir`, `setting_sources` or `plugins` as invalidating earlier numbers.
 
 ## Output Directories
 

@@ -14,6 +14,7 @@ First of all, thank you for taking the time to contribute! 🎉👍 Before you d
 | ------------ | ----- |
 | **New skill** | `skills/<skill-name>/SKILL.md` |
 | **Improve an existing skill** | Edit the relevant `skills/*/SKILL.md` or `reference.md` |
+| **Eval cases** | `evals/tests/<skill-name>.yaml` |
 | **Hooks** | `hooks/` directory |
 | **Bug reports & feature requests** | [GitHub Issues](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues) |
 
@@ -45,17 +46,54 @@ After the frontmatter, structure the file as:
 2. **Core Standards** — enforced constraints, always first
 3. **Content sections** — architecture, code examples, workflows, anti-patterns
 
-### 2. Update `plugin.json` tags
+### 2. Add eval cases
+
+Create `evals/tests/<skill-name>.yaml` — prompts that prove the skill actually changes
+what Claude produces — and register it under `tests:` in `evals/promptfooconfig.yaml`. See
+[Eval Cases](#eval-cases) below.
+
+### 3. Update `plugin.json` tags
 
 Add relevant keywords to the `keywords` array in `.claude-plugin/plugin.json`.
 
-### 3. Update the README skills table
+### 4. Update the README skills table
 
 Add a row to the skills table in `README.md`:
 
 ```markdown
 | **Skill Name** | `/skill-name <args>` | Short description of what the skill covers |
 ```
+
+A skill with `user-invocable: false` still gets a row; write `Applied automatically` in the
+command column.
+
+### 5. Update `CLAUDE.md`
+
+Add the skill to the workflow or supporting-skills list so the repo's own guidance stays in
+sync with what ships.
+
+## Eval Cases
+
+Evals ask one question: does Claude route to the skill, and does the output follow it?
+[promptfoo](https://www.promptfoo.dev) runs every case twice, once with this plugin loaded
+and once sealed with nothing loaded, so a grader that passes in both columns is measuring
+the model rather than the skill.
+
+```bash
+npx promptfoo@latest eval -c evals/promptfooconfig.yaml
+```
+
+Adding a skill means adding one case file, `evals/tests/<skill>.yaml`, registered under
+`tests:` in `evals/promptfooconfig.yaml` — in the group matching what the harness can
+observe of your skill: the artifact it produces, or only the decisions it narrates. Putting
+it in the wrong group produces cases that cannot pass.
+
+Wingspan's skills are conversational, so a case prompt has to close the questions the skill
+would otherwise ask — the stack, the test command, the linter — and usually ends with "Do
+not ask me any questions". [evals/README.md](evals/README.md) explains why and is the
+single source of truth for the case format, the assertion reference, prerequisites, what
+makes a case worth having, and what these evals deliberately do not cover. Read it before
+writing a case, and add new eval documentation there rather than here.
 
 ## Skill Writing Guidelines
 
@@ -272,6 +310,9 @@ Every pull request runs the following checks automatically:
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skill validation | Validates changed `SKILL.md` frontmatter and structure | `Flash-Brew-Digital/validate-skill@v1` |
 | Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
+
+Evals do not run in CI. They call real models, cost real usage, and are nondeterministic.
+Run them locally before opening a PR that touches a skill — see [Eval Cases](#eval-cases).
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.
 
