@@ -2,7 +2,7 @@
 name: plan
 user-invocable: true
 description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans.
-when_to_use: Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+when_to_use: Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan". Also use when the request points back at earlier exploration — "plan what we brainstormed", "turn the brainstorm into a plan", "write the plan for the feature we discussed" — since finding that brainstorm on disk is this skill's first step, not something to ask the user to restate.
 effort: high
 argument-hint: feature, bug fix, or improvement to plan
 compatibility: Designed for Claude Code (or similar products with agent support)

@@ -5,7 +5,7 @@ description: Executes an implementation plan — writes code and tests, runs qua
 when_to_use: Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
-allowed-tools: Bash(rm -rf docs/reviews/)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh *) Bash(glab *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -173,7 +173,7 @@ If an agent fails, note it, continue with the rest, and record the failure in th
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, give each one both a stable `FINDING-NN` id and a `<category>/<rule>` id (e.g. `tests/missing-test-file`), and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). The report opens with the severity counts, above the findings index, and every row carries both ids. Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
@@ -221,11 +221,20 @@ Whatever commits this build produced are local. Pushing and opening a PR is outw
 
 - **User has a saved preference to push automatically** (Claude memory or personal settings) → push and open the PR without asking.
 - **No such preference** → use **AskUserQuestion** before anything leaves the machine:
-  1. **Review locally first (Recommended)**: stop here. The commits stay local; the user pushes and opens the PR when ready. Do not call `/create-pr`.
+  1. **Review locally first (Recommended)**: stop here. The commits stay local; the user runs `/create-pr` when ready.
   2. **Push and open the PR now**: proceed this once.
   3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
 
-To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
+Ship it from here rather than delegating. `/create-pr` declares `disable-model-invocation: true`, so it exists only as a command the user types — a build that tried to call it would stall at the ship step. Validation already ran above, so nothing needs re-checking:
+
+1. Push the branch: `git push -u origin HEAD`.
+2. Open the PR. **Title**: `<type>: <plan title>` (under 70 characters, `<type>` matching the plan's). **Body**: the [PR template](references/pr-template.md).
+   - `gh` available → `gh pr create --title "<title>" --body "<body>"`
+   - `glab` available → `glab mr create --title "<title>" --description "<body>"`
+   - neither → print the title and body and tell the user to open the PR manually.
+
+   Both default to the repository's default branch. Pass `--base` (or `--target-branch`) only when the user says this work targets something else.
+3. Output the PR URL.
 
 ### Post-Ship
 
@@ -240,6 +249,7 @@ Use **AskUserQuestion** to present options:
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
 - The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
+- Skills that declare `disable-model-invocation: true` (`create-pr`, `rebase`) cannot be called from here — they are reachable only when the user types them. Do the work inline or hand the user the command; never route a step through one.
 
 ## Important
 

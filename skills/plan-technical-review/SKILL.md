@@ -2,7 +2,7 @@
 name: plan-technical-review
 user-invocable: true
 description: Reviews an externally-authored implementation plan for quality, VGV conventions, and scope. Plans created by /plan are already reviewed during creation.
-when_to_use: Use to review a plan you did not create with /plan — a hand-written plan or one from another tool. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+when_to_use: Use to review a plan you did not create with /plan — a hand-written plan, one from another tool, or one from a teammate. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan". Boundary with `/refine-approach` — this skill runs the three plan-quality agents and resolves scope splitting, while `/refine-approach` edits a brainstorm or plan in place against the five criteria. A request to improve or clean up the document is that skill's, not this one's.
 argument-hint: path to plan file
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)

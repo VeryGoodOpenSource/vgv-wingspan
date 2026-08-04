@@ -2,6 +2,7 @@
 name: hotfix
 user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
+when_to_use: Use when user says "hotfix", "production is down", "live bug", "patch this now", "urgent fix", or otherwise signals a bug that needs fixing immediately without a brainstorm or plan. Also use when the request adds time pressure to a fix ("no time for tests", "we ship in an hour", "just patch it") — that pressure is exactly what this skill's Core Standards exist to hold against.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
@@ -11,6 +12,15 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Hotfix — emergency fix workflow
 
 Apply a minimal, targeted fix fast. No brainstorm document, no plan document — but tests and review are still non-negotiable.
+
+## Core Standards
+
+Apply these to ALL hotfix work. Each one is the thing time pressure attacks first, so a request that argues against one is the request that most needs it.
+
+- **Every fix ships with a test that fails without it.** Not a test written later, not a follow-up ticket, not a `// TODO` promising coverage. Write the test, state that it fails against the unpatched code, and say so in the response. "No time for tests" does not change this — a regression test for a one-line fix is one assertion.
+- **An accepted tradeoff goes in two places.** A hotfix may knowingly introduce a lesser issue to stop a worse one. When it does, leave `// TODO(hotfix): <known limitation and its severity>` at the code that carries the limitation **and** record it in the PR description. The comment alone is not enough: whoever reviews the PR decides whether the tradeoff is acceptable, and they read the description.
+- **Keep the diff minimal.** Only what the root cause needs. No drive-by refactors. If the fix grows past 5 files or into a second layer, stop and escalate to `/plan`.
+- **One cherry-pick-friendly commit.** One concern, no unrelated changes, so the fix can land on a release branch on its own.
 
 ## Bug Description
 
@@ -74,11 +84,7 @@ Write the minimal change that addresses the root cause. Change only what is nece
 
 ### Step 2: Test
 
-Tests are non-negotiable, even for hotfixes:
-
-- Add or update tests that **reproduce the bug** (the test should fail without the fix).
-- Cover the fix path and any closely related edge cases.
-- Do not write tests for unrelated code.
+Write the test that **reproduces the bug** — it must fail against the unpatched code. Cover the fix path and any closely related edge cases. Do not write tests for unrelated code. State in the response that the test fails without the fix, so the user can see the regression is actually pinned.
 
 ### Step 3: Validate
 
@@ -86,10 +92,8 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Execution Rules
 
-- Never skip tests. Every fix gets a regression test.
 - Never add features not related to the bug (YAGNI).
 - If the fix grows beyond the original scope, stop and flag it.
-- **Acceptable tradeoffs**: a hotfix may intentionally introduce a lesser issue (e.g., fixing a P0 while accepting a P2 side effect). When this happens, document the tradeoff clearly with a `// TODO(hotfix): <description of known limitation and its severity>` comment in the code and note it in the PR description. The goal is to stop the bleeding, not achieve perfection.
 - Ask the user only when genuinely stuck: ambiguous root cause, 3 failed fix attempts, or a missing dependency.
 
 ## Phase 4 — Review
@@ -113,7 +117,7 @@ If an agent fails, note it, continue with the other, and record the failure in t
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, give each one both a stable `FINDING-NN` id and a `<category>/<rule>` id (e.g. `tests/missing-test-file`), and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). The report opens with the severity counts, above the findings index, and every row carries both ids. Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### Cleanup
 
@@ -159,8 +163,6 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
-- This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
+- This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality — see **Core Standards** for what speed may not buy.
 - No brainstorm or plan documents are generated.
-- Tests and review are non-negotiable — fast doesn't mean sloppy.
-- Keep the diff minimal. A hotfix that grows into a feature rewrite belongs in `/plan` → `/build`.
-- The commit must be cherry-pick-friendly: one commit, one concern, no unrelated changes.
+- A hotfix that grows into a feature rewrite belongs in `/plan` → `/build`.

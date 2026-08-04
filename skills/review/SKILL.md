@@ -2,7 +2,7 @@
 name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
-when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
+when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging". Also use for a single named file or a pasted snippet — "review src/auth.js", "review this file", "what would you change here", "give me the review report" — and when asked what to change or improve in code the user supplies. Reading the code yourself instead of running this skill loses the numbered, re-runnable findings the user acts on by id.
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
@@ -81,10 +81,13 @@ in the report header and chat summary so the user knows the review is incomplete
 
 Follow the [review consolidation procedure](references/review-consolidation.md):
 
-1. Collect every agent's structured findings, deduplicate, order deterministically, and
-   assign stable `FINDING-NN` ids.
+1. Collect every agent's structured findings, deduplicate, order deterministically, and give
+   each one **two** ids: a stable `FINDING-NN` handle for this run, and a
+   `<category>/<rule>` id (e.g. `tests/missing-test-file`) so the user can act on a whole
+   class at once. A finding with no rule id cannot be acted on as a class.
 2. Write **one** consolidated file to `<PWD>/docs/code-review/<slug>/review.md` using the
-   [report template](references/review-report-template.md).
+   [report template](references/review-report-template.md). The report **opens with the
+   severity counts**, above the findings index, and every row carries both ids.
 3. Print the aligned chat summary: lead with the report path and severity counts, then
    reprint the Critical and Important rows verbatim (same ids, order, titles) and collapse
    Suggestions to a count.

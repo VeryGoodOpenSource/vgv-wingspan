@@ -2,7 +2,7 @@
 name: refine-approach
 user-invocable: true
 description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound.
-when_to_use: Use when user says "refine this", "review my approach", or "is this ready".
+when_to_use: Use when user says "refine this", "review my approach", "clean this up", "tighten this", or "is this ready" about a brainstorm or a plan. Also use when handed a document to improve rather than to assess. Boundary with `/plan-technical-review` — that skill runs the three plan-quality agents against an externally-authored plan and reports on it, while this skill edits any brainstorm or plan in place against the five criteria. A request to improve the document is this skill's.
 argument-hint: path to document to refine
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -10,6 +10,15 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Refine Approach
 
 Improve brainstorm and/or planning documents through structured review.
+
+## Core Standards
+
+Apply these to ALL refinement work.
+
+- **Name the one thing that matters most.** A flat list of six gaps reads as six equal problems and the user acts on none of them. Exactly one finding is the **must address** item, called out as such. If nothing stands out, say the document is sound and stop.
+- **Edit the document, do not report on it.** The output is the improved document itself. No second file, no `-reviewed.md`, no appended section of reviewer notes, scores, or change log. The reader should see a better document, not a document plus commentary about it.
+- **Auto-fix the small things, ask about the rest.** Vague wording and formatting get fixed without asking. Anything that changes meaning, structure, or scope needs the user's approval first, and the response has to make clear which is which.
+- **Leave open questions open.** An unresolved question in the document is information. Answering it on the user's behalf, or deleting it, loses the thing that most needs their decision.
 
 ## Step 1. Get the document that needs review
 
@@ -48,7 +57,7 @@ If invoked during a brainstorm phase (after `/brainstorm`), validate that the do
 
 ## Step 4. Critical improvements
 
-Among everything found in Steps 2-3, does one issue stand out? If something would significantly improve the document's quality, this is the **must address** item. Highlight it prominently.
+Pick the **must address** item from everything found in Steps 2-3 — the single issue whose fix would most improve the document. Label it as such and put it before the rest. Ranking every finding equally is the failure mode this step exists to prevent.
 
 ## Step 5. Update the document
 
@@ -109,4 +118,3 @@ After 2 refinement passes, recommend completion—diminishing returns are likely
 - Do not rewrite the entire document
 - Do not add new sections or requirements the user didn't discuss
 - Do not over-engineer or add complexity
-- Do not create separate review files or add metadata sections
