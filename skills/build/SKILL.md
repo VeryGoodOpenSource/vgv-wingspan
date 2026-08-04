@@ -21,7 +21,7 @@ Copy this checklist and track your progress:
 Build Progress:
 - [ ] Phase 0: Load plan and confirm scope (or resume a phased build)
 - [ ] Phase 1: Read context for the current implementation phase
-- [ ] Phase 2: Loop implementation phases (implement → validate → commit or hand off → checkpoint → clear)
+- [ ] Phase 2: Loop implementation phases (implement → test → validate → commit or hand off → checkpoint → clear)
 - [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
 - [ ] Phase 4: Drive to green, cleanup, and ship
 ```
@@ -52,7 +52,9 @@ Do not proceed without a plan.
 - **Auto-commit each phase (Recommended)**: commit automatically as each phase completes. Pushing and opening the PR still pause for approval (Phase 4).
 - **I'll commit myself**: build one phase, then stop so the user reviews and commits. Nothing is committed or pushed without the user.
 
-Offer to save the choice to Claude memory (a personal preference) so future builds skip this question. Save it as the user's own preference — never write it to the project's CLAUDE.md, since committing this is a per-developer choice, not a repo convention.
+This is a per-developer choice, not a repo convention — whatever remembers it must be the user's own preference store, never the project's CLAUDE.md.
+
+**Workspace:** before writing any code, follow the [set up workspace procedure](references/setup-workspace.md). This skill commits, so a build started on `main` would otherwise commit straight onto it.
 
 **Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
 
@@ -147,11 +149,11 @@ Brief progress update to the user: phase completed, phases remaining.
 
 ### Surgical-Diff Gate
 
-Once the final phase is committed, follow the [surgical-diff gate](references/surgical-diff-gate.md) before moving to review: diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Commit any cleanup it produces. Running it here keeps the review phase focused on the diff that belongs, not churn that would be reverted anyway.
+Once the final phase is handled per the commit-autonomy choice, follow the [surgical-diff gate](references/surgical-diff-gate.md) before moving to review: diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Handle any cleanup it produces per that same choice — commit it in auto-commit mode, leave it staged otherwise. Running it here keeps the review phase focused on the diff that belongs, not churn that would be reverted anyway.
 
 ## Phase 3 — Quality Review
 
-Once the final phase is committed and the surgical-diff gate has run, review the whole branch. Run 5 review agents **in parallel** — they review the full branch diff, so this runs once after the last phase, not per phase.
+Once the final phase is complete and the surgical-diff gate has run, review the whole branch. Run 5 review agents **in parallel** — they review the full branch diff, so this runs once after the last phase, not per phase.
 
 ### Agent instructions
 
@@ -223,7 +225,7 @@ Whatever commits this build produced are local. Pushing and opening a PR is outw
 - **No such preference** → use **AskUserQuestion** before anything leaves the machine:
   1. **Review locally first (Recommended)**: stop here. The commits stay local; the user pushes and opens the PR when ready. Do not call `/create-pr`.
   2. **Push and open the PR now**: proceed this once.
-  3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
+  3. **Always push automatically**: proceed, and record it as a standing preference so future builds skip this prompt. Like the commit choice above, it belongs in the user's own preference store, never the project's CLAUDE.md.
 
 To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 
@@ -244,6 +246,5 @@ Use **AskUserQuestion** to present options:
 ## Important
 
 - This skill writes code. It is the execution phase, not the planning phase.
-- Follow the plan. The plan was reviewed and approved. Don't redesign during implementation.
+- Follow the plan. It was reviewed and approved. Don't redesign during implementation.
 - Ship quality, not quantity. Every line represents VGV's engineering reputation.
-- When in doubt, read the plan again before asking the user.

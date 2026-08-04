@@ -85,41 +85,26 @@ After all research steps complete, consolidate findings:
 
 **Optional validation:** Briefly summarize findings and ask if anything looks off or missing before proceeding to planning.
 
-### 2. Issue planning and structure
+### 2. Title and scope
 
-Think like a product manager — what would make this issue clear and actionable?
+**Title & Categorization** — the filename is load-bearing, so derive it exactly:
 
-**Title & Categorization:**
+- Draft a searchable title in conventional commits format (`feat: add user authentication`, `fix: cart total calculation`) and settle the type: enhancement, bug, or refactor.
+- Convert it to a filename: today's date prefix, strip the colon, kebab-case, `-plan` suffix.
+  - `feat: add user authentication` → `2026-01-21-feat-add-user-authentication-plan.md`
+  - Keep 3-5 descriptive words after the prefix so plans are findable by context.
 
-- [ ] Draft clear, searchable issue title using the conventional commits format (e.g., `feat: add user authentication`, `fix: cart total calculation`)
-- [ ] Determine issue type: enhancement, bug, refactor
-- [ ] Convert title to filename: add today's date prefix, strip prefix colon, kebab-case, add `-plan` suffix
-  - Example: `feat: add user authentication` → `2026-01-21-feat-add-user-authentication-plan.md`
-  - Keep it descriptive (3-5 words after prefix) so plans are findable by context
-
-**Stakeholder Analysis:**
-
-- [ ] Identify who will be affected by this issue (end users, developers, operations)
-- [ ] Consider implementation complexity and required expertise
-
-**Content Planning:**
-
-- [ ] Choose appropriate detail level based on issue complexity and audience
-- [ ] List all necessary sections for the chosen template
-- [ ] Gather supporting materials (error logs, screenshots, design mockups)
-- [ ] Prepare code examples or reproduction steps if applicable, name the mock filenames in the lists
+Then size the work: who it affects, what expertise it needs, and which supporting material the
+plan should carry (error logs, mockups, reproduction steps, mock filenames). This shapes the
+template choice in Step 5.
 
 ### 3. User Flow Analysis
 
-After planning the issue structure, run the **user-flow-analysis-agent** to analyze the plan for flow completeness and gap identification:
+After sizing the work in Step 2, run the **user-flow-analysis-agent** to check the intended flow for completeness and gaps:
 
 - Task @user-flow-analysis-agent(feature_description, research_findings)
 
-**Flow Analysis Output:**
-
-- [ ] Review flow analysis results
-- [ ] Incorporate any identified gaps or edge cases into the issue
-- [ ] Update success criteria based on flow analysis findings
+Carry whatever it surfaces forward: gaps and edge cases become success criteria in Step 4 and tasks in the Step 6 plan file. Nothing is written yet at this step.
 
 ### 4. Success Criteria Gate
 
@@ -149,31 +134,26 @@ These criteria populate the `success-criteria` block defined in [success-criteri
 
 ### 5.1. Set up workspace
 
-Before writing the plan file, ensure the session is not on the base branch:
+Before writing the plan file, follow the [set up workspace procedure](references/setup-workspace.md) so the plan does not land on a base branch.
 
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+### 6. Write the plan file
 
-### 6. Issue creation and formatting
+Fill in the chosen template. Write it as a document someone picks up cold: task lists for
+trackable items, fenced code blocks with language identifiers, `<details>` for anything
+lengthy, and links out to related issues, commits, and code. Name the actual files in pseudo
+code and task lists — `/build` reads those paths. Add an ERD mermaid diagram when the plan
+introduces or changes data models.
 
-**Formatting checklist:**
+Carry forward whatever research turned up that the implementer would otherwise have to
+rediscover, including prompts that worked.
 
-- [ ] Clear heading hierarchy (##, ###) and fenced code blocks with language identifiers
-- [ ] Task lists (`- [ ]`) for trackable items; collapsible `<details>` for lengthy content
-- [ ] Link related issues/PRs (`#number`), commits (SHA), and code (GitHub permalinks)
-- [ ] Include prompts or instructions that worked well during research
-- [ ] Emphasize comprehensive testing given rapid AI-assisted implementation
+### 7. Final check
 
-### 7. Final review
+Before presenting the plan, confirm three things that later steps depend on:
 
-**Pre-submission Checklist:**
-
-- [ ] Title is searchable and descriptive
-- [ ] Labels accurately categorize the issue
-- [ ] All template sections are complete
-- [ ] Links and references are working
-- [ ] Success criteria each carry a `verify:` command (or `verify: manual <steps>`)
-- [ ] Add names of files in pseudo code examples and todo lists
-- [ ] Add an ERD mermaid diagram if applicable for new model changes
+- Every template section is filled — no placeholder text left behind.
+- Every success criterion carries a `verify:` command or `verify: manual <steps>`.
+- Every file path and link resolves.
 
 ## Output Format
 

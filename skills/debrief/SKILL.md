@@ -48,8 +48,6 @@ The skill must work with partial information. Not every debrief has full CI logs
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
 
-Run these in parallel:
-
 - **Git history**: `git log` on affected files (last 2 weeks or user-specified range), `git log --all --oneline` for related commits, `gh pr view` for referenced PRs
 - **CI/CD evidence**: `gh run list` for recent failures, `gh run view <id>` for referenced runs. Skip if no CI context — do not block on missing data.
 - **Affected file analysis**: Check test coverage (Glob for test files), recent change frequency (`git log --oneline <file>`). Note files lacking tests or with high churn.
@@ -74,9 +72,7 @@ Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 
-Before writing the debrief file, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Before writing the debrief file, follow the [set up workspace procedure](references/setup-workspace.md) so the document does not land on a base branch.
 
 ### 6. Write the debrief document
 
@@ -100,7 +96,7 @@ Use the **AskUserQuestion tool** to present next steps:
 2. **Generate issue previews**: format action items as ready-to-copy GitHub issue drafts
 3. **Done**: debrief complete
 
-**If the user selects "Review and refine"** → apply the @refine-approach skill to the document. When refinement is complete, present these options again (without the refine option).
+**If the user selects "Review and refine"** → apply the `/refine-approach` skill to the document. When refinement is complete, present these options again (without the refine option).
 
 **If the user selects "Generate issue previews"** → read the action items from the written debrief document, then:
 
@@ -143,14 +139,9 @@ Root cause: [one-line summary]
 Action items: <N> prevent, <N> detect, <N> respond
 ```
 
-## Key Principles
-
-- **Blameless** — Focus on systems and processes, never individuals
-- **Evidence-based** — Link findings to commits, PRs, code paths, and logs
-- **Actionable** — Every action item is specific and assignable
-- **Honest about gaps** — Mark unknowns explicitly rather than guessing
-- **Tech-agnostic** — No language or framework assumptions in the skill itself
-
 ## Important
 
 **DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.
+
+Mark unknowns as unknown. A debrief that guesses at a cause reads the same as one that
+established it, and the guess is what gets acted on.

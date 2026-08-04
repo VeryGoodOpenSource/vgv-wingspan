@@ -108,8 +108,19 @@ The reduced agent set and their report names (`<name>`):
 |-------|-------------|
 | **@vgv-review-agent** | `vgv-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
+| **@architecture-review-agent** | `architecture-review` |
+| **@pr-readiness-review-agent** | `pr-readiness-review` |
 
-If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
+These four cover what an emergency fix most often gets wrong: a regression, a missing test, a
+layer boundary crossed in a hurry, or a debug print left behind. `pr-readiness-review-agent`
+earns its place here despite the speed pressure — this skill pushes and opens a PR, drive-to-green
+checks only the formatter and linter, and the agent runs on haiku, so it adds little to a
+parallel run.
+
+`code-simplicity-review-agent` is the one left out: this skill already gates minimality at the
+implementation step, so a hotfix has no room for the over-engineering that agent looks for.
+
+If an agent fails, note it, continue with the rest, and record the failure in the report header so the reduced review isn't silently thinned further.
 
 ### After reviews complete
 

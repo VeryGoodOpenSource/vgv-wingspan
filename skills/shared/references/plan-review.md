@@ -15,6 +15,25 @@ Pass `<PLAN_PATH>` to each. Run all three concurrently:
 - **@vgv-review-agent** — review the plan for adherence to Very Good Engineering practices and project conventions.
 - **@plan-splitting-agent** — assess plan scope and report whether the work is too large for a single reviewable PR.
 
+This is a **document** review, not a code review, so it does not use the review-agent
+instructions the `/build`, `/review`, and `/hotfix` flows inject. Give each agent this
+contract in its prompt:
+
+- The subject is the plan text at `<PLAN_PATH>`. There is no diff and no branch to inspect.
+- Before judging convention adherence, read the project's CLAUDE.md and load any
+  companion-plugin or project-local skill whose domain the plan touches. A pattern one of
+  those documents as idiomatic is the convention — do not flag it. Best-effort; never block on it.
+- **@vgv-review-agent**: apply only the passes that work without a diff — naming and clarity,
+  error handling the plan specifies, and convention deviation. Its regression, resource-lifecycle,
+  and existing-versus-new calibration passes need changed code and do not apply here.
+- **@code-simplicity-review-agent**: `<PLAN_PATH>` lives under `docs/`, and reviewing it is the
+  exception to that agent's standing rule not to treat `docs/` as a simplification target.
+  Judge the proposed implementation's weight, not the document's prose.
+- Do not edit `<PLAN_PATH>` or any other file. Step 2 applies the findings.
+- There is no raw report path. Return findings directly in the response — no report file, no
+  `FINDING-NN` ids. One bullet per finding: severity, the plan section it applies to, one line
+  of why, one line of fix. Step 2 folds them in rather than rendering a numbered report.
+
 ## 2. Apply findings inline
 
 Fold the simplicity and VGV findings into the plan file directly — tighten scope, close

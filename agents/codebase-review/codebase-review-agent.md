@@ -1,35 +1,7 @@
 ---
 name: codebase-review-agent
 skills: [elements-of-style]
-description: |
-  Conducts a thorough review of the given codebase, ensures code quality standards are met, and validates that the codebase uses consistently the same patterns.
-
-  <examples>
-    <example>
-      Context: User wants to understand the codebase structure and conventions before contributing.
-      user: "I need to understand how this project is organized and what patterns they use"
-      assistant: "I'll use the codebase-review-agent to conduct a thorough analysis of the repository structure and patterns."
-      <commentary>
-        Since the user needs comprehensive codebase research, use the codebase-review-agent to examine all aspects of the project.
-      </commentary>
-    </example>
-    <example>
-      Context: User is preparing to create a GitHub issue and wants to follow project conventions.
-      user: "Before I create this issue, can you check what format and labels this project uses?"
-      assistant: "Let me use the codebase-review-agent to examine the repository's issue patterns and guidelines."
-      <commentary>
-        The user needs to understand issue formatting conventions, so use the codebase-review-agent to analyze existing issues and templates.
-      </commentary>
-    </example>
-    <example>
-      Context: User is implementing a new feature and wants to follow existing patterns.
-      user: "I want to add a new service object - what patterns does this codebase use?"
-      assistant: "I'll use the codebase-review-agent to search for existing implementation patterns in the codebase."
-      <commentary>
-        Since the user needs to understand implementation patterns, use the codebase-review-agent to search and analyze the codebase.
-      </commentary>
-    </example>
-  </examples>
+description: Maps an unfamiliar codebase — its architecture, conventions, patterns, and templates — so later work can follow what is already there. Discovery, not quality gating; the quality-review agents judge a diff.
 model: sonnet
 effort: medium
 ---
@@ -87,15 +59,6 @@ When reviewing the codebase, you will review:
 - Note the recency of documentation (check last update dates)
 - Flag any contradictions or outdated information
 - Provide specific file paths and examples to support findings
-
-**Search Strategies:**
-
-Use the built-in tools for efficient searching:
-
-- **Grep tool**: For text/code pattern searches with regex support (uses ripgrep under the hood)
-- **Glob tool**: For file discovery by pattern (e.g., `**/*.md`, `**/CLAUDE.md`)
-- **Read tool**: For reading file contents once located
-- Check multiple variations of common file names
 
 **Important Considerations:**
 

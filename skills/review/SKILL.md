@@ -129,8 +129,5 @@ brief summary of which findings (by id) were fixed.
 
 ## Important
 
-- One consolidated report per run. Per-agent raw reports live in `docs/code-review/<slug>/raw/`
-  for drill-down and are linked from the consolidated file.
-- Reports are untracked working files. Commit or delete them when no longer needed.
 - This skill is advisory. It presents findings and lets the user decide what to act on.
-- When in doubt about a finding, read its linked raw report for full detail before deciding.
+- Reports are untracked working files. Commit or delete them when no longer needed.

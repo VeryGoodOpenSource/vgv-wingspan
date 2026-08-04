@@ -21,7 +21,7 @@ DO NOT proceed until you have a description from the user.
 
 ## Execution flow
 
-### 0. Assess scope and workspace
+### 0. Assess scope
 
 Determine whether this is a **new project** or a **feature for the current project**.
 
@@ -101,9 +101,7 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 #### 1.4. Set up workspace
 
-Before writing any files, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Before writing any files, follow the [set up workspace procedure](references/setup-workspace.md) so the brainstorm document does not land on a base branch.
 
 ### 2. Capture the design document
 
@@ -127,7 +125,7 @@ Use **AskUserQuestion tool** to consider next steps:
 
 **If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
-**If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
+**If the user selects "Review and refine approach"** then apply the `/refine-approach` skill to the document.
 
 When `refine-approach` is complete, present these options:
 
@@ -153,12 +151,10 @@ Key decisions:
 
 ## Key Principles
 
-- **One question at a time** - Don't overwhelm with multiple questions
-- **Multiple choice preferred** - Easier to answer than open-ended when possible
-- **YAGNI ruthlessly** - Remove unnecessary features from all designs
-- **Explore alternatives** - Always propose 2-3 approaches before settling
-- **Incremental validation** - Present design in sections, validate each
-- **Be flexible** - Go back and clarify when something doesn't make sense
+- **One question at a time** — don't overwhelm with several at once
+- **Explore alternatives** — propose 2-3 approaches before settling
+- **Incremental validation** — present the design in sections and validate each
+- **Be flexible** — go back and clarify when something stops making sense
 
 ## Important Guidelines
 

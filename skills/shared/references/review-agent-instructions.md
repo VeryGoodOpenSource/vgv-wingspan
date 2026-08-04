@@ -1,9 +1,11 @@
 # Review Agent Instructions
 
-These instructions are passed to every quality-review agent. Substitute `<RAW_DIR>` with the
-absolute raw-reports directory the calling skill provides (each skill gives its own, e.g.
-`docs/reviews/raw`) and `<name>` with the bare report stem from that skill's table (e.g.
-`vgv-review`) — no directory, no `.md` extension.
+These instructions are passed to every quality-review agent reviewing **code**. The `/plan`
+document review is the one exception — it supplies its own contract, see `plan-review.md`.
+
+Substitute `<RAW_DIR>` with the absolute raw-reports directory the calling skill provides
+(each skill gives its own, e.g. `/abs/path/to/repo/docs/reviews/raw`) and `<name>` with the
+bare report stem from that skill's table (e.g. `vgv-review`) — no directory, no `.md` extension.
 
 Each agent produces two outputs:
 
@@ -11,13 +13,34 @@ Each agent produces two outputs:
 2. **A structured findings list returned to the caller** (the single source the caller
    uses to number, consolidate, and render both the file and the chat summary).
 
+## 0 — Detect the stack, then discover its conventions
+
+Before reviewing, read the project's CLAUDE.md, dependency manifests, linting configuration,
+and directory structure to determine the stack. Apply VGV standards to whatever stack you find.
+
+Then layer the project's own conventions on top:
+
+- **Companion-plugin skills.** Scan your available-skills list for technology-specific skills
+  matching the code under review and load the relevant ones with the Skill tool. Only invoke
+  skills that appear in your list — never guess names.
+- **Project-local skills** the plugin system does not manage: glob `.claude/skills/**/SKILL.md`,
+  read each match's frontmatter, then the full content of any whose domain matches.
+
+A pattern one of these documents as idiomatic is a convention, not a finding. This step is
+best-effort — if it yields nothing, review against VGV defaults and move on. It must never
+block the review.
+
 ## 1 — Write the detailed report
 
 Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed) — e.g. with
 `<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. This is an absolute path — use
-it exactly as given, do not convert to relative. Use your normal Output Format. The caller reads this file
-only when acting on a finding needs more than the one-line `fix`, so be thorough but keep it
-scannable.
+it exactly as given, do not convert to relative.
+
+The caller reads this file only when acting on a finding needs more than the one-line `fix`,
+so it is a drill-down document, not a summary. Give each finding its own entry with the
+location, why it matters, and a concrete fix — code where code is clearer than prose. Group
+entries however your review domain reads best, and state a short overall verdict where your
+own guidance puts it. Be thorough but scannable.
 
 ## 2 — Return a structured findings list
 

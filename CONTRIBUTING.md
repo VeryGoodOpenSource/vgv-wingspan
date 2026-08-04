@@ -59,16 +59,32 @@ Add a row to the skills table in `README.md`:
 
 ## Skill Writing Guidelines
 
-- **Use clear directives** — no soft language ("consider", "prefer"). Say "Use X" or "Do not use Y".
+Wingspan targets Claude 5 generation models, which handle nuance well and need fewer
+guardrails than earlier models did. Write for a capable reader.
+
+- **State the constraint, not every branch.** Hard rules belong where the cost of getting it wrong is high — destructive commands, ship gates, anything outward-facing. Everywhere else, give the model the goal and the context to judge. "Match the surrounding code's comment density" beats an enumerated comment policy.
+- **Say each thing once.** A rule stated in a skill, restated in an agent, and restated again in `CLAUDE.md` forces the model to work out which copy wins. Put it in the layer that owns it and link from the others.
+- **Split by reachability, not by line count.** What a skill costs is the text it loads on runs that never need it. Content reached down one branch — a template, a recovery procedure, a report format, a ship gate — belongs in `references/`, so `SKILL.md` carries the flow and each branch pays for its own detail. Length is a symptom worth investigating rather than the thing to optimize: `build` and `plan` are the longest skills here and both still hold per-branch detail worth extracting.
+- **Prefer working artifacts to descriptions.** A template file, a script, or a real snippet carries more signal per token than prose describing what the output should look like.
 - **Fence all code blocks** with language identifiers (e.g., ` ```dart `).
 - **Provide complete, copy-pasteable snippets** — not fragments.
 - **Reference packages by full name** (e.g., `package:mocktail`, not just "mocktail").
-- **Show anti-patterns alongside correct patterns** when helpful, so readers understand both what to do and what to avoid.
 - **Keep prose tight** — every word in a SKILL.md consumes tokens in the model's context window. Verbose instructions reduce the space available for the user's actual work. Apply these techniques:
   - **Decision tables over prose chains** — replace long if/else narratives with a table or compact bulleted list.
   - **One sentence per rule** — if a guideline needs a paragraph to explain, it may be too complex or doing too much.
   - **Cut redundancy** — don't restate in an "Important" footer what the body already says.
   - **Collapse conditional blocks** — when multiple branches share structure, describe the shared part once and list only what differs.
+
+## Agent Writing Guidelines
+
+Agents live in `agents/<category>/<agent-name>.md`. An agent's frontmatter `description` is
+loaded into the dispatching model's context for the whole session, so it is the most expensive
+text in the file. Treat it as an interface, not a tutorial.
+
+- **The description is a routing decision.** Say what the agent reviews and what it deliberately leaves to others. No `<examples>` blocks — Context/user/assistant transcripts cost dozens of always-resident lines and teach less than one precise sentence.
+- **Declare the boundary in the body.** Agents that run in parallel need a short scope section naming which sibling owns each adjacent domain. Without it they converge on the same easy findings and the consolidation step spends its effort deduplicating.
+- **Do not restate the injected instructions.** `/build`, `/review`, and `/hotfix` inject [`review-agent-instructions.md`](skills/shared/references/review-agent-instructions.md) into every review agent's prompt. It already covers stack detection, convention discovery, the report path, the structured findings format, and severity grading. Repeating any of it in the agent file creates a second copy to keep in sync.
+- **Describe what the report must contain, not its exact shape.** Only the structured findings list is parsed. The raw report is read ad hoc, so a few lines about required content beat a rigid markdown skeleton.
 
 ## Shared Resources & Skill Boundaries
 

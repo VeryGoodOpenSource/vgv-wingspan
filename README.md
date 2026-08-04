@@ -109,10 +109,10 @@ Wingspan ships subagents that Claude Code dispatches as isolated, specialized re
 
 | Agent | Description |
 | ----- | ----------- |
-| [**VGV Review**](agents/codebase-review/vgv-review-agent.md) | Reviews code against Very Good Ventures engineering standards — architecture, state management conventions, testing quality, and code simplicity |
-| [**Code Simplicity Review**](agents/codebase-review/code-simplicity-review-agent.md) | Final review pass to ensure code is as simple and minimal as possible — identifies YAGNI violations and simplification opportunities |
-| [**Codebase Review**](agents/codebase-review/codebase-review-agent.md) | Conducts a thorough review of the codebase — structure, conventions, and consistent pattern usage |
-| [**Architecture Review**](agents/quality-review/architecture-review-agent.md) | Validates project architecture post-implementation — layer separation, dependency direction, and package structure |
+| [**VGV Review**](agents/codebase-review/vgv-review-agent.md) | Reviews code against Very Good Ventures engineering standards — regressions, naming, error handling, resource lifecycle, and unjustified deviations from project convention |
+| [**Code Simplicity Review**](agents/codebase-review/code-simplicity-review-agent.md) | Reviews finished code for unnecessary weight — premature abstractions, YAGNI violations, dead code, and logic that could be plainer |
+| [**Codebase Review**](agents/codebase-review/codebase-review-agent.md) | Maps an unfamiliar codebase — architecture, conventions, patterns, and templates — so later work follows what is already there |
+| [**Architecture Review**](agents/quality-review/architecture-review-agent.md) | Validates project architecture post-implementation — layer separation, dependency direction, package structure, and where state management logic lives |
 | [**Test Quality Review**](agents/quality-review/test-quality-review-agent.md) | Reviews test coverage and quality — verifies every testable unit has proper tests following VGV conventions |
 | [**PR Readiness Review**](agents/quality-review/pr-readiness-review-agent.md) | Checks formatting, static analysis, debug artifacts, and commit hygiene before a pull request opens |
 | [**Plan Splitting**](agents/analysis/plan-splitting-agent.md) | Analyzes implementation plans for scope and recommends splitting large plans into independently-mergeable PRs |
