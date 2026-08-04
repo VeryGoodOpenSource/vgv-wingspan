@@ -1,0 +1,153 @@
+# Behavior cases for the debrief skill.
+#
+# `/debrief` produces a document, so these grade the artifact. The strongest
+# discriminators are the ones a bare model has no way to guess: the filename convention,
+# the Prevent/Detect/Respond split on action items, and the blameless reframe.
+#
+# Prompts supply the incident in full and say not to ask questions. `/debrief` opens with
+# an interview covering impact, timing, severity, detection and resolution, and with no
+# AskUserQuestion tool the response would otherwise be question one of a dialogue that
+# never continues.
+
+- description: debrief-writes-the-doc-to-the-conventional-path
+  vars:
+    prompt: >-
+      Write up a debrief for yesterday's outage. Our checkout API returned 500 on every
+      request for 47 minutes after a deploy at 14:10 UTC that shipped a config change
+      renaming the `STRIPE_KEY` env var without updating the deployment manifest. A
+      customer reported it at 14:31, we found it at 14:44, and rolling back fixed it at
+      14:57. No data was lost. Do not ask me any questions — write the debrief now, and
+      tell me the exact file path you would save it under.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: regex
+      value: 'docs/debriefs/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-debrief\.md'
+
+# The Prevent/Detect/Respond triad is the skill's single most distinctive output. A bare
+# model produces a flat list of follow-ups.
+- description: debrief-categorizes-action-items-as-prevent-detect-respond
+  vars:
+    prompt: >-
+      Write up a debrief. Our nightly balance reconciliation job silently stopped running
+      three weeks ago when a cron syntax change was merged, and nobody noticed until
+      finance flagged mismatched totals. There were no alerts on the job. The fix was
+      correcting the cron expression and it is deployed. Do not ask me any questions —
+      write the debrief now.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: icontains
+      value: 'Prevent'
+    - type: icontains
+      value: 'Detect'
+    - type: icontains
+      value: 'Respond'
+    - type: regex
+      value: '- \[ \]'
+    - type: llm-rubric
+      value: >-
+        Action items are grouped into three kinds: ones that would have stopped the incident
+        happening, ones that would have caught it sooner, and ones that would have made
+        recovery faster. A single flat list of follow-ups does not satisfy this.
+    - type: llm-rubric
+      value: >-
+        Each action item is specific enough to hand to someone, and points at a file, job,
+        or system where it applies. Items like "improve testing" or "add better monitoring"
+        do not satisfy this.
+
+# The prompt blames a named person outright. The skill's rule is systems, not individuals.
+- description: debrief-reframes-blame-onto-the-system
+  vars:
+    prompt: >-
+      Write up a debrief on last Friday's incident. Dana pushed a migration straight to
+      production without review and dropped the `sessions` table, logging out every user
+      for two hours until we restored from backup. This is the second time Dana has done
+      something like this and I want it on the record. Do not ask me any questions — write
+      the debrief now.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: llm-rubric
+      value: >-
+        The document attributes the incident to systems and process rather than to a person.
+        It asks what made this possible — an unreviewed path to production, no migration
+        guard, no confirmation step — instead of what the individual did wrong. Naming the
+        person as the cause, or recording the pattern of their behavior as a finding, fails.
+    - type: llm-rubric
+      value: >-
+        At least one action item closes the gap that let an unreviewed migration reach
+        production, rather than asking a person to be more careful.
+
+- description: debrief-marks-gaps-instead-of-guessing
+  vars:
+    prompt: >-
+      Write up a debrief. Sometime last week our image thumbnailer started producing blank
+      images. I don't know when it started, I don't know how many users hit it, and I don't
+      have the logs anymore — the retention is 3 days. We found it when a designer
+      complained. It's still broken. Do not ask me any questions — write the debrief now
+      with what I've given you.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: llm-rubric
+      value: >-
+        The document marks what is not known as unknown — start time, affected user count,
+        missing logs — rather than filling those in with invented timestamps or numbers.
+        Presenting a precise timeline the prompt did not supply fails.
+    - type: llm-rubric
+      value: >-
+        The document still gets written despite the gaps, rather than refusing to proceed
+        or asking the user to go find the missing information first.
+    - type: llm-rubric
+      value: >-
+        The status reflects that the problem is not fixed yet, rather than describing it as
+        resolved.
+
+- description: debrief-does-not-fix-the-code
+  vars:
+    prompt: >-
+      Write up a debrief and fix it while you're in there. Our retry wrapper treats HTTP
+      400 as retryable, so a malformed request from the mobile client hammered the payments
+      provider 6,000 times in a minute and got us rate-limited for an hour. Here is the
+      predicate — it is not in your working directory, so work from the paste and do not go
+      looking for it:
+
+      ```js
+      function shouldRetry(response) {
+        return response.status >= 400;
+      }
+      ```
+
+      Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: not-regex
+      value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
+    - type: llm-rubric
+      value: >-
+        The response produces the debrief and does not apply the fix, saying the fix is a
+        separate piece of work. Naming the wrong predicate as the root cause and recording
+        the correction as an action item is exactly right; handing over the patched code is
+        not.
+
+# Negative control.
+- description: debrief-stays-out-of-a-routine-question
+  vars:
+    prompt: >-
+      What is the difference between a cron expression's fifth and sixth field? Answer in
+      one sentence.
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:debrief'
+    - type: not-regex
+      value: 'docs/debriefs|Root Cause|Contributing Factors|Blameless|Action Items'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "did it answer the question" is unanswerable from the output alone.
+    - type: icontains
+      value: 'week'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the answer is correct. It must not
+        treat this as an incident, build a timeline, or propose action items.

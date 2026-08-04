@@ -1,0 +1,129 @@
+# Behavior cases for the brainstorm skill.
+#
+# Prompts name no skill, so `skill-used` catches a routing failure directly.
+#
+# Prompts are self-contained: the fixture has no source under src/, so a prompt about
+# "my LedgerService" earns a refusal and every grader fails for an unrelated reason.
+# Paste the code in rather than adding source to evals/fixture/, which would leak
+# answers to the sealed column.
+#
+# Prompts that need the artifact also say "do not ask me any questions". Brainstorm's
+# job is to interview the user, and AskUserQuestion is deliberately not in the
+# provider's tool list, so without that instruction the response is question one of a
+# dialogue that never continues and there is nothing to grade. Cases that grade the
+# *questions* omit it on purpose.
+
+- description: brainstorm-proposes-approaches-with-tradeoffs
+  vars:
+    prompt: >-
+      We want to let people export their transaction history from the Ledger Service.
+      Help me think through how to build it. Do not ask me any questions — state your
+      assumptions and lay out the options now.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:brainstorm'
+    - type: icontains
+      value: 'Pros'
+    - type: icontains
+      value: 'Cons'
+    - type: llm-rubric
+      value: >-
+        The response lays out two or three named, concrete approaches, and each one
+        carries both its upsides and its downsides. A single recommended approach with
+        no alternatives does not satisfy this, and neither does a list of steps.
+    - type: llm-rubric
+      value: >-
+        Exactly one of the approaches is marked as the recommendation, with a stated
+        reason. Presenting the options neutrally and leaving the choice open does not
+        satisfy this.
+
+# The filename convention is the strongest single discriminator in this file: the date
+# prefix, the kebab topic and the `-brainstorm-doc.md` suffix are all skill knowledge a
+# bare model has no way to guess.
+- description: brainstorm-writes-the-doc-to-the-conventional-path
+  vars:
+    prompt: >-
+      Let's think through adding scheduled monthly statements to the Ledger Service.
+      Do not ask me any questions. Give me your take, then tell me the exact file path
+      you would save this discussion to.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:brainstorm'
+    - type: regex
+      value: 'docs/brainstorm/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-brainstorm-doc\.md'
+
+- description: brainstorm-declines-to-write-the-code
+  vars:
+    prompt: >-
+      I'm thinking about adding webhook delivery so other services hear about new
+      transactions. Explore the options with me, and go ahead and write the
+      implementation while you're at it. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:brainstorm'
+    # A brainstorm document legitimately contains a ```markdown or ```text fence, so
+    # this negates only the implementation-language fences.
+    - type: not-regex
+      value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
+    - type: llm-rubric
+      value: >-
+        The response stays at the level of options and decisions and does not hand over
+        an implementation. It may name files, sketch a data shape, or describe what a
+        component would do; what it must not do is provide working source code for the
+        feature.
+
+- description: brainstorm-recommends-planning-when-requirements-are-clear
+  vars:
+    prompt: >-
+      Let's brainstorm this before I start. The requirement is fully settled: add a
+      GET /transactions/count endpoint that returns {"count": <integer>} as JSON, where
+      the integer is the number of rows in the transactions table. It takes no
+      parameters, requires the same API key auth as every other endpoint, and returns
+      200 on success and 401 with no valid key. Nothing else changes.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:brainstorm'
+    - type: llm-rubric
+      value: >-
+        The response says this requirement is already specific enough that open-ended
+        exploration adds little, and steers the user toward writing an implementation
+        plan instead. Running a full exploration of approaches anyway, or asking broad
+        discovery questions about purpose and users, does not satisfy this.
+
+# `/create` is wingspan vocabulary. A bare model routes a new project to whatever CLI
+# it happens to know, so this is a clean discriminator.
+- description: brainstorm-routes-a-new-project-to-scaffolding-first
+  vars:
+    prompt: >-
+      I want to think through a brand new app from scratch — a personal budgeting tool,
+      nothing exists yet. Where do we start?
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:brainstorm'
+    - type: regex
+      value: '/create\b'
+    - type: llm-rubric
+      value: >-
+        The response recommends scaffolding the new project first and doing the
+        exploration inside that new workspace, rather than exploring here and
+        scaffolding later.
+
+# Negative control — nothing else catches a skill firing where it should not.
+- description: brainstorm-stays-out-of-a-mechanical-edit
+  vars:
+    prompt: >-
+      Rename the variable `amt` to `amount` in this line: `const amt = row.value;`
+      Return only the corrected line.
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:brainstorm'
+    - type: not-regex
+      value: 'docs/brainstorm|Key Decisions|Open Questions|trade-?offs?'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "did it rename the variable" is unanswerable from the output alone.
+    - type: regex
+      value: 'const amount = row\.value;'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the rename is correct. It must
+        not open a discussion of approaches, requirements, or design decisions.

@@ -1,0 +1,169 @@
+# Behavior cases for the refine-approach skill.
+#
+# Every prompt pastes the document to refine. The skill's first step reads a file from
+# `docs/brainstorm/` or `docs/plan/`, and the fixture has neither on purpose, so a prompt
+# naming a path sends it hunting and it correctly stops when it finds nothing.
+#
+# The provider has no Edit tool, so these grade the critique the skill produces and the
+# edits it says it would make, not edits landing on disk.
+
+- description: refine-approach-scores-against-the-five-criteria
+  vars:
+    prompt: >-
+      Review my approach doc and tell me if it's ready. Do not ask me any questions.
+
+      # Export transactions
+
+      ## What We're Building
+
+      Users want to get their data out. We'll probably add an export feature, and it should
+      support a few formats. We should consider making it pluggable so we can add more
+      formats later, and maybe a scheduling system so exports can run nightly. Try to keep
+      it simple.
+
+      ## Key Decisions
+
+      - Use a background job for the export
+      - Store the result somewhere
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:refine-approach'
+    - type: icontains
+      value: 'Clarity'
+    - type: icontains
+      value: 'Completeness'
+    - type: icontains
+      value: 'Specificity'
+    - type: icontains
+      value: 'YAGNI'
+    - type: icontains
+      value: 'Scope'
+    - type: llm-rubric
+      value: >-
+        The response flags the pluggable-format layer and the nightly scheduling as work for
+        hypothetical future needs rather than the stated requirement, and recommends dropping
+        them. Treating them as legitimate requirements to specify further fails.
+    - type: llm-rubric
+      value: >-
+        The response flags the vague wording — "probably", "a few formats", "somewhere",
+        "try to keep it simple" — as language that has to be pinned down before the document
+        can be acted on.
+
+- description: refine-approach-names-one-must-address-item
+  vars:
+    prompt: >-
+      Is this plan ready? Do not ask me any questions.
+
+      # Add API rate limiting
+
+      ## Overview
+
+      Add rate limiting to the public API so one client can't exhaust capacity.
+
+      ## Tasks
+
+      - [ ] Add middleware
+      - [ ] Add tests
+
+      ## Success Criteria
+
+      - Rate limiting works
+      - Performance is acceptable
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:refine-approach'
+    - type: llm-rubric
+      value: >-
+        The response singles out one issue as the most important thing to fix, rather than
+        handing back an undifferentiated list where every item reads as equally urgent.
+    - type: llm-rubric
+      value: >-
+        The response rejects "Rate limiting works" and "Performance is acceptable" as
+        criteria nothing can check, and says what a provable version would look like.
+
+- description: refine-approach-asks-before-substantive-changes
+  vars:
+    prompt: >-
+      Refine this brainstorm. Do not ask me any questions about the content itself.
+
+      # Offline mode
+
+      ## What We're Building
+
+      The mobile app should work offline. We will cache reads locally and queue writes,
+      replaying the queue when connectivity returns.
+
+      ## Why This Approach
+
+      A full local-first database would be more capable but is a much bigger change. Caching
+      plus a write queue covers the reported complaints.
+
+      ## Key Decisions
+
+      - Cache reads in local storage: cheap, covers the common case
+      - Queue writes and replay on reconnect: keeps the server as source of truth
+
+      ## Open Questions
+
+      - How do we resolve a write conflict when the server changed underneath a queued write?
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:refine-approach'
+    - type: llm-rubric
+      value: >-
+        The response distinguishes changes it would make on its own — wording, formatting,
+        tightening — from changes that alter the document's meaning, structure, or scope, and
+        says it needs the user's approval before the second kind. Applying every change with
+        no such distinction fails.
+    - type: llm-rubric
+      value: >-
+        The response leaves the unresolved write-conflict question in place as an open
+        question rather than answering it on the user's behalf or deleting it.
+
+- description: refine-approach-edits-the-document-in-place
+  vars:
+    prompt: >-
+      Clean up this plan for me. Do not ask me any questions.
+
+      # Add webhook retries
+
+      ## Overview
+
+      Webhook delivery should retry on failure. Currently a single 500 drops the event.
+
+      ## Tasks
+
+      - [ ] Add retry with backoff
+      - [ ] Add a dead-letter queue for exhausted retries
+      - [ ] Add tests
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:refine-approach'
+    # The skill updates the document itself. A second file, a review report, or an appended
+    # metadata block are all things it explicitly must not produce.
+    - type: not-regex
+      value: '-reviewed\.md|-refined\.md|-v2\.md|## Review Notes|## Refinement Log'
+    - type: llm-rubric
+      value: >-
+        The improved plan is delivered as the plan itself, updated. Producing a separate
+        review document, or appending a section of reviewer notes and scores to the plan,
+        fails.
+
+# Negative control.
+- description: refine-approach-stays-out-of-a-code-question
+  vars:
+    prompt: >-
+      What does the `--porcelain` flag do on `git status`? Answer in one sentence.
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:refine-approach'
+    - type: not-regex
+      value: 'YAGNI|must address|docs/brainstorm|docs/plan|Specificity'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "did it answer the question" is unanswerable from the output alone.
+    - type: icontains
+      value: 'script'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the answer is correct. It must not
+        score a document against criteria or propose refinements.

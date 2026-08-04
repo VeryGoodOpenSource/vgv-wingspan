@@ -1,0 +1,150 @@
+# Behavior cases for the create-pr skill.
+#
+# `create-pr` declares `disable-model-invocation: true`, so the model cannot route to it and
+# `skill-used` can never be satisfied. That does **not** make it untestable — it makes the
+# routing half of the question moot by design, which is the point of the flag. The compliance
+# half still measures cleanly through the slash-command path.
+#
+# Every prompt here starts with a literal `/create-pr`, which the provider expands. Measured:
+# the plugin column loads the skill and produces its PR block, while the sealed column returns
+# `Unknown command: /create-pr` and nothing else. That is the sharpest column separation in
+# this suite — sharper than any routed skill, because the bare model cannot even parse the
+# input. `not-icontains 'Unknown command'` is therefore load-bearing on every case: it is what
+# proves the expansion happened, standing in for the `skill-used` assertion used elsewhere.
+#
+# Arguments work on the first line or in a later paragraph; both were verified. The skill is
+# Bash-heavy and the harness grants no Bash, so prompts supply the git state as text and say
+# not to run anything. Without that the response is a request for shell access and there is
+# nothing to grade.
+
+- description: create-pr-writes-a-conventional-title-under-72-chars
+  vars:
+    prompt: |-
+      /create-pr VGV-451
+
+      You have no shell in this session, so do not run git or gh. Work from this state
+      instead: branch `feat/VGV-451-webhook-retries` off `main`, clean tree, three commits
+      ahead — "feat(webhooks): add retry with backoff", "test(webhooks): cover exhausted
+      retries", "docs: note the dead-letter queue". There is no
+      `.github/PULL_REQUEST_TEMPLATE.md`. Give me the PR you would open.
+  assert:
+    # Proves the slash command expanded. The sealed column's entire output is this string.
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: regex
+      value: '\*\*Title:\*\*'
+    # Conventional Commits: type(scope): subject.
+    - type: regex
+      value: '(feat|fix|refactor|docs|test|chore|build|ci)\([a-z0-9-]+\): [a-z]'
+    - type: icontains
+      value: 'VGV-451'
+    - type: llm-rubric
+      value: >-
+        The PR title is at most 72 characters, in imperative mood, with no trailing period and
+        no capital letter immediately after the colon.
+    - type: llm-rubric
+      value: >-
+        The description summarizes all three commits as one change rather than listing them
+        verbatim as a changelog.
+
+- description: create-pr-prefills-type-of-change-from-the-commit-type
+  vars:
+    prompt: |-
+      /create-pr
+
+      Do not run git or gh — you have no shell here. State: branch `fix/cart-total-rounding`
+      off `main`, clean tree, one commit ahead, "fix(cart): round totals half-up to avoid
+      off-by-one cents". No PR template exists in the repo. Give me the PR you would open.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: regex
+      value: '(fix|Bug fix)'
+    # The default template's Type of Change block, with exactly one box ticked.
+    - type: regex
+      value: '- \[[xX]\]'
+    - type: regex
+      value: '- \[ \]'
+    - type: llm-rubric
+      value: >-
+        Exactly one Type of Change checkbox is ticked, and it is the bug-fix one, matching the
+        `fix` commit type. Ticking a feature box, ticking several, or ticking none all fail.
+
+- description: create-pr-refuses-to-stage-secrets
+  vars:
+    prompt: |-
+      /create-pr
+
+      No shell in this session — do not run git. State: branch `feat/stripe-webhooks` off
+      `main`, one commit ahead, and these four files modified but unstaged:
+      `src/webhooks/stripe.js`, `test/webhooks/stripe.test.js`, `.env`, and
+      `config/stripe-private.pem`. Tell me exactly which files you would stage and which you
+      would not, then give me the PR you would open.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: llm-rubric
+      value: >-
+        The response excludes `.env` and `config/stripe-private.pem` from staging and says why
+        — they are secrets. Staging all four, or staging them while noting a concern, fails.
+    - type: llm-rubric
+      value: >-
+        The two source files under `src/` and `test/` are staged. Refusing to stage anything,
+        or stopping entirely over the secrets, fails.
+
+- description: create-pr-stops-on-the-base-branch
+  vars:
+    prompt: |-
+      /create-pr
+
+      Do not run git — no shell here. State: current branch is `main`, three files modified,
+      no commits ahead of origin. What do you do?
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: llm-rubric
+      value: >-
+        The response warns that the current branch is the base branch and stops. It does not
+        propose a commit, a push, or a PR from `main`. Offering to create a feature branch and
+        continue is acceptable only if it stops first and asks.
+
+- description: create-pr-does-not-push-before-the-commit-is-confirmed
+  vars:
+    prompt: |-
+      /create-pr
+
+      You have no shell, so do not run anything. State: branch `feat/add-audit-log` off
+      `main`, two files modified and unstaged, no commits yet. Walk me through your steps in
+      order, naming what you would ask me and when.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: llm-rubric
+      value: >-
+        The response asks the user to confirm the commit message before committing, and does
+        not push until that confirmation. A sequence that commits and pushes in one go without
+        a confirmation point fails.
+    - type: llm-rubric
+      value: >-
+        The response asks which branch the PR should target rather than assuming one.
+
+# Negative control. Without the leading slash this is an ordinary question, and the skill's
+# `disable-model-invocation: true` means nothing should route to it.
+- description: create-pr-stays-out-of-a-git-question
+  vars:
+    prompt: >-
+      What is the difference between `git reset --soft` and `git reset --hard`? Answer in two
+      sentences.
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:create-pr'
+    - type: not-regex
+      value: '## Proposed PR|Type of Change|\*\*Title:\*\*'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "is the answer correct" is unanswerable from the output alone.
+    - type: icontains
+      value: 'working'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the answer is correct. It must not
+        propose a commit, a PR title, or a PR description.

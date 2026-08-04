@@ -1,0 +1,140 @@
+# Behavior cases for the rebase skill.
+#
+# Same shape as create-pr.yaml: `disable-model-invocation: true` means no `skill-used`, so
+# every prompt starts with a literal `/rebase` and `not-icontains 'Unknown command'` proves the
+# expansion happened. Measured, the sealed column's whole output is
+# `Unknown command: /rebase. Did you mean /rename?`.
+#
+# The skill is entirely git commands and the harness grants no Bash, so prompts supply the repo
+# state as text. What is graded is the order of operations and the gotchas the skill documents,
+# which is the part that matters anyway — a wrong order here loses uncommitted work.
+
+- description: rebase-stashes-before-rebasing-and-restores-after
+  vars:
+    prompt: |-
+      /rebase
+
+      You have no shell in this session, so do not run git. Work from this state: current
+      branch `feat/add-audit-log`, base `main`, two uncommitted modified files, and
+      `origin/main` has 12 new commits. Walk me through exactly what you would do, in order.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: regex
+      value: 'git stash'
+    - type: regex
+      value: 'git stash pop'
+    - type: regex
+      value: 'git fetch origin'
+    - type: regex
+      value: 'git rebase origin/main'
+    - type: llm-rubric
+      value: >-
+        The order is stash, then fetch, then rebase, then restore the stash. A sequence that
+        rebases before stashing, or that never restores the stashed changes, fails — either one
+        loses the user's two uncommitted files.
+    - type: llm-rubric
+      value: >-
+        The response confirms the working tree is dirty and offers stashing as a choice rather
+        than stashing silently, since the alternative is to cancel.
+
+- description: rebase-warns-that-a-pushed-branch-needs-a-force-push
+  vars:
+    prompt: |-
+      /rebase
+
+      No shell here — do not run git. State: branch `feat/checkout-v2`, base `main`, clean
+      working tree, the branch is already pushed to `origin` and has an open PR, and
+      `origin/main` has 8 new commits. Walk me through what you would do and what I need to
+      know afterwards.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: regex
+      value: '--force-with-lease'
+    - type: llm-rubric
+      value: >-
+        The response warns that rebasing rewrites history on an already-pushed branch and that
+        a force-push is needed afterwards. It specifies the lease-protected form rather than a
+        bare `--force`.
+    - type: llm-rubric
+      value: >-
+        The response does not perform or claim to perform the force-push itself — it tells the
+        user they will need to, since the skill's job ends at the rebase.
+
+- description: rebase-stops-on-the-base-branch
+  vars:
+    prompt: |-
+      /rebase
+
+      Do not run git — no shell. State: current branch is `main`, clean working tree,
+      `origin/main` has 4 new commits.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: llm-rubric
+      value: >-
+        The response says the user is already on the base branch and stops. It does not attempt
+        to rebase `main` onto itself, and it does not silently substitute a pull or a fast-forward
+        as if that were the request.
+
+- description: rebase-stops-when-already-up-to-date
+  vars:
+    prompt: |-
+      /rebase
+
+      No shell in this session, so do not run git. State: branch `feat/add-audit-log`, base
+      `main`, clean working tree, and the merge base of HEAD and `origin/main` is the same
+      commit as `origin/main` itself. What do you do?
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: llm-rubric
+      value: >-
+        The response recognizes from the matching merge base that the branch is already
+        up-to-date with the base, tells the user, and stops without rebasing.
+
+- description: rebase-aborts-and-restores-the-stash-on-conflict
+  vars:
+    prompt: |-
+      /rebase
+
+      Do not run git, you have no shell. State: branch `feat/checkout-v2`, base `main`, three
+      uncommitted files, `origin/main` has 20 new commits, and assume the rebase hits conflicts
+      in two files. Tell me exactly what you would do when that happens.
+  assert:
+    - type: not-icontains
+      value: 'Unknown command'
+    - type: regex
+      value: 'git rebase --abort'
+    - type: regex
+      value: 'git stash pop'
+    - type: llm-rubric
+      value: >-
+        On conflict the response aborts the rebase rather than trying to resolve the conflicts
+        itself, then restores the stashed changes, then tells the user to resolve manually.
+        Editing the conflicted files to fix them fails — this skill only manages git state.
+    - type: llm-rubric
+      value: >-
+        The stashed changes are restored even though the rebase failed. Leaving the user's
+        uncommitted work in the stash without popping it fails.
+
+# Negative control. No leading slash, and `disable-model-invocation: true` means nothing
+# should route here.
+- description: rebase-stays-out-of-a-git-question
+  vars:
+    prompt: >-
+      In one sentence, what does `git merge-base` return?
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:rebase'
+    - type: not-regex
+      value: 'git rebase --abort|force-with-lease|git stash pop'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "is the answer correct" is unanswerable from the output alone.
+    - type: icontains
+      value: 'commit'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the answer is correct. It must not
+        walk through a rebase procedure or propose stashing anything.

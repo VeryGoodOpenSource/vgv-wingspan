@@ -1,0 +1,150 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+#
+# Behavior evals: send each case's prompt through the Claude Agent SDK with this
+# plugin loaded, then grade what the model produced.
+#
+#   npx promptfoo@latest eval -c evals/promptfooconfig.yaml
+#   npx promptfoo@latest eval -c evals/promptfooconfig.yaml --filter-pattern plan
+#   npx promptfoo@latest view
+#
+# Two providers run every case: `with-skill` loads the plugin, `sealed-baseline`
+# loads nothing. A grader passing in both columns is measuring the model, not the
+# skill, so read the comparison view rather than the score.
+#
+# See evals/README.md for the case format and what these evals do not cover.
+description: VGV Wingspan skill behavior evals
+
+prompts:
+  - '{{prompt}}'
+
+providers:
+  # `skills: all` lets the model route on its own instead of being forced into a
+  # skill, which is what makes `skill-used` a real routing test.
+  - id: anthropic:claude-agent-sdk
+    label: with-skill
+    config:
+      # The agent under test uses the local Claude Code session, not a key. The
+      # llm-rubric judge is pinned to this same provider — see defaultTest below.
+      apiKeyRequired: false
+      # Export PROMPTFOO_MODEL to try another model; defaults to sonnet. Both
+      # providers must stay on the same one or the ablation compares models rather
+      # than the plugin.
+      model: "{{ env.PROMPTFOO_MODEL | default('sonnet', true) }}"
+      working_dir: ./fixture
+      plugins:
+        - type: local
+          path: ../
+      skills: all
+      # `tools` is the availability control. Read/Glob/Grep stay because every
+      # workflow skill delegates to references/*.md and must be able to open them —
+      # /plan alone reads a template, success-criteria.md and plan-review.md.
+      #
+      # Deliberately absent: AskUserQuestion. Wingspan skills ask the user
+      # constantly, and with the tool available the question goes into a tool call
+      # the response body never shows, so every rubric about *what* the skill asks
+      # would grade an empty string. Without it the model writes the question as
+      # prose, which is exactly what these cases read.
+      #
+      # Also absent: Write, Edit and Task. No case asserts that a document was
+      # written or an agent actually ran — see "What these evals do not cover".
+      tools: ['Skill', 'Read', 'Glob', 'Grep']
+      # Required for isolation, and easy to get backwards: omitting the key loads
+      # user, project and local settings *and* CLAUDE.md. Both columns must have
+      # it, or the ablation compares contexts instead of the plugin. Plugins
+      # arrive via --plugin-dir, so `skills: all` still works.
+      setting_sources: []
+      strict_mcp_config: true
+      # Wingspan skills chain reference files: /build reads implementation-phases,
+      # review-agent-instructions, review-consolidation and drive-to-green before
+      # it answers. At 12 those cases died on "Reached maximum number of turns",
+      # which scores 0 and reads exactly like a content failure.
+      max_turns: 16
+      max_budget_usd: 1.5
+
+  # The bare model. Sealing it takes three keys, and each one is here because a
+  # real run leaked without it:
+  #
+  #   tools: []            `working_dir` is inside the checkout, so once the Skill
+  #                        tool refuses, the model walks up to ../../skills and
+  #                        reads SKILL.md, then passes rubrics on content it should
+  #                        never have seen. `--tools ""` removes all built-ins, so
+  #                        the walk-up is impossible rather than merely detectable.
+  #                        Do not reach for custom_allowed_tools here — see README.
+  #   setting_sources: []  Otherwise this repo's own CLAUDE.md loads, and it names
+  #                        every skill, every output directory under docs/, and
+  #                        every review agent. No tool call is involved, so no
+  #                        assertion could catch it.
+  #   strict_mcp_config    Without it, `--tools ""` still leaves the mcp__* tools.
+  #
+  # The fixture has no source and prompts are required to be self-contained, so a
+  # tool-less baseline loses nothing legitimate.
+  - id: anthropic:claude-agent-sdk
+    label: sealed-baseline
+    config:
+      apiKeyRequired: false
+      model: "{{ env.PROMPTFOO_MODEL | default('sonnet', true) }}"
+      working_dir: ./fixture
+      tools: []
+      setting_sources: []
+      strict_mcp_config: true
+      max_turns: 16
+      max_budget_usd: 1.5
+
+defaultTest:
+  # The llm-rubric judge is pinned to the same Agent SDK provider so it also
+  # authenticates through the local Claude Code session — the whole suite runs on a
+  # subscription with no API key. Left unpinned, promptfoo picks a judge from
+  # whatever key happens to be in the environment, which is neither deterministic
+  # nor free. `max_turns: 2` keeps the judge a grader rather than an agent.
+  options:
+    provider:
+      id: anthropic:claude-agent-sdk
+      config:
+        apiKeyRequired: false
+        model: "{{ env.PROMPTFOO_MODEL | default('sonnet', true) }}"
+        # A grader needs no tools, and omitting these does not give it none: with
+        # no working_dir the provider still ships the full default tool set.
+        tools: []
+        setting_sources: []
+        strict_mcp_config: true
+        max_turns: 2
+  # A case passes when its assertions average this or better. The threshold is
+  # per-case, so a weak case cannot hide behind strong siblings.
+  threshold: 0.8
+  # Do not add a harness self-check as an assertion here. Isolation is a *validity*
+  # question, not a graded one, and an assertion that returns true on every clean run
+  # is a full-weight free point in every result, which masks the ablation. `weight: 0`
+  # is not the escape hatch it looks like either: promptfoo reports a zero-weight
+  # assertion as passing no matter what the function returns. Isolation is held by the
+  # provider keys above; see the README section on it.
+
+# Grouped by what this harness can actually observe, because that decides what a case is
+# allowed to assert. Read evals/README.md before adding a file to either group.
+tests:
+  # Graded on the artifact. These skills produce a document, and the document is in the
+  # response, so a case can assert its filename convention, its sections, and its content.
+  - file://tests/brainstorm.yaml
+  - file://tests/plan.yaml
+  - file://tests/review.yaml
+  - file://tests/debrief.yaml
+  - file://tests/refine-approach.yaml
+  - file://tests/plan-technical-review.yaml
+  - file://tests/elements-of-style.yaml
+
+  # Graded on the decisions narrated. These skills do their real work by mutating files,
+  # dispatching agents, or calling another plugin, and none of that happens here — there is
+  # no Write, Edit or Task tool and no companion plugin installed. A case in this group must
+  # not assert that a file changed or an agent ran.
+  - file://tests/build.yaml
+  - file://tests/hotfix.yaml
+  - file://tests/create.yaml
+
+  # Graded through the slash-command path. Both declare `disable-model-invocation: true`, so
+  # the model cannot route to them and `skill-used` can never be satisfied — that is the flag
+  # working as intended, not a coverage hole. Their prompts start with a literal `/create-pr`
+  # or `/rebase`, which the provider expands, and `not-icontains 'Unknown command'` replaces
+  # `skill-used` as the proof that the skill loaded. Column separation here is the sharpest in
+  # the suite: the sealed column cannot parse the input at all, so its entire output is
+  # `Unknown command: /create-pr`.
+  - file://tests/create-pr.yaml
+  - file://tests/rebase.yaml

@@ -1,0 +1,146 @@
+# Behavior cases for the plan-technical-review skill.
+#
+# The provider has no Task tool, so the three plan-quality agents never dispatch. These
+# cases grade which agents the skill names, how it says it will run them, and how it
+# resolves a scope-splitting recommendation.
+#
+# The boundary with /plan matters here and is asserted: /plan runs this same review inline
+# on the plans it writes, so this skill is for plans it did not write. A prompt handing over
+# a teammate's plan must not route to /plan.
+
+- description: plan-technical-review-names-the-three-plan-quality-agents
+  vars:
+    prompt: >-
+      A teammate wrote this plan and I want it checked before we start. Walk me through the
+      review you would run on it and name every agent it dispatches. Do not ask me any
+      questions.
+
+      # Add multi-currency support
+
+      ## Overview
+
+      Store amounts with a currency, convert at read time against a rates provider.
+
+      ## Tasks
+
+      - [ ] Add a `currency` column and backfill it
+      - [ ] Add an exchange-rate client and cache
+      - [ ] Convert in the balance calculation
+      - [ ] Add currency to the three endpoints that return amounts
+      - [ ] Add a currency selector to the web UI
+
+      ## Success Criteria
+
+      - Amounts round-trip in their original currency | verify: npm test -- currency
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan-technical-review'
+    - type: regex
+      value: 'code-simplicity-review-agent'
+    - type: regex
+      value: 'vgv-review-agent'
+    - type: regex
+      value: 'plan-splitting-agent'
+    - type: llm-rubric
+      value: >-
+        The three agents run concurrently rather than one after another.
+
+- description: plan-technical-review-resolves-an-oversized-plan
+  vars:
+    prompt: >-
+      Review this plan for me — I did not write it, it came from another team. Do not ask me
+      any questions; tell me what you would change and what you would do about its size.
+
+      # Rebuild the reporting stack
+
+      ## Overview
+
+      Replace the reporting module end to end: new schema, new aggregation pipeline, new
+      caching layer, new API surface, new dashboard, and a migration off the old tables.
+
+      ## Tasks
+
+      - [ ] New `report_facts` schema plus a backfill of 40 million rows
+      - [ ] Aggregation pipeline in `src/reports/pipeline.js`
+      - [ ] Redis caching layer in `src/reports/cache.js`
+      - [ ] Six new endpoints under `src/routes/reports.js`
+      - [ ] New dashboard in `web/src/reports/`
+      - [ ] Dual-write, then cut over, then drop the old tables
+      - [ ] Tests throughout
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan-technical-review'
+    - type: llm-rubric
+      value: >-
+        The response says this plan is too large for one reviewable pull request and offers a
+        concrete way to break it up — either phases inside one plan or several separate plans.
+        Reviewing the content and saying nothing about its size fails.
+    - type: llm-rubric
+      value: >-
+        Whatever split it proposes leaves the project working after each piece, rather than
+        cutting the work at a point that leaves the old reporting stack half-removed.
+
+# The boundary case. /plan reviews the plans it creates, so this skill exists for the ones
+# it did not — and a prompt that hands over an existing plan must not restart planning.
+- description: plan-technical-review-does-not-rewrite-the-plan-from-scratch
+  vars:
+    prompt: >-
+      Here's a plan a contractor handed us. Is it ready? Do not ask me any questions.
+
+      # Add soft deletes to transactions
+
+      ## Overview
+
+      Instead of deleting a transaction row, mark it deleted so it can be restored.
+
+      ## Tasks
+
+      - [ ] Add a `deleted_at` timestamp column, nullable
+      - [ ] Filter `deleted_at IS NULL` in every read path
+      - [ ] Change DELETE /transactions/:id to set the timestamp
+      - [ ] Add a restore endpoint
+      - [ ] Add a nightly purge of rows deleted more than 90 days ago
+      - [ ] Tests for each path
+
+      ## Success Criteria
+
+      - A deleted transaction disappears from reads and can be restored | verify: npm test -- soft-delete
+      - Rows past 90 days are purged | verify: npm test -- purge
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan-technical-review'
+    - type: llm-rubric
+      value: >-
+        The response reviews the plan it was given and improves it. It does not discard it and
+        write a fresh plan of its own, and it does not send the user back to brainstorming or
+        re-planning the feature.
+    - type: llm-rubric
+      value: >-
+        The response flags the read-path filtering as the risky part — every existing query
+        has to be found and changed, and one missed query leaks deleted rows — rather than
+        treating all six tasks as equally routine.
+
+# Negative control.
+- description: plan-technical-review-stays-out-of-code-review
+  vars:
+    prompt: >-
+      Is this function correct? Answer yes or no and say why in one sentence.
+
+      ```js
+      function isEven(n) {
+        return n % 2 === 0;
+      }
+      ```
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:plan-technical-review'
+    - type: not-regex
+      value: 'plan-splitting-agent|docs/plan|Implementation Phases|too large for one'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "is the verdict right" is unanswerable from the output alone.
+    - type: icontains
+      value: 'yes'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the verdict is correct. It must not
+        review a plan, assess scope for splitting, or propose phases.

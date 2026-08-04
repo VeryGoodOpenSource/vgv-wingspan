@@ -1,0 +1,138 @@
+# Behavior cases for the elements-of-style skill.
+#
+# This is the only skill here with `user-invocable: false`, so it has no slash command. It
+# is still model-invocable, so `skill-used` works exactly as it does elsewhere.
+#
+# It is also the hardest skill in the suite to make discriminate, and the first version of
+# this file did not. Measured, two of three cases passed in BOTH columns — sealed scored 0.90
+# and 0.80 — because "cut the filler and use active voice" is something the bare model
+# already does when asked to edit for style. Those assertions were measuring Claude.
+#
+# What discriminates is not the principle, it is the skill's specific substitution table.
+# A bare model paraphrases a wordy phrase into a shorter one of its own choosing; the skill
+# collapses it to the exact single word the table names — "did not have confidence in"
+# becomes "distrusted", not "doubted" or "was unsure about". Each case below now requires
+# the named substitution rather than any improvement, and grades the untouched-meaning
+# requirement separately so brevity alone cannot pass.
+
+- description: elements-of-style-applies-the-named-substitutions
+  vars:
+    # Every phrase here has one prescribed replacement in the skill's own table: "did not
+    # remember" to forgot, "did not have confidence in" to distrusted, "in a hasty manner"
+    # to hastily, "the question as to whether" to whether, "he is a man who" to he.
+    prompt: >-
+      Edit this for style and return only the rewritten paragraph.
+
+      "The reviewer did not remember the earlier incident, and he did not have confidence in
+      the rollback plan. He is a man who prefers to act, so he approved the deploy in a hasty
+      manner. The question as to whether this was wise is one that the postmortem addressed."
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:elements-of-style'
+    # The substitutions, not merely the absence of the originals: a paraphrase that drops the
+    # filler without landing on the prescribed word satisfies the negation but not these.
+    - type: icontains
+      value: 'forgot'
+    - type: icontains
+      value: 'distrusted'
+    - type: icontains
+      value: 'hastily'
+    - type: not-icontains
+      value: 'did not remember'
+    - type: not-icontains
+      value: 'did not have confidence'
+    - type: not-icontains
+      value: 'in a hasty manner'
+    - type: not-icontains
+      value: 'the question as to whether'
+    - type: not-icontains
+      value: 'is a man who'
+    - type: llm-rubric
+      value: >-
+        The rewrite still says all four things the original said: the reviewer had forgotten
+        the earlier incident, distrusted the rollback plan, approved the deploy quickly, and a
+        postmortem later examined whether that was wise. Dropping any of them to achieve
+        brevity fails.
+
+- description: elements-of-style-turns-hedged-negatives-positive
+  vars:
+    # The skill's rule is "put statements in positive form", and its table gives the shape:
+    # a negated verb collapses into the positive verb that means the same thing. A bare model
+    # reliably keeps the negation and just tightens around it, which is what makes this the
+    # cleanest discriminator in the file.
+    prompt: >-
+      Edit these sentences for style and return only the rewritten sentences.
+
+      "The on-call engineer was not often on time to incidents. She did not pay any attention
+      to the dashboard. The team did not think the alert was important. The runbook was not
+      accurate."
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:elements-of-style'
+    - type: not-icontains
+      value: 'not often on time'
+    - type: not-icontains
+      value: 'did not pay any attention'
+    - type: not-icontains
+      value: 'did not think'
+    - type: llm-rubric
+      value: >-
+        Every sentence is stated in positive form, saying what was the case rather than what
+        was not: the engineer was usually late, she ignored the dashboard, the team dismissed
+        the alert, the runbook was wrong or misleading. A sentence still built on "was not" or
+        "did not" fails, even if it is shorter than the original.
+    - type: llm-rubric
+      value: >-
+        The rewrite does not add facts the original lacked — no cause, no timing, no
+        consequence that was not already there.
+
+- description: elements-of-style-puts-parallel-ideas-in-parallel-form
+  vars:
+    prompt: >-
+      Edit this for style and return only the rewritten sentences.
+
+      "Formerly, deploys were done by hand, while now we have a pipeline that does it. The
+      first release was tested by the QA team, the second one had automated tests run against
+      it, and for the third release it was decided that both would be used."
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:elements-of-style'
+    - type: not-icontains
+      value: 'it was decided that'
+    - type: not-icontains
+      value: 'while now'
+    - type: llm-rubric
+      value: >-
+        The three releases are described in the same grammatical shape as each other — same
+        voice, same construction — rather than one passive, one active, and one impersonal.
+        Merely shortening them while keeping three different shapes fails.
+    - type: llm-rubric
+      value: >-
+        Each sentence names who or what acted as its subject, rather than putting the action
+        first and the actor in a trailing "by" phrase or omitting the actor entirely.
+
+# Negative control. The skill applies to prose; a request for code is not its job.
+- description: elements-of-style-stays-out-of-code
+  vars:
+    prompt: >-
+      Rewrite this loop to use `reduce` and return only the code.
+
+      ```js
+      let total = 0;
+      for (const entry of entries) {
+        total = total + entry.amount;
+      }
+      ```
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:elements-of-style'
+    - type: not-regex
+      value: 'active voice|needless words|passive|Strunk'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "is this the right refactor" is unanswerable from the output alone.
+    - type: regex
+      value: '\.reduce\('
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the code is correct. It must not
+        discuss prose style, voice, or word choice.

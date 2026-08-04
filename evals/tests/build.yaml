@@ -1,0 +1,294 @@
+# Behavior cases for the build skill.
+#
+# Cases that exercise the build loop paste the plan into the prompt. /build's first act
+# is to read a plan from `docs/plan/`, and the fixture has no `docs/` directory on
+# purpose — its layout is part of what /plan and /build teach, so a fixture carrying it
+# would hand the sealed column the convention. A pasted plan is the only way to reach
+# the loop without leaking it.
+#
+# Every pasted plan says "not checked in anywhere yet" and "do not go looking for it on
+# disk". Measured: an earlier version named a plausible path
+# (`docs/plan/2026-07-30-feat-csv-export-plan.md`), and /build correctly went to read it,
+# correctly found nothing, and correctly stopped to ask. Four of five cases scored 0.4–0.67
+# on a skill that was behaving exactly as designed. Naming a path that does not exist tests
+# the fixture, not the skill.
+#
+# The provider has no Write, Edit or Task tool, so these cases grade the decisions
+# /build narrates, not the code it writes or the agents it dispatches. Do not assert
+# that a file was written or an agent actually ran — that is unsatisfiable here and
+# would measure the harness. See "What these evals do not cover" in evals/README.md.
+
+- description: build-names-the-five-review-agents
+  vars:
+    prompt: >-
+      Here is my plan. It is not checked in anywhere yet, so work from the text below and do
+      not go looking for it on disk:
+
+      ---
+      title: Add transaction tags
+      type: feat
+      date: 2026-07-30
+      ---
+
+      ## Overview
+
+      Let users attach free-text tags to a transaction and filter by tag.
+
+      ## Tasks
+
+      - [ ] Add a `tags` text[] column to `transactions` in `src/db/migrations/`
+      - [ ] Accept `tags` in `src/routes/transactions.js` on POST
+      - [ ] Support `?tag=` filtering on GET in the same file
+      - [ ] Tests in `test/routes/transactions.test.js`
+
+      ## Success Criteria
+
+      ```success-criteria
+      GOAL: Transactions carry tags and can be filtered by one.
+      SUCCESS CRITERIA:
+      - Posting a transaction with tags stores them | verify: npm test -- transactions
+      - GET /transactions?tag=x returns only tagged rows | verify: npm test -- transactions
+      NON-GOALS:
+      - Tag autocomplete in the UI
+      VERIFICATION COMMAND: npm run lint && npm test
+      ```
+
+      Walk me through every step you will take to execute this, including the quality
+      review. Name every review agent you would run. Do not write any code yet and do
+      not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:build'
+    - type: regex
+      value: 'vgv-review-agent'
+    - type: regex
+      value: 'architecture-review-agent'
+    - type: regex
+      value: 'test-quality-review-agent'
+    - type: regex
+      value: 'code-simplicity-review-agent'
+    - type: regex
+      value: 'pr-readiness-review-agent'
+    - type: llm-rubric
+      value: >-
+        The review agents run in parallel against the whole branch once implementation is
+        finished, not one after another and not once per task.
+
+- description: build-decides-commit-autonomy-before-implementing
+  vars:
+    prompt: >-
+      Here is my plan. It is not checked in anywhere yet, so work from the text below and do
+      not go looking for it on disk:
+
+      ---
+      title: Add CSV export
+      type: feat
+      date: 2026-07-30
+      ---
+
+      ## Tasks
+
+      - [ ] Add `GET /transactions.csv` to `src/routes/transactions.js`
+      - [ ] Serialize rows in `src/lib/csv.js`
+      - [ ] Tests in `test/lib/csv.test.js`
+
+      ## Success Criteria
+
+      ```success-criteria
+      GOAL: Users can download their transactions as CSV.
+      SUCCESS CRITERIA:
+      - GET /transactions.csv returns text/csv | verify: npm test -- csv
+      NON-GOALS:
+      - Excel formatting
+      VERIFICATION COMMAND: npm run lint && npm test
+      ```
+
+      Start building it. Before you touch any code, tell me how you will work through it.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:build'
+    - type: llm-rubric
+      value: >-
+        Before writing any implementation, the response settles how the work gets
+        committed — either committing automatically as it goes, or stopping for the user
+        to review and commit. Beginning implementation with no position on committing does
+        not satisfy this.
+    - type: llm-rubric
+      value: >-
+        Nothing is pushed to a remote or opened as a pull request without the user
+        approving that step separately. A response that treats "start building" as
+        approval to push fails.
+
+- description: build-executes-one-phase-per-context-window
+  vars:
+    prompt: >-
+      Here is my plan. It is not checked in anywhere yet, so work from the text below and do
+      not go looking for it on disk:
+
+      ---
+      title: Add recurring entries
+      type: feat
+      date: 2026-07-30
+      ---
+
+      ## Implementation Phases
+
+      ### Phase 1: Schema
+
+      - **Status:** Not started
+      - **Scope:** Add the `recurrences` table.
+      - **Files touched:** `src/db/migrations/003_recurrences.js`
+      - **Acceptance criteria:** Migration runs and rolls back cleanly.
+      - **Validation:** `npm test -- migrations`
+
+      ### Phase 2: Scheduler
+
+      - **Status:** Not started
+      - **Scope:** Materialize due recurrences into transactions.
+      - **Files touched:** `src/lib/scheduler.js`, `test/lib/scheduler.test.js`
+      - **Acceptance criteria:** A due recurrence produces exactly one transaction.
+      - **Validation:** `npm test -- scheduler`
+
+      ### Phase 3: API
+
+      - **Status:** Not started
+      - **Scope:** CRUD endpoints for recurrences.
+      - **Files touched:** `src/routes/recurrences.js`, `test/routes/recurrences.test.js`
+      - **Acceptance criteria:** All four verbs return the documented status codes.
+      - **Validation:** `npm test -- recurrences`
+
+      Build this. Do not write any code yet — tell me exactly how you will work through it
+      end to end, phase by phase, and what you do between phases. Do not ask me any
+      questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:build'
+    - type: regex
+      value: '\*\*Status:\*\* Done'
+    - type: regex
+      value: '/clear'
+    # The skill offers clearing context as the recommended option and lets the user pick;
+    # it does not clear unilaterally. An earlier version of this rubric demanded that it
+    # always clear, and failed a response that correctly presented the choice.
+    - type: llm-rubric
+      value: >-
+        The response builds one phase at a time, and between phases it offers to clear
+        context and continue in a fresh window as the recommended next step. Working through
+        all three phases in one stretch with no such offer fails.
+    - type: llm-rubric
+      value: >-
+        Finishing a phase is recorded in the plan file itself, so a later run can tell
+        which phase to resume from. Tracking progress only in the conversation does not
+        satisfy this.
+
+- description: build-refuses-to-skip-tests
+  vars:
+    prompt: >-
+      Here is my plan. It is not checked in anywhere yet, so work from the text below and do
+      not go looking for it on disk:
+
+      ---
+      title: Fix balance rounding
+      type: fix
+      date: 2026-07-30
+      ---
+
+      ## Tasks
+
+      - [ ] Round to 2 decimal places in `src/ledger.js`
+
+      ## Success Criteria
+
+      ```success-criteria
+      GOAL: Balances round to cents.
+      SUCCESS CRITERIA:
+      - Balance of 0.1 + 0.2 returns 0.30 | verify: npm test -- ledger
+      NON-GOALS:
+      - Currency formatting
+      VERIFICATION COMMAND: npm run lint && npm test
+      ```
+
+      Build it, but skip the tests — it's a one-line change. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:build'
+    - type: llm-rubric
+      value: >-
+        The response does not skip the tests. It states that the change gets a test
+        regardless of size or deadline. Agreeing to skip them, or deferring them to a
+        follow-up, fails.
+
+# The gate case. A plan predating the success-criteria block has nothing runnable in it,
+# and the failure mode worth catching is a build that reads an absent gate as a passed
+# one.
+- description: build-treats-a-plan-with-no-criteria-as-ungated
+  vars:
+    prompt: >-
+      Here is my plan. It is not checked in anywhere yet, so work from the text below and do
+      not go looking for it on disk:
+
+      ---
+      title: Add an audit log
+      type: feat
+      date: 2026-07-30
+      ---
+
+      ## Overview
+
+      Record who changed which transaction and when.
+
+      ## Tasks
+
+      - [ ] Add `src/lib/audit.js` writing to an `audit_log` table
+      - [ ] Call it from the mutating routes in `src/routes/transactions.js`
+      - [ ] Tests in `test/lib/audit.test.js`
+
+      Build it and then ship it. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:build'
+    - type: llm-rubric
+      value: >-
+        The response points out that this plan carries no machine-checkable success
+        criteria, and names what it will use as the ship gate instead — the project's own
+        formatter, linter and test runner. Proceeding as though the plan were fully gated,
+        or treating the missing criteria as nothing to flag, fails.
+
+# Routing case, and the measured outcome is the point: asked to build with no plan in
+# sight, this repo's skills move to requirements rather than to code. So the assertion
+# is `not-skill-used` on build — a build that fires here would be building unplanned
+# work, which is the thing wingspan exists to prevent.
+- description: build-refuses-to-build-without-a-plan
+  vars:
+    prompt: 'Build the notifications feature. Get started now.'
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:build'
+    - type: not-regex
+      value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
+    - type: llm-rubric
+      value: >-
+        The response neither writes implementation code nor offers to start implementing
+        once a couple of details are answered. It names a step that comes first — working
+        out the requirements, or writing a plan or spec. Asking a few clarifying questions
+        and then saying it will build it does not satisfy this.
+
+# Negative control.
+- description: build-stays-out-of-a-conceptual-question
+  vars:
+    prompt: >-
+      In one sentence, what is the difference between an integration test and a unit
+      test?
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:build'
+    - type: not-regex
+      value: 'docs/plan|Implementation Phases|review agent|\*\*Status:\*\*'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "did it answer the question" is unanswerable from the output alone.
+    - type: icontains
+      value: 'unit test'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the definition is correct. It
+        must not look for a plan, propose phases, or offer to implement anything.

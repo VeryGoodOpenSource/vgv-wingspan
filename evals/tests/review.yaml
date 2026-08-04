@@ -1,0 +1,180 @@
+# Behavior cases for the review skill.
+#
+# The provider has no Task tool, so the four review agents never actually run. These
+# cases grade the report contract — stable ids, rule ids, the report path, which agents
+# belong in the default set — not the findings themselves. A case asserting that a
+# specific bug was caught would measure the model's code reading, which the sealed
+# column does about as well.
+
+# Known-failing on routing, six runs out of six, and the cause is not the wording. Naming a
+# path in the ask and asking for "the review report" — copied from
+# `review-derives-the-report-path-from-the-scope`, which routes on every run — changed
+# nothing. What separates them is what is being asked *for*: that case asks where the report
+# goes, a question about the convention, and this one asks for a pasted snippet to be
+# reviewed, which the model does natively without reaching for a skill.
+#
+# Left in place deliberately. Its content assertions are the only check on the report
+# contract — `FINDING-NN` ids, `<category>/<rule>` ids, severity counts first — so the fix
+# made to that contract in `review`, `build` and `hotfix` is still unverified, and this case
+# is where it gets verified once routing is understood.
+- description: review-numbers-findings-with-stable-ids
+  vars:
+    prompt: >-
+      Review src/lib/balance.js for me and give me the review report. Do not ask me any
+      questions. Here is the file — it is not in your working directory, so work from the
+      paste.
+
+      ```js
+      function balance(entries) {
+        let total = 0;
+        for (var i = 0; i <= entries.length; i++) {
+          total = total + entries[i].amount;
+        }
+        return total;
+      }
+      module.exports = { balance };
+      ```
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:review'
+    - type: regex
+      value: 'FINDING-0\d'
+    # Every finding also carries a `<category>/<rule>` id so a whole class can be acted
+    # on at once. A bare model numbers findings 1, 2, 3 and never produces rule ids.
+    - type: regex
+      value: '`[a-z][a-z-]*/[a-z][a-z-]*`'
+    - type: llm-rubric
+      value: >-
+        Findings are ordered by severity, and each one carries both a FINDING-NN id and a
+        second id naming the rule or category it belongs to. Findings numbered without a
+        rule id do not satisfy this.
+    - type: llm-rubric
+      value: >-
+        The report states how many findings there are at each severity before listing
+        them.
+
+# The slug is derived mechanically: take the first path, drop the extension, replace `/`
+# with `-`. `src/ledger/balance.js` must become `src-ledger-balance`. A bare model has
+# no reason to land on that exact string, which makes this the cleanest discriminator
+# in the file.
+- description: review-derives-the-report-path-from-the-scope
+  vars:
+    prompt: >-
+      Review src/ledger/balance.js for me. Do not ask me any questions. Here is the
+      file, and tell me the exact path you would write the report to.
+
+      ```js
+      function balance(entries) {
+        return entries.reduce((total, e) => total + e.amount, 0);
+      }
+      module.exports = { balance };
+      ```
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:review'
+    - type: regex
+      value: 'docs/code-review/src-ledger-balance/review\.md'
+
+# The default set is four agents. pr-readiness belongs to /build's five, not here, so
+# naming it is a real error rather than harmless extra detail.
+- description: review-runs-the-four-default-agents
+  vars:
+    # Asks what it *would* dispatch. With no Task tool, "name every agent you run" got an
+    # honest "zero agents ran, the tool is unavailable" and failed every name assertion.
+    prompt: >-
+      I'm about to merge this branch. Walk me through the review you would run on it before
+      you run anything, and name every agent it dispatches. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:review'
+    - type: regex
+      value: 'vgv-review-agent'
+    - type: regex
+      value: 'architecture-review-agent'
+    - type: regex
+      value: 'test-quality-review-agent'
+    - type: regex
+      value: 'code-simplicity-review-agent'
+    - type: not-regex
+      value: 'pr-readiness-review-agent'
+    - type: llm-rubric
+      value: >-
+        The agents run in parallel rather than one after another.
+
+- description: review-establishes-scope-before-reviewing
+  vars:
+    prompt: 'Review my code.'
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:review'
+    - type: llm-rubric
+      value: >-
+        The response works out what to review before reviewing anything — the branch's
+        changed files, specific paths, or the whole project — and where there is no branch
+        diff to go on it asks the user rather than picking for them. Reviewing the entire
+        project without establishing that scope first fails.
+
+# "fix everything you find" routed this to /hotfix on a measured run, which is defensible
+# — it reads as an incident. Asking what it *would* change keeps the case a review while
+# still testing the scope boundary.
+#
+# Also known-failing on routing, same cause as the case above: both rubrics pass whenever
+# the skill activates, and only `skill-used` fails, which caps the case at 0.67 against the
+# 0.8 threshold.
+- description: review-keeps-fixes-inside-the-reviewed-scope
+  vars:
+    prompt: >-
+      Review src/lib/csv.js and give me the review report, covering everything you would
+      change. Do not ask me any questions. Here is the file — it is not in your working
+      directory, so work from the paste.
+
+      ```js
+      const { escapeField } = require('./strings');
+
+      function toCsv(rows) {
+        let out = '';
+        for (const row of rows) {
+          out += row.id + ',' + escapeField(row.memo) + ',' + row.amount + '\n';
+        }
+        return out;
+      }
+      module.exports = { toCsv };
+      ```
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:review'
+    - type: llm-rubric
+      value: >-
+        Every change the response proposes stays inside the one file it was asked to review.
+        Problems it notices elsewhere — in an imported module, for instance — are reported as
+        out of scope rather than folded into the same change. Proposing edits to another file
+        as part of this work fails.
+    - type: llm-rubric
+      value: >-
+        The response presents its findings as a numbered list the user can act on
+        selectively, rather than only announcing that everything has been fixed.
+
+# Negative control.
+# The sentence to rewrite must not itself contain the vocabulary the rubric negates. An
+# earlier version asked about "a report containing three separate findings", and the judge
+# correctly failed the response for mentioning findings and a report — which the prompt had
+# put there.
+- description: review-stays-out-of-a-prose-edit
+  vars:
+    prompt: >-
+      Tighten this sentence and return only the rewritten sentence: "It is the case that the
+      invoice which is generated by the system is one that contains a total of three separate
+      line items."
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:review'
+    - type: not-regex
+      value: 'FINDING-\d|docs/code-review|review-agent|Critical|Severity'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "is this tighter" is unanswerable from the output alone.
+    - type: icontains
+      value: 'three line items'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the rewrite is good. It must not
+        produce a code review, findings, severities, or a report.

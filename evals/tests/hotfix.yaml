@@ -1,0 +1,203 @@
+# Behavior cases for the hotfix skill.
+#
+# Two of hotfix's rules are the kind a bare model gets wrong for defensible reasons,
+# which makes them the strongest cases here: the branch prefix is `hotfix/` and not
+# `fix/`, and the review set is two agents rather than the four /review runs or the five
+# /build runs.
+#
+# Every prompt says the code is pasted or described in full and is not in the working
+# directory. /hotfix Phase 1 dispatches codebase-review-agent to locate the bug, and
+# against the empty fixture that correctly returns nothing and the skill correctly stops
+# to ask. Measured: four of six cases scored 0.33–0.40 that way, on a skill doing exactly
+# what it should. The alternative — putting a buggy `src/` in the fixture — would leak the
+# bug to the sealed column, so closing it off in the prompt is the only option.
+
+- description: hotfix-uses-the-hotfix-branch-prefix
+  vars:
+    prompt: >-
+      Production is down. `GET /balance` throws on every request. The offending function
+      is pasted below in full — it is not in your working directory, so work from the paste
+      and do not go looking for it on disk:
+
+      ```js
+      function balance(entries) {
+        let total = 0;
+        for (var i = 0; i <= entries.length; i++) {
+          total = total + entries[i].amount;
+        }
+        return total;
+      }
+      ```
+
+      Fix it right now. Walk me through every step, including the exact branch name you
+      would create. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: regex
+      value: 'hotfix/[a-z0-9][a-z0-9-]*'
+    # Negated on the checkout, not on the bare string: `fix:` is the correct commit
+    # prefix and `fix/` appears inside `hotfix/`, so only the branch-creation form is
+    # wrong here.
+    - type: not-regex
+      value: 'checkout -b fix/'
+    - type: llm-rubric
+      value: >-
+        The branch it creates is named with a hotfix prefix rather than a plain fix
+        prefix.
+
+- description: hotfix-runs-the-reduced-review-set
+  vars:
+    prompt: >-
+      We have a live bug: `POST /transactions` accepts a negative amount and corrupts the
+      balance. The route handler has no validation at all — it reads `req.body.amount` and
+      inserts it straight into the transactions table. That description is the whole story;
+      the code is not in your working directory, so work from the description and do not go
+      looking for files. Patch it and tell me exactly which review agents you run on the
+      fix, by name. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: regex
+      value: 'vgv-review-agent'
+    - type: regex
+      value: 'test-quality-review-agent'
+    - type: not-regex
+      value: 'architecture-review-agent|code-simplicity-review-agent|pr-readiness-review-agent'
+    - type: llm-rubric
+      value: >-
+        The response uses a deliberately reduced review set for speed and says so, rather
+        than presenting it as the full review.
+
+- description: hotfix-escalates-a-wide-blast-radius
+  vars:
+    prompt: >-
+      Live bug: amounts are stored as floats, so balances drift by a cent on large
+      accounts. Fixing it properly means a Postgres migration from `numeric(12,2)` to
+      integer cents, a backfill of 40 million rows, changes in the four route handlers
+      that read or write amounts, the balance calculator, the CSV exporter, the two
+      report queries, and the web UI's formatter. That inventory is the whole story; none of
+      that code is in your working directory, so size the change from the inventory rather
+      than from what you can see, and do not go looking for files. Hotfix this now — we're
+      bleeding. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: icontains
+      value: '/plan'
+    - type: llm-rubric
+      value: >-
+        The response says this change is too wide for a hotfix — too many files, more than
+        one layer, and a data migration — and steers the work to the planned path instead
+        of patching straight through. Proceeding with the full migration as a hotfix fails.
+
+- description: hotfix-requires-a-regression-test
+  vars:
+    prompt: >-
+      Live bug, and there's no time for tests. `parseAmount` returns NaN on an empty string
+      and we're writing NaN to the database. The whole function is pasted below — it is not
+      in your working directory, so work from the paste and do not go looking for it:
+
+      ```js
+      function parseAmount(input) {
+        return Number(input);
+      }
+      ```
+
+      Just patch it and get it out. Show me the fix and anything else you would put in the
+      same change. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: llm-rubric
+      value: >-
+        The response does not skip the test. It adds one, and says the test must fail
+        without the fix so it proves the bug is gone. Agreeing to ship untested, or
+        promising a test in a follow-up, fails.
+
+- description: hotfix-writes-a-cherry-pick-friendly-commit
+  vars:
+    prompt: >-
+      Production incident: `GET /transactions` is leaking rows across accounts. The route
+      handler builds `SELECT * FROM transactions` with no `WHERE account_id = $1` clause. That description is the whole story; the code is not in your working
+      directory, so work from the description and do not go looking for files. Patch it,
+      then give me the exact commit message you would use. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: regex
+      value: 'fix: '
+    - type: regex
+      value: 'Bug:'
+    - type: llm-rubric
+      value: >-
+        The commit message explains what caused the bug, not only what changed, and it
+        references the original bug report or description.
+    # Does not also demand the test be named. The prompt asks for a commit message, and
+    # `hotfix-requires-a-regression-test` covers the test on its own.
+    - type: llm-rubric
+      value: >-
+        The response produces exactly one commit, scoped to this fix, and says it is kept
+        that way deliberately so it can be cherry-picked onto another branch. Several
+        commits, or one commit sweeping in unrelated changes, fails.
+
+# `// TODO(hotfix): ...` is the exact marker the skill prescribes for a tradeoff it
+# knowingly accepts. A bare model leaves a plain TODO or no marker at all.
+- description: hotfix-marks-an-accepted-tradeoff-with-a-todo
+  vars:
+    prompt: >-
+      Live P0: our webhook sender retries forever on a 500 and has saturated the worker
+      pool, so nothing else is processing. The real fix is a proper backoff queue, but I
+      need the bleeding stopped now — capping retries at 3 is fine even though it means
+      some webhooks get silently dropped, which is a P2 we'll live with until next
+      sprint. Here is the sender — it is not in your working directory, so work from the
+      paste and do not go looking for it:
+
+      ```js
+      async function send(hook, payload) {
+        while (true) {
+          const res = await fetch(hook.url, { method: 'POST', body: JSON.stringify(payload) });
+          if (res.ok) return;
+          await sleep(1000);
+        }
+      }
+      ```
+
+      Patch it. Do not ask me any questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: regex
+      value: 'TODO\(hotfix\)'
+    # Split from one compound criterion. Demanding both the in-code marker and the
+    # PR-description note in a single rubric scored a response doing the first but not the
+    # second at 0, which sank the case at exactly 0.80 against the 0.8 threshold.
+    - type: llm-rubric
+      value: >-
+        The response records the dropped-webhook consequence as a known limitation left in
+        the code. Applying the cap with no trace of the tradeoff fails.
+    - type: llm-rubric
+      value: >-
+        The response says the tradeoff also belongs in the pull request description, not
+        only in a code comment.
+
+# Negative control.
+- description: hotfix-stays-out-of-a-feature-request
+  vars:
+    prompt: >-
+      Write a plain JavaScript function `slugify(title)` that lowercases a string and
+      replaces every run of non-alphanumeric characters with a single hyphen. Return only
+      the function.
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:hotfix'
+    - type: not-regex
+      value: 'hotfix/|TODO\(hotfix\)|blast radius|root cause'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "does this slugify" is unanswerable from the output alone.
+    - type: regex
+      value: 'function slugify|slugify = |const slugify'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the function is correct. It must
+        not treat this as an incident, propose a branch, or discuss a root cause.

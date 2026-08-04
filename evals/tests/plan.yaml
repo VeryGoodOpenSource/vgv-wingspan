@@ -1,0 +1,143 @@
+# Behavior cases for the plan skill.
+#
+# Every prompt names the stack, the test command and the linter. /plan writes
+# `verify:` commands from the project's own toolchain, and the fixture deliberately
+# carries no manifest, so a prompt that withholds the toolchain gets a plan full of
+# placeholders and the success-criteria assertion fails for a reason unrelated to the
+# skill.
+#
+# `success-criteria-block.js` is the one custom assertion this suite owns. It proves
+# every criterion carries a `verify:`, which a regex cannot: `verify:` appearing once
+# says nothing about the other four criteria, and one unprovable criterion is enough
+# for /build to ship on a gate that proves nothing.
+
+- description: plan-emits-machine-checkable-success-criteria
+  vars:
+    prompt: >-
+      Write the implementation plan for adding a per-API-key rate limit of 100 requests
+      per minute to our Express service. Reject over-limit requests with HTTP 429.
+      Counters live in Redis, which we already run. Tests are Jest via `npm test`; the
+      linter is `npm run lint`. Do not ask me any questions and do not write the
+      implementation — state your assumptions and give me the full plan document now,
+      including the exact filename you would save it under.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan'
+    - type: javascript
+      value: file://assertions/success-criteria-block.js
+    - type: regex
+      value: 'VERIFICATION COMMAND:'
+    # The date prefix, the conventional-commits type segment and the `-plan.md` suffix
+    # are all skill knowledge. A bare model that invents a filename gets none of them.
+    - type: regex
+      value: 'docs/plan/\d{4}-\d{2}-\d{2}-(feat|fix|refactor)-[a-z0-9-]+-plan\.md'
+
+- description: plan-rewrites-vacuous-success-criteria
+  vars:
+    prompt: >-
+      Plan the work to add pagination to GET /transactions on our Express service, using
+      `limit` and `offset` query parameters. Tests are Jest via `npm test`; the linter is
+      `npm run lint`. My acceptance criteria are: the code should be clean, pagination
+      should just work, and performance should be good. Do not ask me any questions —
+      give me the plan document now.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan'
+    - type: javascript
+      value: file://assertions/success-criteria-block.js
+    - type: llm-rubric
+      value: >-
+        The response does not carry "the code should be clean", "pagination should just
+        work", or "performance should be good" through as success criteria. It says
+        plainly that criteria like these cannot be proven and states what it replaced
+        them with. Silently swapping in better criteria without telling the user does not
+        satisfy this; neither does keeping any of the three.
+
+- description: plan-phases-large-work-for-one-context-window
+  vars:
+    prompt: >-
+      Plan multi-currency support for the Ledger Service. It needs a currency column and
+      a backfill migration on the transactions table, an exchange-rate client against an
+      external provider, a rates cache, conversion in the balance calculation, currency
+      on the three API endpoints that return amounts, and a currency selector in the web
+      UI. Express plus Postgres, tests are Jest via `npm test`, linter is `npm run lint`.
+      Do not ask me any questions and do not write the implementation — give me the plan
+      document now.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan'
+    - type: regex
+      value: '## Implementation Phases'
+    - type: regex
+      value: '\*\*Status:\*\* Not started'
+    # JS regex has no inline `(?i)` flag — promptfoo compiles these with `new RegExp`,
+    # so an inline flag matches the literal characters and silently never fires.
+    - type: regex
+      value: '[Ff]iles [Tt]ouched'
+    - type: llm-rubric
+      value: >-
+        Every phase carries its own scope, the files it touches, and something that
+        proves the phase is complete. A bare list of phase names does not satisfy this.
+    - type: llm-rubric
+      value: >-
+        The phases are ordered so the project still builds and its tests still pass after
+        each one, and each phase is small enough to commit on its own. A phase that
+        leaves the codebase broken until a later phase lands does not satisfy this.
+
+# An earlier version ended "Then go ahead and write it — it's small", and the model
+# reasonably routed that to /build and delivered the endpoint. Asking for the
+# implementation and then failing the response for implementing measures the prompt, not
+# the skill. The temptation is inherent in a three-line endpoint; it does not need
+# spelling out.
+- description: plan-declines-to-implement
+  vars:
+    prompt: >-
+      Plan the work to add a `GET /transactions/:id` endpoint to our Express service that
+      returns one transaction as JSON, or 404 when it does not exist. It's a small change.
+      Tests are Jest via `npm test`; the linter is `npm run lint`. Do not ask me any
+      questions.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan'
+    - type: not-regex
+      value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
+    - type: llm-rubric
+      value: >-
+        The response delivers a plan and stops short of implementing it, saying that
+        writing the code is a separate step. Naming files, describing the route handler's
+        behavior, or sketching pseudo-code is fine; handing over the working endpoint is
+        not.
+
+- description: plan-checks-for-an-existing-brainstorm-first
+  vars:
+    prompt: >-
+      Write the implementation plan for the CSV export feature we brainstormed earlier. You
+      should already have everything you need for it.
+  assert:
+    - type: skill-used
+      value: 'vgv-wingspan:plan'
+    - type: regex
+      value: 'docs/brainstorm'
+    - type: llm-rubric
+      value: >-
+        The response looks for an existing brainstorm document on disk before asking the
+        user what to plan. Asking the user to restate or paste the brainstorm as the
+        first move does not satisfy this.
+
+# Negative control.
+- description: plan-stays-out-of-a-factual-question
+  vars:
+    prompt: 'What does HTTP status 429 mean? Answer in one sentence.'
+  assert:
+    - type: not-skill-used
+      value: 'vgv-wingspan:plan'
+    - type: not-regex
+      value: 'docs/plan|SUCCESS CRITERIA|verify:|Implementation Phases'
+    # Task success is graded mechanically, not by the judge. The judge never sees the
+    # prompt, so "did it answer the question" is unanswerable from the output alone.
+    - type: icontains
+      value: 'too many requests'
+    - type: llm-rubric
+      value: >-
+        Judge only the text of the response, not whether the definition is correct. It
+        must not propose a plan, a document, success criteria, or implementation phases.
