@@ -19,8 +19,9 @@ Use **AskUserQuestion**: "Which findings should I file on the PR?"
 
 - **All** — every finding in the report.
 - **Critical + Important** — skip Suggestions.
-- **Pick specific** — present the findings as one or more multi-select lists (batches of up to
-  four, by `FINDING-NN` id + title) and keep only the checked ones.
+- **Pick specific** — present the findings as one or more multi-select lists (batched to the
+  question tool's option limit — four in Claude Code — by `FINDING-NN` id + title) and keep
+  only the checked ones.
 
 If the user picks none, stop.
 

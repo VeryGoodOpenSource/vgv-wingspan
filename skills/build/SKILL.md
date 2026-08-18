@@ -6,7 +6,7 @@ when_to_use: Use when user says "build this", "implement the plan", "start codin
 effort: high
 argument-hint: plan file path
 allowed-tools: Bash(rm -rf docs/reviews/)
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Execute an implementation plan
@@ -30,6 +30,8 @@ Build Progress:
 
 <plan_path>$ARGUMENTS</plan_path>
 
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
+
 ## Phase 0 — Load Plan
 
 ```bash
@@ -47,12 +49,12 @@ Do not proceed without a plan.
 
 **After loading the plan:** parse title, type, the `success-criteria` block, tasks, file paths, and the `## Implementation Phases` section if present.
 
-**Commit autonomy:** decide once how this build commits, and carry the choice through the whole run. Honor a saved preference if one exists (Claude memory or the user's personal settings); otherwise use **AskUserQuestion**:
+**Commit autonomy:** decide once how this build commits, and carry the choice through the whole run. Honor a saved preference if one exists (Claude memory or the user's personal settings); otherwise use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`):
 
 - **Auto-commit each phase (Recommended)**: commit automatically as each phase completes. Pushing and opening the PR still pause for approval (Phase 4).
 - **I'll commit myself**: build one phase, then stop so the user reviews and commits. Nothing is committed or pushed without the user.
 
-Offer to save the choice to Claude memory (a personal preference) so future builds skip this question. Save it as the user's own preference — never write it to the project's CLAUDE.md, since committing this is a per-developer choice, not a repo convention.
+Offer to save the choice to personal memory (e.g., Claude memory) so future builds skip this question — skip the offer on hosts with no memory feature. Save it as the user's own preference — never write it to the project's CLAUDE.md, since committing this is a per-developer choice, not a repo convention.
 
 **Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
 
@@ -169,6 +171,9 @@ The 5 agents and their report names (`<name>`):
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
 | **@pr-readiness-review-agent** | `pr-readiness-review` |
 
+On GitHub Copilot CLI these agents are installed by the `vgv-wingspan` plugin and are
+listed with a `vgv-wingspan:` prefix — match agents by name suffix.
+
 If an agent fails, note it, continue with the rest, and record the failure in the report header.
 
 ### After all reviews complete
@@ -223,7 +228,7 @@ Whatever commits this build produced are local. Pushing and opening a PR is outw
 - **No such preference** → use **AskUserQuestion** before anything leaves the machine:
   1. **Review locally first (Recommended)**: stop here. The commits stay local; the user pushes and opens the PR when ready. Do not call `/create-pr`.
   2. **Push and open the PR now**: proceed this once.
-  3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
+  3. **Always push automatically**: proceed, and save the preference to personal memory (the user's own preference, never the project's CLAUDE.md; skip saving on hosts with no memory feature) so future builds skip this prompt.
 
 To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 

@@ -6,7 +6,7 @@ when_to_use: Use when user says "create a project", "new flutter app", "start a 
 argument-hint: what to create (e.g., "flutter app", "dart package")
 effort: low
 allowed-tools: Read Glob Skill
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Create a new project
@@ -17,10 +17,12 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 
 <description>$ARGUMENTS</description>
 
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
+
 **If the description above is empty:**
 
 1. First, scan recommendation files (Step 1 below) to discover available project types.
-2. Then use **AskUserQuestion tool**:
+2. Then use the **AskUserQuestion tool** (GitHub Copilot CLI: `ask_user`):
    - **Question:** "What kind of project would you like to create?"
    - **Options:** Build the option list from the discovered companion plugins' descriptions, plus "Other" as the last option.
 
@@ -50,7 +52,7 @@ Compare the user's project description against each recommendation's `plugin` na
 
 ## Step 3: Verify the plugin is installed
 
-Check the available skills listed in the system-reminder in your conversation context for any skill prefixed with the matched plugin name (`<plugin-name>:`).
+Check the available skills in your conversation context for any skill from the matched plugin. Claude Code lists plugin skills in a system-reminder with a `<plugin-name>:` prefix; GitHub Copilot CLI lists them under their bare names — there, match by skill name and description instead.
 
 If **no skills from that plugin are listed**, the plugin is not installed. Use **AskUserQuestion tool**:
 
@@ -66,13 +68,20 @@ If the user chooses to install, output the following commands and **stop**:
 /plugin install <plugin>
 ```
 
+On GitHub Copilot CLI, output these instead (`<marketplace-name>` is the marketplace's registered name — usually the repository name):
+
+```bash
+copilot plugin marketplace add <marketplace>
+copilot plugin install <plugin>@<marketplace-name>
+```
+
 Tell the user to run these commands, then re-invoke `/create` with the same project description. **Do not proceed to Step 4.**
 
 ## Step 4: Find and invoke the plugin's project-creation skill
 
-The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed with the matched plugin name (`<plugin-name>:<skill-name>`). Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
+Using the naming convention from Step 3, look through the available skills in your conversation context for skills from the matched plugin. Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
 
-Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
+Invoke it using the **Skill tool** with its name as it appears in your context (fully qualified, e.g. `my-plugin:scaffold-project`, on Claude Code), passing the user's full project description as arguments.
 
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.

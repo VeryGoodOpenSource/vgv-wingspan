@@ -5,7 +5,7 @@ when_to_use: Use when user says "create a PR", "open a PR", "ship it", "submit a
 argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
 disable-model-invocation: true
 allowed-tools: Bash(git push *) Bash(git add *) Bash(git commit *) Bash(gh *) Bash(glab *)
-compatibility: Designed for Claude Code (or similar products with git access)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with git access)
 ---
 
 # Create a pull request
@@ -31,7 +31,7 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 
 <context>$ARGUMENTS</context>
 
-This may include `skip-checks`, a ticket number (e.g. `VGV-123`), a short description, or be empty.
+This may include `skip-checks`, a ticket number (e.g. `VGV-123`), a short description, or be empty. If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 ## Step 0: Parse arguments
 
@@ -65,7 +65,7 @@ git diff
 
 ### Determine base branch
 
-Use **AskUserQuestion**:
+Use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`):
 
 **Question:** "Which branch should this PR target?"
 

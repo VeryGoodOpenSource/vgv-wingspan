@@ -5,7 +5,7 @@ description: Reviews an externally-authored implementation plan for quality, VGV
 when_to_use: Use to review a plan you did not create with /plan — a hand-written plan or one from another tool. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
 argument-hint: path to plan file
 effort: high
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Plan technical review
@@ -14,7 +14,7 @@ Review a plan that was not created by `/plan`. `/plan` runs this same review inl
 creation, so use this skill for externally-authored plans — hand-written, from another tool,
 or from a teammate.
 
-**Plan file:** `$ARGUMENTS` (if empty, ask the user for the plan path or pick the most recent file under `docs/plan/`).
+**Plan file:** `$ARGUMENTS` (if empty, ask the user for the plan path or pick the most recent file under `docs/plan/`). If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 ## Review
 
@@ -24,7 +24,7 @@ findings to the plan inline, and resolves any scope-splitting recommendation.
 
 ## Handoff
 
-After the review completes, use **AskUserQuestion** to present next steps:
+After the review completes, use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`) to present next steps:
 
 **Question**: "Technical review complete! What would you like to do next?"
 

@@ -5,7 +5,7 @@ description: Applies a minimal, targeted fix for emergency bugs — enforces rev
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Hotfix — emergency fix workflow
@@ -15,6 +15,8 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 ## Bug Description
 
 <bug_description>$ARGUMENTS</bug_description>
+
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 **If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
 
@@ -39,7 +41,7 @@ After the agent returns:
 2. Identify the root cause (or the most likely candidate).
 3. Summarize the root cause to the user in 2-3 sentences.
 
-If the root cause is unclear after exploration, use **AskUserQuestion** to ask the user for additional context before proceeding.
+If the root cause is unclear after exploration, use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`) to ask the user for additional context before proceeding.
 
 ## Phase 2 — Branch
 
@@ -108,6 +110,9 @@ The reduced agent set and their report names (`<name>`):
 |-------|-------------|
 | **@vgv-review-agent** | `vgv-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
+
+On GitHub Copilot CLI these agents are installed by the `vgv-wingspan` plugin and are
+listed with a `vgv-wingspan:` prefix — match agents by name suffix.
 
 If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 

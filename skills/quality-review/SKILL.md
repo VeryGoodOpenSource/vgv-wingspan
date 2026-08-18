@@ -1,12 +1,12 @@
 ---
-name: review
+name: quality-review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
 when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Review code on demand
@@ -18,6 +18,8 @@ numbered findings the user can act on by id.
 ## Review Scope
 
 <review_scope>$ARGUMENTS</review_scope>
+
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 ## Step 1 — Detect Scope
 
@@ -39,11 +41,13 @@ Run the scope detection script:
 ${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
 ```
 
+If the path above appears unexpanded (e.g., on GitHub Copilot CLI, which does not substitute this variable), run the script from this skill's own `scripts/` directory instead.
+
 - **If `SCOPE=branch`**: use the listed files as scope. The scope slug is the current
   branch name with `/` replaced by `-`. Announce scope summary (changed-file count, areas
   affected) and proceed to Step 2.
 - **If `SCOPE=default`**: tell the user "You're on `<CURRENT_BRANCH>`. No branch diff
-  available." Use **AskUserQuestion**: "What would you like to review?" with options:
+  available." Use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`): "What would you like to review?" with options:
   - **Specify files or directories**: accept paths; derive the slug from the first path as above.
   - **Review entire project**: no scope constraint; slug `project`.
 
@@ -73,6 +77,9 @@ Default agents and their report names (`<name>`):
 | **@architecture-review-agent** | `architecture-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
+
+On GitHub Copilot CLI these agents are installed by the `vgv-wingspan` plugin and are
+listed with a `vgv-wingspan:` prefix — match agents by name suffix.
 
 **If an agent fails:** note it, continue with the successful agents, and record the failure
 in the report header and chat summary so the user knows the review is incomplete. Offer to retry.

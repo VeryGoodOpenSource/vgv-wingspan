@@ -17,4 +17,4 @@
 - Cherry-pick friendly: single commit on `hotfix/<slug>`
 - <Any suggestions from review agents>
 
-Generated with [Claude Code](https://claude.com/claude-code) `/hotfix`
+Generated with the [VGV Wingspan](https://github.com/VeryGoodOpenSource/vgv-wingspan) `/hotfix` skill

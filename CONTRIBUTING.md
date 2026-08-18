@@ -45,9 +45,17 @@ After the frontmatter, structure the file as:
 2. **Core Standards** — enforced constraints, always first
 3. **Content sections** — architecture, code examples, workflows, anti-patterns
 
+**Handling arguments portably.** A skill receives its invocation arguments through the `$ARGUMENTS` token, which Claude Code substitutes wherever it appears in the body. GitHub Copilot CLI does **not** substitute it — the token stays literal. If a skill reads `$ARGUMENTS` (e.g. `<feature description>$ARGUMENTS</feature description>`), follow it with this exact fallback line so the skill still works on Copilot:
+
+```markdown
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
+```
+
+As with `${CLAUDE_SKILL_DIR}` (see [Shared scripts](#shared-scripts)), the fallback line must not quote `$ARGUMENTS` itself — Claude Code would substitute the mention and corrupt the sentence.
+
 ### 2. Update `plugin.json` tags
 
-Add relevant keywords to the `keywords` array in `.claude-plugin/plugin.json`.
+Add relevant keywords to the `keywords` array in **both** manifests: `.claude-plugin/plugin.json` (Claude Code) and `.github/plugin/plugin.json` (GitHub Copilot CLI). The two files carry the same metadata; only the Copilot manifest additionally declares component paths (`skills`, `agents`, `hooks`, `mcpServers`).
 
 ### 3. Update the README skills table
 
@@ -141,6 +149,14 @@ Run the detection script:
 ${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
 ```
 ````
+
+GitHub Copilot CLI does not substitute `${CLAUDE_SKILL_DIR}`, so whenever a skill body invokes a bundled script this way, follow the code block with this exact fallback line:
+
+```markdown
+If the path above appears unexpanded (e.g., on GitHub Copilot CLI, which does not substitute this variable), run the script from this skill's own `scripts/` directory instead.
+```
+
+The line must **not** name `${CLAUDE_SKILL_DIR}` (or `$ARGUMENTS`) itself: Claude Code substitutes those tokens everywhere they appear in the body — including inside an explanatory sentence — so a fallback that quotes the token gets corrupted on the very host where the token *does* work. Describe the symptom ("appears unexpanded", "shows a literal placeholder") instead of naming the token. Copilot's plugin installer dereferences the symlinks into real files, so the relative `scripts/` path always resolves.
 
 Keep scripts executable (`chmod +x`) so they can be invoked directly without a `bash` wrapper. Avoid the fenced `` ```! `` auto-execute form — under stricter permission checks (Claude Code v2.1.98+) it passes the literal block content (including the `!` prefix) to the permission matcher, which no longer aligns with a `Bash(<path>)` pattern.
 
@@ -240,6 +256,25 @@ Then, inside a session:
 /plugin marketplace add /tmp/vgv-test-marketplace
 /plugin install vgv-wingspan
 ```
+
+### Test on GitHub Copilot CLI
+
+Wingspan also runs as a [Copilot CLI plugin](https://docs.github.com/copilot/concepts/agents/copilot-cli/about-cli-plugins) via the `.github/plugin/plugin.json` manifest. To exercise your working copy there:
+
+```bash
+copilot plugin install ./        # from the repo root; reinstall after every edit (components are cached)
+copilot plugin list             # confirm vgv-wingspan appears
+```
+
+Then, in an interactive `copilot` session:
+
+| Component | How to verify |
+| --------- | ------------- |
+| **Skills** | `/skills list` — Wingspan skills appear under their bare names (no `vgv-wingspan:` prefix). |
+| **Agents** | `/agent` — plugin agents appear as `vgv-wingspan:<agent-name>`. |
+| **Hooks** | Same as Claude Code: `Read` a file in a detectable project and watch for the recommendation. The same `/tmp/wingspan-recommend-plugins-*` marker applies. |
+
+When finished: `copilot plugin uninstall vgv-wingspan`. Note that Copilot CLI reads Claude-format hooks and matchers natively, exports `${CLAUDE_PLUGIN_ROOT}` to hook commands, and ignores unknown SKILL.md frontmatter — so most changes need no Copilot-specific work. One naming rule to keep: Copilot ships a built-in `/review` command, so the standalone review skill is named `quality-review` to stay slash-reachable. If you add a skill, avoid Copilot's built-in command names (`/review` is the one that currently affects Wingspan; `/plan` is **not** a built-in and is fine).
 
 ### Validate before you push
 

@@ -42,7 +42,7 @@ You are a testing expert at Very Good Ventures. Your mission is to ensure every 
 **Then discover companion-plugin conventions.** Installed companion plugins ship technology-specific skills (testing frameworks, mocking, golden/widget tests, and more) that extend VGV's defaults. Find and apply them:
 
 1. **Check your available skills.** Installed plugins expose their skills to you directly — scan your available-skills list for ones whose descriptions match the tests under review, and load the relevant ones with the Skill tool. Only invoke skills that appear in your list; never guess names.
-2. **Glob project-local skills** the plugin system does not manage: `.claude/skills/**/SKILL.md`. Read each match's frontmatter (`name`, `description`) and the full content of any whose domain matches.
+2. **Glob project-local skills** the plugin system does not manage: `.claude/skills/**/SKILL.md`, `.github/skills/**/SKILL.md`, and `.agents/skills/**/SKILL.md`. Read each match's frontmatter (`name`, `description`) and the full content of any whose domain matches.
 3. Enforce the documented patterns from both as project conventions, layered on top of VGV standards.
 
 If neither yields anything, proceed with VGV defaults — this step is best-effort and must never block the review.

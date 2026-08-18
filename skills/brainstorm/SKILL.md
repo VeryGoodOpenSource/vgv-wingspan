@@ -4,7 +4,7 @@ user-invocable: true
 description: Explores requirements and approaches through collaborative dialogue before planning implementation.
 when_to_use: Use when user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
 argument-hint: feature or idea to explore
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Brainstorm a feature or improvement
@@ -14,6 +14,8 @@ Clarify **WHAT** to build before diving into **HOW** to build it. Explore user i
 ## Feature description
 
 <feature description>$ARGUMENTS</feature description>
+
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 **If the feature description above is empty, ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
 
@@ -30,7 +32,7 @@ Determine whether this is a **new project** or a **feature for the current proje
 | User says "new app", "new project", "build from scratch"; no relevant code in working directory | New project |
 | User references existing code/screens; idea extends current functionality | Feature for current project → skip to Step 0.1 |
 
-**If new project**, use **AskUserQuestion**: "This sounds like a new project. Where would you like to work?"
+**If new project**, use **AskUserQuestion** (GitHub Copilot CLI: `ask_user`): "This sounds like a new project. Where would you like to work?"
 
 1. **Create project first (Recommended)** — output instructions to run `/create`, open the new folder, then `/brainstorm <description>` in that workspace. Then stop.
 2. **Continue here** — proceed to Step 0.1
@@ -53,6 +55,8 @@ Assess whether brainstorming is needed.
 Run a quick project review to understand existing patterns:
 
 - Task @codebase-review-agent("Understand existing patterns related to: <feature_description>")
+
+On GitHub Copilot CLI, plugin agents are listed with a `vgv-wingspan:` prefix — match by name suffix.
 
 Focus on: similar features, established patterns, CLAUDE.md guidance.
 

@@ -34,21 +34,35 @@ setup() {
   ORIGINAL_HOME="$HOME"
   export HOME="$TEST_DIR"
 
-  # Ensure no stale marker exists for this test dir.
+  # Ensure no stale marker exists for this test dir. Markers are host-scoped,
+  # so track both variants. MARKER is the claude-host marker (run_hook writes
+  # it); COPILOT_MARKER is written by run_hook_copilot.
   PROJECT_HASH=$(echo "$TEST_DIR" | shasum | cut -d' ' -f1)
-  MARKER="/tmp/wingspan-recommend-plugins-$PROJECT_HASH"
-  rm -f "$MARKER"
+  MARKER="/tmp/wingspan-recommend-plugins-claude-$PROJECT_HASH"
+  COPILOT_MARKER="/tmp/wingspan-recommend-plugins-copilot-$PROJECT_HASH"
+  rm -f "$MARKER" "$COPILOT_MARKER"
 }
 
 teardown() {
   export HOME="$ORIGINAL_HOME"
-  rm -f "$MARKER" 2>/dev/null || true
+  rm -f "$MARKER" "$COPILOT_MARKER" 2>/dev/null || true
   rm -rf "$TEST_DIR" 2>/dev/null || true
 }
 
 # Run the hook from the test project directory. Captures stdout.
+# Copilot and project-dir env vars are stripped so the script sees a Claude
+# Code host rooted at the test dir even when the test suite itself runs under
+# another host.
 run_hook() {
-  echo '{}' | (cd "$TEST_DIR" && bash "$WRAPPER") 2>/dev/null || true
+  echo '{}' | (cd "$TEST_DIR" && env -u COPILOT_CLI -u COPILOT_PLUGIN_ROOT -u COPILOT_HOME -u CLAUDE_PROJECT_DIR -u COPILOT_PROJECT_DIR bash "$WRAPPER") 2>/dev/null || true
+}
+
+# Run the hook simulating a GitHub Copilot CLI host: cwd is NOT the project
+# (Copilot runs plugin hooks from the plugin root) — the script must find the
+# project via COPILOT_PROJECT_DIR. COPILOT_HOME points inside the test dir so
+# user-level Copilot settings are controlled fixtures.
+run_hook_copilot() {
+  echo '{}' | (cd / && env -u CLAUDE_PROJECT_DIR COPILOT_CLI=1 COPILOT_PROJECT_DIR="$TEST_DIR" COPILOT_HOME="$TEST_DIR/.copilot" bash "$WRAPPER") 2>/dev/null || true
 }
 
 # Add a recommendation JSON file to the test fixtures.
@@ -508,6 +522,119 @@ test_files_detection_is_case_insensitive() {
   teardown
 }
 
+test_copilot_host_message() {
+  echo "test: Copilot CLI host gets copilot-flavored install instructions"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/my-marketplace",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  local output
+  output=$(run_hook_copilot)
+  assert_contains "$output" "Copilot CLI plugin" "names the Copilot CLI plugin"
+  assert_contains "$output" "copilot plugin marketplace add Org/my-marketplace" "copilot marketplace add command"
+  assert_contains "$output" "copilot plugin install test-plugin@my-marketplace" "copilot install command with marketplace name"
+  assert_not_contains "$output" "Claude Code plugin" "no Claude phrasing on Copilot host"
+  assert_contains "$output" "hookSpecificOutput" "same hook output envelope on Copilot"
+  teardown
+}
+
+test_copilot_installed_user_config() {
+  echo "test: Copilot host skips plugin present in Copilot user config"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  mkdir -p "$TEST_DIR/.copilot"
+  echo '{"installedPlugins": [{"name": "test-plugin"}]}' > "$TEST_DIR/.copilot/config.json"
+  local output
+  output=$(run_hook_copilot)
+  assert_empty "$output" "no output when plugin in Copilot config.json"
+  assert_file_not_exists "$COPILOT_MARKER" "no marker written"
+  teardown
+}
+
+test_copilot_installed_repo_settings() {
+  echo "test: Copilot host skips plugin enabled in repo Copilot settings"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file ".github/copilot/settings.json" '{"enabledPlugins": {"test-plugin@my-marketplace": true}}'
+  local output
+  output=$(run_hook_copilot)
+  assert_empty "$output" "no output when plugin in repo Copilot settings"
+  assert_file_not_exists "$COPILOT_MARKER" "no marker written"
+  teardown
+}
+
+test_copilot_ignores_claude_settings() {
+  echo "test: Copilot host still recommends a plugin only installed on Claude Code"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_settings ".claude/settings.json" '{"plugins": ["test-plugin"]}'
+  local output
+  output=$(run_hook_copilot)
+  assert_contains "$output" "test-plugin" "Claude-only install does not satisfy Copilot host"
+  teardown
+}
+
+test_copilot_installed_plugin_dir() {
+  echo "test: Copilot host skips plugin present as an installed-plugins directory"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  mkdir -p "$TEST_DIR/.copilot/installed-plugins/some-marketplace/test-plugin"
+  local output
+  output=$(run_hook_copilot)
+  assert_empty "$output" "no output when plugin dir exists under installed-plugins"
+  teardown
+}
+
+test_marker_is_host_scoped() {
+  echo "test: a Claude run does not suppress the Copilot recommendation (host-scoped marker)"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  # First run as Claude Code — writes the claude-scoped marker.
+  run_hook > /dev/null
+  assert_file_exists "$MARKER" "claude marker created"
+  assert_file_not_exists "$COPILOT_MARKER" "copilot marker not created by claude run"
+  # A Copilot run on the same project must still emit — its marker is separate.
+  local output
+  output=$(run_hook_copilot)
+  assert_contains "$output" "Copilot CLI plugin" "copilot run still recommends after claude run"
+  assert_file_exists "$COPILOT_MARKER" "copilot marker created"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -552,6 +679,18 @@ echo ""
 test_file_detection_is_case_insensitive
 echo ""
 test_files_detection_is_case_insensitive
+echo ""
+test_copilot_host_message
+echo ""
+test_copilot_installed_user_config
+echo ""
+test_copilot_installed_repo_settings
+echo ""
+test_copilot_ignores_claude_settings
+echo ""
+test_copilot_installed_plugin_dir
+echo ""
+test_marker_is_host_scoped
 echo ""
 
 echo "=== Results: $PASS passed, $FAIL failed ==="

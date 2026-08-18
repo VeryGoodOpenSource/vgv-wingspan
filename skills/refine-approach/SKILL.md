@@ -4,7 +4,7 @@ user-invocable: true
 description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound.
 when_to_use: Use when user says "refine this", "review my approach", or "is this ready".
 argument-hint: path to document to refine
-compatibility: Designed for Claude Code (or similar products with agent support)
+compatibility: Designed for Claude Code and GitHub Copilot CLI (or similar products with agent support)
 ---
 
 # Refine Approach
@@ -14,6 +14,8 @@ Improve brainstorm and/or planning documents through structured review.
 ## Step 1. Get the document that needs review
 
 **Document path:** `$ARGUMENTS`
+
+If the text above still shows a literal placeholder instead of your input (e.g., on GitHub Copilot CLI, which does not substitute it), use whatever the user wrote after the skill name instead.
 
 **If `$ARGUMENTS` is non-empty**, treat it as the document path and proceed to `Step 2. Assess`.
 

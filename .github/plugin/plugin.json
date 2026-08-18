@@ -1,7 +1,7 @@
 {
   "name": "vgv-wingspan",
   "description": "VGV Wingspan - AI-native workflows following Very Good Ventures best practices.",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "author": {
     "name": "Very Good Ventures",
     "url": "https://verygood.ventures"
@@ -20,5 +20,14 @@
     "software development lifecyle",
     "claude code",
     "github copilot cli"
-  ]
+  ],
+  "skills": "skills",
+  "agents": [
+    "agents/analysis",
+    "agents/codebase-review",
+    "agents/quality-review",
+    "agents/research"
+  ],
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
 }
