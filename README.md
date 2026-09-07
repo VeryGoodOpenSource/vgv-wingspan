@@ -100,6 +100,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
 | [**Create PR**](skills/create-pr/SKILL.md) | `/create-pr` | Validate (formatter, linter, tests, and CI checks), stage, commit, push, and open a pull request on the project's Git hosting platform — aborts on any failure |
+| [**Split PR**](skills/split-pr/SKILL.md) | `/split-pr [branch, PR number, or PR URL]` | Split a large branch or pull request into a stack of smaller, independently-reviewable pull requests |
 | [**Rebase**](skills/rebase/SKILL.md) | `/rebase` | Rebase the current feature branch onto the base branch to stay up-to-date |
 | [**Debrief**](skills/debrief/SKILL.md) | `/debrief <incident or context>` | Produce a structured post-incident analysis — timeline, root cause, and actionable follow-ups |
 
