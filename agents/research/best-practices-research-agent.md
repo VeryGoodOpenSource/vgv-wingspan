@@ -54,14 +54,14 @@ Only after checking skills **and** verifying API availability, gather additional
 
    - Search the project's referenced standards and documentation
    - Before using Context7, tell the user which library you are looking up and why, e.g. "Fetching official docs for X via Context7 — you may see a permission prompt to allow the library ID lookup."
-   - Use Context7 MCP to access official documentation from GitHub, framework docs, and library references
+   - Use Context7 MCP (when available) to access official documentation from GitHub, framework docs, and library references. Context7 is optional: if the MCP server is not connected, skip it silently and fall back to web search and the framework's official documentation URLs — never block on it.
    - Search the web for recent articles, guides, and community discussions
    - Identify and analyze well-regarded open source projects that demonstrate the practices
    - Look for style guides, conventions, and standards from respected organizations
 
 2. **Online Research Methodology**:
 
-   - Start with the project's referenced standards, then official documentation using Context7 for the specific technology
+   - Start with the project's referenced standards, then official documentation using Context7 (or web search if Context7 is unavailable) for the specific technology
    - Search for "[technology] best practices [current year]" to find recent guides
    - Look for popular repositories on GitHub that exemplify good practices
    - Check for industry-standard style guides or conventions

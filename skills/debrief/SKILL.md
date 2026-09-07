@@ -18,7 +18,7 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 <incident_context>$ARGUMENTS</incident_context>
 
-**If the incident context above is empty, ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
+**If the incident context above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it), ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
 
 DO NOT proceed until you have a description from the user.
 
@@ -27,6 +27,8 @@ DO NOT proceed until you have a description from the user.
 ### 1. Gather initial information
 
 Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt based on what the user already provided — skip questions whose answers are already clear from the incident context.
+
+> **No structured-question tool?** Ask each question as plain text and take the reply as the answer. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 **Key questions to resolve:**
 

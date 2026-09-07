@@ -15,9 +15,9 @@ Improve brainstorm and/or planning documents through structured review.
 
 **Document path:** `$ARGUMENTS`
 
-**If `$ARGUMENTS` is non-empty**, treat it as the document path and proceed to `Step 2. Assess`.
+**If `$ARGUMENTS` is non-empty** (and not the literal, unsubstituted text `$ARGUMENTS`), treat it as the document path and proceed to `Step 2. Assess`.
 
-**If `$ARGUMENTS` is empty**, ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
+**If `$ARGUMENTS` is empty or still shows the literal text `$ARGUMENTS`** (the host did not substitute it), ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
 
 ## Step 2. Assess
 

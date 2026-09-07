@@ -17,7 +17,7 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 
 <description>$ARGUMENTS</description>
 
-**If the description above is empty:**
+**If the description above is empty or still shows the literal text `$ARGUMENTS` (the host did not substitute it):**
 
 1. First, scan recommendation files (Step 1 below) to discover available project types.
 2. Then use **AskUserQuestion tool**:
@@ -26,9 +26,11 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 
 DO NOT proceed until you have a project description.
 
-## Step 1: Scan recommendation files
+## Step 1: Discover available project types
 
-Use **Glob** to find all `*.json` files in `hooks/recommendations/` (relative to the Wingspan plugin root). Then **Read** each file.
+**On Claude Code (has `Glob` and the plugin root):** use **Glob** to find all `*.json` files in `hooks/recommendations/` (relative to the Wingspan plugin root), then **Read** each file.
+
+**Off Claude Code (no plugin-root access, or `Glob` finds nothing):** fall back to the inline [companion catalog](#companion-catalog-inline-fallback) below — it mirrors the same `plugin`/`marketplace`/`description` metadata. `allowed-tools` here lists `Read Glob Skill`, but use whatever tools the task needs; the list is a Claude Code hint, not a cap. See [interaction fallbacks](references/interaction-fallbacks.md).
 
 Each recommendation file has this structure:
 
@@ -39,6 +41,14 @@ Each recommendation file has this structure:
   "marketplace": "OrgName/repo-name"
 }
 ```
+
+## Companion catalog (inline fallback)
+
+Used only when the recommendation files are not reachable (off Claude Code).
+
+| Plugin | Marketplace | Provides |
+|--------|-------------|----------|
+| `vgv-ai-flutter-plugin` | `VeryGoodOpenSource/very-good-claude-code-marketplace` | Dart and Flutter best-practice skills (accessibility, BLoC, testing, theming, navigation, security, i18n, architecture) and project templates. |
 
 ## Step 2: Match the user's request to a plugin
 
@@ -72,12 +82,14 @@ Tell the user to run these commands, then re-invoke `/create` with the same proj
 
 The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed with the matched plugin name (`<plugin-name>:<skill-name>`). Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
 
-Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
+**On Claude Code:** invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
+
+**Off Claude Code (no `Skill` tool):** do not dispatch. Name the matched companion plugin and its marketplace, and tell the user to install it and run that plugin's own create command for the requested project type. Do not embed technology-specific scaffolding commands here — the companion plugin owns that.
 
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
 
 ## Important
 
-- This skill is a thin router. No technology-specific logic.
-- Every user-facing question must use the **AskUserQuestion tool**.
+- This skill is a thin router. No technology-specific logic — the inline catalog carries only plugin metadata, never per-stack commands.
+- Every user-facing question must use the **AskUserQuestion tool**; on a host without it, ask in plain numbered text (see [interaction fallbacks](references/interaction-fallbacks.md)).

@@ -6,6 +6,29 @@ source of truth for both the consolidated review file and the chat summary. The 
 the chat must never be authored separately — render both from the same ordered list, or
 they drift and the ids stop matching.
 
+## Single-agent fallback: sequential passes
+
+If the harness has no subagent mechanism, one model runs the review as **sequential
+passes** instead of parallel agents. Preserve the output the parallel path would
+produce:
+
+1. **Fixed pass order** — follow the Step 1 table order (VGV → architecture → tests →
+   simplicity → PR readiness), restricted to the agents the calling skill runs. Never a
+   model-chosen order, so re-runs tie-break identically.
+2. **Isolate each pass** — before starting the next pass, write the current pass's raw
+   findings to its own `<RAW_DIR>/<name>.md`. Do not read an earlier pass's findings
+   until Step 1 (Collect).
+3. **Re-derive from the source** — each pass reads the diff or code directly, never an
+   earlier pass's summary or prose, so a later pass is not anchored to a prior framing.
+4. **Content-only ordering** — the Step 3 sort key depends only on a finding's own
+   content, so the ids are identical whether findings came from parallel agents or
+   sequential passes.
+5. **Forbidden** — one model emitting all categories in a single multi-hat response. It
+   gives no isolation and homogenizes findings across categories. Run literal sequential
+   passes with a raw-file write between each.
+
+Then run Steps 1–6 below unchanged on the collected raw files.
+
 ## Step 1 — Collect
 
 Gather the findings from every agent that returned. Tag each finding with its **category**

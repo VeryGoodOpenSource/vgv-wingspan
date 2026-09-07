@@ -15,6 +15,8 @@ Pass `<PLAN_PATH>` to each. Run all three concurrently:
 - **@vgv-review-agent** — review the plan for adherence to Very Good Engineering practices and project conventions.
 - **@plan-splitting-agent** — assess plan scope and report whether the work is too large for a single reviewable PR.
 
+**No subagent mechanism?** Don't skip these reviews — run them as sequential passes in a fixed order (VGV → simplicity → scope-splitting) against `<PLAN_PATH>`, isolating each pass from the next per the [single-agent fallback](review-consolidation.md#single-agent-fallback-sequential-passes), then apply the findings the same way.
+
 ## 2. Apply findings inline
 
 Fold the simplicity and VGV findings into the plan file directly — tighten scope, close
