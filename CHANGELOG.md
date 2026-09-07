@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.5...v0.0.6) (2026-09-07)
+
+
+### Features
+
+* support AGENTS.md standard by splitting CLAUDE.md ([#231](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/231)) ([a80de07](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a80de07eba6ec307a3678c23b025bf129921befd))
+
 ## [0.0.5](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.4...v0.0.5) (2026-07-15)
 
 
