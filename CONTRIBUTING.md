@@ -57,6 +57,10 @@ Add a row to the skills table in `README.md`:
 | **Skill Name** | `/skill-name <args>` | Short description of what the skill covers |
 ```
 
+### 4. Update the `AGENTS.md` repository structure
+
+Add the new skill directory and its files to the repository structure tree in `AGENTS.md`.
+
 ## Skill Writing Guidelines
 
 - **Use clear directives** — no soft language ("consider", "prefer"). Say "Use X" or "Do not use Y".
