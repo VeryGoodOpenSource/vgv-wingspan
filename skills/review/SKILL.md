@@ -73,6 +73,7 @@ Default agents and their report names (`<name>`):
 | **@architecture-review-agent** | `architecture-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
+| **@accessibility-review-agent** | `accessibility-review` |
 
 **If an agent fails:** note it, continue with the successful agents, and record the failure
 in the report header and chat summary so the user knows the review is incomplete. Offer to retry.
