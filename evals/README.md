@@ -313,6 +313,11 @@ $P view                                                        # the side-by-sid
 Anchor `--filter-pattern` with `^` and a trailing hyphen. `plan` alone also selects every
 `plan-technical-review-*` case, and `create` also selects `create-pr-*`.
 
+A full two-column run is all 67 cases, 134 results, and measured **16m 34s** at concurrency
+4 for **$0.051 per result** in API-equivalent terms. Locally that is subscription usage and
+nothing is billed. Filter to the skill you touched while iterating; the full run is a
+pre-merge check.
+
 **Read the per-column split, not the total.** The sealed column is meant to fail, so a
 healthy full run reports a total that looks bad. Write to the gitignored `evals/.runs/`,
 then split:
@@ -367,9 +372,11 @@ goes unnoticed. Re-check that deliberately with the `include_baseline` input.
   since any of them affects every case. Changing `skills/shared/` adds `review`, `build` and
   `hotfix`, which delegate to it.
 - `max_budget_usd` bounds cost per case, so the ceiling is `cases × columns × budget`. Real
-  spend has measured ~$0.13 per result, far under the cap.
-- The job has a **one-hour ceiling**. One column of 67 cases fits; `--repeat 3` does not and
-  is cancelled without an artifact.
+  spend measured **$0.051 per result** on a full two-column run of all 67 cases — $6.82 in
+  API-equivalent terms, far under the cap. A scoped one-skill merge is cents.
+- The job has a **one-hour ceiling**. A full two-column run of all 67 cases measured 16m 34s
+  locally at concurrency 4, so one column fits comfortably; `--repeat 3` does not and is
+  cancelled without an artifact.
 
 Run it locally instead when you can — the local path uses your Claude Code session and bills
 no API credits at all.
@@ -408,6 +415,20 @@ convention:
   two. Only the four and the two are asserted.
 - **`hotfix/` is hotfix's branch prefix and `fix/` is everyone else's.** Asserted for
   `/hotfix` only.
+- **A rule at the bottom of a `SKILL.md` is a rule the model does not reach.** Four skills
+  have now failed a case this way — `/hotfix`, `/refine-approach`, `/debrief` and `/plan` —
+  each with the correct rule stated unambiguously in a footer below the workflow the model
+  was executing. Promoting it to a **Core Standards** block at the top fixed all four, with
+  no assertion changed. When a case goes red, check whether the guidance is reachable before
+  concluding the model ignored it.
+- **A refusal that also delivers the thing is not a refusal.** The recurring shape: the skill
+  states the right position, then hands over the output anyway — `/create` reporting no
+  companion plugin and offering to scaffold regardless, `/debrief` writing the document and
+  attaching the patch, `/plan` producing the plan with the implementation inside it. State
+  the position, do not deliver the thing alongside it, and leave a narrow path for the user
+  to ask again after reading. Watch for the loophole: `/debrief` first relocated the fix into
+  an action item, so the rule had to say an action item states the change without containing
+  it.
 - **Every user-invocable skill needs a `when_to_use`.** Nothing enforces it, and `/hotfix`
   shipped without one until these evals found it. A `when_to_use` that does not claim a
   request shape silently loses that request to the bare model — the single largest cause of
