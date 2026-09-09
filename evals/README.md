@@ -34,6 +34,12 @@ Three prerequisites, each of which has broken a run:
 - **Node `^20.20.0 || >=22.22.0`**, enforced by promptfoo, which refuses to start below it.
   Nothing in this repo pins a Node version.
 
+`max_turns` is `16`, not the `12` the sibling vgv-ai-flutter-plugin suite uses. Wingspan
+skills chain reference files — `/build` reads four before it answers — and at 12 those cases
+died on `Reached maximum number of turns`, which scores 0 with no failing assertion and
+reads exactly like a content failure. It is the one run setting here that should not be
+copied from that repo.
+
 Behavior differs across promptfoo releases, so a suite that ran yesterday can break on an
 upgrade with no change here. If a run dies before any case executes, or the two columns
 stop differing, pin to the last version you saw work before editing a case.
@@ -371,9 +377,10 @@ goes unnoticed. Re-check that deliberately with the `include_baseline` input.
 - Changing `promptfooconfig.yaml`, `assertions/` or `fixture/` widens scope to all skills,
   since any of them affects every case. Changing `skills/shared/` adds `review`, `build` and
   `hotfix`, which delegate to it.
-- `max_budget_usd` bounds cost per case, so the ceiling is `cases × columns × budget`. Real
-  spend measured **$0.051 per result** on a full two-column run of all 67 cases — $6.82 in
-  API-equivalent terms, far under the cap. A scoped one-skill merge is cents.
+- `max_budget_usd` is `0.5`, so the ceiling is `cases × columns × 0.5`. Real spend measured
+  **$0.051 per result** on a full two-column run of all 67 cases — $6.82 in API-equivalent
+  terms — with a worst single result of $0.251, so nothing came close to tripping it. A
+  scoped one-skill merge is cents.
 - The job has a **one-hour ceiling**. A full two-column run of all 67 cases measured 16m 34s
   locally at concurrency 4, so one column fits comfortably; `--repeat 3` does not and is
   cancelled without an artifact.

@@ -54,12 +54,18 @@ providers:
       # arrive via --plugin-dir, so `skills: all` still works.
       setting_sources: []
       strict_mcp_config: true
-      # Wingspan skills chain reference files: /build reads implementation-phases,
-      # review-agent-instructions, review-consolidation and drive-to-green before
-      # it answers. At 12 those cases died on "Reached maximum number of turns",
-      # which scores 0 and reads exactly like a content failure.
+      # `max_turns` deliberately does NOT match vgv-ai-flutter-plugin's 12. Wingspan skills
+      # chain reference files — /build reads implementation-phases,
+      # review-agent-instructions, review-consolidation and drive-to-green before it
+      # answers — and at 12 those cases died on "Reached maximum number of turns", which
+      # scores 0 with no failing assertion and reads exactly like a content failure. Do not
+      # lower this to match the other repo; the number is measured, not copied.
       max_turns: 16
-      max_budget_usd: 1.5
+      # Circuit breaker, matched to the reference. Measured across a full 134-result run:
+      # median $0.028, p95 $0.210, worst single result $0.251, so 0.5 leaves 2x headroom on
+      # the most expensive case observed and nothing came close to tripping it. If a case
+      # starts erroring with score 0 and no failing assertion, check this before the content.
+      max_budget_usd: 0.5
 
   # The bare model. Sealing it takes three keys, and each one is here because a
   # real run leaked without it:
@@ -87,8 +93,9 @@ providers:
       tools: []
       setting_sources: []
       strict_mcp_config: true
+      # Both columns must carry the same caps, or the ablation compares budgets.
       max_turns: 16
-      max_budget_usd: 1.5
+      max_budget_usd: 0.5
 
 defaultTest:
   # The llm-rubric judge is pinned to the same Agent SDK provider so it also
