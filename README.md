@@ -141,7 +141,7 @@ Skill evals ask whether Claude routes to a skill and follows it. [promptfoo](htt
 npx promptfoo@latest eval -c evals/promptfooconfig.yaml
 ```
 
-Run them locally before opening a PR that changes a skill. A post-merge GitHub Actions workflow also runs the cases for whichever skills changed, as an advisory check rather than a gate.
+They run locally and are not wired into CI. Run them before opening a PR that changes a skill.
 
 See [evals/README.md](evals/README.md) for the case format, the assertion reference, prerequisites, and what these evals deliberately do not cover.
 

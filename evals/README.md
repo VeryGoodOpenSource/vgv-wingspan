@@ -17,11 +17,10 @@ This file is the reference for writing and running a case. It deliberately does 
 the run-by-run history — what each fix moved, and by how much, belongs in the commit that
 made it.
 
-**No API key locally.** Both the agent under test and the `llm-rubric` judge authenticate
-through your Claude Code session. The judge is pinned to the same provider in
-`defaultTest.options`; left unpinned, promptfoo picks a grader from whatever key is in the
-environment, which is neither free nor deterministic. CI is the exception — see
-[Running in CI](#running-in-ci).
+**No API key.** Both the agent under test and the `llm-rubric` judge authenticate through
+your Claude Code session, so the whole suite runs on a subscription. The judge is pinned to
+the same provider in `defaultTest.options`; left unpinned, promptfoo picks a grader from
+whatever key is in the environment, which is neither free nor deterministic.
 
 Three prerequisites, each of which has broken a run:
 
@@ -320,9 +319,13 @@ Anchor `--filter-pattern` with `^` and a trailing hyphen. `plan` alone also sele
 `plan-technical-review-*` case, and `create` also selects `create-pr-*`.
 
 A full two-column run is all 67 cases, 134 results, and measured **16m 34s** at concurrency
-4 for **$0.051 per result** in API-equivalent terms. Locally that is subscription usage and
-nothing is billed. Filter to the skill you touched while iterating; the full run is a
-pre-merge check.
+4 — $0.051 per result and $6.82 total in API-equivalent terms, with a worst single result of
+$0.251 against the `max_budget_usd: 0.5` circuit breaker. Locally none of that is billed at
+all: the run authenticates through your Claude Code session. Filter to the skill you touched
+while iterating; the full run is a pre-merge check.
+
+**Nothing eval-related runs in CI.** These call real models and are nondeterministic, so a
+single run is not a reliable gate. Run them by hand before a PR that changes a skill.
 
 **Read the per-column split, not the total.** The sealed column is meant to fail, so a
 healthy full run reports a total that looks bad. Write to the gitignored `evals/.runs/`,
@@ -332,10 +335,6 @@ then split:
 $P eval -c evals/promptfooconfig.yaml --no-cache --no-table -o evals/.runs/latest.json
 node -e 'const r=require("./evals/.runs/latest.json"),c={};for(const x of r.results.results){const l=x.provider.label;c[l]??={n:0,pass:0};c[l].n++;c[l].pass+=x.success?1:0}console.table(c)'
 ```
-
-`node evals/ci-summary.js evals/.runs/latest.json` prints the same per-skill breakdown CI
-posts, including routing misses, and attributes each case to its skill by reading the case
-files rather than by splitting the description.
 
 Then confirm the run was valid. The sealed column must have made zero tool calls; a non-zero
 count means it could reach `../../skills` and every sealed number is void:
@@ -357,36 +356,6 @@ all of it routing, and single cases have crossed the pass/fail line untouched. A
 Overloaded` or `Reached maximum number of turns` scores 0 with no failing assertion, which
 is indistinguishable from a content failure unless you check `res.error`. So: `--repeat 2`
 before believing a red case, and `--retry-errors` before believing a failure count.
-
----
-
-## Running in CI
-
-`.github/workflows/evals.yaml` runs after a merge to `main`, never on a pull request, scoped
-to the changed skills, `with-skill` only, and `continue-on-error`. Each of those saves money
-and costs coverage: a regression is reported after it lands, a change affecting routing
-globally can be missed, and without the sealed column a case that has stopped discriminating
-goes unnoticed. Re-check that deliberately with the `include_baseline` input.
-
-- **CI needs an `ANTHROPIC_API_KEY` secret**, having no Claude Code session. Without it every
-  run stops at an explicit check. The job is `continue-on-error`, so a missing secret is a
-  soft failure rather than a merge block.
-- A **one-case smoke test** runs first, so auth fails in seconds rather than after a full
-  matrix. This is the only path that exercises the API key — both providers set
-  `apiKeyRequired: false` for the local session.
-- Changing `promptfooconfig.yaml`, `assertions/` or `fixture/` widens scope to all skills,
-  since any of them affects every case. Changing `skills/shared/` adds `review`, `build` and
-  `hotfix`, which delegate to it.
-- `max_budget_usd` is `0.5`, so the ceiling is `cases × columns × 0.5`. Real spend measured
-  **$0.051 per result** on a full two-column run of all 67 cases — $6.82 in API-equivalent
-  terms — with a worst single result of $0.251, so nothing came close to tripping it. A
-  scoped one-skill merge is cents.
-- The job has a **one-hour ceiling**. A full two-column run of all 67 cases measured 16m 34s
-  locally at concurrency 4, so one column fits comfortably; `--repeat 3` does not and is
-  cancelled without an artifact.
-
-Run it locally instead when you can — the local path uses your Claude Code session and bills
-no API credits at all.
 
 ---
 
