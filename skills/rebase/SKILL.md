@@ -4,7 +4,7 @@ user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop).
 when_to_use: Use when user says "rebase", "sync branch", or "update branch".
-allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit
+allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit AskUserQuestion
 effort: medium
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
@@ -106,6 +106,17 @@ Read the full file content and locate conflict markers (`<<<<<<<`, `=======`, `>
 
 - Both sides changed the same function or logic block differently
 - Business logic where correctness depends on product intent
+
+Do not reduce these to a choice between the two sides. Work out what each side was trying to achieve, then draft a resolution that satisfies both intents — the sides conflict textually far more often than they conflict in purpose.
+
+Ask with the **AskUserQuestion tool**, one question per conflict chunk. Option labels are too short to hold code, so first print the conflicting chunk and the resolution you drafted, then offer:
+
+- **Merge both intents**: the drafted resolution. Offer this only when you can state each side's intent in one line and the two are compatible; drop it when the sides encode genuinely contradictory decisions.
+- **Keep the base branch's version**: with a one-line summary of what it does.
+- **Keep your feature branch's version**: with a one-line summary of what it does.
+- **Abort the rebase**: back out to the pre-rebase state and resolve by hand.
+
+Mark the merged resolution `(Recommended)` when you can explain both intents from the code you read. If you had to guess at either one, do not offer it at all — a plausible-looking synthesis of an intent you invented is the one outcome here that loses work silently. Leave every option unmarked when nothing favors one. The tool supplies its own "Other" option for a hand-written resolution, so never add a catch-all of your own.
 
 When in doubt, ask. Losing someone's work is far worse than pausing to check.
 
