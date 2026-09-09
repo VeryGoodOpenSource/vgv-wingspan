@@ -14,6 +14,28 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 **Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
 
+## Core Standards
+
+Apply these to ALL debrief work.
+
+- **This skill produces a document and nothing else.** No code changes, no patches, no
+  corrected snippet — not even when the root cause is a one-line fix and you have already
+  identified it. Naming the faulty line as the root cause is the job; rewriting it is not.
+  Handing over the fix alongside the debrief does not satisfy this: the document is the
+  deliverable, and the fix is separate work that someone has to review on its own. Record it
+  as an action item and stop. A request that arrives bundled with the debrief — "write it up
+  and fix it while you're in there" — does not clear this: the debrief is what was asked for
+  first and the fix is what has to wait. Deliver the document, say the fix is separate, and
+  let them ask again once they have read it.
+- **Blameless means systems, not people.** Ask what made this possible, never who caused it.
+  A person's name belongs in a debrief only as a source of information, never as a cause, and
+  a pattern of someone's past mistakes is not a finding.
+- **Every action item is Prevent, Detect or Respond.** A flat list of follow-ups is the
+  failure mode this replaces — the categories are what make the list actionable.
+- **Mark gaps as gaps.** An unknown start time stays unknown. Inventing a plausible timestamp
+  to complete the timeline is worse than an incomplete timeline, because the reader cannot
+  tell which entries are real.
+
 ## Incident Context
 
 <incident_context>$ARGUMENTS</incident_context>
@@ -153,4 +175,5 @@ Action items: <N> prevent, <N> detect, <N> respond
 
 ## Important
 
-**DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.
+Action items become separate tickets — see **Core Standards** for what this skill does not
+produce.

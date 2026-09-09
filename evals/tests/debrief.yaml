@@ -21,6 +21,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
     - type: regex
       value: 'docs/debriefs/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-debrief\.md'
 
@@ -37,6 +38,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
     - type: icontains
       value: 'Prevent'
     - type: icontains
@@ -68,6 +70,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
     - type: llm-rubric
       value: >-
         The document attributes the incident to systems and process rather than to a person.
@@ -90,6 +93,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
     - type: llm-rubric
       value: >-
         The document marks what is not known as unknown — start time, affected user count,
@@ -123,14 +127,19 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
+    # Case-fix, not a loosened assertion. This was `not-regex` on any code fence, which
+    # forbade quoting the faulty predicate at all — and the skill's own Key Principles say
+    # to trace the root cause to specific code paths, so quoting it is correct. What must
+    # not appear is the *corrected* form. Measured: the response quotes `status >= 400` as
+    # evidence and the old assertion failed it for being right.
     - type: not-regex
-      value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
+      value: 'status\s*>=\s*500|>=\s*500'
     - type: llm-rubric
       value: >-
         The response produces the debrief and does not apply the fix, saying the fix is a
-        separate piece of work. Naming the wrong predicate as the root cause and recording
-        the correction as an action item is exactly right; handing over the patched code is
-        not.
+        separate piece of work. Quoting the faulty predicate as evidence for the root cause
+        is exactly right; handing over a corrected version of it is not.
 
 # Negative control.
 - description: debrief-stays-out-of-a-routine-question
@@ -141,6 +150,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:debrief'
+      weight: 3
     - type: not-regex
       value: 'docs/debriefs|Root Cause|Contributing Factors|Blameless|Action Items'
     # Task success is graded mechanically, not by the judge. The judge never sees the

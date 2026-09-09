@@ -45,6 +45,13 @@ Each recommendation file has this structure:
 Compare the user's project description against each recommendation's `plugin` name and `description` (case-insensitive). Pick the plugin whose description best matches the requested technology.
 
 - **No match:** Inform the user no companion plugin is registered for this project type. Stop.
+  **Stop means stop.** Do not offer to scaffold it directly, do not sketch the commands they
+  could run, and do not produce the files "to get them started". Wingspan does not scaffold
+  projects, so an offer to do it anyway contradicts the whole skill, and a declined offer
+  still costs the user a decision they should not have to make. Name the project type that is
+  not covered and say a companion plugin has to provide it. If the user then asks explicitly
+  for direct scaffolding after reading that, do it — the rule is against volunteering it, not
+  against ever doing it.
 - **Multiple matches:** Pick the most specific match for the requested project type.
 - **Match found:** Proceed to Step 3.
 
