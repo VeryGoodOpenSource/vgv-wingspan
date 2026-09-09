@@ -61,10 +61,10 @@ providers:
       # scores 0 with no failing assertion and reads exactly like a content failure. Do not
       # lower this to match the other repo; the number is measured, not copied.
       max_turns: 16
-      # Circuit breaker, matched to the reference. Measured across a full 134-result run:
-      # median $0.028, p95 $0.210, worst single result $0.251, so 0.5 leaves 2x headroom on
-      # the most expensive case observed and nothing came close to tripping it. If a case
-      # starts erroring with score 0 and no failing assertion, check this before the content.
+      # Circuit breaker, matched to the reference. Measured across two full 134-result runs:
+      # median $0.028, worst single result $0.297, so 0.5 leaves ~1.7x headroom on the most
+      # expensive case observed and it has never tripped. If a case starts erroring with
+      # score 0 and no failing assertion, check this before the content.
       max_budget_usd: 0.5
 
   # The bare model. Sealing it takes three keys, and each one is here because a

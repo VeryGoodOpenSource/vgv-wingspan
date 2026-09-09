@@ -318,9 +318,10 @@ $P view                                                        # the side-by-sid
 Anchor `--filter-pattern` with `^` and a trailing hyphen. `plan` alone also selects every
 `plan-technical-review-*` case, and `create` also selects `create-pr-*`.
 
-A full two-column run is all 67 cases, 134 results, and measured **16m 34s** at concurrency
-4 — $0.051 per result and $6.82 total in API-equivalent terms, with a worst single result of
-$0.251 against the `max_budget_usd: 0.5` circuit breaker. Locally none of that is billed at
+A full two-column run is all 67 cases, 134 results, and measured **16m 34s** and **16m 55s**
+on two runs at concurrency 4 — $0.047-0.051 per result, $6.33-6.82 total in API-equivalent
+terms, worst single result $0.297 against the `max_budget_usd: 0.5` circuit breaker, which
+has never tripped. Locally none of that is billed at
 all: the run authenticates through your Claude Code session. Filter to the skill you touched
 while iterating; the full run is a pre-merge check.
 
