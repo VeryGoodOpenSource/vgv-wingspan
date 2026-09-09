@@ -12,6 +12,25 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices. This command provides flexible detail levels to match your needs.
 
+## Core Standards
+
+Apply these to ALL planning work.
+
+- **Do not write the implementation.** A plan names the files it will touch, the functions
+  it will add, the shape of the data and the order of the work. It does not contain the
+  route handler, the test file, or the migration. A request to "plan it and write the code"
+  is two pieces of work and this skill delivers the first — say the implementation is
+  `/build`'s job and stop, rather than shipping both. Short illustrative fragments are fine
+  where a signature or a config key is the clearest way to say what changes; a working
+  module is not a fragment.
+- **Every success criterion carries a `verify:`.** A criterion nothing can check is a gate
+  that proves nothing, and `/build` ships against these. Rewrite a vacuous criterion rather
+  than recording it.
+- **Phase for one context window.** Each phase gets its own scope, the files it touches, and
+  something that proves it is complete, so `/build` can run one per window and resume.
+- **Find the brainstorm before asking for it.** Earlier exploration lives in
+  `docs/brainstorm/`; discovering it is this skill's first step, not the user's to restate.
+
 ## Feature Description
 
 <feature_description>$ARGUMENTS</feature_description>
@@ -216,4 +235,4 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 
 ## Important
 
-NEVER CODE at this stage. Only focus on producing a plan.
+See **Core Standards** — the plan is the deliverable, and the implementation is `/build`'s.

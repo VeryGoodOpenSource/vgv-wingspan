@@ -27,6 +27,12 @@ Apply these to ALL debrief work.
   and fix it while you're in there" — does not clear this: the debrief is what was asked for
   first and the fix is what has to wait. Deliver the document, say the fix is separate, and
   let them ask again once they have read it.
+  **An action item states the change; it does not contain it.** "Narrow the retry predicate
+  in `shouldRetry` to 5xx only" is an action item. The same item with the corrected line
+  written out beneath it is the fix, delivered inside the document, and it fails this
+  standard exactly as a patch at the end would. Quoting the *faulty* code as evidence under
+  Root Cause is correct and encouraged — the line that must not appear anywhere is the
+  fixed one.
 - **Blameless means systems, not people.** Ask what made this possible, never who caused it.
   A person's name belongs in a debrief only as a source of information, never as a cause, and
   a pattern of someone's past mistakes is not a finding.
