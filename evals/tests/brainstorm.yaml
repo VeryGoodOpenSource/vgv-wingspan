@@ -22,6 +22,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     - type: icontains
       value: 'Pros'
     - type: icontains
@@ -49,6 +50,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     - type: regex
       value: 'docs/brainstorm/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-brainstorm-doc\.md'
 
@@ -61,6 +63,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     # A brainstorm document legitimately contains a ```markdown or ```text fence, so
     # this negates only the implementation-language fences.
     - type: not-regex
@@ -83,6 +86,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response says this requirement is already specific enough that open-ended
@@ -100,6 +104,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     - type: regex
       value: '/create\b'
     - type: llm-rubric
@@ -117,6 +122,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:brainstorm'
+      weight: 3
     - type: not-regex
       value: 'docs/brainstorm|Key Decisions|Open Questions|trade-?offs?'
     # Task success is graded mechanically, not by the judge. The judge never sees the

@@ -28,6 +28,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:refine-approach'
+      weight: 3
     - type: icontains
       value: 'Clarity'
     - type: icontains
@@ -72,6 +73,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:refine-approach'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response singles out one issue as the most important thing to fix, rather than
@@ -109,6 +111,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:refine-approach'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response distinguishes changes it would make on its own — wording, formatting,
@@ -139,6 +142,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:refine-approach'
+      weight: 3
     # The skill updates the document itself. A second file, a review report, or an appended
     # metadata block are all things it explicitly must not produce.
     - type: not-regex
@@ -157,6 +161,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:refine-approach'
+      weight: 3
     - type: not-regex
       value: 'YAGNI|must address|docs/brainstorm|docs/plan|Specificity'
     # Task success is graded mechanically, not by the judge. The judge never sees the

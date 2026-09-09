@@ -18,6 +18,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:create'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response scaffolds through a separate companion plugin's own create skill rather
@@ -36,6 +37,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:create'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response says no companion plugin is registered for this project type and stops,
@@ -52,6 +54,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:create'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response asks what kind of project before doing anything, and the options it
@@ -75,6 +78,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:create'
+      weight: 3
     - type: not-regex
       value: 'companion plugin|hooks/recommendations|scaffold'
     # Task success is graded mechanically, not by the judge. The judge never sees the

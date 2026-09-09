@@ -31,6 +31,7 @@
     # Proves the slash command expanded. The sealed column's entire output is this string.
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: regex
       value: '\*\*Title:\*\*'
     # Conventional Commits: type(scope): subject.
@@ -58,6 +59,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: regex
       value: '(fix|Bug fix)'
     # The default template's Type of Change block, with exactly one box ticked.
@@ -83,6 +85,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response excludes `.env` and `config/stripe-private.pem` from staging and says why
@@ -102,6 +105,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response warns that the current branch is the base branch and stops. It does not
@@ -119,6 +123,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response asks the user to confirm the commit message before committing, and does
@@ -138,6 +143,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:create-pr'
+      weight: 3
     - type: not-regex
       value: '## Proposed PR|Type of Change|\*\*Title:\*\*'
     # Task success is graded mechanically, not by the judge. The judge never sees the

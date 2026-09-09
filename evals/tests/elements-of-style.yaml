@@ -29,6 +29,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:elements-of-style'
+      weight: 3
     # The substitutions, not merely the absence of the originals: a paraphrase that drops the
     # filler without landing on the prescribed word satisfies the negation but not these.
     - type: icontains
@@ -69,6 +70,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:elements-of-style'
+      weight: 3
     - type: not-icontains
       value: 'not often on time'
     - type: not-icontains
@@ -97,6 +99,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:elements-of-style'
+      weight: 3
     - type: not-icontains
       value: 'it was decided that'
     - type: not-icontains
@@ -126,6 +129,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:elements-of-style'
+      weight: 3
     - type: not-regex
       value: 'active voice|needless words|passive|Strunk'
     # Task success is graded mechanically, not by the judge. The judge never sees the

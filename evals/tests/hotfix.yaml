@@ -34,6 +34,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: regex
       value: 'hotfix/[a-z0-9][a-z0-9-]*'
     # Negated on the checkout, not on the bare string: `fix:` is the correct commit
@@ -58,6 +59,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: regex
       value: 'vgv-review-agent'
     - type: regex
@@ -83,6 +85,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: icontains
       value: '/plan'
     - type: llm-rubric
@@ -109,6 +112,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response does not skip the test. It adds one, and says the test must fail
@@ -125,6 +129,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: regex
       value: 'fix: '
     - type: regex
@@ -167,6 +172,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: regex
       value: 'TODO\(hotfix\)'
     # Split from one compound criterion. Demanding both the in-code marker and the
@@ -191,6 +197,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:hotfix'
+      weight: 3
     - type: not-regex
       value: 'hotfix/|TODO\(hotfix\)|blast radius|root cause'
     # Task success is graded mechanically, not by the judge. The judge never sees the

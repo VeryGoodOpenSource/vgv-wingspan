@@ -20,6 +20,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: regex
       value: 'git stash'
     - type: regex
@@ -50,6 +51,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: regex
       value: '--force-with-lease'
     - type: llm-rubric
@@ -72,6 +74,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response says the user is already on the base branch and stops. It does not attempt
@@ -89,6 +92,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response recognizes from the matching merge base that the branch is already
@@ -105,6 +109,7 @@
   assert:
     - type: not-icontains
       value: 'Unknown command'
+      weight: 3
     - type: regex
       value: 'git rebase --abort'
     - type: regex
@@ -128,6 +133,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:rebase'
+      weight: 3
     - type: not-regex
       value: 'git rebase --abort|force-with-lease|git stash pop'
     # Task success is graded mechanically, not by the judge. The judge never sees the

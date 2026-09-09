@@ -110,6 +110,24 @@ defaultTest:
         max_turns: 2
   # A case passes when its assertions average this or better. The threshold is
   # per-case, so a weak case cannot hide behind strong siblings.
+  #
+  # Routing assertions carry `weight: 3` in the case files, because unweighted they were
+  # being outvoted. Measured on this suite: 15 of 67 cases would report green with the
+  # skill never invoked and every content assertion passing — a 7-assertion case scores
+  # 0.86 on a pure routing miss. `review-runs-the-four-default-agents` only failed
+  # because a *second* assertion also failed; on routing alone it would have been green.
+  # With weight 3 that number is 0 of 67.
+  #
+  # In `create-pr.yaml` and `rebase.yaml` the weight sits on
+  # `not-icontains 'Unknown command'` instead, since those skills cannot satisfy
+  # `skill-used` and that assertion is what proves the slash command expanded.
+  #
+  # The weight buys strictness on routing by loosening content: with routing passing, a
+  # case can now absorb one more content miss than before. Measured cost on this suite:
+  # two cases where two content assertions may fail and the case still passes, both of
+  # them mechanical-heavy (9 and 7 content assertions). Raising the weight past 3 widens
+  # that hole rather than closing it, so 3 is the number — do not tune it upward to make
+  # a red case go green.
   threshold: 0.8
   # Do not add a harness self-check as an assertion here. Isolation is a *validity*
   # question, not a graded one, and an assertion that returns true on every clean run

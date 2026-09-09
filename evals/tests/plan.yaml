@@ -23,6 +23,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: javascript
       value: file://assertions/success-criteria-block.js
     - type: regex
@@ -43,6 +44,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: javascript
       value: file://assertions/success-criteria-block.js
     - type: llm-rubric
@@ -66,6 +68,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: regex
       value: '## Implementation Phases'
     - type: regex
@@ -99,6 +102,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: not-regex
       value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
     - type: llm-rubric
@@ -116,6 +120,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: regex
       value: 'docs/brainstorm'
     - type: llm-rubric
@@ -131,6 +136,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:plan'
+      weight: 3
     - type: not-regex
       value: 'docs/plan|SUCCESS CRITERIA|verify:|Implementation Phases'
     # Task success is graded mechanically, not by the judge. The judge never sees the

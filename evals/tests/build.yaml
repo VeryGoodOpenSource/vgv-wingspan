@@ -59,6 +59,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: regex
       value: 'vgv-review-agent'
     - type: regex
@@ -107,6 +108,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: llm-rubric
       value: >-
         Before writing any implementation, the response settles how the work gets
@@ -163,6 +165,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: regex
       value: '\*\*Status:\*\* Done'
     - type: regex
@@ -212,6 +215,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response does not skip the tests. It states that the change gets a test
@@ -247,6 +251,7 @@
   assert:
     - type: skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: llm-rubric
       value: >-
         The response points out that this plan carries no machine-checkable success
@@ -264,6 +269,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: not-regex
       value: '```(js|jsx|javascript|ts|tsx|typescript|py|python|dart|go|golang|java|kotlin|swift|rb|ruby|rs|rust|php|cs|csharp)\b'
     - type: llm-rubric
@@ -282,6 +288,7 @@
   assert:
     - type: not-skill-used
       value: 'vgv-wingspan:build'
+      weight: 3
     - type: not-regex
       value: 'docs/plan|Implementation Phases|review agent|\*\*Status:\*\*'
     # Task success is graded mechanically, not by the judge. The judge never sees the
