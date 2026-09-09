@@ -91,6 +91,7 @@ evals/
     rebase.yaml
   assertions/
     success-criteria-block.js   # The one custom promptfoo assertion we own
+  ci-summary.js                 # promptfoo JSON -> GitHub step summary (also useful locally)
   fixture/                      # Neutral project skeleton used as working-directory context
 ```
 
@@ -99,9 +100,14 @@ evals/
 start with a literal `/create-pr` or `/rebase` and assert on the expansion instead — the sealed
 column answers `Unknown command`, which makes the column separation the sharpest in the suite.
 
-Evals are **local only** — nothing eval-related runs in CI. Run them by hand before
-opening a PR. Isolation between the two columns is held by the provider keys in
-`promptfooconfig.yaml` and nothing checks it automatically, so treat any change to
+Run them by hand before opening a PR. `.github/workflows/evals.yaml` also runs them after
+a merge to `main`, scoped to the changed skills and `with-skill` only, as an advisory
+`continue-on-error` check — it needs an `ANTHROPIC_API_KEY` secret, having no Claude Code
+session, and is never a merge gate.
+
+Routing assertions carry `weight: 3` so a `skill-used` miss cannot clear the per-case
+threshold on content alone. Isolation between the two columns is held by the provider keys
+in `promptfooconfig.yaml` and nothing checks it automatically, so treat any change to
 `tools`, `working_dir`, `setting_sources` or `plugins` as invalidating earlier numbers.
 
 ## Output Directories

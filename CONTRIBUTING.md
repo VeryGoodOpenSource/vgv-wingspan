@@ -311,8 +311,10 @@ Every pull request runs the following checks automatically:
 | Skill validation | Validates changed `SKILL.md` frontmatter and structure | `Flash-Brew-Digital/validate-skill@v1` |
 | Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
 
-Evals do not run in CI. They call real models, cost real usage, and are nondeterministic.
-Run them locally before opening a PR that touches a skill — see [Eval Cases](#eval-cases).
+Evals do not run on pull requests. They call real models, cost real usage, and are
+nondeterministic, so a single run is not a reliable gate. Run them locally before opening a
+PR that touches a skill — see [Eval Cases](#eval-cases). A separate `evals` workflow runs
+after a merge to `main`, scoped to the skills that changed, and is advisory only.
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.
 
