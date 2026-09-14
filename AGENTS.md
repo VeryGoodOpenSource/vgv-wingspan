@@ -38,6 +38,7 @@ hooks/
     vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
 skills/                # User-invocable and supporting skills (one dir per skill)
   brainstorm/SKILL.md            # Explore requirements and approaches
+  brainstorm-to-github/SKILL.md  # Brainstorm, captured as a GitHub issue
   plan/SKILL.md                  # Turn a brainstorm into an implementation plan
   build/SKILL.md                 # Execute a plan: implement, review, ship
   review/SKILL.md                # Run quality-review agents on demand
@@ -90,6 +91,7 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 Supporting skills:
 
+- `/brainstorm-to-github` (brainstorm whose output is a GitHub issue instead of a `docs/brainstorm/` file)
 - `/create` (project creation — routes to companion plugins)
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
 - `/plan-technical-review` (review externally-authored plans; `/plan` reviews the plans it creates inline)
