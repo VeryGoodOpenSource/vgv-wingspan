@@ -4,7 +4,8 @@
   "version": "0.0.5",
   "author": {
     "name": "Very Good Ventures",
-    "url": "https://verygood.ventures"
+    "url": "https://verygood.ventures",
+    "email": "tools@verygood.ventures"
   },
   "homepage": "https://github.com/VeryGoodOpenSource/vgv-wingspan",
   "repository": "https://github.com/VeryGoodOpenSource/vgv-wingspan",
