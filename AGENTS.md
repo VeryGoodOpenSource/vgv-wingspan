@@ -12,6 +12,7 @@ AGENTS.md              # This file — portable, tech-agnostic conventions
 CLAUDE.md              # Claude Code entry point: imports AGENTS.md, adds Claude-specific Hooks
 README.md              # Human-facing overview and install instructions
 CONTRIBUTING.md        # Contributor guide (adding skills, hooks, commit format)
+skills_lint.yaml       # skills_lint rule config used by the CI skills lint workflow
 config/
   cspell.json          # Spell-check dictionary and settings
   custom.markdownlint.jsonc  # Markdown lint rule overrides

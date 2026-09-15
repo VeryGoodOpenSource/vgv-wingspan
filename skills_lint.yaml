@@ -1,0 +1,11 @@
+skills_lint:
+  rules:
+    check-relative-paths: error
+  directories:
+    - path: "skills"
+      rules:
+        # skills/shared holds references and scripts shared by the other
+        # skills. It is not a skill itself, so it has no SKILL.md.
+        path-does-not-exist:
+          severity: error
+          exclude: "(^|/)skills/shared$"
