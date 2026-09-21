@@ -1,8 +1,7 @@
 ---
 name: create
 user-invocable: true
-description: Scaffolds a new project by routing to the right companion plugin's create skill.
-when_to_use: Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
+description: Scaffolds a new project by routing to the right companion plugin's create skill. Use when the user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
 argument-hint: what to create (e.g., "flutter app", "dart package")
 effort: low
 allowed-tools: Read Glob Skill
@@ -11,7 +10,7 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 # Create a new project
 
-Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it discovers companion plugins from recommendation files and delegates to the matching plugin's create skill.
+Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it discovers companion plugins from recommendation files and delegates to the matching plugin's create skill. This skill is a thin router and holds no technology-specific logic.
 
 ## Project description
 
@@ -76,8 +75,3 @@ Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plug
 
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
-
-## Important
-
-- This skill is a thin router. No technology-specific logic.
-- Every user-facing question must use the **AskUserQuestion tool**.

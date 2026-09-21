@@ -94,22 +94,14 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ## Phase 4 — Review
 
-Run review agents **in parallel** to validate the fix. Use a reduced set — speed matters, but quality is non-negotiable.
+Validate the fix with a reduced agent set — speed matters, but quality is non-negotiable.
 
-### Agent instructions
-
-Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
-
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/hotfix-review/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
-
-The reduced agent set and their report names (`<name>`):
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
 |-------|-------------|
 | **@vgv-review-agent** | `vgv-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
-
-If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 
 ### After reviews complete
 
@@ -156,11 +148,3 @@ Use **AskUserQuestion** to present options:
 - Hotfix branches use the `hotfix/` prefix, not `fix/`. Other skills use `fix/` — do not mix them.
 - If `docs/hotfix-review/` already exists from a previous interrupted hotfix, delete it before running Phase 4 to avoid stale reports contaminating the review.
 - The blast radius check (Phase 3) uses a threshold of 5 files. A fix that touches exactly 5 files is within threshold; 6 triggers the warning.
-
-## Important
-
-- This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
-- No brainstorm or plan documents are generated.
-- Tests and review are non-negotiable — fast doesn't mean sloppy.
-- Keep the diff minimal. A hotfix that grows into a feature rewrite belongs in `/plan` → `/build`.
-- The commit must be cherry-pick-friendly: one commit, one concern, no unrelated changes.

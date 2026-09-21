@@ -1,35 +1,7 @@
 ---
 name: codebase-review-agent
 skills: [elements-of-style]
-description: |
-  Conducts a thorough review of the given codebase, ensures code quality standards are met, and validates that the codebase uses consistently the same patterns.
-
-  <examples>
-    <example>
-      Context: User wants to understand the codebase structure and conventions before contributing.
-      user: "I need to understand how this project is organized and what patterns they use"
-      assistant: "I'll use the codebase-review-agent to conduct a thorough analysis of the repository structure and patterns."
-      <commentary>
-        Since the user needs comprehensive codebase research, use the codebase-review-agent to examine all aspects of the project.
-      </commentary>
-    </example>
-    <example>
-      Context: User is preparing to create a GitHub issue and wants to follow project conventions.
-      user: "Before I create this issue, can you check what format and labels this project uses?"
-      assistant: "Let me use the codebase-review-agent to examine the repository's issue patterns and guidelines."
-      <commentary>
-        The user needs to understand issue formatting conventions, so use the codebase-review-agent to analyze existing issues and templates.
-      </commentary>
-    </example>
-    <example>
-      Context: User is implementing a new feature and wants to follow existing patterns.
-      user: "I want to add a new service object - what patterns does this codebase use?"
-      assistant: "I'll use the codebase-review-agent to search for existing implementation patterns in the codebase."
-      <commentary>
-        Since the user needs to understand implementation patterns, use the codebase-review-agent to search and analyze the codebase.
-      </commentary>
-    </example>
-  </examples>
+description: Surveys a codebase's structure, conventions, and pattern consistency. Returns the established pattern for the area under review, the files that best demonstrate it, the project's own guidance (CLAUDE.md, issue and PR templates), and any place the pattern is applied inconsistently. Use to orient in unfamiliar code, or to find the representative example a new implementation should follow.
 model: sonnet
 effort: medium
 ---

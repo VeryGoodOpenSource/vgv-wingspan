@@ -1,8 +1,7 @@
 ---
 name: brainstorm
 user-invocable: true
-description: Explores requirements and approaches through collaborative dialogue before planning implementation.
-when_to_use: Use when user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
+description: Explores requirements and approaches through collaborative dialogue before planning implementation. Use when the user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
 argument-hint: feature or idea to explore
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -10,6 +9,8 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Brainstorm a feature or improvement
 
 Clarify **WHAT** to build before diving into **HOW** to build it. Explore user intent, approaches, and design decisions through collaborative dialogue.
+
+**Do not write code.** The output is a brainstorm document.
 
 ## Feature description
 
@@ -73,6 +74,9 @@ Use the **AskUserQuestion tool** to ask questions one at a time. The tool automa
 | Edge Cases | What shouldn't happen? Any error states to consider? |
 | Existing Patterns | Are there similar features in the codebase to follow? |
 
+Present the emerging design in sections and validate each one as you go, rather than saving it all
+for the document.
+
 **Exit condition:** Continue until the idea is clear OR user says "proceed" or "let's move on."
 
 #### 1.3. Explore approaches
@@ -101,9 +105,7 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 #### 1.4. Set up workspace
 
-Before writing any files, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
 
 ### 2. Capture the design document
 
@@ -115,27 +117,15 @@ Use the [brainstorm template](references/template.md) as the document structure.
 
 ### 3. Handoff
 
-Use **AskUserQuestion tool** to consider next steps:
+Use the **AskUserQuestion tool**: "Brainstorm complete! What would you like to do next?"
 
-**Question**: "Brainstorm complete! What would you like to do next?"
-
-**Options:**
 1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Review and refine approach:** improve the document using structured review
+3. **Review and refine approach**: improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
-
-**If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
-
-When `refine-approach` is complete, present these options:
-
-1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
-2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Done for now**: ideation complete. To start planning later: `/plan`
-
-**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
+- **Clear context and plan** → follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path, then stop.
+- **Review and refine approach** → apply the @refine-approach skill to the document, then present these same options again without the refine one.
 
 ## Output Summary
 
@@ -150,16 +140,3 @@ Key decisions:
 - [Decision 1]
 - [Decision 2]
 ```
-
-## Key Principles
-
-- **One question at a time** - Don't overwhelm with multiple questions
-- **Multiple choice preferred** - Easier to answer than open-ended when possible
-- **YAGNI ruthlessly** - Remove unnecessary features from all designs
-- **Explore alternatives** - Always propose 2-3 approaches before settling
-- **Incremental validation** - Present design in sections, validate each
-- **Be flexible** - Go back and clarify when something doesn't make sense
-
-## Important Guidelines
-
-**DO NOT CODE!** Just explore and document decisions.

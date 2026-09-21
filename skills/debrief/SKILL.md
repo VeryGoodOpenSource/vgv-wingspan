@@ -1,8 +1,7 @@
 ---
 name: debrief
 user-invocable: true
-description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh.
-when_to_use: Use when user says "debrief", "post-mortem", "incident review", or "root cause analysis".
+description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh. Use when the user says "debrief", "post-mortem", "incident review", or "root cause analysis".
 argument-hint: incident description, PR/commit refs, or error context
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -11,6 +10,8 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Post-incident debrief
 
 Produce a structured, blameless debrief document after an incident, failed release, or significant bug. Capture what happened, why, and what to change — while the context is still fresh.
+
+**Do not make code changes.** This skill produces a document; its action items become separate tickets.
 
 **Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
 
@@ -74,9 +75,7 @@ Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 
-Before writing the debrief file, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
 
 ### 6. Write the debrief document
 
@@ -102,32 +101,7 @@ Use the **AskUserQuestion tool** to present next steps:
 
 **If the user selects "Review and refine"** → apply the @refine-approach skill to the document. When refinement is complete, present these options again (without the refine option).
 
-**If the user selects "Generate issue previews"** → read the action items from the written debrief document, then:
-
-1. **Check for issue templates**: look for `.github/ISSUE_TEMPLATE/` in the project root. Read every `.yaml` or `.yml` file found there (skip `config.yml`).
-
-2. **If templates exist**: render one preview block per action item using the most appropriate template. Map each item to a template based on its content (e.g., a missing test or validation gap → bug report; a new monitoring check → feature request; a dependency update or runbook → chore). Populate every required field defined in the template. Include a `Template:` line naming the chosen template file.
-
-3. **If no templates exist**: fall back to the generic format:
-
-```text
----
-Title: <specific, actionable title>
-Label: prevent | detect | respond
-Body:
-  ## Context
-  Debrief: docs/debriefs/YYYY-MM-DD-<topic>-debrief.md
-  Root cause: <one-line summary from debrief>
-
-  ## What happened
-  <relevant excerpt from the debrief timeline or root cause section>
-
-  ## What to do
-  <the action item, specific and linked to code/files where possible>
----
-```
-
-Render all previews in a single fenced block so the user can copy them. Do not call `gh`, `glab`, or any external CLI — output is display only.
+**If the user selects "Generate issue previews"** → render the action items per [issue previews](references/issue-previews.md).
 
 ## Output Summary
 
@@ -142,15 +116,3 @@ Severity: <severity>
 Root cause: [one-line summary]
 Action items: <N> prevent, <N> detect, <N> respond
 ```
-
-## Key Principles
-
-- **Blameless** — Focus on systems and processes, never individuals
-- **Evidence-based** — Link findings to commits, PRs, code paths, and logs
-- **Actionable** — Every action item is specific and assignable
-- **Honest about gaps** — Mark unknowns explicitly rather than guessing
-- **Tech-agnostic** — No language or framework assumptions in the skill itself
-
-## Important
-
-**DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.
