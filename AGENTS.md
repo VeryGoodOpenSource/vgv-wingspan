@@ -51,11 +51,34 @@ skills/                # User-invocable and supporting skills (one dir per skill
   rebase/SKILL.md                # Sync a feature branch with its base
   elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
   shared/              # Shared references and scripts used across skills
-    references/        # Plan templates, review procedures, handoff steps
+    references/
+      clear-context-handoff.md   # The "clear context and <next step>" handoff block
+      drive-to-green.md          # Loop until every gate is green by real output
+      feature-branch.md          # Branch check run before anything is written to disk
+      file-findings-on-pr.md     # Post review findings as PR comments
+      plan-review.md             # Quality pass applied to a drafted plan
+      plan-templates/            # minimal, standard, extensive, phases, success criteria
+      review-agent-instructions.md  # Instructions passed to each review agent
+      review-consolidation.md    # Deduplicate, order, and number findings
+      review-dispatch.md         # Caller-side procedure for launching review agents
+      review-report-template.md  # Shape of the consolidated report
+      validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
     scripts/           # detect-base-branch.sh, detect-review-scope.sh
 ```
 
-Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts).
+Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A shared reference appears in each consuming skill as a symlink, so the skill always links it by its own local path.
+
+## Authoring Conventions
+
+A `SKILL.md` carries the workflow and the opinions behind it; everything else is demoted to
+`references/` or cut. Before adding or trimming a section, apply the KEEP / DEMOTE / DELETE
+rubric in `CONTRIBUTING.md` → _What belongs in a `SKILL.md`_. Two rules it is easy to get
+backwards:
+
+- The frontmatter `description` is the router and loads before the body, so it carries the
+  whole trigger surface. Never trim it for length, and never split it across a second field.
+- An agent's `description` is paid for on every request, run or not. Keep it expressive and
+  free of `<examples>` blocks (`CONTRIBUTING.md` → _Agent descriptions_).
 
 ## Philosophy
 

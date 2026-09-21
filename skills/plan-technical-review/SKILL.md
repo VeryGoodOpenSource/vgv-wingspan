@@ -1,8 +1,7 @@
 ---
 name: plan-technical-review
 user-invocable: true
-description: Reviews an externally-authored implementation plan for quality, VGV conventions, and scope. Plans created by /plan are already reviewed during creation.
-when_to_use: Use to review a plan you did not create with /plan — a hand-written plan or one from another tool. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+description: Reviews an externally-authored implementation plan for quality, VGV conventions, and scope — a hand-written plan, or one from another tool or a teammate. Plans created by /plan are already reviewed during creation. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
 argument-hint: path to plan file
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
