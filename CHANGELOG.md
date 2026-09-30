@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.0](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.5...v0.1.0) (2026-09-30)
+
+
+### Features
+
+* support AGENTS.md standard by splitting CLAUDE.md ([#231](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/231)) ([a80de07](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a80de07eba6ec307a3678c23b025bf129921befd))
+
+
+### Miscellaneous Chores
+
+* update contact email to tools@verygood.ventures ([#239](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/239)) ([a17bfad](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a17bfad52bbfc0b9dacc3ea798f82071957dbdfb))
+* use standard 0.x versioning ([#246](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/246)) ([c48fa08](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/c48fa081eb9d4044ac4deb6b27589363f5b204db))
+
+
+### Docs
+
+* note PR titles must follow conventional commits ([#247](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/247)) ([19e0695](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/19e0695accb8b9db0be0235ecdfb7fcb23106820))
+
 ## [0.0.5](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.4...v0.0.5) (2026-07-15)
 
 
