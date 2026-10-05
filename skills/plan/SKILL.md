@@ -20,6 +20,14 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 Check for brainstorm output first — before asking the user anything.
 
+If `<feature_description>` contains a GitHub issue URL or `#<number>`, the brainstorm lives in that issue. Read it and skip the local search:
+
+```bash
+gh issue view <url-or-number> --json title,body
+```
+
+Treat the issue body as the brainstorm document, announce "Found brainstorm issue: [title]", and proceed. If the command fails, fall back to the local search below.
+
 ```bash
 ls docs/brainstorm/
 ```
