@@ -1,7 +1,7 @@
 ---
 name: hotfix
 user-invocable: true
-description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
+description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases. Use when the user says "hotfix", "emergency fix", "production is broken", "urgent bug", or needs a fix shipped fast without the full plan-and-build cycle.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
@@ -18,7 +18,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 
 **If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
 
-DO NOT proceed until you have a bug description.
+Do not proceed until you have a bug description.
 
 ## Phase 0 — Triage
 
@@ -133,7 +133,7 @@ fix: <concise description of what was fixed>
 Bug: <original bug description or issue link, truncated if long>
 ```
 
-Push the branch and create a PR. **Title**: `fix: <concise description>` (under 70 chars). **Body**: Use the [PR template](references/pr-template.md).
+Push the branch and create a PR. **Title**: `fix: <concise description>` (max 72 characters, matching `/create-pr`). **Body**: Use the [PR template](references/pr-template.md).
 
 ### Post-Ship
 

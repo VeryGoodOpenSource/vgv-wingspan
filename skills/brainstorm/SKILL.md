@@ -18,7 +18,7 @@ Clarify **WHAT** to build before diving into **HOW** to build it. Explore user i
 
 **If the feature description above is empty, ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
 
-DO NOT proceed until you have a description from the user.
+Do not proceed until you have a description from the user.
 
 ## Execution flow
 

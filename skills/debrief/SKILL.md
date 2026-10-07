@@ -21,7 +21,7 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 **If the incident context above is empty, ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
 
-DO NOT proceed until you have a description from the user.
+Do not proceed until you have a description from the user.
 
 ## Execution Flow
 

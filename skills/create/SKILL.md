@@ -23,7 +23,7 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
    - **Question:** "What kind of project would you like to create?"
    - **Options:** Build the option list from the discovered companion plugins' descriptions, plus "Other" as the last option.
 
-DO NOT proceed until you have a project description.
+Do not proceed until you have a project description.
 
 ## Step 1: Scan recommendation files
 
