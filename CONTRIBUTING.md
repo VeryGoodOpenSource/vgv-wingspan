@@ -36,7 +36,7 @@ argument-hint: "feature or idea to explore"
 | ----- | -------- | ----- |
 | `name` | Yes | Lowercase letters, numbers, and hyphens only |
 | `user-invocable` | Yes | `true` if the user can invoke this skill directly, `false` otherwise |
-| `description` | Yes | Describes when the skill should be triggered |
+| `description` | Yes | What the skill does **and** when to trigger it. This is the whole trigger surface — there is no separate `when_to_use` field |
 | `argument-hint` | No | Placeholder hint shown to the user |
 
 After the frontmatter, structure the file as:
@@ -68,11 +68,66 @@ Add the new skill directory and its files to the repository structure tree in `A
 - **Provide complete, copy-pasteable snippets** — not fragments.
 - **Reference packages by full name** (e.g., `package:mocktail`, not just "mocktail").
 - **Show anti-patterns alongside correct patterns** when helpful, so readers understand both what to do and what to avoid.
-- **Keep prose tight** — every word in a SKILL.md consumes tokens in the model's context window. Verbose instructions reduce the space available for the user's actual work. Apply these techniques:
-  - **Decision tables over prose chains** — replace long if/else narratives with a table or compact bulleted list.
-  - **One sentence per rule** — if a guideline needs a paragraph to explain, it may be too complex or doing too much.
-  - **Cut redundancy** — don't restate in an "Important" footer what the body already says.
-  - **Collapse conditional blocks** — when multiple branches share structure, describe the shared part once and list only what differs.
+- **Decision tables over prose chains** — replace long if/else narratives with a table or compact bulleted list.
+- **One sentence per rule** — if a guideline needs a paragraph to explain, it may be too complex or doing too much.
+- **Collapse conditional blocks** — when multiple branches share structure, describe the shared part once and list only what differs.
+- **Apply the KEEP / DEMOTE / DELETE rubric below** to decide what earns a place in the `SKILL.md` at all.
+
+## What belongs in a `SKILL.md`
+
+A skill earns its tokens by carrying what the model *cannot* infer: the workflow's decision
+points and the opinions this team holds about them. Generic advice the model already applies
+displaces those opinions and slows routing.
+
+Every section you write gets one of three verdicts.
+
+**KEEP in `SKILL.md`** — the workflow, and the judgement calls it encodes:
+
+- Gates and their thresholds — the hotfix blast radius, three fix attempts before escalating,
+  the `success-criteria` contract `/build` consumes
+- Decision tables that route the run — which template, whether to research externally, which
+  agent set to dispatch
+- VGV opinions the model would not reach by default — tests are non-negotiable, YAGNI, one
+  implementation phase per context window, clear-context handoff offered first
+- Harness facts — **AskUserQuestion**, `$ARGUMENTS`, `${CLAUDE_SKILL_DIR}`, the skill
+  directory boundary, `allowed-tools` patterns
+- Safety rules — never push without approval, never stage secret files
+
+**DEMOTE to `references/`** — needed at one point in the run, not at load time:
+
+- Document templates and rendered output formats
+- Any procedure two or more skills share (see [Sharing content across skills](#sharing-content-across-skills))
+- Deep-dive detail that only one branch of the workflow reaches
+
+**DELETE** — no new information at any load time:
+
+- A trailing `## Important` or `## Key Principles` block that restates the body. The body is
+  read in order, so a summary at the end informs nothing. When a line there is load-bearing,
+  move it to the step it governs — or to the opening paragraph when it governs the whole skill.
+- Instructions duplicated between the `description` and the body, or between two steps
+- Handoff option lists repeated verbatim for a second branch of the same question
+
+Two things this rubric does **not** apply to:
+
+- **The frontmatter `description`.** It is the router and loads before the body, so every
+  trigger phrase is load-bearing. Do not trim it for length, and do not assume a phrase is
+  redundant because the body repeats it — routing happens before the body is ever read.
+- **Hard constraints.** Directive density is not the defect; generic restatement is. A rule
+  that changes what the model does stays, and stays hard.
+
+Wingspan's skills are procedural — the steps *are* the content — so there is no line target.
+The test is per section: does this change what the model does at the point it is read?
+
+## Agent descriptions
+
+An agent's `description` is concatenated into the agent listing on **every** request, so its
+cost is paid each turn across all ten agents, whether or not any of them runs.
+
+Write a description expressive enough to route on its own: what the agent inspects, what it
+returns, and when to reach for it. Do not add `<examples>` blocks — a well-shaped description
+routes better than worked examples and costs a fraction of the tokens. Wingspan's agents are
+dispatched by name from the skills that need them, so examples bought no routing accuracy at
+all; removing them cut roughly 2,400 tokens from every request.
 
 ## Shared Resources & Skill Boundaries
 

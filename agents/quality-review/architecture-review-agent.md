@@ -1,35 +1,7 @@
 ---
 name: architecture-review-agent
 skills: [elements-of-style]
-description: |
-  Validates project architecture against VGV standards post-implementation. Use after writing code to verify layer separation, state management correctness, dependency direction, and package structure.
-
-  <examples>
-    <example>
-      Context: The user has implemented a new feature across multiple layers and wants an architecture check.
-      user: "I just added the checkout feature with a new service, repository, and API client. Is the architecture clean?"
-      assistant: "I'll use the architecture review agent to validate layer separation and dependency direction."
-      <commentary>
-        Multi-layer implementations need verification that presentation doesn't import data directly, dependencies flow correctly, and state management patterns are proper.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has added a new package to a monorepo.
-      user: "I created a new payments package. Can you check it follows our architecture?"
-      assistant: "Let me run the architecture review agent to verify the package structure and layer boundaries."
-      <commentary>
-        New packages must have a proper dependency manifest, linting configuration, correct layer separation, and proper dependency direction.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has refactored state management and wants validation.
-      user: "I converted the settings feature to use a different state management approach. Is everything wired correctly?"
-      assistant: "I'll use the architecture review agent to verify the state management implementation follows VGV conventions."
-      <commentary>
-        State management migrations need careful review: naming should be descriptive, states should be immutable, no business logic in UI, and proper provider/injection usage.
-      </commentary>
-    </example>
-  </examples>
+description: Validates implemented architecture against VGV standards — layer separation, dependency direction, state management wiring, and package structure. Returns each violation with the offending import or boundary, so a presentation layer reaching into data, or a package missing its dependency manifest and lint config, comes back named. Use after writing code that spans layers, adds a package, or migrates state management.
 model: inherit
 ---
 

@@ -1,43 +1,7 @@
 ---
 name: vgv-review-agent
 skills: [elements-of-style]
-description: |
-  Reviews code against Very Good Ventures engineering standards. Use after implementing features, modifying code, creating new packages, or before opening PRs. Enforces architecture, state management conventions, testing quality, and code simplicity.
-
-  <examples>
-    <example>
-      Context: The user has just implemented a new feature with state management and wants it reviewed.
-      user: "I just finished implementing the authentication feature with a new service and state management"
-      assistant: "I'll use the VGV review agent to evaluate this implementation against our engineering standards."
-      <commentary>
-        New state management implementations should be reviewed for proper design, layer separation, test coverage, and adherence to VGV conventions.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has added state management that deviates from the project pattern.
-      user: "I added a different state management approach for managing the shopping cart state"
-      assistant: "Let me invoke the VGV review agent to analyze this architectural decision."
-      <commentary>
-        Using a different state management pattern than the project standard is an architectural deviation that should be reviewed critically.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has created a new package in the monorepo.
-      user: "I've created a new package under packages/ for the payments feature"
-      assistant: "I'll have the VGV review agent check the package structure, layering, and conventions."
-      <commentary>
-        New packages should follow the project's monorepo conventions, layer separation, linting setup, and testing scaffolding.
-      </commentary>
-    </example>
-    <example>
-      Context: The user has refactored existing code and wants a quality check.
-      user: "I refactored the user profile feature to reduce code duplication"
-      assistant: "Let me run the VGV review agent to ensure the refactor maintains our quality bar and doesn't introduce regressions."
-      <commentary>
-        Refactors to existing code should be reviewed strictly for regressions, clarity improvements, and whether the changes actually simplify rather than shift complexity.
-      </commentary>
-    </example>
-  </examples>
+description: Reviews code against Very Good Ventures engineering standards — architecture, layer separation, state management conventions, testing quality, and code simplicity. Returns findings graded Critical, Important, or Suggestion. Use after implementing a feature, adding a package, or refactoring, and before opening a PR. Reviews deviations from the project's established state-management pattern most strictly.
 model: inherit
 ---
 
