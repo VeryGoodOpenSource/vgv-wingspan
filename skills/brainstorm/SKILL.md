@@ -2,6 +2,7 @@
 name: brainstorm
 user-invocable: true
 description: Explores requirements and approaches through collaborative dialogue before planning implementation. Use when the user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
+effort: medium
 argument-hint: feature or idea to explore
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -51,11 +52,7 @@ Assess whether brainstorming is needed.
 
 #### 1.1. Lightweight project research
 
-Run a quick project review to understand existing patterns:
-
-- Task @codebase-review-agent("Understand existing patterns related to: <feature_description>")
-
-Focus on: similar features, established patterns, CLAUDE.md guidance.
+Dispatch the **codebase-review-agent** subagent for a quick look at existing patterns. It starts without this conversation, so the brief carries the feature description and the ask: the similar features, established patterns, and CLAUDE.md guidance this feature should follow, as a short answer with `file:line` evidence — not a code-quality review.
 
 #### 1.2. Collaborative conversation
 
@@ -113,7 +110,7 @@ Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-br
 
 Ensure `docs/brainstorm/` directory exists before writing.
 
-Use the [brainstorm template](references/template.md) as the document structure.
+Use the [brainstorm template](references/template.md) as the document structure. Keep the document to what planning needs — the decisions, why they were made, and what is still open — without filler sections or a replay of the conversation.
 
 ### 3. Handoff
 

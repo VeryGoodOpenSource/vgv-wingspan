@@ -32,7 +32,8 @@ dropping the trailing `-review-agent` and kebab-casing the rest (`security-revie
 ## Step 2 — Deduplicate
 
 If two agents report the same issue at the same `location` (same `file:line`, same root
-cause), merge them into one finding. Keep the highest severity, keep the clearest title, and
+cause), merge them into one finding. Keep the highest severity, the highest confidence (two
+agents finding the same issue independently corroborate it), and the clearest title, and
 record both agents under **Reported by**. Keep the rule id of the higher-severity finding; on
 a tie, the one whose category comes first in the Step 1 table. Only keep them separate when
 the severity or the actual concern genuinely differs.
@@ -54,6 +55,8 @@ pointing at the same issue, and the user can say "fix FINDING-03, skip FINDING-0
 unambiguously. Ids are only guaranteed stable for an unchanged finding set: fixing code, or
 adding or dropping an agent, changes which findings exist and renumbers the rest — the rule
 id is the handle that survives those changes, so prefer it when referring across runs.
+Confidence is deliberately not a sort key: it can change when a finding is checked, and an
+id must not move when it does.
 
 ## Step 4 — Write ONE consolidated file
 
@@ -63,9 +66,9 @@ the per-agent detail lives in `raw/` for drill-down only. The consolidated file 
 
 - A **diffstat header** (total findings and the per-severity breakdown).
 - A **Findings Index** table in id order — this table is the source the chat summary mirrors.
-  Each row shows the `FINDING-NN` id, severity, rule id, location, and title.
+  Each row shows the `FINDING-NN` id, severity, confidence, rule id, location, and title.
 - **Detail sections** grouped by severity, each finding rendered with its id, rule id, `why`,
-  `fix`, and a link to the agent's raw report.
+  `fix`, confidence, and a link to the agent's raw report.
 
 ## Step 5 — Print the aligned chat summary
 
@@ -77,15 +80,15 @@ report). Lead with the report path and the severity counts.
 ```markdown
 Review complete — <N> findings (<c> critical, <i> important, <s> suggestions). Full report: <path>
 
-- FINDING-01 · 🔴 Critical · `tests/missing-test-file` · AuthCubit has no test file (lib/auth/auth_cubit.dart)
-- FINDING-02 · 🔴 Critical · `architecture/layer-violation` · Presentation imports data client directly (lib/ui/home.dart:12)
-- FINDING-03 · 🟡 Important · `vgv/force-unwrap` · Force-unwrap on a nullable token (lib/auth/token.dart:20)
+- FINDING-01 · 🔴 Critical · high confidence · `tests/missing-test-file` · AuthCubit has no test file (lib/auth/auth_cubit.dart)
+- FINDING-02 · 🔴 Critical · high confidence · `architecture/layer-violation` · Presentation imports data client directly (lib/ui/home.dart:12)
+- FINDING-03 · 🟡 Important · medium confidence · `vgv/force-unwrap` · Force-unwrap on a nullable token (lib/auth/token.dart:20)
 - …
 - + 4 suggestions (see FINDING-08–FINDING-11 in the report)
 ```
 
-The id, severity, rule id, and title in each bullet are copied verbatim from the Findings
-Index — never paraphrased.
+The id, severity, confidence, rule id, and title in each bullet are copied verbatim from the
+Findings Index — never paraphrased.
 
 ## Step 6 — Acting on findings
 
@@ -93,6 +96,11 @@ Each calling skill defines its own post-review menu (`/review` is advisory and a
 `/build` and `/hotfix` fix before shipping). This section only fixes the shared vocabulary
 those menus use.
 
+- **Check before fixing** — reviewers see the change through a narrow brief and can be wrong.
+  Before changing code for a finding, read the code at its location and confirm the problem
+  is there; for `medium` and `low` confidence, trace the case it describes. Drop a finding
+  that doesn't hold and say why in one line ("FINDING-04 not reproduced: the token is checked
+  at line 12") rather than fixing a problem that isn't there.
 - **By id** — the user references findings by id ("apply FINDING-01 and FINDING-03"). For
   each id, read the linked `raw/` report only when the one-line `fix` isn't enough; read only
   the reports you need — never load every raw file into context.

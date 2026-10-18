@@ -129,6 +129,49 @@ routes better than worked examples and costs a fraction of the tokens. Wingspan'
 dispatched by name from the skills that need them, so examples bought no routing accuracy at
 all; removing them cut roughly 2,400 tokens from every request.
 
+## Model and effort settings
+
+Frontmatter decides how each skill and agent runs, so treat it as part of the prompt and
+re-check it at every model release.
+
+Set `effort` explicitly on every skill and agent. Defaults move between releases — in Claude
+Code, Opus 5.5, Sonnet 5.5, and Haiku 5.5 start at `medium` where most earlier models started
+at `high` — and one level name buys a different amount of thinking on each model. Without a
+pin, an agent follows the session's level. Pick the level by the work:
+
+| Effort | Work | Examples |
+| ------ | ---- | -------- |
+| `low` | Routing, mechanical git steps | `/create`, `/rebase` |
+| `medium` | Dialogue, exploration, research, document critique, tool-driven checks | `/brainstorm`, `/review` (its agents do the judging), research and analysis agents, `pr-readiness-review-agent` |
+| `high` | Planning, implementation, root-cause work, judgment-heavy review | `/plan`, `/build`, `/hotfix`, `/debrief`, the code-review agents |
+
+Reserve `xhigh` and `max` for a gain you have measured. To get less thinking, lower the effort:
+prose such as "think less" works less reliably than the setting.
+
+Pin `model` only with a reason. `inherit` follows the user's session model; pin `sonnet` or
+`haiku` where the cheaper model holds quality on that task. An alias moves to each new release
+of its tier (on Bedrock, Google Cloud, and Foundry it can resolve to an older model), so
+re-check pinned agents when a release ships.
+
+## Writing instructions for current models
+
+Current Claude models follow instructions closely and literally, and apply strong wording more
+broadly than intended. Write for that:
+
+- **Normal volume.** State a rule once, plainly, with its reason. Keep emphasis for one rule a
+  test showed being skipped — "ruthlessly", "zero tolerance", and ALL-CAPS make reviewers
+  over-flag.
+- **Report everything, filter later.** Review agents report every finding with a severity and
+  a confidence. A "don't nitpick" line makes the model drop real findings silently; filtering
+  belongs in the consolidation step.
+- **Brief subagents fully.** A subagent starts with none of the conversation, so its brief
+  carries the goal, what the caller will do with the result, the scope, and what is already
+  known.
+- **Calibrate deliverable length.** Ask for the length the task needs; requiring every template
+  section to be filled pads documents.
+- **End turns deliberately.** A message without a tool call ends the turn, so a multi-step
+  workflow puts its progress updates in the same message as its next action.
+
 ## Shared Resources & Skill Boundaries
 
 ### The skill directory boundary

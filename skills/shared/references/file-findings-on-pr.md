@@ -30,7 +30,7 @@ First **draft** the comments for the selected findings and show them to the user
 preview, so they see exactly what would go out before anything is posted:
 
 ```markdown
-**FINDING-03 · 🟡 Important · `vgv/force-unwrap`**
+**FINDING-03 · 🟡 Important · `vgv/force-unwrap`** (medium confidence)
 
 Why: <why line>
 Fix: <fix line>

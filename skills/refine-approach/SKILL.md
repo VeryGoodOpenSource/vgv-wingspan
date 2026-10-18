@@ -3,6 +3,7 @@ name: refine-approach
 user-invocable: true
 description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when the user says "refine this", "review my approach", or "is this ready".
 argument-hint: path to document to refine
+effort: medium
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 

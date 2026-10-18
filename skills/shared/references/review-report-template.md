@@ -13,12 +13,12 @@ Across <F> files. Agents: <list of agents that ran>.<note any agent that failed>
 
 ## Findings Index
 
-| ID | Severity | Rule | Location | Finding |
-|----|----------|------|----------|---------|
-| FINDING-01 | 🔴 Critical | `tests/missing-test-file` | `lib/auth/auth_cubit.dart` | AuthCubit has no test file |
-| FINDING-02 | 🔴 Critical | `architecture/layer-violation` | `lib/ui/home.dart:12` | Presentation imports data client directly |
-| FINDING-03 | 🟡 Important | `vgv/force-unwrap` | `lib/auth/token.dart:20` | Force-unwrap on a nullable token |
-| FINDING-04 | 🔵 Suggestion | `simplicity/inline-single-use` | `lib/utils/format.dart:20` | Inline single-use helper |
+| ID | Severity | Confidence | Rule | Location | Finding |
+|----|----------|------------|------|----------|---------|
+| FINDING-01 | 🔴 Critical | high | `tests/missing-test-file` | `lib/auth/auth_cubit.dart` | AuthCubit has no test file |
+| FINDING-02 | 🔴 Critical | high | `architecture/layer-violation` | `lib/ui/home.dart:12` | Presentation imports data client directly |
+| FINDING-03 | 🟡 Important | medium | `vgv/force-unwrap` | `lib/auth/token.dart:20` | Force-unwrap on a nullable token |
+| FINDING-04 | 🔵 Suggestion | high | `simplicity/inline-single-use` | `lib/utils/format.dart:20` | Inline single-use helper |
 
 ## Critical
 
@@ -26,12 +26,14 @@ Across <F> files. Agents: <list of agents that ran>.<note any agent that failed>
 AuthCubit has no test file.
 - **Why**: Untested state management ships behavior changes silently.
 - **Fix**: Add a bloc/cubit test covering the success, failure, and edge states.
+- **Confidence**: high
 - **Reported by**: test-quality-review-agent · [details](raw/test-quality-review.md)
 
 ### FINDING-02 · `architecture/layer-violation` · `lib/ui/home.dart:12`
 Presentation imports data client directly.
 - **Why**: Breaks layer separation; UI now depends on the data layer's implementation.
 - **Fix**: Route the call through the repository injected into the cubit.
+- **Confidence**: high
 - **Reported by**: architecture-review-agent · [details](raw/architecture-review.md)
 
 ## Important
@@ -40,6 +42,7 @@ Presentation imports data client directly.
 Force-unwrap on a nullable token.
 - **Why**: Crashes at runtime when the token is null instead of failing gracefully.
 - **Fix**: Guard with an early return (or null-aware access) before use.
+- **Confidence**: medium
 - **Reported by**: vgv-review-agent · [details](raw/vgv-review.md)
 
 ## Suggestions
@@ -48,6 +51,7 @@ Force-unwrap on a nullable token.
 Inline single-use helper.
 - **Why**: The wrapper adds a hop without adding meaning.
 - **Fix**: Inline the single call site and delete the helper.
+- **Confidence**: high
 - **Reported by**: code-simplicity-review-agent · [details](raw/code-simplicity-review.md)
 
 ## Why this matters

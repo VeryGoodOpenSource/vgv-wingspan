@@ -33,6 +33,7 @@ context. `2026-01-15-feat-thing-plan.md` is not findable; neither is a name with
 
 ## Before presenting the plan
 
-Confirm every template section is filled, every link resolves, and every success criterion
+Confirm every section that applies is filled, every link resolves, and every success criterion
 carries a `verify:` command or `verify: manual <steps>`. A criterion with no `verify:` is the
-one thing `/build` cannot act on.
+one thing `/build` cannot act on. Match the plan's length to the work: omit a template section
+the change has nothing to say for rather than padding it — but Success Criteria always stays.

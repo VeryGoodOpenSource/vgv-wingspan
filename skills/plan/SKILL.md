@@ -69,7 +69,7 @@ Announce the decision briefly and proceed. User can redirect if needed.
 
 Only run this step if `1.1.1 Research decision` determines that external research is needed.
 
-Run these agents in parallel to gather external information:
+Tell the user external research is starting — the agents may look up docs through Context7, which can raise a permission prompt. Then run these agents in parallel, each briefed with the feature, the stack and versions local research found, and the specific questions local research left open:
 
 - **@official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
 - **@best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
@@ -93,14 +93,12 @@ Draft the plan's title, derive its filename, and gather supporting material per
 
 ### 3. User Flow Analysis
 
-After planning the issue structure, run the **user-flow-analysis-agent** to analyze the plan for flow completeness and gap identification:
-
-- Task @user-flow-analysis-agent(feature_description, research_findings)
+After planning the structure, dispatch the **user-flow-analysis-agent** subagent to check the plan for flow completeness and gaps. It starts without this conversation, so brief it with the feature description, the decisions from the brainstorm, and the research findings that bear on user flows.
 
 **Flow Analysis Output:**
 
 - [ ] Review flow analysis results
-- [ ] Incorporate any identified gaps or edge cases into the issue
+- [ ] Incorporate any identified gaps or edge cases into the plan
 - [ ] Update success criteria based on flow analysis findings
 
 ### 4. Success Criteria Gate

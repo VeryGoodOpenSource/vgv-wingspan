@@ -2,6 +2,7 @@
 name: pr-readiness-review-agent
 description: Checks whether a branch is mechanically ready to open as a pull request — formatter and linter clean, no debug artifacts (stray print/console statements, commented-out code), no committed secrets or large binaries, and commit messages that follow the project's convention. Returns findings graded Critical, Important, or Suggestion, each with a file:line and a concrete fix. Use after the code is written and before opening a PR. It does not assess correctness, architecture, or test quality — the other review agents cover those.
 model: haiku
+effort: medium
 ---
 
 # PR Readiness Review Agent
@@ -55,10 +56,10 @@ For each finding, report: `file_path:line` — `[artifact type]`: description.
 
 ### 4. Commit Hygiene
 
-Review the branch's commit history (all commits since diverging from the base branch):
+Review the branch's commit history — every commit after the merge-base your brief gives (without one, compute it with `git merge-base HEAD <default-branch>`):
 
 ```bash
-git log --oneline main..HEAD
+git log --oneline <merge-base>..HEAD
 ```
 
 Check for:
@@ -110,7 +111,7 @@ Items that can be resolved automatically:
 
 - Formatting is not a style preference. Run the project's formatter and match its output exactly.
 - Zero analysis warnings. Every warning is either a bug waiting to happen or noise that hides real bugs.
-- Debug artifacts are the number one source of "oops" comments in code review. Catch them all.
+- Debug artifacts are the most common source of avoidable review comments.
 - Commit history is documentation. Each commit should explain why a change was made, not just that something changed.
 - This review is mechanical, not subjective. Every finding should be objectively verifiable.
 

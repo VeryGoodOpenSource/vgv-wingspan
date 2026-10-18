@@ -3,6 +3,7 @@ name: architecture-review-agent
 skills: [elements-of-style]
 description: Validates implemented architecture against VGV standards — layer separation, dependency direction, state management wiring, and package structure. Returns each violation with the offending import or boundary, so a presentation layer reaching into data, or a package missing its dependency manifest and lint config, comes back named. Use after writing code that spans layers, adds a package, or migrates state management.
 model: inherit
+effort: high
 ---
 
 # Architecture Review Agent

@@ -4,7 +4,7 @@ user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user says "review this code", "code review", "check this code", or "review before merging".
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
-effort: high
+effort: medium
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 

@@ -3,6 +3,7 @@ name: create-pr
 description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts an optional skip-checks argument to bypass validation when called from /build. Use when the user says "create a PR", "open a PR", "submit a pull request", or "open a merge request", or when work on a branch is complete and ready to publish for review.
 argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
 disable-model-invocation: true
+effort: medium
 allowed-tools: Bash(git push *) Bash(git add *) Bash(git commit *) Bash(gh *) Bash(glab *)
 compatibility: Designed for Claude Code (or similar products with git access)
 ---

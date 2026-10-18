@@ -11,6 +11,13 @@ Each agent produces two outputs:
 2. **A structured findings list returned to the caller** (the single source the caller
    uses to number, consolidate, and render both the file and the chat summary).
 
+## Read the change
+
+Your prompt gives the subject (what changed and why) and the scope. For a branch, read the
+change itself with `git diff <merge-base>` and open the untracked files the scope lists — they
+are new files the diff does not show. Review the files in scope, and read beyond them only as
+far as you need to understand the change.
+
 ## 1 — Write the detailed report
 
 Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed) — e.g. with
@@ -33,12 +40,14 @@ the caller can render them verbatim without re-reading the report.
 **Critical**: <count> | **Important**: <count> | **Suggestion**: <count>
 
 - severity: Critical
+  confidence: <high | medium | low — see below>
   rule: <short kebab-case slug for the check that fired, e.g. "missing-disposal">
   title: <short imperative title, e.g. "Dispose the stream subscription">
   location: <file:line — or just the file path when the finding spans it>
   why: <one line — the concrete impact>
   fix: <one line — the concrete action to take>
 - severity: Important
+  confidence: ...
   rule: ...
   title: ...
   location: ...
@@ -47,6 +56,20 @@ the caller can render them verbatim without re-reading the report.
 ```
 
 If you found nothing, return the header with all counts at `0` and no list items.
+
+### Coverage and confidence
+
+Report every issue you find, including ones you are unsure of or consider minor. Grade them
+instead of leaving them out: severity says how much a finding matters, confidence says how
+sure you are that it is real. The caller deduplicates findings and checks each against the
+code before acting, so a finding that turns out wrong costs little, while one you hold back is
+lost.
+
+- **high** — confirmed in the code: you traced the path or saw the failing case, or the check
+  is mechanical (a missing test file, a linter error, an import that crosses a layer).
+- **medium** — strong evidence, not fully traced: it depends on runtime behavior, on code
+  outside the scope, or on how callers use it.
+- **low** — worth a look: the pattern matches, but you could not confirm it.
 
 ### Severity
 

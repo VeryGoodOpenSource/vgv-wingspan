@@ -3,6 +3,7 @@ name: test-quality-review-agent
 skills: [elements-of-style]
 description: Reviews test coverage and quality — whether every state management unit, repository, data model, and UI component has a test file, and whether those tests cover success, failure, and edge cases with meaningful assertions. Returns coverage gaps and anti-patterns, including tautological assertions and missing async settling. Use after code is written, before opening a PR.
 model: sonnet
+effort: high
 ---
 
 # Test Quality Review Agent
@@ -29,7 +30,7 @@ Never assume a specific test command — discover it from the project.
 
 ### 1. Coverage Audit
 
-Run the project's test suite with coverage enabled (if supported). Then scan the implementation and verify every testable unit has a corresponding test file:
+Run the project's test suite with coverage enabled (if supported). Then verify that every testable unit in the scope your brief gives has a corresponding test file:
 
 - **State management units**: Each must have a test file using VGV testing conventions
 - **Repositories/Services**: Each must have unit tests for all public methods
@@ -64,7 +65,7 @@ For each test file, evaluate:
 
 ### 4. Anti-Pattern Detection
 
-Flag these immediately:
+Flag these:
 
 | Anti-Pattern | Example | Why It's Wrong |
 | --- | --- | --- |

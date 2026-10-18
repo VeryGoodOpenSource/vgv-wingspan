@@ -29,9 +29,7 @@ Summarize the bug in one sentence. Identify:
 
 ## Phase 1 — Locate
 
-Run a focused codebase exploration to find the problem area:
-
-- Task @codebase-review-agent("Locate the code responsible for this bug. Focus narrowly on the symptom described — do not survey the entire codebase. Bug: <bug_description>")
+Dispatch the **codebase-review-agent** subagent to find the problem area. It starts without this conversation, so the brief carries everything it needs: the bug description, the symptom and suspected area from triage, and the ask — locate the code responsible and name the most likely root cause, with `file:line` evidence. Keep the search narrow, around the symptom, not a survey of the codebase.
 
 After the agent returns:
 
@@ -96,7 +94,7 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 Validate the fix with a reduced agent set — speed matters, but quality is non-negotiable.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw`. The subject is the bug and the root cause from Phase 1. The scope is the branch, against the branch the hotfix was cut from (usually the default branch: `git symbolic-ref refs/remotes/origin/HEAD`). The fix is still uncommitted at this point, so the scope must include uncommitted and untracked files. The 2 agents:
 
 | Agent | Report name |
 |-------|-------------|
@@ -105,7 +103,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then, checking each finding against the code first (the procedure's *Acting on findings*), fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### Cleanup
 
@@ -137,9 +135,7 @@ Push the branch and create a PR. **Title**: `fix: <concise description>` (max 72
 
 ### Post-Ship
 
-Use **AskUserQuestion** to present options:
-
-1. **Done**: end the session
+Close with a short summary that stands on its own: the root cause, the fix, the regression test that covers it, the PR link, and any `TODO(hotfix)` tradeoffs left in the code.
 
 ## Gotchas
 

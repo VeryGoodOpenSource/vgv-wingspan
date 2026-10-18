@@ -106,7 +106,7 @@ Then handle the phase's changes per the [commit autonomy](references/commit-auto
 
 #### Step 5: Checkpoint
 
-Brief progress update to the user: phase completed, phases remaining.
+Brief progress update to the user: phase completed, phases remaining. Put it in the same message as Step 6's next action — the question, or the next phase's first tool call. A message that ends on a status update ends the turn, and the build waits for a reply nobody knew was needed.
 
 #### Step 6: Advance
 
@@ -134,7 +134,7 @@ Once the final phase is committed, follow the [surgical-diff gate](references/su
 
 Once the final phase is committed and the surgical-diff gate has run, review the whole branch. The agents review the full branch diff, so this runs once after the last phase, not per phase.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The subject is the plan: its path and the goal from its `success-criteria` block. The scope is the branch, against the base branch the surgical-diff gate resolved in its Step 1. The 5 agents:
 
 | Agent | Report name |
 | ----- | ----------- |
@@ -146,7 +146,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act, checking each finding against the code before changing anything (the procedure's *Acting on findings*): auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
@@ -170,9 +170,7 @@ To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validatio
 
 ### Post-Ship
 
-Use **AskUserQuestion** to present options:
-
-- **Done**: end the session
+Close with a short summary that stands on its own for a reader who sees only this message: what shipped (the PR link, or the local commits awaiting a push), which review findings were fixed or deferred, and anything left for the user — manual criteria, pushing, or the "Noticed (not changed):" list.
 
 ## Gotchas
 
