@@ -16,6 +16,11 @@ skills_lint.yaml       # skills_lint rule config used by the CI skills lint work
 config/
   cspell.json          # Spell-check dictionary and settings
   custom.markdownlint.jsonc  # Markdown lint rule overrides
+evals/                 # `claude plugin eval` suite — one directory per skill
+  README.md            # Case format, grader reference, and what the suite leaves uncovered
+  _fixture/
+    fixture.sh         # The neutral workspace every case symlinks to
+  <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
 agents/                # Subagent definitions, grouped by role
   analysis/
     plan-splitting-agent.md       # Flags oversized plans to split across PRs
@@ -126,6 +131,28 @@ class), and renders one consolidated report plus a matching chat summary (see
 - **YAGNI:** Prefer the simplest solution that meets current requirements. Remove hypothetical features.
 - **Architecture:** Respect the project's established layer boundaries and dependency direction. Flag violations for review.
 - **Testing:** Non-negotiable. Every testable unit gets tests.
+
+## Evals
+
+Evals ask whether Claude routes to a skill and follows it. `evals/README.md` is the single
+source of truth for the case format, the grader reference, prerequisites, and what makes a
+case worth having — read it before writing a case, and put new eval documentation there
+rather than here.
+
+Cases live under `evals/<skill>/<case>/` and are discovered from the tree; nothing registers
+them. Run them with `claude plugin eval . --scaffold`. `--scaffold` is not optional: every
+run starts in an empty workspace, and without the flag the fixture is skipped silently and
+cases fail for reasons unrelated to the skill.
+
+Read the two arm scores, not the total. The no-plugin arm is supposed to fail.
+
+Evals do not run on a pull request, because they call real models.
+`.github/workflows/evals.yaml` runs them after a merge to `main`, scoped by `--tag` to the
+changed skills, with-plugin arm only, and always non-blocking. A full run is manual
+(`workflow_dispatch`).
+
+A run grants `Read`, `Glob`, `Grep` and `Skill` and nothing else, so a case measures the
+reply a skill produces, never a file it writes or a command it runs.
 
 ## Guidance
 
