@@ -46,10 +46,9 @@ Wingspan is a Claude Code plugin with no runtime application code. The security-
 - Unsafe path handling
 - Unintended code execution
 
-### Plugin Manifest & MCP Config (`.claude-plugin/plugin.json`, `.mcp.json`)
+### Plugin Manifest (`.claude-plugin/plugin.json`)
 
 - Excessive permissions
-- Exploitable MCP server definitions
 
 ## Recognition
 
