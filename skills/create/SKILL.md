@@ -2,7 +2,7 @@
 name: create
 user-invocable: true
 description: Scaffolds a new project by routing to the right companion plugin's create skill.
-when_to_use: Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
+when_to_use: Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase. Also use when the user asks for a new project's files, folder structure, or manifest directly — hand-writing them skips the template the companion plugin exists to apply.
 argument-hint: what to create (e.g., "flutter app", "dart package")
 effort: low
 allowed-tools: Read Glob Skill

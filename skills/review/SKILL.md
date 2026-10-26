@@ -2,7 +2,7 @@
 name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
-when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
+when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — the code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high

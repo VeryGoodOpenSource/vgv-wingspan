@@ -153,6 +153,8 @@ Once the final phase is committed, follow the [surgical-diff gate](references/su
 
 Once the final phase is committed and the surgical-diff gate has run, review the whole branch. Run 5 review agents **in parallel** — they review the full branch diff, so this runs once after the last phase, not per phase.
 
+Review is non-negotiable. Run it even when asked to skip it for a demo, a deadline, or a release window: run the agents, report what they found, and let the user decide which findings to fix now. Shipping a branch this skill never reviewed is not an option it offers.
+
 ### Agent instructions
 
 Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.

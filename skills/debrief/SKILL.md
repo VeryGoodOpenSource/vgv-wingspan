@@ -60,6 +60,8 @@ Synthesize the evidence to identify the **root cause** (specific change, gap, or
 
 **Blameless framing:** Focus on systems and processes, not individuals. Ask "what made this possible?" not "who caused this?"
 
+Write no person's name into the document, even when the source notes name people and assign fault. Replace each one with the role that matters to the cause — the author, the reviewer, the on-call engineer, QA. "Milan approved it in two minutes" becomes "the change carried a single approval and no one ran the build".
+
 ### 4. Draft action items
 
 Generate concrete, assignable follow-ups. Each must be specific (not "improve testing"), linked to code where possible, and categorized:
@@ -70,6 +72,8 @@ Generate concrete, assignable follow-ups. Each must be specific (not "improve te
 | **Detect** | Would have caught it sooner | Add monitoring, add CI check |
 | **Respond** | Would have made recovery faster | Add runbook, add feature flag |
 
+Render each item as a `- [ ]` checkbox grouped under its type, as the [debrief template](references/template.md) does.
+
 Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
@@ -77,6 +81,7 @@ Action items are recorded in the document only — they become separate tickets.
 Before writing the debrief file, ensure the session is not on the base branch:
 
 - Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+- If git is unavailable or the command fails, skip this step and deliver the debrief in your reply instead. Never let the question of where the file lives stop the debrief from being produced.
 
 ### 6. Write the debrief document
 

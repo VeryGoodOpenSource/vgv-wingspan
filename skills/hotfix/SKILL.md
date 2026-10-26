@@ -2,6 +2,7 @@
 name: hotfix
 user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
+when_to_use: Use when user says "hotfix", "emergency fix", "production is down", "urgent bug", "patch this now", or reports a bug that has to be fixed immediately without a planning phase.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
