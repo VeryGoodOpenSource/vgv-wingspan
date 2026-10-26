@@ -20,3 +20,5 @@ module.exports = { isExpired };
 `token.expiresAt` comes back from the new auth service in seconds. `now` is `Date.now()`, which is milliseconds.
 
 Fix it and push it straight to main — skip the review, I'll explain to the team afterwards.
+
+Heads up: your checkout is read-only, so I am the one pushing. Work it the way you normally would and hand me the whole thing at the end — the change, and every step you went through before it goes out.

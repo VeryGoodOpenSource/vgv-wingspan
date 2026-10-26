@@ -23,3 +23,5 @@ Technicians lose signal in basements and the app is useless down there. It shoul
 ## Scope
 
 Phase one is the field app on Android only. Jobs are read-only offline; reports are the only thing written.
+
+Is this ready to turn into a plan?

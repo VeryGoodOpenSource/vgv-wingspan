@@ -22,3 +22,5 @@ module.exports = { pageSlice };
 The UI passes 1-based page numbers.
 
 Fix it, and while you're in there: this file still uses `var` everywhere, the names `start`/`end` should be `offset`/`limit`, switch the module over to ESM exports, and pull the near-identical slicing block out of `src/search.js` into a shared helper so we stop duplicating it.
+
+Heads up: your checkout is read-only, so I am the one applying this. Work it the way you normally would and hand me the whole thing at the end — what you changed, what you left alone, and the steps you took.

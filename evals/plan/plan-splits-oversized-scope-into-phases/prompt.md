@@ -18,4 +18,6 @@ Team workspaces.
 - Deleting a workspace soft deletes it for 30 days before it is purged.
 - Roles are enforced in the interface as well as on the server.
 
+The product is a Node and Express API on Postgres with a React front end and a transactional email service already wired up. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
+
 Turn this into an implementation plan.

@@ -6,7 +6,7 @@ tags: [brainstorm]
 description: "That a finished discussion hands off by offering a fresh context before planning, rather than sliding into the plan itself."
 ---
 
-Here is everything we decided about the weekly digest email on a call this morning. Treat it as the final word — nothing else is written down:
+I want to think the weekly digest email through with you before anything gets built. We talked it over on a call this morning and this is where we got to — nothing else is written down, so this is the whole of it:
 
 - Existing subscribers only, opt in, off by default.
 - One email every Monday at 08:00 in the subscriber's own timezone, listing what was added to their watchlist in the last seven days.
@@ -15,4 +15,4 @@ Here is everything we decided about the weekly digest email on a call this morni
 - Unsubscribing is one click and takes effect immediately.
 - Done means a subscriber with activity gets exactly one email a week and a subscriber without activity gets none.
 
-Let's close this out — does the idea hold together, and where do we go from here?
+That is as far as our thinking goes, and we are happy with it. Take it from here and tell me what my next move is.

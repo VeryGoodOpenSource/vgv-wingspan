@@ -16,4 +16,6 @@ Export to CSV.
 - The export respects whatever filters the user had applied on screen.
 - A failed export is retried twice, then the user is told it failed.
 
-Give me the implementation plan. I want to land this in pieces I can merge one at a time, not as one enormous pull request.
+The app is a Node and Express service on Postgres with a React front end, a job queue, object storage and a transactional email service already in place. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
+
+Give me the implementation plan, as one document. I will be building it myself across several sittings and I start each one from scratch, so every chunk has to stand on its own: what it covers, what it touches, and how I know it is finished before I move on.

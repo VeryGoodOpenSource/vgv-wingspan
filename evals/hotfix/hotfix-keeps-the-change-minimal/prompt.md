@@ -26,3 +26,5 @@ function summarize(orders) {
 module.exports = { summarize };
 
 Refunded orders come back from the payments API with `payment: null`. Customers are staring at an error page. Get it fixed.
+
+Heads up: your checkout is read-only, so I am the one applying this. Work it the way you normally would and hand me the whole thing at the end — what you found, the change, and the steps you took to get there.

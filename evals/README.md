@@ -48,6 +48,27 @@ that:
   is about is pasted into the prompt and named as authoritative, because the model cannot go
   and read one.
 
+**Routing is the suite's loudest signal, and it is noisy.** In a measured two-arm run of all
+47 cases, 10 cases scored 0 on `skill-fired`; in the next run of the same suite it was 10
+different ones. Four cases that scored 1.00 one run missed routing entirely the next. Read a
+red routing result as a hypothesis, confirm it with `--runs 3`, and treat a case that misses
+across three runs as a finding about the skill rather than a case to reword — three separate
+rewording passes over the `/review` cases never made that skill fire reliably when the user
+pastes the whole file into the prompt.
+
+**Do not write a prompt that tells the model not to edit anything.** "Don't change any files,
+just describe what you would do" reads like the obvious way to fit the no-Write sandbox, and
+it kills routing outright: 5 of 5 cases rewritten that way dropped to `Skill called 0x`. Leave
+the task a task, and mention the environment as a fact if you must — "put the write-up in your
+reply, I have no repo access to give you right now" keeps the skill firing.
+
+**A skill that only speaks through a file it writes cannot be graded here.** `/plan` applies
+its Implementation Phases template when it writes the plan file, and with no `Write` it
+free-forms a different shape every run; the same goes for `/build`'s progress checklist and
+`/debrief`'s checkbox action items. Those cases stay red no matter how the grader is worded.
+Grade what the reply itself carries, and leave the template to a case that can be granted
+`--allow-tools Write`.
+
 Two skills have no cases. `create-pr` and `rebase` both set
 `disable-model-invocation: true`, and the Skill tool refuses those unless the user typed the
 command that turn — `Skill <name> cannot be used with the Skill tool due to

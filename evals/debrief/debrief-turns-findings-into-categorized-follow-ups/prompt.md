@@ -16,4 +16,4 @@ Our nightly data sync silently stopped writing records for three days before any
 - We granted the permission on the 6th and backfilled the three days by hand. The backfill took four hours, mostly because nobody had done one before and there is no written procedure.
 - There is no test that runs the sync against a database using the job's real role, and the job's error handling swallows everything.
 
-Write this up. I mostly need the follow-up work captured clearly enough that we can turn each item into a ticket.
+Write this up. I mostly need the follow-up work captured clearly enough that we can turn each item into a ticket. Put the write-up itself in your reply — I have no repo access to give you right now, so do not try to save it anywhere; I will file it myself.

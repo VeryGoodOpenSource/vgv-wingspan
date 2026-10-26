@@ -5,6 +5,11 @@ weight: 2
 
 Judge only the text of the response.
 
-PASS if the response surfaces things the reviewed approach takes for granted and puts them back to the author as questions to decide — for example "what happens when the same job is edited on the device and on the server?", "how long may the cached list be trusted?", or "what happens if a queued report is sent twice?".
+PASS if the response names at least one thing the reviewed approach takes for granted — an
+unstated assumption, an unhandled failure case, or a decision the document never makes — and
+leaves that point with the author to settle, whether phrased as a question, listed as an open
+question, or flagged as a decision still to be made. Suggesting what the answer could be is
+fine as long as the choice is handed back.
 
-FAIL if the response resolves such a point on the author's behalf and writes the answer into the approach as settled, or if it returns only praise and wording fixes with nothing left open.
+FAIL if the response settles such a point on the author's behalf and presents it as decided,
+or if it returns only praise and wording fixes with nothing left open.

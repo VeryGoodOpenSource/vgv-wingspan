@@ -6,8 +6,8 @@ tags: [review]
 description: "That the review states the scope it covers and keeps its findings inside the two changed files instead of spreading into the rest of the project."
 ---
 
-This is the diff of my branch against `main`. The pasted diff is the whole change — take it
-as authoritative over anything on disk.
+Code review my branch before I open the PR. The diff below is the whole change against
+`main` — take it as authoritative over anything on disk.
 
 ```diff
 diff --git a/src/pricing.js b/src/pricing.js
@@ -48,5 +48,3 @@ new file mode 100644
 +
 +module.exports = { CartView };
 ```
-
-Review it before I open the PR.

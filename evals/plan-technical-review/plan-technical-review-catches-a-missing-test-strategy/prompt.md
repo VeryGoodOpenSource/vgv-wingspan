@@ -6,8 +6,9 @@ tags: [plan-technical-review]
 description: "That a plan shipping new behavior with no tests and no way to verify it is flagged for the gap before the work starts."
 ---
 
-Here is the plan I am about to hand to someone else to implement. The pasted text is the
-whole plan — it is not in the repo, so take it as authoritative.
+Is this plan ready? I am about to hand it to someone else to implement. The pasted text is
+the whole plan, and it targets our checkout app, which is not checked out in this directory
+— so judge the plan as written rather than against what happens to be on disk here.
 
 ```markdown
 # Add promo codes to checkout

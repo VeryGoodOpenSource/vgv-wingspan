@@ -15,4 +15,6 @@ Rate limiting on the public API.
 - Internal keys are exempt.
 - A key's owner can see their own limit and their current usage.
 
+The API is a Node and Express service on Postgres, with Redis already running for sessions, and API keys are stored with their owner. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
+
 Give me the implementation plan.

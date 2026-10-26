@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: '\.js:\d+'
+pattern: '(?:src|test)/[\w./-]+:\d+'
 weight: 1
 ---

@@ -6,9 +6,9 @@ tags: [review]
 description: "That one pasted file comes back reviewed across the quality dimensions — conventions, architecture, tests and simplicity — rather than as a single-dimension style pass."
 ---
 
-I just finished `src/cart.js`. The file below is exactly what is on my branch and it is the
-only thing I want looked at — take the pasted text as the source of truth, not anything else
-in the repo.
+Code review `src/cart.js` for me before I merge — I just finished it and it is the only
+thing I changed on this branch. The text below is exactly what is on the branch; take it as
+the source of truth.
 
 ```js
 const https = require('node:https');
@@ -46,4 +46,4 @@ function toCurrency(amount) {
 module.exports = { CartView, formatTotal, toCurrency };
 ```
 
-There is no `test/cart.test.js` yet. Review it before I merge.
+There is no `test/cart.test.js` yet.

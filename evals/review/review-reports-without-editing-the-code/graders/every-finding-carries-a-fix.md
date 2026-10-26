@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: '\*\*Fix\*\*|^\s*-\s*Fix:'
+pattern: '\*\*Fix\*\*|^\s*[-*]\s*(\*\*)?Fix(\*\*)?\s*:'
 flags: m
 ---

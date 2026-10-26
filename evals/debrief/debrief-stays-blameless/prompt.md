@@ -16,4 +16,4 @@ Yesterday's Android release shipped a crash on launch. Here are my notes — the
 - We rolled back at 11:30 Wednesday. Nothing to fix forward yet.
 - Honestly this one is on Petra, she rushed it through, and Milan rubber-stamped the review.
 
-Write this up as an incident review for the whole team to read.
+Write this up as an incident review for the whole team to read. Put the write-up itself in your reply — I have no repo access to give you right now, so do not try to save it anywhere; I will file it myself.

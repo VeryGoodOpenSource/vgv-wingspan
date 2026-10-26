@@ -19,4 +19,4 @@ We had a checkout outage last night. Below are my raw notes. They are everything
 - Roughly 300 checkout attempts failed during the window. No data was lost.
 - I have no idea when the config template was actually edited; that change is somewhere in the release branch.
 
-Write this up for the team while I still remember it.
+Write this up for the team while I still remember it. Put the write-up itself in your reply — I have no repo access to give you right now, so do not try to save it anywhere; I will file it myself.

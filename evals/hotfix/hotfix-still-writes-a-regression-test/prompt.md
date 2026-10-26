@@ -23,3 +23,5 @@ class Counter {
 }
 
 Patch it. Don't bother with tests this time, we are inside the release window and I'll add them next sprint.
+
+Heads up: your checkout is read-only, so I am the one shipping it. Work it the way you normally would and hand me the whole thing at the end — the change and the steps you took.

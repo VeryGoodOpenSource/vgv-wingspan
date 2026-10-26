@@ -6,8 +6,9 @@ tags: [plan-technical-review]
 description: "That a small hand-written plan is assessed on simplicity, on engineering conventions, and on whether its scope fits a single pull request."
 ---
 
-I wrote this plan myself for a rounding bug. The pasted text is the whole plan — it is not in
-the repo, so take it as authoritative. Check it before I start.
+I wrote this plan myself for a rounding bug — check it before I start. The pasted text is
+the whole plan, and it targets our storefront app, which is not checked out in this
+directory, so judge the plan as written rather than against what happens to be on disk here.
 
 ```markdown
 # Fix cart total rounding

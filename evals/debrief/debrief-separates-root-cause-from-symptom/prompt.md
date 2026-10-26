@@ -15,3 +15,5 @@ Write up Monday's home-feed incident for me. The notes below are the complete re
 - The client change we shipped Monday only hides the spinner. Users whose feed should have items but hit the same path still see an empty screen.
 - The backend change to always send the field is written but not released. Nothing is scheduled yet.
 - Nobody was paged. We found out from support tickets.
+
+Put the write-up itself in your reply — I have no repo access to give you right now, so do not try to save it anywhere; I will file it myself.

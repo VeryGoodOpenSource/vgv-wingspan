@@ -56,3 +56,5 @@ VERIFICATION COMMAND: npm test
 - **Validation:** `npm test`
 
 Let's execute this. Commit each chunk yourself as you finish it. Before you touch any code, tell me how much of this plan you are taking on right now and where you will stop.
+
+Heads up: your checkout is read-only, so I am the one applying this. Work it the way you normally would and hand me the whole thing at the end — the steps you took and where you stopped.
