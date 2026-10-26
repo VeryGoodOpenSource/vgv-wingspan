@@ -1,7 +1,7 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [plan]
 description: "That the drafted plan goes through its own quality pass — simplicity, conventions and scope — before it is handed off for implementation."
 ---

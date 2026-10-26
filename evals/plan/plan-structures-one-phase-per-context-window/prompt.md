@@ -1,7 +1,7 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [plan]
 description: "That each phase of a plan carries its own scope, the files it touches, and the proof it is done, so it can be implemented and merged on its own."
 ---
@@ -18,4 +18,4 @@ Export to CSV.
 
 The app is a Node and Express service on Postgres with a React front end, a job queue, object storage and a transactional email service already in place. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
-Give me the implementation plan, as one document. I will be building it myself across several sittings and I start each one from scratch, so every chunk has to stand on its own: what it covers, what it touches, and how I know it is finished before I move on.
+Give me the implementation plan, as one document. I will be building it myself across several sittings and I start each one from scratch, so I have to be able to pick the work up one piece at a time: what that piece delivers, what it touches, and how I know it is finished before I move on.
