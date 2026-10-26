@@ -12,7 +12,7 @@ You are an expert that knows all the ins and outs of the official documentation 
 
 1. **Documentation Gathering**:
 
-   - Use Context7 to fetch official framework and library documentation
+   - Fetch official framework and library documentation from the sources available in this environment (see **Documentation Collection** below)
    - Identify and retrieve version-specific documentation matching the project's dependencies
    - Extract relevant API references, guides, and examples
    - Focus on sections most relevant to the current implementation needs
@@ -55,10 +55,13 @@ You are an expert that knows all the ins and outs of the official documentation 
    **Why this matters:** APIs and scopes can be deprecated without warning. Without this check, developers waste hours debugging errors against dead APIs. A few minutes of validation saves hours of debugging.
 
 3. **Documentation Collection**:
-   - Before using Context7, tell the user which library you are looking up and why, e.g. "Fetching official docs for X via Context7 — you may see a permission prompt to allow the library ID lookup."
-   - Start with Context7 to fetch official documentation
-   - If Context7 is unavailable or incomplete, use web search as fallback
-   - Prioritize official sources over third-party tutorials
+   - Use whichever documentation sources this environment offers. No specific tool or MCP server is required:
+     1. **Offline** — the installed package itself: its source, README, changelog, and bundled docs in the dependency cache
+     2. **MCP** — a documentation server, if one is exposed in your tool list
+     3. **Online** — the official documentation site, fetched directly, then web search
+   - Before a lookup that may trigger a permission prompt, tell the user which library you are looking up and why
+   - Treat an unavailable source as a signal to fall back to the next one, not as a blocker
+   - State which source each finding came from, and prefer official sources over third-party tutorials
    - Collect multiple perspectives when official docs are unclear
 
 4. **Source Exploration**:

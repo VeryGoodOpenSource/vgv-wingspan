@@ -33,7 +33,7 @@ Before doing any external research, check that local knowledge might exist:
    - Scan existing code patterns for established practices
    - If VGV conventions and project patterns provide comprehensive guidance, summarize and deliver
    - If conventions provide partial guidance, note what's covered, proceed to Phase 1.5 and Phase 2 for gaps
-   - If no relevant conventions found, proceed to `1.1 MANDATORY Deprecation Check` and `2. Online research (if needed)`
+   - If no relevant conventions found, proceed to `1.1 MANDATORY Deprecation Check` and `2. Documentation research (if needed)`
 
 ### 1.1: MANDATORY Deprecation Check (for external APIs/services)
 
@@ -46,22 +46,23 @@ Before doing any external research, check that local knowledge might exist:
 
 **Why this matters:** APIs and scopes can be deprecated without warning. Without this check, developers waste hours debugging errors against dead APIs. A few minutes of validation saves hours of debugging.
 
-### 2. Online research (if needed)
+### 2. Documentation research (if needed)
 
 Only after checking skills **and** verifying API availability, gather additional information:
 
 1. **Leverage External Sources**:
 
    - Search the project's referenced standards and documentation
-   - Before using Context7, tell the user which library you are looking up and why, e.g. "Fetching official docs for X via Context7 — you may see a permission prompt to allow the library ID lookup."
-   - Use Context7 MCP to access official documentation from GitHub, framework docs, and library references
+   - Use whichever documentation sources this environment offers — no specific tool or MCP server is required: the installed packages themselves (source, README, changelog), a documentation MCP server if one is exposed in your tool list, and official docs sites fetched directly or found through web search
+   - Before a lookup that may trigger a permission prompt, tell the user which library you are looking up and why
+   - Treat an unavailable source as a signal to fall back to the next one, not as a blocker
    - Search the web for recent articles, guides, and community discussions
    - Identify and analyze well-regarded open source projects that demonstrate the practices
    - Look for style guides, conventions, and standards from respected organizations
 
-2. **Online Research Methodology**:
+2. **Research Methodology**:
 
-   - Start with the project's referenced standards, then official documentation using Context7 for the specific technology
+   - Start with the project's referenced standards, then the official documentation for the specific technology, from whichever source carries it
    - Search for "[technology] best practices [current year]" to find recent guides
    - Look for popular repositories on GitHub that exemplify good practices
    - Check for industry-standard style guides or conventions
