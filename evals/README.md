@@ -4,10 +4,15 @@ Does Claude route to the skill, and does the output follow it? Cases run through
 [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) against real models.
 
 ```bash
-claude plugin eval . --scaffold                       # every case, both arms
-claude plugin eval . --scaffold --tag plan            # one skill
-claude plugin eval . --scaffold --ablation none       # with-plugin arm only, half the cost
+E="claude plugin eval . --scaffold --allow-tools Write"
+$E                                                    # every case, both arms
+$E --tag plan                                         # one skill
+$E --ablation none                                    # with-plugin arm only, half the cost
 ```
+
+`--allow-tools Write` is as load-bearing as `--scaffold`. Without it the four cases that grade
+a written document score 0 with no failing content grader, and the runner warns
+`case … cannot pass with the granted tools`.
 
 - Claude Code **>= 2.1.269**.
 - No API key locally. Runs authenticate the same way your normal session does.
@@ -39,9 +44,11 @@ invoke the skill" check for free.
 Wingspan's skills drive git, write documents and dispatch agents. An eval run grants none of
 that:
 
-- **No `Bash`, `Write` or `Edit`.** Those are gated behind `--allow-tools`, which neither the
-  local commands above nor CI pass. A case is graded on the **reply**, never on a file it
-  wrote or a command it ran.
+- **`Write` only, and only where a case asks for it.** A case grants a gated tool twice over:
+  the operator passes `--allow-tools Write` (CI does, and so must you), and the case lists
+  `Write` in its own `allowed_tools`. Four cases do, because their subject is the document the
+  skill writes; every other case is graded on the **reply** alone. `Bash` and `Edit` are
+  granted nowhere, so no case runs git, a test suite, or a CLI.
 - **No MCP tools.** A plugin server without a directory under `mocks/` is not started, and
   `context7` has none. Every run reports that on a `mocked:` line.
 - **Prompts carry their own context.** A plan, a diff, an incident report or a draft the case
@@ -62,12 +69,12 @@ it kills routing outright: 5 of 5 cases rewritten that way dropped to `Skill cal
 the task a task, and mention the environment as a fact if you must — "put the write-up in your
 reply, I have no repo access to give you right now" keeps the skill firing.
 
-**A skill that only speaks through a file it writes cannot be graded here.** `/plan` applies
-its Implementation Phases template when it writes the plan file, and with no `Write` it
-free-forms a different shape every run; the same goes for `/build`'s progress checklist and
-`/debrief`'s checkbox action items. Those cases stay red no matter how the grader is worded.
-Grade what the reply itself carries, and leave the template to a case that can be granted
-`--allow-tools Write`.
+**A skill that speaks through a file it writes needs `Write` and a `files` target.** Grade the
+document, not the summary the skill prints after it: give the case `Write` in `allowed_tools`,
+run with `--allow-tools Write`, and set `target: files` on the regex graders (`focus: files` on
+an `llm` one). `files` matches across everything the run wrote, so a grader never has to guess
+the filename the skill picked. A case that still grades the reply for template wording is
+measuring the summary, and the summary is not where the template lives.
 
 Two skills have no cases. `create-pr` and `rebase` both set
 `disable-model-invocation: true`, and the Skill tool refuses those unless the user typed the
@@ -281,7 +288,7 @@ and runs fail at scaffold time. CI runs on Linux and is unaffected.
 ## Running
 
 ```bash
-E="claude plugin eval . --scaffold"
+E="claude plugin eval . --scaffold --allow-tools Write"
 $E                                             # every case, both arms
 $E --tag plan --tag build                      # two skills
 $E --case plan-splits-a-multi-layer-feature-into-phases
@@ -327,10 +334,9 @@ scoped by `--tag` to the changed skills, with-plugin arm only, and `continue-on-
 
 ## What this does not cover
 
-- **The document a skill writes.** No case is granted `Write`, so a skill that would persist
-  `docs/plan/<name>.md` is graded on the plan it reports, not on the file.
 - **Anything downstream of a tool call.** No `Bash` means no git state, no `gh`, and no
-  dispatched review agent actually running. A case measures what the skill says it will do.
+  dispatched review agent actually running. A case measures what the skill says it will do,
+  except for the written document, which four cases read back with a `files` target.
 - **`create-pr` and `rebase`.** `disable-model-invocation: true` puts them out of reach of
   any prompt.
 - **Judge calibration.** Most content graders are `llm` with no human-labelled gold set.

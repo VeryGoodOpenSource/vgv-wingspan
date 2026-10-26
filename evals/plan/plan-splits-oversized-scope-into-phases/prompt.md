@@ -1,7 +1,7 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [plan]
 description: "That a feature spanning several layers is called too large for one pull request and broken into numbered phases rather than planned as one pass."
 ---

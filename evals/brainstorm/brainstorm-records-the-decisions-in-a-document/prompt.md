@@ -1,7 +1,7 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [brainstorm]
 description: "That a settled discussion comes back as the brainstorm document structure — decisions and open questions — under the conventional docs path."
 ---

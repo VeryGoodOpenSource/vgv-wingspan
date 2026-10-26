@@ -168,6 +168,7 @@ jobs:
           set +e
           claude plugin eval . \
             --trust-plugin --scaffold --no-publish \
+            --allow-tools Write \
             --runs "$RUNS" \
             --ablation "$ABLATION" \
             --threshold 0.8 \
