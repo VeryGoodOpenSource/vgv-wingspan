@@ -1,6 +1,8 @@
 ---
 type: regex
-target: files
+target:
+  source: file
+  path: docs/plan/workspaces-plan.md
 pattern: 'Implementation Phases'
 flags: i
 weight: 3

@@ -1,6 +1,5 @@
 ---
 type: llm
-focus: files
 weight: 2
 ---
 

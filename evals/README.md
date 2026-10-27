@@ -69,12 +69,34 @@ it kills routing outright: 5 of 5 cases rewritten that way dropped to `Skill cal
 the task a task, and mention the environment as a fact if you must — "put the write-up in your
 reply, I have no repo access to give you right now" keeps the skill firing.
 
-**A skill that speaks through a file it writes needs `Write` and a `files` target.** Grade the
+**A skill that speaks through a file it writes needs `Write` and a file target.** Grade the
 document, not the summary the skill prints after it: give the case `Write` in `allowed_tools`,
-run with `--allow-tools Write`, and set `target: files` on the regex graders (`focus: files` on
-an `llm` one). `files` matches across everything the run wrote, so a grader never has to guess
-the filename the skill picked. A case that still grades the reply for template wording is
-measuring the summary, and the summary is not where the template lives.
+run with `--allow-tools Write`, and target the file.
+
+`target: files` and `target: {source: file, path: …}` are not the same thing, and the
+difference cost a full measurement round here:
+
+| target | matches |
+| ------ | ------- |
+| `files` | the **paths** the run wrote — `docs/notes/deep.md` matches, the word inside it does not |
+| `{ source: file, path: <path> }` | the **contents** of that one file |
+
+So a content grader needs an exact path, and the prompt is where it comes from: ask for the
+file by name the way a user who wants it filed somewhere would. The skills honor a path the
+user names, and the four document cases here pin one.
+
+**Budget a writing case properly.** Producing a real plan document takes a skill well past the
+suite's usual `max_turns: 12` / `timeout_seconds: 600` — ours run 20 turns and 1500 seconds. A
+cap breach or a timeout scores the case 0 **with no failing grader**, which reads exactly like
+a content regression; two cases here were read as "the skill ignores its own template" for a
+round before the trace showed the run was simply cut off mid-write.
+
+**Keep `llm` graders off long files.** The runner warns when a judged artifact runs long
+(`llm judges are noisy on long inputs`), and a 19k-character plan is long. Grade the document
+with regex and leave the judge the short reply.
+
+A case that still grades the reply for template wording is measuring the summary, and the
+summary is not where the template lives.
 
 Two skills have no cases. `create-pr` and `rebase` both set
 `disable-model-invocation: true`, and the Skill tool refuses those unless the user typed the
