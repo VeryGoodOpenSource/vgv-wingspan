@@ -44,6 +44,10 @@ Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt b
 
 The skill must work with partial information. Not every debrief has full CI logs or a complete timeline. Note gaps explicitly in the document rather than blocking on them.
 
+When the source notes name people, record the role instead as you take them down — the author,
+the reviewer, the on-call engineer, QA. A name that never enters your notes cannot reach the
+document.
+
 ### 2. Gather evidence from the codebase
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
@@ -158,4 +162,5 @@ Action items: <N> prevent, <N> detect, <N> respond
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 **DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.

@@ -245,6 +245,7 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill writes code. It is the execution phase, not the planning phase.
 - Follow the plan. The plan was reviewed and approved. Don't redesign during implementation.
 - Ship quality, not quantity. Every line represents VGV's engineering reputation.

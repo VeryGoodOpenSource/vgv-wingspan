@@ -160,6 +160,7 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
 - No brainstorm or plan documents are generated.
 - Tests and review are non-negotiable — fast doesn't mean sloppy.

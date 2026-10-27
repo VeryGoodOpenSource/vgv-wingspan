@@ -129,6 +129,7 @@ brief summary of which findings (by id) were fixed.
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - One consolidated report per run. Per-agent raw reports live in `docs/code-review/<slug>/raw/`
   for drill-down and are linked from the consolidated file.
 - Reports are untracked working files. Commit or delete them when no longer needed.

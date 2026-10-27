@@ -104,14 +104,20 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 Before writing any files, ensure the session is not on the base branch:
 
 - Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+- If git is unavailable or the command fails, skip this step and deliver the document in your reply instead. Never let the question of where the file lives stop the write-up from being produced.
 
 ### 2. Capture the design document
 
 Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
+If the user names a path for the document, write it there instead and keep their name.
+
 Ensure `docs/brainstorm/` directory exists before writing.
 
-Use the [brainstorm template](references/template.md) as the document structure.
+Use the [brainstorm template](references/template.md) as the document structure, keeping its
+section headings as they are written — `## What We're Building`, `## Why This Approach`,
+`## Key Decisions`, `## Open Questions`. `/plan` reads the document back by those headings,
+and a heading of your own wording, however apt, is one it cannot find.
 
 ### 3. Handoff
 
@@ -162,4 +168,5 @@ Key decisions:
 
 ## Important Guidelines
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 **DO NOT CODE!** Just explore and document decisions.

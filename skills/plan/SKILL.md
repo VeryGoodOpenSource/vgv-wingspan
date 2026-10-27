@@ -147,11 +147,18 @@ These criteria populate the `success-criteria` block defined in [success-criteri
 | **Standard** (default) | Most features and bug fixes needing moderate detail | [standard](references/standard.md) |
 | **Extensive** | Major features, architectural changes, significant risk or uncertainty | [extensive](references/extensive.md) |
 
+Whatever the level, a plan that carries more than one phase embeds the
+[Implementation Phases block](references/implementation-phases.md) verbatim: `## Implementation Phases`,
+one `### Phase N:` each, and the `**Status:**`, `**Scope:**`, `**Files touched:**`,
+`**Acceptance criteria:**` and `**Validation:**` fields. `/build` parses those names to execute one
+phase per context window — renaming them to anything of your own, however clear, breaks execution.
+
 ### 5.1. Set up workspace
 
 Before writing the plan file, ensure the session is not on the base branch:
 
 - Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+- If git is unavailable or the command fails, skip this step and deliver the plan in your reply instead. Never let the question of where the file lives stop the plan from being produced.
 
 ### 6. Issue creation and formatting
 
@@ -178,6 +185,8 @@ Before writing the plan file, ensure the session is not on the base branch:
 ## Output Format
 
 **Filename:** Use the date and kebab-case filename from Step 2 Title & Categorization: `docs/plan/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`
+
+If the user names a path for the plan, write it there instead and keep their name.
 
 Examples:
 
@@ -216,4 +225,5 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 NEVER CODE at this stage. Only focus on producing a plan.

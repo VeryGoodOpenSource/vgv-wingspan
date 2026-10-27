@@ -79,5 +79,6 @@ Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plug
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill is a thin router. No technology-specific logic.
 - Every user-facing question must use the **AskUserQuestion tool**.

@@ -24,6 +24,7 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - Do not push before the user confirms the commit.
 - Use the current branch as the source; target is `BASE_BRANCH` (determined in Step 2).
 
