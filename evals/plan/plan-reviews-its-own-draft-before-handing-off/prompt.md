@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 20
+timeout_seconds: 1500
 allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [plan]
 description: "That the drafted plan goes through its own quality pass — simplicity, conventions and scope — before it is handed off for implementation."
@@ -17,4 +17,4 @@ Rate limiting on the public API.
 
 The API is a Node and Express service on Postgres, with Redis already running for sessions, and API keys are stored with their owner. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
-Give me the implementation plan.
+Give me the implementation plan. Save it as `docs/plan/rate-limiting-plan.md` so I can find it tomorrow.

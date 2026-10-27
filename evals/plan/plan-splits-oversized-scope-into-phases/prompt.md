@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 20
+timeout_seconds: 1500
 allowed_tools: [Read, Glob, Grep, Skill, Write]
 tags: [plan]
 description: "That a feature spanning several layers is called too large for one pull request and broken into numbered phases rather than planned as one pass."
@@ -20,4 +20,4 @@ Team workspaces.
 
 The product is a Node and Express API on Postgres with a React front end and a transactional email service already wired up. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
-Turn this into an implementation plan.
+Turn this into an implementation plan. Save it as `docs/plan/workspaces-plan.md` so I can find it tomorrow.
