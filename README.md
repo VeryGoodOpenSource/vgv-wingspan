@@ -132,6 +132,18 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
 
+## Evals
+
+Skill evals ask whether Claude routes to a skill and follows it. [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) runs each case with this plugin loaded and again with no plugin at all, so a grader that passes in both arms is measuring the model rather than the skill. Runs authenticate the same way your normal Claude Code sessions do, so they need no API key locally.
+
+```bash
+claude plugin eval . --scaffold
+```
+
+Run them locally before opening a PR that changes a skill. CI also runs them **after** a merge to `main`, scoped to the skills that changed, as an advisory signal rather than a gate — see [evals/README.md](evals/README.md#running-in-ci).
+
+See [evals/README.md](evals/README.md) for the case format, the grader reference, prerequisites, and what these evals deliberately do not cover.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add or improve skills, test your changes locally, and open a pull request. All contributors are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).

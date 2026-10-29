@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: hotfix-keeps-the-change-minimal
+context:
+  scaffold_script: fixture.sh

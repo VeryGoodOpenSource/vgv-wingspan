@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: refine-approach-stays-out-of-a-fresh-idea
+context:
+  scaffold_script: fixture.sh

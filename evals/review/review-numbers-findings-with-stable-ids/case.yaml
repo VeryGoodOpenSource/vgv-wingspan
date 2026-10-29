@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: review-numbers-findings-with-stable-ids
+context:
+  scaffold_script: fixture.sh

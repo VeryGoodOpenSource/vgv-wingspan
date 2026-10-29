@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: refine-approach-surfaces-assumptions-as-questions
+context:
+  scaffold_script: fixture.sh

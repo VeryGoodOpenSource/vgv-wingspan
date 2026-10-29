@@ -4,8 +4,11 @@
     "Anson",
     "glab",
     "codegen",
+    "compgen",
+    "elif",
     "conventionalcommits",
     "diffstat",
+    "evals",
     "lockfiles",
     "frontmatter",
     "geolocation",
@@ -24,6 +27,8 @@
     "undiscussed",
     "unrequested",
     "pipefail",
+    "PIPESTATUS",
+    "readlink",
     "runnable"
   ],
   "flagWords": []

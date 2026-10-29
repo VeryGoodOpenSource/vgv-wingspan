@@ -61,6 +61,31 @@ Add a row to the skills table in `README.md`:
 
 Add the new skill directory and its files to the repository structure tree in `AGENTS.md`.
 
+### 5. Add eval cases
+
+Create one case directory per prompt under `evals/<skill-name>/`. See [Eval Cases](#eval-cases).
+
+## Eval Cases
+
+Evals ask one question: does Claude route to the skill, and does the output follow it?
+[`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) runs every case twice,
+once with this plugin loaded and once with no plugin at all, so a grader that passes in both
+arms is measuring the model rather than the skill.
+
+```bash
+claude plugin eval . --scaffold
+```
+
+Adding a skill means adding an `evals/<skill>/<case-name>/` directory per case, each with a
+`prompt.md`, a `case.yaml`, and one file per grader under `graders/`. There is no central
+registry to update — cases are discovered from the tree — and the new case's `fixture.sh` is
+a symlink to `evals/_fixture/fixture.sh`.
+
+[evals/README.md](evals/README.md) is the single source of truth — the case format, the
+grader reference, prerequisites, what makes a case worth having, and what these evals
+deliberately do not cover. Read it before writing a case, and add new eval documentation
+there rather than here.
+
 ## Skill Writing Guidelines
 
 - **Use clear directives** — no soft language ("consider", "prefer"). Say "Use X" or "Do not use Y".
@@ -275,7 +300,20 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skills lint | Validates every skill's `SKILL.md` frontmatter, structure, and links via VGV's `skills_lint` reusable workflow | `skills_lint.yaml` |
-| Plugin validation | Validates plugin manifests via Claude Code CLI | `claude plugin validate .` |
+| Plugin validation | Validates plugin manifests via Claude Code CLI, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate .` |
+| Script tests | Runs the hook script's own test suite | `hooks/test_recommend_plugins.sh` |
+
+Evals do **not** run on a pull request. They call real models, so they run after a merge to
+`main` instead, scoped to the skills that changed:
+
+| Check | What it does | Config |
+| ----- | ------------ | ------ |
+| Evals (post-merge) | Runs the eval cases for the changed skills, with-plugin arm only. Advisory, never blocking | `.github/workflows/evals.yaml` |
+
+A regression is therefore reported after the merge rather than before it, a deliberate
+trade: a single eval run is too noisy to gate on, and running the full suite on every push
+to a PR would cost more than it saves. Run the cases for the skill you touched locally
+before opening the PR — see [Eval Cases](#eval-cases).
 
 If the spelling check flags a legitimate word, add it to `config/cspell.json` in the `words` array.
 
