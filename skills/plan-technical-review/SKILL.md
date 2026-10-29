@@ -38,3 +38,7 @@ After the review completes, use **AskUserQuestion** to present next steps:
 **If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
 
 **When invoked by another skill**, return control to the caller after the review completes — do not present handoff options.
+
+## Important
+
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.

@@ -2,6 +2,7 @@
 name: hotfix
 user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
+when_to_use: Use when user says "hotfix", "emergency fix", "production is down", "urgent bug", "patch this now", or reports a bug that has to be fixed immediately without a planning phase.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
@@ -159,6 +160,7 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
 - No brainstorm or plan documents are generated.
 - Tests and review are non-negotiable — fast doesn't mean sloppy.

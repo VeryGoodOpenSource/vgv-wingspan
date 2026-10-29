@@ -2,7 +2,7 @@
 name: create
 user-invocable: true
 description: Scaffolds a new project by routing to the right companion plugin's create skill.
-when_to_use: Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase.
+when_to_use: Use when user says "create a project", "new flutter app", "start a dart package", "scaffold", or asks to set up a new codebase. Also use when the user asks for a new project's files, folder structure, or manifest directly — hand-writing them skips the template the companion plugin exists to apply.
 argument-hint: what to create (e.g., "flutter app", "dart package")
 effort: low
 allowed-tools: Read Glob Skill
@@ -79,5 +79,6 @@ Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plug
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill is a thin router. No technology-specific logic.
 - Every user-facing question must use the **AskUserQuestion tool**.

@@ -44,6 +44,10 @@ Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt b
 
 The skill must work with partial information. Not every debrief has full CI logs or a complete timeline. Note gaps explicitly in the document rather than blocking on them.
 
+When the source notes name people, record the role instead as you take them down — the author,
+the reviewer, the on-call engineer, QA. A name that never enters your notes cannot reach the
+document.
+
 ### 2. Gather evidence from the codebase
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
@@ -60,6 +64,8 @@ Synthesize the evidence to identify the **root cause** (specific change, gap, or
 
 **Blameless framing:** Focus on systems and processes, not individuals. Ask "what made this possible?" not "who caused this?"
 
+Write no person's name into the document, even when the source notes name people and assign fault. Replace each one with the role that matters to the cause — the author, the reviewer, the on-call engineer, QA. "Milan approved it in two minutes" becomes "the change carried a single approval and no one ran the build".
+
 ### 4. Draft action items
 
 Generate concrete, assignable follow-ups. Each must be specific (not "improve testing"), linked to code where possible, and categorized:
@@ -70,6 +76,8 @@ Generate concrete, assignable follow-ups. Each must be specific (not "improve te
 | **Detect** | Would have caught it sooner | Add monitoring, add CI check |
 | **Respond** | Would have made recovery faster | Add runbook, add feature flag |
 
+Render each item as a `- [ ]` checkbox grouped under its type, as the [debrief template](references/template.md) does.
+
 Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
@@ -77,6 +85,7 @@ Action items are recorded in the document only — they become separate tickets.
 Before writing the debrief file, ensure the session is not on the base branch:
 
 - Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+- If git is unavailable or the command fails, skip this step and deliver the debrief in your reply instead. Never let the question of where the file lives stop the debrief from being produced.
 
 ### 6. Write the debrief document
 
@@ -153,4 +162,5 @@ Action items: <N> prevent, <N> detect, <N> respond
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 **DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.

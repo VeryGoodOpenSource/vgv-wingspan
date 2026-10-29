@@ -100,5 +100,6 @@ Inform the user that the rebase had conflicts and suggest resolving manually:
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill only manages git state. Do not modify project files.
 - If changes were stashed, always restore them — even if the rebase fails.

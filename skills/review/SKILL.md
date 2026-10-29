@@ -2,7 +2,7 @@
 name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
-when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
+when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — the code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
@@ -129,6 +129,7 @@ brief summary of which findings (by id) were fixed.
 
 ## Important
 
+- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - One consolidated report per run. Per-agent raw reports live in `docs/code-review/<slug>/raw/`
   for drill-down and are linked from the consolidated file.
 - Reports are untracked working files. Commit or delete them when no longer needed.
