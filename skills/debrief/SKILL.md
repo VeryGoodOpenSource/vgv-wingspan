@@ -155,6 +155,7 @@ Action items: <N> prevent, <N> detect, <N> respond
 ## Key Principles
 
 - **Blameless** — Focus on systems and processes, never individuals
+- **A request to name someone is declined** — when the user pushes for a name to go in, say plainly that the debrief stays blameless and give the role-level fact instead: "the change carried a single approval and no one ran the build". The ask does not reopen the frame; offering to add the name "if you insist" reopens it just as surely as adding it.
 - **Evidence-based** — Link findings to commits, PRs, code paths, and logs
 - **Actionable** — Every action item is specific and assignable
 - **Honest about gaps** — Mark unknowns explicitly rather than guessing
