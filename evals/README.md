@@ -280,6 +280,46 @@ Match the skill's own vocabulary. Keep `llm` graders for short output; for anyth
 
 ---
 
+## Multi-turn cases
+
+Most cases stop at a skill's first reply, which is the half where a workflow skill cannot go
+wrong yet. A case measures the turn after by replaying a conversation and sending one more
+prompt:
+
+```yaml
+schema_version: "1.1"
+name: review-acts-on-the-findings-the-user-picked
+context:
+  scaffold_script: fixture.sh
+  history_file: history.jsonl
+```
+
+`history.jsonl` is a Claude Code transcript — one JSON object per line, in order:
+
+```json
+{"isSidechain":false,"userType":"external","entrypoint":"cli","cwd":"/private/tmp/cwd","sessionId":"11111111-2222-3333-4444-555555555555","version":"2.1.270","parentUuid":null,"type":"user","uuid":"aaaaaaaa-0000-4000-8000-000000000001","timestamp":"2026-11-02T10:00:00.000Z","message":{"role":"user","content":"…"}}
+{"…":"…","parentUuid":"aaaaaaaa-0000-4000-8000-000000000001","type":"assistant","uuid":"aaaaaaaa-0000-4000-8000-000000000002","message":{"role":"assistant","content":[{"type":"text","text":"…"}]}}
+```
+
+- **Every line carries the same `sessionId`**, any fixed UUID. Without it the run dies with
+  `No conversation found with session ID` and no grader to read — the one way this breaks.
+- `parentUuid` is `null` on the first line and the previous line's `uuid` after that.
+- `cwd`, `version`, `timestamp` and the rest are not validated, but keep them: a transcript
+  that looks like a transcript is the thing being replayed.
+- Write the assistant's turns as the skill's real output — its headings, its option list, its
+  `FINDING-NN` ids. The next turn's behavior is a reaction to them.
+
+**The replayed turn did not run the skill.** The history is text, not a recorded invocation,
+so the skill body is not in context on the resumed turn unless the model invokes it again —
+and it usually does not. A case whose point is *what the skill's instructions say to do next*
+may therefore measure the model's reading of the transcript instead;
+`plan-honors-the-handoff-to-build` sits at 0.56 for exactly this reason, while the same shape
+for `brainstorm` scores 0.88. Prefer second turns that are graded on what the reply does with
+the conversation — the findings it acts on, the answer it honors, the line it holds — over
+ones that need the skill's own wording to reappear.
+
+---
+
 ## The fixture
 
 Every run starts in an empty workspace. `_fixture/fixture.sh` recreates the neutral project
