@@ -49,24 +49,37 @@ invoke the skill" check for free.
 Wingspan's skills drive git, write documents and dispatch agents. An eval run grants none of
 that:
 
-- **`Write` only, and only where a case asks for it.** A case grants a gated tool twice over:
-  the operator passes `--allow-tools Write` (CI does, and so must you), and the case lists
-  `Write` in its own `allowed_tools`. Four cases do, because their subject is the document the
-  skill writes; every other case is graded on the **reply** alone. `Bash` and `Edit` are
+- **A gated tool is granted twice over.** The operator passes `--allow-tools Write` (CI does,
+  and so must you) *and* the case lists it in its own `allowed_tools`. `Bash` and `Edit` are
   granted nowhere, so no case runs git, a test suite, or a CLI.
-- **No MCP tools.** A plugin server without a directory under `mocks/` is not started, and
-  `context7` has none. Every run reports that on a `mocked:` line.
+- **`Agent` is grantable and is not gated** — it only has to appear in the case's
+  `allowed_tools`. The runner's default read-only set is `Read, Glob, Grep, NotebookRead,
+  Skill, AskUserQuestion, TaskCreate/Get/List/Update/Stop/Output, Agent, TodoWrite`, and a
+  case's `allowed_tools` replaces that set rather than adding to it — so listing only
+  `[Read, Glob, Grep, Skill]` is what takes `Agent` away. Seven cases list `Agent` and
+  `Write`, and those run the skill's real pipeline: review agents dispatched, raw reports
+  written, the consolidated `FINDING-NN` file produced.
+- **`AskUserQuestion` is never reachable**, listed or not: a probe that asked for it outright
+  got `AskUserQuestion called 0x` while `Agent` in the same run was called once. Every skill
+  therefore takes its no-question fallback, which is why that fallback is stated at the top
+  of each `SKILL.md` rather than in a closing bullet.
 - **Prompts carry their own context.** A plan, a diff, an incident report or a draft the case
   is about is pasted into the prompt and named as authoritative, because the model cannot go
   and read one.
 
-**Routing is the suite's loudest signal, and it is noisy.** In a measured two-arm run of all
-47 cases, 10 cases scored 0 on `skill-fired`; in the next run of the same suite it was 10
-different ones. Four cases that scored 1.00 one run missed routing entirely the next. Read a
-red routing result as a hypothesis, confirm it with `--runs 3`, and treat a case that misses
-across three runs as a finding about the skill rather than a case to reword — three separate
-rewording passes over the `/review` cases never made that skill fire reliably when the user
-pastes the whole file into the prompt.
+**Routing is the suite's loudest signal, and it is both noisy and uneven.** Over a measured
+three-run pass of all 57 cases the skill fired on 77% of runs (88 of 114 scored routing
+runs). Most of the misses are noise — `elements-of-style` was green on every case for three
+full runs and then missed one — but some are not: four cases missed on **all three** runs
+(`build-executes-one-phase-then-checkpoints`, `build-asks-for-the-plan-when-none-is-given`,
+`create-asks-what-to-scaffold-when-unspecified`, `plan-grounds-the-plan-in-the-existing-codebase`),
+and two more missed twice. A case that misses 3/3 on a prompt a user would plainly send is a
+finding about the skill, not a case to reword.
+
+Rewriting `when_to_use` into situation-first wording moved none of this measurably, and
+`main` has since folded `when_to_use` into `description` — which is now the whole routing
+surface. Read a single-run routing red as noise and confirm with `--runs 3`, which is the
+harness default (`--runs 1` is an override).
 
 **Do not write a prompt that tells the model not to edit anything.** "Don't change any files,
 just describe what you would do" reads like the obvious way to fit the no-Write sandbox, and
@@ -90,11 +103,18 @@ So a content grader needs an exact path, and the prompt is where it comes from: 
 file by name the way a user who wants it filed somewhere would. The skills honor a path the
 user names, and the four document cases here pin one.
 
-**Budget a writing case properly.** Producing a real plan document takes a skill well past the
-suite's usual `max_turns: 12` / `timeout_seconds: 600` — ours run 20 turns and 1500 seconds. A
-cap breach or a timeout scores the case 0 **with no failing grader**, which reads exactly like
-a content regression; two cases here were read as "the skill ignores its own template" for a
-round before the trace showed the run was simply cut off mid-write.
+**Budget a case to what it actually does.** A cap breach or a timeout scores the case 0 **with
+no failing grader**, which reads exactly like a content regression; two cases here were read
+as "the skill ignores its own template" for a round before the trace showed the run was cut
+off mid-write. Rough shape: a one-reply case 12-20 turns, a case that writes a document 20-30,
+a case that dispatches review agents 40 turns and 1800 seconds. Enlarging the fixture into a
+real project pushed three cases over `max_turns: 12` on its own.
+
+**A document case has to be allowed to reach the document.** The skills stop and ask when a
+spec leaves a real decision open, and that is correct — but a case grading the written file
+then grades a file that was never written. Say what a user out of answers would say: "I have
+no more answers to give, so do not come back with questions — make the calls yourself."
+Without that line, two plan cases scored 0.30 three runs running with the plan unwritten.
 
 **Keep `llm` graders off long files.** The runner warns when a judged artifact runs long
 (`llm judges are noisy on long inputs`), and a 19k-character plan is long. Grade the document
