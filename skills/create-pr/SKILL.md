@@ -142,6 +142,12 @@ cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
   - `chore`/`build`/`ci` → 🔧 Maintenance
 - **No template**: consult `references/pull-request-template.md` for the default template and filling rules.
 
+  When that reference cannot be read from here, the body still has this shape — a
+  `## Description` paragraph synthesised from the commit bodies and naming the ticket, and a
+  `## Type of Change` checklist with the applicable box marked. Strip every HTML comment.
+  A body with no headings is not the template with the headings left out; it is a different
+  artifact, and the reviewer's eye goes looking for them.
+
 Output the proposed PR:
 
 ````markdown
