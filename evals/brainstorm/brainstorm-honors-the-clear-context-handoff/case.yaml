@@ -1,5 +1,0 @@
-schema_version: "1.1"
-name: brainstorm-honors-the-clear-context-handoff
-context:
-  scaffold_script: fixture.sh
-  history_file: history.jsonl

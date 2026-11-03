@@ -331,6 +331,14 @@ for `brainstorm` scores 0.88. Prefer second turns that are graded on what the re
 the conversation — the findings it acts on, the answer it honors, the line it holds — over
 ones that need the skill's own wording to reappear.
 
+Two cases were removed for failing that test. `brainstorm-honors-the-clear-context-handoff`
+and `plan-honors-the-handoff-to-build` graded the resumed turn for the skill's handoff block —
+its `/clear` line, its document path — and scored 0.24 and 0.57 across three runs each,
+because the block lives in a skill that is not in context. They were measuring the model's
+reading of a transcript and reporting it as the skill's behaviour. The single-turn
+`brainstorm-offers-clear-context-handoff-to-plan` covers the skill producing the handoff,
+which is the half that can be measured.
+
 ---
 
 ## The fixture
