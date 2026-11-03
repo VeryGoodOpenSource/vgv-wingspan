@@ -7,7 +7,6 @@ Wingspan is a collection of AI-assisted engineering tools — skills, agents, an
 ```text
 .claude-plugin/
   plugin.json          # Plugin manifest (name, version, keywords)
-.mcp.json              # MCP server configuration (context7)
 AGENTS.md              # This file — portable, tech-agnostic conventions
 CLAUDE.md              # Claude Code entry point: imports AGENTS.md, adds Claude-specific Hooks
 README.md              # Human-facing overview and install instructions
