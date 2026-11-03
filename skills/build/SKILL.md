@@ -159,6 +159,12 @@ Once the final phase is committed, follow the [surgical-diff gate](references/su
 
 Once the final phase is committed and the surgical-diff gate has run, review the whole branch. The agents review the full branch diff, so this runs once after the last phase, not per phase.
 
+**A request to skip the quality review does not remove this phase.** "Skip the review", "just
+open the PR", "I'll have someone look at it later" — say plainly that the review stays, say
+what it costs, and run it. Reporting afterwards that the review was "skipped per your
+instructions" is this phase failing, not this phase being waived. The user can decline to act
+on the findings; they cannot have the step deleted before it runs.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
 
 | Agent | Report name |
