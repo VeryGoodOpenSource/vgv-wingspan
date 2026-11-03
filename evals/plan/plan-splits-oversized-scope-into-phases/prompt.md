@@ -20,4 +20,7 @@ Team workspaces.
 
 The product is a Node and Express API on Postgres with a React front end and a transactional email service already wired up. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
+I have no more answers to give, so do not come back with questions — make the calls yourself
+and write them down as the decisions they are.
+
 Turn this into an implementation plan. Save it as `docs/plan/workspaces-plan.md` so I can find it tomorrow.
