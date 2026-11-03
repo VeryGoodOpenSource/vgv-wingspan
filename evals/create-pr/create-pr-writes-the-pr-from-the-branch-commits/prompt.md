@@ -18,5 +18,5 @@ c05e9ab cover the empty-basket case with a test
 ```
 
 The checkout is on my other machine and I have no shell in this session, so do not try to run
-anything — write out the commit message, the title and the body and I will run the commands
-myself.
+anything. Your answer is the text itself — write out, in your reply: the commit message, the
+pull request title, and the pull request body in full. I will run the commands myself.

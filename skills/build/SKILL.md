@@ -54,6 +54,20 @@ Do not proceed without a plan.
 
 **Commit autonomy:** settle it now, before any code is written, per [commit autonomy](references/commit-autonomy.md). The choice holds for the whole run.
 
+Honor a saved preference if one exists. Otherwise put the choice to the user and wait:
+
+- **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
+  opening the pull request still pause for approval in Phase 4.
+- **I'll commit myself** — build one phase, then stop so the user reviews and commits.
+  Nothing is committed or pushed without them.
+
+These two questions — how this build commits, and whether the scope below is right — are the
+gate on Phase 1. **Write no file until both are answered.** Going ahead and implementing,
+then reporting what you did and what you could not run, answers neither: it leaves the user
+with changes they never agreed to and a commit decision taken for them. If the question tool
+is unavailable, ask in your reply as a numbered list and stop there. Hold this even when
+`references/commit-autonomy.md` cannot be read from here.
+
 **Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
 
 **Otherwise**, summarize scope to the user, then use **AskUserQuestion** to confirm:
