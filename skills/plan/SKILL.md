@@ -2,7 +2,7 @@
 name: plan
 user-invocable: true
 description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans.
-when_to_use: Use when user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+when_to_use: Use when what to build is settled and the user wants it turned into an ordered, actionable implementation plan before anyone writes code. Triggers on "plan this", "create a plan", "how should we implement", "write an implementation plan", and on a brainstorm, spec or set of decisions handed over to be taken to the next step.
 effort: high
 argument-hint: feature, bug fix, or improvement to plan
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -11,6 +11,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Create a new implementation plan (or bug fix)
 
 Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices. This command provides flexible detail levels to match your needs.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Feature Description
 
@@ -153,12 +159,37 @@ one `### Phase N:` each, and the `**Status:**`, `**Scope:**`, `**Files touched:*
 `**Acceptance criteria:**` and `**Validation:**` fields. `/build` parses those names to execute one
 phase per context window — renaming them to anything of your own, however clear, breaks execution.
 
+#### The success-criteria contract
+
+`/build` reads this block back, so its shape is fixed here as well as in the reference. Every
+plan carries a `## Success Criteria` section holding:
+
+```success-criteria
+GOAL: <one sentence describing the intended end state>
+
+SUCCESS CRITERIA:
+- <observable criterion> | verify: <shell command; exit 0 = pass>
+- <observable criterion> | verify: manual <numbered human steps>
+
+NON-GOALS:
+- <explicitly out of scope>
+
+VERIFICATION COMMAND: <the non-manual verify commands joined into one runnable command; exit 0 = all green>
+```
+
+Every criterion names what proves it after `verify:`. A criterion with nothing to run against
+it — "make it work", "the feature is done" — is not a criterion; rewrite it as something a
+command or a numbered human procedure can settle. Write the block in this shape even when the
+reference file cannot be read from here.
+
+
 ### 5.1. Set up workspace
 
 Before writing the plan file, ensure the session is not on the base branch:
 
 - Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
 - If git is unavailable or the command fails, skip this step and deliver the plan in your reply instead. Never let the question of where the file lives stop the plan from being produced.
+- Ask about a branch only on a branch name the command actually returned. Never infer the current branch from the directory, the prompt, or a guess, and never open with a branching question you cannot ground — a plan withheld behind an invented gate is a plan the user did not get.
 
 ### 6. Issue creation and formatting
 
@@ -225,5 +256,24 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 NEVER CODE at this stage. Only focus on producing a plan.
+
+#### The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here and not only in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

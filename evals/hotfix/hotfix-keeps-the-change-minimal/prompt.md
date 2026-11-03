@@ -13,9 +13,8 @@ TypeError: Cannot read properties of null (reading 'total')
     at Array.map (<anonymous>)
     at summarize (/app/src/reports.js:12:17)
 
-This file is not in the repo you are looking at, so the copy below is authoritative:
+The failing function is in `src/reports.js`:
 
-// src/reports.js
 function summarize(orders) {
   return orders.map((order) => ({
     id: order.id,

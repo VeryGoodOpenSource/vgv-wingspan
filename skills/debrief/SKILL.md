@@ -2,7 +2,7 @@
 name: debrief
 user-invocable: true
 description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh.
-when_to_use: Use when user says "debrief", "post-mortem", "incident review", or "root cause analysis".
+when_to_use: Use after something went wrong — an incident, a failed release, a bad deploy, a significant bug — and the user wants it written up and understood rather than fixed again. Triggers on "debrief", "post-mortem", "incident review", "root cause analysis", "what went wrong", and on an account of an outage handed over for analysis.
 argument-hint: incident description, PR/commit refs, or error context
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -11,6 +11,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Post-incident debrief
 
 Produce a structured, blameless debrief document after an incident, failed release, or significant bug. Capture what happened, why, and what to change — while the context is still fresh.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 **Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
 
@@ -163,5 +169,4 @@ Action items: <N> prevent, <N> detect, <N> respond
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 **DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.

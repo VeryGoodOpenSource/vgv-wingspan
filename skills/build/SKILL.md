@@ -2,7 +2,7 @@
 name: build
 user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request.
-when_to_use: Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+when_to_use: Use when the user hands over an implementation plan and wants it carried out — code, tests, quality review and a pull request. Triggers on "build this", "implement the plan", "start coding", "execute the plan", "ship it", and on a plan pasted or pointed at with an instruction to get on with it.
 effort: high
 argument-hint: plan file path
 allowed-tools: Bash(rm -rf docs/reviews/)
@@ -12,6 +12,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Execute an implementation plan
 
 Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Build Progress
 
@@ -79,6 +85,13 @@ Instead, use the plan itself as your guide:
 Determine the unit of work:
 
 - **Plan has an `## Implementation Phases` section** → build one phase at a time with the phase loop below. Each phase carries the fields defined in the [implementation phases block](references/implementation-phases.md) — Status, Scope, Files touched, Acceptance criteria, and Validation — and is sized to fit a single context window, so `/build` executes one phase per window.
+
+Each phase carries exactly these field names, and `/build` parses them: `**Status:**`,
+`**Scope:**`, `**Files touched:**`, `**Acceptance criteria:**`, `**Validation:**`. Treat a
+phase as the unit of work: build one phase per context window, then checkpoint and clear
+before the next. Running the whole plan in one pass is the thing this structure exists to
+prevent, and it holds whether or not the reference file can be read from here.
+
 - **No phases** → treat the whole plan as one phase: implement every task, then run the loop once.
 
 ### Phase loop
@@ -245,8 +258,27 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill writes code. It is the execution phase, not the planning phase.
 - Follow the plan. The plan was reviewed and approved. Don't redesign during implementation.
 - Ship quality, not quantity. Every line represents VGV's engineering reputation.
 - When in doubt, read the plan again before asking the user.
+
+#### The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here and not only in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

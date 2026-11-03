@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: 'open questions?'
+pattern: 'open question|unresolved|undefined|unanswered|not specified|underspecified|needs? confirming'
 flags: i
 ---

@@ -2,7 +2,7 @@
 name: hotfix
 user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
-when_to_use: Use when user says "hotfix", "emergency fix", "production is down", "urgent bug", "patch this now", or reports a bug that has to be fixed immediately without a planning phase.
+when_to_use: Use when something is broken right now and the fix cannot wait for a brainstorm or a plan. Triggers on "hotfix", "emergency fix", "production is down", "urgent bug", "patch this now", and on any report of a live failure hitting users that has to be fixed immediately.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
@@ -12,6 +12,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Hotfix — emergency fix workflow
 
 Apply a minimal, targeted fix fast. No brainstorm document, no plan document — but tests and review are still non-negotiable.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Bug Description
 
@@ -23,10 +29,14 @@ DO NOT proceed until you have a bug description.
 
 ## Phase 0 — Triage
 
-Summarize the bug in one sentence. Identify:
+Summarize the bug in one sentence, then write both of these lines out for the user before
+going any further:
 
 - **Symptom**: what the user sees or what is broken
 - **Suspected area**: which layer or component is likely involved (based on the description alone — do not read code yet)
+
+Triage is the user's first signal that the right thing is being fixed, so it belongs in the
+reply, not only in your head.
 
 ## Phase 1 — Locate
 
@@ -51,6 +61,10 @@ Run:
 ```bash
 git rev-parse --abbrev-ref HEAD
 ```
+
+**If git is unavailable or the command fails:** do not skip the step silently. Name the
+`hotfix/<slug>` branch this fix belongs on in your reply and carry on — the branch is part of
+how a hotfix ships, and the user applying the change by hand still needs the name.
 
 **If already on a `hotfix/` branch:** skip silently.
 
@@ -116,6 +130,26 @@ If an agent fails, note it, continue with the other, and record the failure in t
 
 Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
+### The findings contract
+
+These names travel outside this skill — the user acts on findings by id, and `/build` and
+`/hotfix` reuse them — so they are fixed here rather than only in the reference. Hold them
+even when the reference cannot be read:
+
+- Each finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
+  consolidation procedure fixes, and a rule id `<category>/<rule>` drawn from `vgv`,
+  `architecture`, `tests`, `simplicity` or `pr-readiness` — for example
+  `tests/missing-test-file`.
+- Each finding carries one severity: **Critical**, **Important** or **Suggestion**.
+- Each finding carries a **Why** line and a **Fix** line.
+- The chat summary reprints the Critical and Important findings verbatim — same ids, same
+  order, same titles — and collapses Suggestions to a count.
+
+If a reference file cannot be read, say so once and produce the review in this shape anyway.
+A review without ids is a review the user cannot act on piece by piece, which is the whole
+point of running it.
+
+
 ### Cleanup
 
 Remove review reports after findings are addressed:
@@ -160,7 +194,6 @@ Use **AskUserQuestion** to present options:
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
 - No brainstorm or plan documents are generated.
 - Tests and review are non-negotiable — fast doesn't mean sloppy.

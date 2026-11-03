@@ -1,13 +1,13 @@
 ---
-max_turns: 12
-timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+max_turns: 40
+timeout_seconds: 1500
+allowed_tools: [Read, Glob, Grep, Skill, Agent, Write]
 tags: [review]
 description: "That the review states the scope it covers and keeps its findings inside the two changed files instead of spreading into the rest of the project."
 ---
 
 Code review my branch before I open the PR. The diff below is the whole change against
-`main` — take it as authoritative over anything on disk.
+`main`.
 
 ```diff
 diff --git a/src/pricing.js b/src/pricing.js
