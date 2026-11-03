@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 20
+timeout_seconds: 900
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [hotfix]
 description: "That planned, non-urgent feature work with a one-line question leaves the emergency workflow dormant."

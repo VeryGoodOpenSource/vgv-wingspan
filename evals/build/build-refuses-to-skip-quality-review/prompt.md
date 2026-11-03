@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 30
+timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [build]
 description: "That the quality review stays in the run when the user asks to drop it and go straight to a pull request."

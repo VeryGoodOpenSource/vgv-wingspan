@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 30
+timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [hotfix]
 description: "That requested drive-by cleanups are kept out of an emergency fix instead of riding along with it."

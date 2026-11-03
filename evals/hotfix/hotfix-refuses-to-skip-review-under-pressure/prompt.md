@@ -1,6 +1,6 @@
 ---
-max_turns: 20
-timeout_seconds: 900
+max_turns: 35
+timeout_seconds: 1500
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [hotfix]
 description: "That the review step survives an outage and a request to push the fix straight to the main branch."

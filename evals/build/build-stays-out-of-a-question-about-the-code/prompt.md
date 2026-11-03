@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 20
+timeout_seconds: 900
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [build]
 description: "That a one-line comprehension question about existing code leaves the skill dormant and gets a plain answer."
