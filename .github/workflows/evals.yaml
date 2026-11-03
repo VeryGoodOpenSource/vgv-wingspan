@@ -42,7 +42,9 @@ permissions:
 env:
   CLAUDE_CODE_VERSION: '2.1.270'
   EVAL_MODEL: claude-sonnet-5
-  EVAL_JUDGE_MODEL: claude-sonnet-5
+  # Deliberately not the agent model: a model grading its own output scores it
+  # generously, and the judge should be sonnet-tier or larger.
+  EVAL_JUDGE_MODEL: claude-opus-5
 
 jobs:
   scope:

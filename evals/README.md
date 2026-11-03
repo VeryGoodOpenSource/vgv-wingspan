@@ -4,11 +4,16 @@ Does Claude route to the skill, and does the output follow it? Cases run through
 [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) against real models.
 
 ```bash
-E="claude plugin eval . --scaffold --allow-tools Write"
+E="claude plugin eval . --scaffold --allow-tools Write --judge-model opus"
 $E                                                    # every case, both arms
 $E --tag plan                                         # one skill
 $E --ablation none                                    # with-plugin arm only, half the cost
 ```
+
+**Judge with a model that is not the one under test.** The default judge is `haiku`, which
+misses nuance on these rubrics, and judging `claude-sonnet-5` output with `claude-sonnet-5`
+scores it generously — a model prefers its own work. CI runs the agent on `claude-sonnet-5`
+and the judge on `claude-opus-5`; match that locally or the numbers will not compare.
 
 `--allow-tools Write` is as load-bearing as `--scaffold`. Without it the four cases that grade
 a written document score 0 with no failing content grader, and the runner warns
