@@ -18,12 +18,6 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 > Never answer a question on the user's behalf and carry on: a question the user never sees
 > is not a question, and a step that waits on one is not optional.
 
-> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
-> not available — another harness, or a non-interactive session — put the same question and
-> the same options in your reply as a short numbered list, and stop there for the answer.
-> Never answer a question on the user's behalf and carry on: a question the user never sees
-> is not a question, and a step that waits on one is not optional.
-
 ## Project description
 
 <description>$ARGUMENTS</description>

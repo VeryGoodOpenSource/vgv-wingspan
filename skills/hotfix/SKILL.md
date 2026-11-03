@@ -28,8 +28,7 @@ Do not proceed until you have a bug description.
 
 ## Phase 0 — Triage
 
-Summarize the bug in one sentence, then write both of these lines out for the user before
-going any further:
+Summarize the bug in one sentence. Identify:
 
 - **Symptom**: what the user sees or what is broken
 - **Suspected area**: which layer or component is likely involved (based on the description alone — do not read code yet)
@@ -61,10 +60,6 @@ Run:
 ```bash
 git rev-parse --abbrev-ref HEAD
 ```
-
-**If git is unavailable or the command fails:** do not skip the step silently. Name the
-`hotfix/<slug>` branch this fix belongs on in your reply and carry on — the branch is part of
-how a hotfix ships, and the user applying the change by hand still needs the name.
 
 **If already on a `hotfix/` branch:** skip silently.
 

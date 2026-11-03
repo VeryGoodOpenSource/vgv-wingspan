@@ -19,12 +19,6 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 
 **Never write code at this stage.** The output is a plan.
 
-> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
-> not available — another harness, or a non-interactive session — put the same question and
-> the same options in your reply as a short numbered list, and stop there for the answer.
-> Never answer a question on the user's behalf and carry on: a question the user never sees
-> is not a question, and a step that waits on one is not optional.
-
 ## Feature Description
 
 <feature_description>$ARGUMENTS</feature_description>
@@ -153,30 +147,6 @@ Whatever the level, a plan that carries more than one phase embeds the
 one `### Phase N:` each, and the `**Status:**`, `**Scope:**`, `**Files touched:**`,
 `**Acceptance criteria:**` and `**Validation:**` fields. `/build` parses those names to execute one
 phase per context window — renaming them to anything of your own, however clear, breaks execution.
-
-#### The success-criteria contract
-
-`/build` reads this block back, so its shape is fixed here as well as in the reference. Every
-plan carries a `## Success Criteria` section holding:
-
-```success-criteria
-GOAL: <one sentence describing the intended end state>
-
-SUCCESS CRITERIA:
-- <observable criterion> | verify: <shell command; exit 0 = pass>
-- <observable criterion> | verify: manual <numbered human steps>
-
-NON-GOALS:
-- <explicitly out of scope>
-
-VERIFICATION COMMAND: <the non-manual verify commands joined into one runnable command; exit 0 = all green>
-```
-
-Every criterion names what proves it after `verify:`. A criterion with nothing to run against
-it — "make it work", "the feature is done" — is not a criterion; rewrite it as something a
-command or a numbered human procedure can settle. Write the block in this shape even when the
-reference file cannot be read from here.
-
 
 ### 5.1. Set up workspace
 
