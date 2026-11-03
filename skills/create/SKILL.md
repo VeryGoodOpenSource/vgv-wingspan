@@ -1,8 +1,7 @@
 ---
 name: create
 user-invocable: true
-description: Scaffolds a new project by routing to the right companion plugin's create skill.
-when_to_use: Use when the user wants a brand-new codebase to exist — a project, app or package that is not there yet. Triggers on "create a project", "new flutter app", "start a dart package", "scaffold", "set up a new codebase". Also use when the user asks for a new project's files, folder structure, or manifest directly — hand-writing them skips the template the companion plugin exists to apply.
+description: Scaffolds a new project by routing to the right companion plugin's create skill. Use when the user wants a codebase that does not exist yet, and on "create a project", "new flutter app", "start a dart package", "scaffold", "set up a new codebase". Also use when the user asks for a new project's files, folder structure, or manifest directly — hand-writing them skips the template the companion plugin exists to apply.
 argument-hint: what to create (e.g., "flutter app", "dart package")
 effort: low
 allowed-tools: Read Glob Skill
@@ -11,7 +10,13 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 # Create a new project
 
-Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it discovers companion plugins from recommendation files and delegates to the matching plugin's create skill.
+Route project creation to the right companion plugin. Wingspan does not scaffold projects itself — it discovers companion plugins from recommendation files and delegates to the matching plugin's create skill. This skill is a thin router and holds no technology-specific logic.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 > **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
 > not available — another harness, or a non-interactive session — put the same question and
@@ -30,7 +35,7 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
    - **Question:** "What kind of project would you like to create?"
    - **Options:** Build the option list from the discovered companion plugins' descriptions, plus "Other" as the last option.
 
-DO NOT proceed until you have a project description.
+Do not proceed until you have a project description.
 
 ## Step 1: Scan recommendation files
 
@@ -82,8 +87,3 @@ Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plug
 
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
-
-## Important
-
-- This skill is a thin router. No technology-specific logic.
-- Every user-facing question must use the **AskUserQuestion tool**.

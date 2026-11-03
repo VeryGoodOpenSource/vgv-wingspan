@@ -1,8 +1,7 @@
 ---
 name: plan-technical-review
 user-invocable: true
-description: Reviews an externally-authored implementation plan for quality, VGV conventions, and scope. Plans created by /plan are already reviewed during creation.
-when_to_use: Use to review a plan you did not create with /plan — a hand-written plan or one from another tool. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
+description: Reviews an externally-authored implementation plan for quality, VGV conventions, and scope — a hand-written plan, or one from another tool or a teammate. Plans created by /plan are already reviewed during creation. Triggers on "review the plan", "is this plan ready", "validate my plan", or "check the plan".
 argument-hint: path to plan file
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -47,10 +46,11 @@ After the review completes, use **AskUserQuestion** to present next steps:
 
 ## Important
 
-#### The handoff block
+
+## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its
-shape is fixed here and not only in the reference. Print exactly this and then **stop**,
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
 substituting the next skill and the real document path:
 
 ```md

@@ -1,8 +1,7 @@
 ---
 name: hotfix
 user-invocable: true
-description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases.
-when_to_use: Use when something is broken right now and the fix cannot wait for a brainstorm or a plan. Triggers on "hotfix", "emergency fix", "production is down", "urgent bug", "patch this now", and on any report of a live failure hitting users that has to be fixed immediately.
+description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases. Use when the user says "hotfix", "emergency fix", "production is broken", "urgent bug", or needs a fix shipped fast without the full plan-and-build cycle.
 effort: high
 argument-hint: bug description, issue link, or error message
 allowed-tools: Bash(rm -rf docs/hotfix-review/)
@@ -25,7 +24,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 
 **If the bug description above is empty, ask the user**: "What's the bug? Paste a description, issue link, or error message."
 
-DO NOT proceed until you have a bug description.
+Do not proceed until you have a bug description.
 
 ## Phase 0 — Triage
 
@@ -35,8 +34,9 @@ going any further:
 - **Symptom**: what the user sees or what is broken
 - **Suspected area**: which layer or component is likely involved (based on the description alone — do not read code yet)
 
-Triage is the user's first signal that the right thing is being fixed, so it belongs in the
-reply, not only in your head.
+Write both lines out for the user before going any further. Triage is their first signal
+that the right thing is being fixed, so it belongs in the reply rather than only in your
+head.
 
 ## Phase 1 — Locate
 
@@ -67,6 +67,10 @@ git rev-parse --abbrev-ref HEAD
 how a hotfix ships, and the user applying the change by hand still needs the name.
 
 **If already on a `hotfix/` branch:** skip silently.
+
+**If git is unavailable or the command fails:** do not pass over the step in silence. Name
+the `hotfix/<slug>` branch this fix belongs on in your reply and carry on — the branch is
+part of how a hotfix ships, and whoever applies the change by hand still needs the name.
 
 **Otherwise:** infer a branch name in the format `hotfix/<kebab-slug>` where the slug is derived from the bug description (max 60 characters total). Use **AskUserQuestion** to confirm:
 
@@ -109,22 +113,14 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ## Phase 4 — Review
 
-Run review agents **in parallel** to validate the fix. Use a reduced set — speed matters, but quality is non-negotiable.
+Validate the fix with a reduced agent set — speed matters, but quality is non-negotiable.
 
-### Agent instructions
-
-Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
-
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/hotfix-review/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
-
-The reduced agent set and their report names (`<name>`):
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
 |-------|-------------|
 | **@vgv-review-agent** | `vgv-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
-
-If an agent fails, note it, continue with the other, and record the failure in the report header so the reduced review isn't silently halved.
 
 ### After reviews complete
 
@@ -132,22 +128,21 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 
 ### The findings contract
 
-These names travel outside this skill — the user acts on findings by id, and `/build` and
-`/hotfix` reuse them — so they are fixed here rather than only in the reference. Hold them
-even when the reference cannot be read:
+These names leave this skill — the user acts on findings by id, and `/build` and `/hotfix`
+reuse them — so they are fixed here and not only in the reference. Hold them even when the
+reference cannot be read:
 
-- Each finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
-  consolidation procedure fixes, and a rule id `<category>/<rule>` drawn from `vgv`,
-  `architecture`, `tests`, `simplicity` or `pr-readiness` — for example
-  `tests/missing-test-file`.
-- Each finding carries one severity: **Critical**, **Important** or **Suggestion**.
-- Each finding carries a **Why** line and a **Fix** line.
+- Every finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
+  consolidation procedure fixes, and a rule id `<category>/<rule>` from `vgv`, `architecture`,
+  `tests`, `simplicity` or `pr-readiness` — for example `tests/missing-test-file`.
+- Every finding carries one severity: **Critical**, **Important** or **Suggestion**.
+- Every finding carries a **Why** line and a **Fix** line.
 - The chat summary reprints the Critical and Important findings verbatim — same ids, same
   order, same titles — and collapses Suggestions to a count.
 
-If a reference file cannot be read, say so once and produce the review in this shape anyway.
-A review without ids is a review the user cannot act on piece by piece, which is the whole
-point of running it.
+If a reference file cannot be read from here, say so once and produce the review in this
+shape anyway. A review without ids is a review the user cannot take apart, which is most of
+why it was run.
 
 
 ### Cleanup
@@ -176,7 +171,7 @@ fix: <concise description of what was fixed>
 Bug: <original bug description or issue link, truncated if long>
 ```
 
-Push the branch and create a PR. **Title**: `fix: <concise description>` (under 70 chars). **Body**: Use the [PR template](references/pr-template.md).
+Push the branch and create a PR. **Title**: `fix: <concise description>` (max 72 characters, matching `/create-pr`). **Body**: Use the [PR template](references/pr-template.md).
 
 ### Post-Ship
 
@@ -191,11 +186,3 @@ Use **AskUserQuestion** to present options:
 - Hotfix branches use the `hotfix/` prefix, not `fix/`. Other skills use `fix/` — do not mix them.
 - If `docs/hotfix-review/` already exists from a previous interrupted hotfix, delete it before running Phase 4 to avoid stale reports contaminating the review.
 - The blast radius check (Phase 3) uses a threshold of 5 files. A fix that touches exactly 5 files is within threshold; 6 triggers the warning.
-
-## Important
-
-- This skill is for emergency fixes. It trades planning depth for speed, but never trades away quality.
-- No brainstorm or plan documents are generated.
-- Tests and review are non-negotiable — fast doesn't mean sloppy.
-- Keep the diff minimal. A hotfix that grows into a feature rewrite belongs in `/plan` → `/build`.
-- The commit must be cherry-pick-friendly: one commit, one concern, no unrelated changes.

@@ -1,7 +1,6 @@
 ---
 name: create-pr
-description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts optional skip-checks argument to bypass validation when called from /build.
-when_to_use: Use when user says "create a PR", "open a PR", "ship it", "submit a pull request", or "open a merge request", or when work on a branch is complete and ready to publish for review.
+description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts an optional skip-checks argument to bypass validation when called from /build. Use when the user says "create a PR", "open a PR", "submit a pull request", or "open a merge request", or when work on a branch is complete and ready to publish for review.
 argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
 disable-model-invocation: true
 allowed-tools: Bash(git push *) Bash(git add *) Bash(git commit *) Bash(gh *) Bash(glab *)
@@ -11,6 +10,12 @@ compatibility: Designed for Claude Code (or similar products with git access)
 # Create a pull request
 
 Stage uncommitted changes, commit them, push the branch, and open a pull request on the project's Git hosting platform.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Steps checklist
 
@@ -24,7 +29,6 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
 - Do not push before the user confirms the commit.
 - Use the current branch as the source; target is `BASE_BRANCH` (determined in Step 2).
 

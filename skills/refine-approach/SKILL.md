@@ -1,8 +1,7 @@
 ---
 name: refine-approach
 user-invocable: true
-description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound.
-when_to_use: Use when a brainstorm or planning document already exists and the user wants it tightened before it is acted on — gaps named, assumptions surfaced, vague wording pinned down. Triggers on "refine this", "review my approach", "is this ready", "what is missing from this", "poke holes in this".
+description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when the user says "refine this", "review my approach", or "is this ready".
 argument-hint: path to document to refine
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -62,7 +61,10 @@ Present your findings, then:
 
 1. **Auto-fix** minor issues (vague language, formatting) without asking
 2. **Ask approval** before substantive changes (restructuring, removing sections, changing meaning)
-3. **Update** the document inline—no separate files, no metadata sections
+3. **Update** the document inline — no separate files, no metadata sections
+
+Refine what is there. Do not rewrite the whole document, and do not add sections or
+requirements the user never discussed.
 
 ### Simplification Guidance
 
@@ -110,17 +112,11 @@ After changes are complete, ask:
 
 After 2 refinement passes, recommend completion—diminishing returns are likely. But if the user wants to continue, allow it.
 
-## What NOT to Do
 
-- Do not rewrite the entire document
-- Do not add new sections or requirements the user didn't discuss
-- Do not over-engineer or add complexity
-- Do not create separate review files or add metadata sections
-
-#### The handoff block
+## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its
-shape is fixed here and not only in the reference. Print exactly this and then **stop**,
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
 substituting the next skill and the real document path:
 
 ```md

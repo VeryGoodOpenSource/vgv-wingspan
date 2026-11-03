@@ -1,8 +1,7 @@
 ---
 name: plan
 user-invocable: true
-description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans.
-when_to_use: Use when what to build is settled and the user wants it turned into an ordered, actionable implementation plan before anyone writes code. Triggers on "plan this", "create a plan", "how should we implement", "write an implementation plan", and on a brainstorm, spec or set of decisions handed over to be taken to the next step.
+description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when the user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
 effort: high
 argument-hint: feature, bug fix, or improvement to plan
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -10,7 +9,15 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 # Create a new implementation plan (or bug fix)
 
-Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices. This command provides flexible detail levels to match your needs.
+Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices, at a detail level matched to the work.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
+**Never write code at this stage.** The output is a plan.
 
 > **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
 > not available — another harness, or a non-interactive session — put the same question and
@@ -58,7 +65,7 @@ Instead, extract what's needed from the brainstorm and run targeted searches:
    - Example: If planning a new state management unit, search for existing implementations in the same feature area.
 3. **Read referenced files**: Read any specific files called out in the brainstorm as relevant context.
 
-##### 1.1.1 Research decision
+#### 1.1.1 Research decision
 
 Based on the findings from `0. Idea Refinement` and `1.1 Local research`, decide whether external research is needed:
 
@@ -70,7 +77,7 @@ Based on the findings from `0. Idea Refinement` and `1.1 Local research`, decide
 
 Announce the decision briefly and proceed. User can redirect if needed.
 
-###### 1.1.1.1 Conditional external research
+#### 1.1.2 Conditional external research
 
 Only run this step if `1.1.1 Research decision` determines that external research is needed.
 
@@ -79,7 +86,7 @@ Run these agents in parallel to gather external information:
 - **@official-docs-research-agent**: Fetches and synthesizes official documentation for relevant frameworks, libraries, and APIs.
 - **@best-practices-research-agent**: Researches and synthesizes best practices for the project's technology stack, following VGV conventions first, then official documentation, and finally industry standards.
 
-##### 1.1.2. Consolidate research findings
+#### 1.1.3 Consolidate research findings
 
 After all research steps complete, consolidate findings:
 
@@ -91,29 +98,10 @@ After all research steps complete, consolidate findings:
 
 **Optional validation:** Briefly summarize findings and ask if anything looks off or missing before proceeding to planning.
 
-### 2. Issue planning and structure
+### 2. Title, filename, and structure
 
-Think like a product manager — what would make this issue clear and actionable?
-
-**Title & Categorization:**
-
-- [ ] Draft clear, searchable issue title using the conventional commits format (e.g., `feat: add user authentication`, `fix: cart total calculation`)
-- [ ] Determine issue type: enhancement, bug, refactor
-- [ ] Convert title to filename: add today's date prefix, strip prefix colon, kebab-case, add `-plan` suffix
-  - Example: `feat: add user authentication` → `2026-01-21-feat-add-user-authentication-plan.md`
-  - Keep it descriptive (3-5 words after prefix) so plans are findable by context
-
-**Stakeholder Analysis:**
-
-- [ ] Identify who will be affected by this issue (end users, developers, operations)
-- [ ] Consider implementation complexity and required expertise
-
-**Content Planning:**
-
-- [ ] Choose appropriate detail level based on issue complexity and audience
-- [ ] List all necessary sections for the chosen template
-- [ ] Gather supporting materials (error logs, screenshots, design mockups)
-- [ ] Prepare code examples or reproduction steps if applicable, name the mock filenames in the lists
+Draft the plan's title, derive its filename, and gather supporting material per
+[plan authoring](references/plan-authoring.md).
 
 ### 3. User Flow Analysis
 
@@ -140,6 +128,13 @@ Before selecting a template, derive the plan's success criteria and make each on
 Surface every rejected or rewritten criterion to the user with **AskUserQuestion** before writing the plan file — do not silently change the spec they approved.
 
 These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
+
+`/build` reads the block back, so its shape holds even when the reference cannot be read from
+here. The plan carries a `## Success Criteria` section, and every criterion names what proves
+it after `verify:` — a shell command whose exit 0 is the pass, or `verify: manual` followed by
+numbered human steps. A criterion with nothing to run against it — "make it work", "the
+feature is done" — is not a criterion; rewrite it as something a command or a numbered
+procedure can settle.
 
 `verify:` commands reflect the project's own toolchain. If the project has a companion verification skill available, its gates are the canonical `verify:` commands.
 
@@ -185,45 +180,17 @@ reference file cannot be read from here.
 
 ### 5.1. Set up workspace
 
-Before writing the plan file, ensure the session is not on the base branch:
+Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
 
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
-- If git is unavailable or the command fails, skip this step and deliver the plan in your reply instead. Never let the question of where the file lives stop the plan from being produced.
-- Ask about a branch only on a branch name the command actually returned. Never infer the current branch from the directory, the prompt, or a guess, and never open with a branching question you cannot ground — a plan withheld behind an invented gate is a plan the user did not get.
+### 6. Write and review the plan file
 
-### 6. Issue creation and formatting
-
-**Formatting checklist:**
-
-- [ ] Clear heading hierarchy (##, ###) and fenced code blocks with language identifiers
-- [ ] Task lists (`- [ ]`) for trackable items; collapsible `<details>` for lengthy content
-- [ ] Link related issues/PRs (`#number`), commits (SHA), and code (GitHub permalinks)
-- [ ] Include prompts or instructions that worked well during research
-- [ ] Emphasize comprehensive testing given rapid AI-assisted implementation
-
-### 7. Final review
-
-**Pre-submission Checklist:**
-
-- [ ] Title is searchable and descriptive
-- [ ] Labels accurately categorize the issue
-- [ ] All template sections are complete
-- [ ] Links and references are working
-- [ ] Success criteria each carry a `verify:` command (or `verify: manual <steps>`)
-- [ ] Add names of files in pseudo code examples and todo lists
-- [ ] Add an ERD mermaid diagram if applicable for new model changes
+Write the file, then check it against the formatting and pre-submission rules in
+[plan authoring](references/plan-authoring.md).
 
 ## Output Format
 
-**Filename:** Use the date and kebab-case filename from Step 2 Title & Categorization: `docs/plan/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`
-
-If the user names a path for the plan, write it there instead and keep their name.
-
-Examples:
-
-- ✅ `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`
-- ❌ `docs/plan/2026-01-15-feat-thing-plan.md` (not descriptive)
-- ❌ `docs/plan/feat-user-auth-plan.md` (missing date prefix)
+**Filename:** `docs/plan/YYYY-MM-DD-<type>-<descriptive-name>-plan.md`, derived in Step 2 —
+e.g. `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`.
 
 ## Plan Review
 
@@ -254,14 +221,11 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 - **Review and refine** → Load `/refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
-## Important
 
-NEVER CODE at this stage. Only focus on producing a plan.
-
-#### The handoff block
+## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its
-shape is fixed here and not only in the reference. Print exactly this and then **stop**,
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
 substituting the next skill and the real document path:
 
 ```md
