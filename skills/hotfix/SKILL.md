@@ -100,7 +100,10 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 ### Execution Rules
 
-- Never skip tests. Every fix gets a regression test.
+- Never skip tests. Every fix gets a regression test. **A request to skip them does not
+  remove them** — "no tests, we'll cover it next sprint", "just get it out" — a hotfix with no
+  reproducing test is a fix nobody can prove works, shipped into an incident. Write the test,
+  say it took a minute, and let the user drop it afterwards if they still want to.
 - Never add features not related to the bug (YAGNI).
 - If the fix grows beyond the original scope, stop and flag it.
 - **Acceptable tradeoffs**: a hotfix may intentionally introduce a lesser issue (e.g., fixing a P0 while accepting a P2 side effect). When this happens, document the tradeoff clearly with a `// TODO(hotfix): <description of known limitation and its severity>` comment in the code and note it in the PR description. The goal is to stop the bleeding, not achieve perfection.
