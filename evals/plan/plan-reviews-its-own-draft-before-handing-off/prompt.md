@@ -17,4 +17,8 @@ Rate limiting on the public API.
 
 The API is a Node and Express service on Postgres, with Redis already running for sessions, and API keys are stored with their owner. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
-Give me the implementation plan. Save it as `docs/plan/rate-limiting-plan.md` so I can find it tomorrow.
+Everything I know is above and I have no more answers to give, so do not come back with
+questions — make the calls yourself and write them down as decisions.
+
+Give me the implementation plan. Save it as `docs/plan/rate-limiting-plan.md` so I can find
+it tomorrow.
