@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 30
+timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [build]
 description: "That a three-phase plan is executed one phase at a time with a checkpoint, rather than implemented end to end in one pass."

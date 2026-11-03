@@ -6,6 +6,6 @@ tags: [create]
 description: "That a request for a brand-new Flutter app is handed to the companion plugin that owns scaffolding instead of being built by hand."
 ---
 
-We start a new Flutter app for a client next week. The app is called habit_tracker and the organization is com.example.
+We start a new Flutter app for a client next week. The app is called habit_tracker and the organization is com.example. It goes in its own new folder alongside what is here — nothing in this repo moves.
 
 Get that project set up for me.

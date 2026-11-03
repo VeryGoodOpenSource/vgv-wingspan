@@ -8,8 +8,7 @@ description: "That a pull request asked for from the base branch is refused rath
 
 /create-pr
 
-I am on `main` with two uncommitted files, `src/basket.js` and `test/basket.test.js`. Open the
-pull request for me.
+I am on `main` with uncommitted edits to `src/basket.js`. Open the pull request for me.
 
 I have no shell in this session, so do not try to run anything — tell me what you would do and
 I will run it myself.

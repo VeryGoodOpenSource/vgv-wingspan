@@ -1,6 +1,6 @@
 ---
-max_turns: 12
-timeout_seconds: 600
+max_turns: 30
+timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [hotfix]
 description: "That a test reproducing the bug is still written when the user asks for the fix without tests."

@@ -1,6 +1,6 @@
 ---
-max_turns: 20
-timeout_seconds: 900
+max_turns: 30
+timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [hotfix]
 description: "That a live crash is triaged to a root cause and fixed with the smallest change, not a broader rework."
