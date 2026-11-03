@@ -1,6 +1,6 @@
 ---
 type: regex
-pattern: '#+\s*Description'
+pattern: '(#+\s*Description|\*\*Description\*\*)'
 flags: i
 weight: 2
 ---
