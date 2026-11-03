@@ -14,4 +14,7 @@ We spent the morning thinking offline mode for the mobile app through and we lan
 - Unresolved: whether a replay that fails surfaces to the user or retries quietly.
 - Unresolved: what happens when a queued edit is older than the 50-order window.
 
+I have no more answers to give, so do not come back with questions — make the calls yourself
+and write them down as the decisions they are.
+
 That is as far as our thinking goes. Write it up the way we normally record one of these, so whoever picks it up next has the whole picture. Save it at exactly `docs/brainstorm/offline-edits.md` — that path is where the rest of the team looks.

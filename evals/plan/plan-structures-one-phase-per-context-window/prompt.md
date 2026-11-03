@@ -18,4 +18,7 @@ Export to CSV.
 
 The app is a Node and Express service on Postgres with a React front end, a job queue, object storage and a transactional email service already in place. That code sits in another repository, not the one you are opened in, so work from this description — it is accurate and it is all you need.
 
+I have no more answers to give, so do not come back with questions — make the calls yourself
+and write them down as the decisions they are.
+
 Give me the implementation plan, as one document. I will be building it myself across several sittings and I start each one from scratch, so I have to be able to pick the work up one piece at a time: what that piece delivers, what it touches, and how I know it is finished before I move on. Save it as `docs/plan/csv-export-plan.md` so I can find it tomorrow.
