@@ -103,10 +103,18 @@ with regex and leave the judge the short reply.
 A case that still grades the reply for template wording is measuring the summary, and the
 summary is not where the template lives.
 
-Two skills have no cases. `create-pr` and `rebase` both set
-`disable-model-invocation: true`, and the Skill tool refuses those unless the user typed the
-command that turn — `Skill <name> cannot be used with the Skill tool due to
-disable-model-invocation`. No prompt can route to them, so there is nothing to measure.
+**`create-pr` and `rebase` are reached by the typed command, not by routing.** Both set
+`disable-model-invocation: true`, so the Skill tool refuses them — `Skill <name> cannot be
+used with the Skill tool due to disable-model-invocation` — and no prompt can route to them.
+A prompt whose first line *is* the command (`/create-pr VGV-318`) does reach them: the body
+is expanded into the turn, but as a command rather than a `Skill` call, so the trace holds no
+`Skill` call and these cases carry no routing grader. That also makes them the one place the
+suite's "never tell the model not to do the work" rule relaxes: routing is already settled by
+the command, so a prompt may say the session has no shell and ask for the text instead.
+
+Typing the command does **not** work for the model-invocable skills. A case whose prompt was
+`/review src/session.js` produced no assistant turn at all — 0 turns, no output — while the
+same request in plain words routed and ran. Write those prompts as a user would say them.
 
 ---
 
@@ -327,14 +335,25 @@ ones that need the skill's own wording to reappear.
 
 ## The fixture
 
-Every run starts in an empty workspace. `_fixture/fixture.sh` recreates the neutral project
-skeleton, hooked up through `context.scaffold_script`, and runs **only with `--scaffold`**.
+Every run starts in an empty workspace. `_fixture/fixture.sh` recreates the project skeleton,
+hooked up through `context.scaffold_script`, and runs **only with `--scaffold`**.
 
-It writes `package.json`, `src/counter.js` and `test/counter.test.js`. The source exists so
-a run opens in a real project rather than an empty directory, and it is deliberately the
-most boring code that satisfies that: one class with one method, and one test with one
-assertion. Nothing there is a Wingspan convention, because everything there is visible to
-the no-plugin arm of every case.
+It writes `package.json` and ten small modules under `src/`, plus one test. Two rules govern
+what goes in it, and both were learned by breaking them:
+
+- **Nothing may name the harness.** The fixture once called itself `eval-fixture-app`,
+  described as a scratch project for behavior evals. The model read that, stepped out of the
+  task, and spent run after run explaining that this was a toy repo and asking which codebase
+  to work against. It is now an ordinary small project and says nothing about why it exists.
+- **Nothing may name what a skill teaches.** No `docs/plan/`, no pull request template, no
+  conventional-commit history, no review checklist — everything here is visible to the
+  no-plugin arm of every case.
+
+**Every module a case talks about lives here, under that case's name, holding exactly the
+code that case pastes.** A prompt that refers to a file the workspace does not have spends
+the run on the mismatch: the model globs for it, reports it missing, and asks how to proceed
+instead of answering. That is also why two cases renamed their subject — `src/invoicing.js`
+and `src/basket.js` — rather than share `pricing.js` and `cart.js` with the diff case.
 
 `context.scaffold_script` will not take a path that leaves the case directory, but it does
 resolve a symlink inside it, so each case's `fixture.sh` is a symlink to the one script. A
@@ -350,7 +369,10 @@ or dangles.
 **On Windows**, a checkout without `core.symlinks=true` turns each link into a text file
 and runs fail at scaffold time. CI runs on Linux and is unaffected.
 
----
+**A new case's `graders/` must actually be committed.** `.gitignore` carried
+`evals/*/*/*/` to catch the `subagents/` directories a run leaves behind; it also matched
+`graders/` for any case git did not already track, and four cases were committed without the
+graders that score them. The pattern now names the artifact.
 
 ## Running
 
@@ -401,14 +423,27 @@ scoped by `--tag` to the changed skills, with-plugin arm only, and `continue-on-
 
 ## What this does not cover
 
-- **Anything downstream of a tool call.** No `Bash` means no git state, no `gh`, and no
-  dispatched review agent actually running. A case measures what the skill says it will do,
-  except for the written document, which four cases read back with a `files` target.
-- **`create-pr` and `rebase`.** `disable-model-invocation: true` puts them out of reach of
-  any prompt.
+- **Anything downstream of a shell.** No `Bash` means no git state, no `gh`, no test run.
+  A case measures what the skill says it will do, plus the documents and reports it writes.
+  `Agent` and `Write` are grantable and the four `/review` cases use both, so those run the
+  real pipeline: four review agents, raw reports, and the consolidated `FINDING-NN` file.
+- **Routing for `create-pr` and `rebase`.** Reached by the typed command, so their cases
+  measure what the skill produces and never whether it activates.
 - **Judge calibration.** Most content graders are `llm` with no human-labelled gold set.
 - **Stable routing.** Whether a skill activates is nondeterministic, which is why routing is
-  a `tool_used` grader rather than inferred from content.
+  a `tool_used` grader rather than inferred from content. Across three measured full runs,
+  8-13 of the cases missed routing each time, and *which* cases missed moved between runs —
+  `elements-of-style`, green on every case three runs running, missed one on the fourth.
+  Rewriting `when_to_use` into situation-first wording moved nothing measurable. Read a
+  single-run routing red as noise; the suite runs three times per case for this reason.
+
+- **A reference the model cannot read.** A run can be denied read access to the plugin
+  directory: `File is in a directory that is denied by your permission settings.` A skill
+  whose output format lives only in `references/` then produces something else and says so in
+  passing. This is why the names that travel — `FINDING-NN` and its rule id and severity, the
+  clear-context handoff block, the Implementation Phases field names, the `verify:`
+  convention — are stated in each `SKILL.md` as well. Grading a format that only exists in a
+  reference measures whether that read happened to succeed.
 - **Prose in a `SKILL.md`.** Deliberate: asserting `contains` patterns against skill bodies
   fails the gate on a copy-edit.
 - **The skills' own surfaces.** `skills_lint` catches a link to a missing file and a `name`
