@@ -8,3 +8,9 @@ docs/hotfix-review/
 docs/code-review/
 docs/debriefs/
 evals/results/
+
+# Session transcripts a multi-turn eval run writes back into the case directory.
+# The input is history.jsonl; everything else here is a run artifact.
+evals/*/*/*.jsonl
+!evals/*/*/history.jsonl
+evals/*/*/*/
