@@ -1,7 +1,7 @@
 ---
 type: regex
-pattern: 'skipped the review|at fault|to blame|careless|negligent'
+pattern: 'at fault|to blame|careless|negligent|did not do their job|rubber-stamp'
 flags: i
-weight: 1
 match: not_contains
+weight: 1
 ---
