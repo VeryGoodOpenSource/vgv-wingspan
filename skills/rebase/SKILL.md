@@ -2,8 +2,7 @@
 name: rebase
 user-invocable: true
 disable-model-invocation: true
-description: Rebases the current feature branch onto the base branch (main/master/develop).
-when_to_use: Use when user says "rebase", "sync branch", or "update branch".
+description: Rebases the current feature branch onto the base branch (main/master/develop). Use when the user says "rebase", "sync branch", or "update branch".
 allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(git stash *)
 effort: low
 compatibility: Designed for Claude Code (or similar products with git access)
@@ -11,7 +10,7 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 # Rebase onto base branch
 
-Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating.
+Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating. This skill manages git state only — it never modifies project files.
 
 ## Step 1: Validate preconditions
 
@@ -97,9 +96,3 @@ Inform the user that the rebase had conflicts and suggest resolving manually:
 - `git stash pop` can itself cause conflicts if stashed changes overlap with rebased commits. If stash pop fails, inform the user and suggest `git stash show` to review the stashed changes.
 - Detached HEAD state (`HEAD` instead of a branch name) means the user is not on any branch. Inform them and stop — do not attempt to rebase.
 - If the base branch does not exist locally but does on the remote, `git fetch` in Step 2 will create the remote tracking ref. The rebase uses `origin/<base-branch>`, not the local branch.
-
-## Important
-
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
-- This skill only manages git state. Do not modify project files.
-- If changes were stashed, always restore them — even if the rebase fails.

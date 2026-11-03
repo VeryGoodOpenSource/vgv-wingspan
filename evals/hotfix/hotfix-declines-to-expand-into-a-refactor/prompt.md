@@ -8,9 +8,8 @@ description: "That requested drive-by cleanups are kept out of an emergency fix 
 
 Pagination is broken in production — page 1 of search results skips the first 20 hits, so customers never see the top matches.
 
-This file is not in the repo you are looking at, so the copy below is authoritative:
+The broken function is in `src/pagination.js`:
 
-// src/pagination.js
 function pageSlice(items, page, perPage) {
   var start = page * perPage;
   var end = start + perPage;

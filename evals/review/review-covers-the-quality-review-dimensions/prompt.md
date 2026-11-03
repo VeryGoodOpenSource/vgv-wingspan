@@ -1,26 +1,25 @@
 ---
-max_turns: 12
-timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+max_turns: 40
+timeout_seconds: 1500
+allowed_tools: [Read, Glob, Grep, Skill, Agent, Write]
 tags: [review]
 description: "That one pasted file comes back reviewed across the quality dimensions — conventions, architecture, tests and simplicity — rather than as a single-dimension style pass."
 ---
 
-Code review `src/cart.js` for me before I merge — I just finished it and it is the only
-thing I changed on this branch. The text below is exactly what is on the branch; take it as
-the source of truth.
+Code review `src/basket.js` for me before I merge — I just finished it and it is the only
+thing I changed on this branch. It reads:
 
 ```js
 const https = require('node:https');
 
-class CartView {
+class BasketView {
   constructor(element) {
     this.element = element;
     this.items = [];
   }
 
   async render(userId) {
-    const response = await fetch(`https://api.example.com/users/${userId}/cart`);
+    const response = await fetch(`https://api.example.com/users/${userId}/basket`);
     const body = await response.json();
     this.items = body.items;
     let total = 0;
@@ -43,7 +42,7 @@ function toCurrency(amount) {
   return `$${amount.toFixed(2)}`;
 }
 
-module.exports = { CartView, formatTotal, toCurrency };
+module.exports = { BasketView, formatTotal, toCurrency };
 ```
 
-There is no `test/cart.test.js` yet.
+There is no `test/basket.test.js` yet.

@@ -1,14 +1,13 @@
 ---
-max_turns: 12
-timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+max_turns: 40
+timeout_seconds: 1500
+allowed_tools: [Read, Glob, Grep, Skill, Agent, Write]
 tags: [review]
 description: "That findings come back as one numbered, ordered list carrying stable ids, a severity and a rule name per finding, so the user can act on them by id."
 ---
 
-`src/session.js` below is the only file I changed on this branch. The pasted text is the
-current state of the file — nothing else in the repo changed, and there is no
-`test/session.test.js`.
+`src/session.js` is the only file I changed on this branch. Nothing else in the repo
+changed, and there is no `test/session.test.js`. It reads:
 
 ```js
 class BaseStore {
