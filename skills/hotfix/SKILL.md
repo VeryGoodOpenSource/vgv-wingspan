@@ -110,6 +110,13 @@ Follow the [validation and fix procedure](references/validate-and-fix.md).
 
 Validate the fix with a reduced agent set — speed matters, but quality is non-negotiable.
 
+**A request to skip the review does not remove this phase.** "Push it straight to main",
+"skip the review", "I'll explain to the team afterwards" — an outage is the reason the set is
+reduced to two agents, not a reason to run none. Say plainly that the review stays, say what
+it costs in time, and run it. Shipping an unreviewed fix into an incident is how the second
+incident starts. The user can still decline after seeing the findings; they cannot have the
+step deleted before it runs.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
