@@ -13,6 +13,12 @@ Review a plan that was not created by `/plan`. `/plan` runs this same review inl
 creation, so use this skill for externally-authored plans — hand-written, from another tool,
 or from a teammate.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 **Plan file:** `$ARGUMENTS` (if empty, ask the user for the plan path or pick the most recent file under `docs/plan/`).
 
 ## Review
@@ -40,4 +46,23 @@ After the review completes, use **AskUserQuestion** to present next steps:
 
 ## Important
 
-- **When `AskUserQuestion` is unavailable** — another harness, or a non-interactive session — put the same question and the same options in your reply as a short numbered list, and stop there for the answer. A question the user never sees is not a question.
+
+## The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

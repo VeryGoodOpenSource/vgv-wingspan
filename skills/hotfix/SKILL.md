@@ -12,6 +12,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Apply a minimal, targeted fix fast. No brainstorm document, no plan document — but tests and review are still non-negotiable.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 ## Bug Description
 
 <bug_description>$ARGUMENTS</bug_description>
@@ -26,6 +32,10 @@ Summarize the bug in one sentence. Identify:
 
 - **Symptom**: what the user sees or what is broken
 - **Suspected area**: which layer or component is likely involved (based on the description alone — do not read code yet)
+
+Write both lines out for the user before going any further. Triage is their first signal
+that the right thing is being fixed, so it belongs in the reply rather than only in your
+head.
 
 ## Phase 1 — Locate
 
@@ -52,6 +62,10 @@ git rev-parse --abbrev-ref HEAD
 ```
 
 **If already on a `hotfix/` branch:** skip silently.
+
+**If git is unavailable or the command fails:** do not pass over the step in silence. Name
+the `hotfix/<slug>` branch this fix belongs on in your reply and carry on — the branch is
+part of how a hotfix ships, and whoever applies the change by hand still needs the name.
 
 **Otherwise:** infer a branch name in the format `hotfix/<kebab-slug>` where the slug is derived from the bug description (max 60 characters total). Use **AskUserQuestion** to confirm:
 
@@ -106,6 +120,25 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 ### After reviews complete
 
 Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+
+### The findings contract
+
+These names leave this skill — the user acts on findings by id, and `/build` and `/hotfix`
+reuse them — so they are fixed here and not only in the reference. Hold them even when the
+reference cannot be read:
+
+- Every finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
+  consolidation procedure fixes, and a rule id `<category>/<rule>` from `vgv`, `architecture`,
+  `tests`, `simplicity` or `pr-readiness` — for example `tests/missing-test-file`.
+- Every finding carries one severity: **Critical**, **Important** or **Suggestion**.
+- Every finding carries a **Why** line and a **Fix** line.
+- The chat summary reprints the Critical and Important findings verbatim — same ids, same
+  order, same titles — and collapses Suggestions to a count.
+
+If a reference file cannot be read from here, say so once and produce the review in this
+shape anyway. A review without ids is a review the user cannot take apart, which is most of
+why it was run.
+
 
 ### Cleanup
 

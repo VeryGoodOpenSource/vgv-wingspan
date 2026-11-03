@@ -12,6 +12,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality. This is the execution phase. The plan was already reviewed and approved — follow it rather than redesigning it.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 ## Build Progress
 
 Copy this checklist and track your progress:
@@ -73,6 +79,11 @@ Instead, use the plan itself as your guide:
 Determine the unit of work:
 
 - **Plan has an `## Implementation Phases` section** → build one phase at a time with the phase loop below. Each phase carries the fields defined in the [implementation phases block](references/implementation-phases.md) — Status, Scope, Files touched, Acceptance criteria, and Validation — and is sized to fit a single context window, so `/build` executes one phase per window.
+
+  The field names are `**Status:**`, `**Scope:**`, `**Files touched:**`, `**Acceptance
+  criteria:**` and `**Validation:**`, and they hold whether or not that reference can be read
+  from here. One phase is the unit of work: build it, checkpoint, clear, then take the next.
+  Running the whole plan in one pass is the thing this structure exists to prevent.
 - **No phases** → treat the whole plan as one phase: implement every task, then run the loop once.
 
 ### Phase loop
@@ -181,3 +192,24 @@ Use **AskUserQuestion** to present options:
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
 - The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
+
+
+## The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.
