@@ -10,7 +10,9 @@ docs/debriefs/
 evals/results/
 
 # Session transcripts a multi-turn eval run writes back into the case directory.
-# The input is history.jsonl; everything else here is a run artifact.
+# The input is history.jsonl; everything else there is a run artifact.
 evals/*/*/*.jsonl
 !evals/*/*/history.jsonl
-evals/*/*/*/
+# Name the artifact, not every directory at this depth: `evals/*/*/*/` also swallowed the
+# graders/ of every case not yet tracked, and four cases were committed without them.
+evals/*/*/subagents/
