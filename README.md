@@ -45,7 +45,7 @@ Start here. Describe the problem or idea — the bigger and more open-ended, the
 /brainstorm how should we add authentication to this app?
 ```
 
-Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
+Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up. To track the brainstorm on GitHub instead of in the repo, use `/brainstorm-to-github`, which publishes it as an issue and hands the URL to `/plan`.
 
 ### 2. `/plan`
 
@@ -92,6 +92,7 @@ Wingspan operates at a higher level, orchestrating agentic workflows across the 
 | Skill | Command | Description |
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
+| [**Brainstorm to GitHub**](skills/brainstorm-to-github/SKILL.md) | `/brainstorm-to-github <feature or idea>` | Same exploration as `/brainstorm`, published as a GitHub issue instead of a repository file |
 | [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
 | [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
 | [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
