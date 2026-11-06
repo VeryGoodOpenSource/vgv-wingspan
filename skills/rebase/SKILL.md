@@ -12,6 +12,12 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating. This skill manages git state only — it never modifies project files.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 ## Step 1: Validate preconditions
 
 Run these checks in order. If any fail, inform the user and stop.

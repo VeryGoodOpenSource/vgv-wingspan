@@ -11,6 +11,12 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 Stage uncommitted changes, commit them, push the branch, and open a pull request on the project's Git hosting platform.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 ## Steps checklist
 
 - [ ] Step 0: Parse arguments
@@ -135,6 +141,12 @@ cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
   - `test` → 🧪 Tests
   - `chore`/`build`/`ci` → 🔧 Maintenance
 - **No template**: consult `references/pull-request-template.md` for the default template and filling rules.
+
+  When that reference cannot be read from here, the body still has this shape — a
+  `## Description` paragraph synthesized from the commit bodies and naming the ticket, and a
+  `## Type of Change` checklist with the applicable box marked. Strip every HTML comment.
+  A body with no headings is not the template with the headings left out; it is a different
+  artifact, and the reviewer's eye goes looking for them.
 
 Output the proposed PR:
 

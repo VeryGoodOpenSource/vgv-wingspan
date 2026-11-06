@@ -10,6 +10,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Clarify **WHAT** to build before diving into **HOW** to build it. Explore user intent, approaches, and design decisions through collaborative dialogue.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 **Do not write code.** The output is a brainstorm document.
 
 ## Feature description
@@ -45,7 +51,10 @@ Assess whether brainstorming is needed.
 | Specific acceptance criteria provided | Vague terms ("make it better", "add something like") |
 | Exact behavior described, scope constrained | Multiple reasonable interpretations, trade-offs undiscussed |
 
-**If clear:** Use **AskUserQuestion** to suggest proceeding directly to planning.
+**If clear:** the thinking is already done, so do not reopen it. Record it and go straight to
+the handoff step, offering the same options in the same order — **Clear context and plan**
+first and marked as recommended. A brainstorm that arrives settled still leaves by the
+handoff; skipping it drops the user somewhere other than `/plan`.
 
 ### 1. Understand the idea
 
@@ -62,6 +71,12 @@ Focus on: similar features, established patterns, CLAUDE.md guidance.
 Use the **AskUserQuestion tool** to ask questions one at a time. The tool automatically provides an "Other" option for free-text input — never add your own catch-all option (e.g., "Something else", "None of the above").
 
 **Question Techniques:** Prefer multiple choice over open-ended. Start broad (purpose, users) then narrow (constraints, edge cases). Validate assumptions explicitly. Ask about success criteria early.
+
+**Purpose and users come before the stack.** When the idea arrives as a pile of technology — a
+queue, a cache, a service — the first question is still what the feature has to do and for
+whom, not how the pieces wire together. Asking about deployment, storage or transport before
+anyone has said what the user should get accepts the stack as settled, which is the one thing
+this step exists to reopen.
 
 **Key Topics to Explore:**
 
@@ -111,9 +126,14 @@ Run the [feature branch check](references/feature-branch.md) before writing anyt
 
 Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
+If the user names a path for the document, write it there instead and keep their name.
+
 Ensure `docs/brainstorm/` directory exists before writing.
 
-Use the [brainstorm template](references/template.md) as the document structure.
+Use the [brainstorm template](references/template.md) as the document structure, keeping its
+section headings as they are written — `## What We're Building`, `## Why This Approach`,
+`## Key Decisions`, `## Open Questions`. `/plan` reads the document back by those headings,
+and a heading of your own wording, however apt, is one it cannot find.
 
 ### 3. Handoff
 
@@ -140,3 +160,23 @@ Key decisions:
 - [Decision 1]
 - [Decision 2]
 ```
+
+## The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.
