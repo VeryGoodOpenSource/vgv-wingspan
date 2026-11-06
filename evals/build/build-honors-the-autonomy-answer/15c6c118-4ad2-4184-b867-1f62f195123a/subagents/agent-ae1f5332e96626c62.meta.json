@@ -1,1 +1,0 @@
-{"agentType":"general-purpose","isBuiltIn":true,"description":"Run tests and conditionally commit","toolUseId":"toolu_01DGmJ926pcqTKF1oDS38ZL9","parentAgentId":"a661fc8ba07e4c0b3","spawnDepth":3,"requestShape":"foreground","requestNonInteractive":true,"pickedEffortModel":"claude-sonnet-5","finished":true}

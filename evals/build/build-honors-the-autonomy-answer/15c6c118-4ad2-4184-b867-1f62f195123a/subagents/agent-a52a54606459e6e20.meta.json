@@ -1,1 +1,0 @@
-{"agentType":"general-purpose","isBuiltIn":true,"description":"Run npm test and report exit code","toolUseId":"toolu_01CRYBdRD4nWXtUsZVtt7cyP","parentAgentId":"a1b62913829fe3c83","spawnDepth":3,"requestShape":"foreground","requestNonInteractive":true,"pickedEffortModel":"claude-sonnet-5","finished":true}

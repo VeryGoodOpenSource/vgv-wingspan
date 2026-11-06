@@ -1,1 +1,0 @@
-{"agentType":"general-purpose","isBuiltIn":true,"description":"Run npm test and capture output","toolUseId":"toolu_01XbyDUj1QPmsuujC9Kw5TSz","parentAgentId":"a6c6b526a8d660b4b","spawnDepth":3,"requestShape":"foreground","requestNonInteractive":true,"pickedEffortModel":"claude-sonnet-5","finished":true}

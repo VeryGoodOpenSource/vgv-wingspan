@@ -1,1 +1,0 @@
-{"agentType":"general-purpose","isBuiltIn":true,"description":"Run tests and commit Counter.clear()","toolUseId":"toolu_014hJ7RgUARDo6bDmnnZW5oQ","parentAgentId":"af74c08933ae07eed","spawnDepth":2,"requestShape":"foreground","requestNonInteractive":true,"pickedEffortModel":"claude-sonnet-5","finished":true}

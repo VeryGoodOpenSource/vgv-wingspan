@@ -1,1 +1,0 @@
-{"agentType":"general-purpose","isBuiltIn":true,"description":"Run tests and commit Counter.clear() change","toolUseId":"toolu_01AHh25XFcpqicvmZGERHFzG","spawnDepth":1,"requestShape":"foreground","requestNonInteractive":true,"pickedEffortModel":"claude-sonnet-5","finished":true}
