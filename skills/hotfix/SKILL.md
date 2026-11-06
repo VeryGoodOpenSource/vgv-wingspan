@@ -105,7 +105,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and present Important findings to the user. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and handle Important findings per [review autonomy](references/review-autonomy.md). `/hotfix` asks no question at the start, so the setting comes from a saved preference; with none, it asks at the Important findings stop. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### Cleanup
 
@@ -136,6 +136,8 @@ Bug: <original bug description or issue link, truncated if long>
 Push the branch and create a PR. **Title**: `fix: <concise description>` (max 72 characters, matching `/create-pr`). **Body**: Use the [PR template](references/pr-template.md).
 
 ### Post-Ship
+
+Print an end-of-run summary: root cause, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link.
 
 Use **AskUserQuestion** to present options:
 
