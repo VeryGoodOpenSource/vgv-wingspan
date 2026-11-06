@@ -32,11 +32,14 @@ Skipped findings are deferred and noted in the PR description.
 
 Apply every Important finding whose `fix` you can make without a decision the plan, the
 bug description, or the codebase does not already answer. Stop and ask only for a finding
-that:
+whose fix needs such a decision. For example, a fix that:
 
 - changes public API, user-facing behavior, or scope beyond the plan or the bug;
 - contradicts the plan or an explicit instruction from the user; or
 - offers more than one reasonable fix and nothing in the input picks between them.
+
+These are examples, not a complete list: any fix that needs a decision the input does not
+answer stops.
 
 When some findings stop, apply the rest first, then ask about the stopped ones together in
 one question. A stopped finding the user skips is deferred and noted in the PR description.
