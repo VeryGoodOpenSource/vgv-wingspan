@@ -17,8 +17,9 @@ per-developer preference, not a repo convention, so it never belongs in the proj
 ## When the setting is off
 
 Present the Important findings to the user and wait for a decision, exactly as before.
-Always stop here and offer all three options below; never pick one on the user's behalf,
-even when no question tool is available (ask in plain text and end the turn):
+When there are Important findings, always stop here and offer all three options below;
+never pick one on the user's behalf, even when no question tool is available (ask in plain
+text and end the turn):
 
 1. **Apply all (Recommended)**: apply every Important finding this run.
 2. **Choose by id**: the user names the findings to apply or skip.
