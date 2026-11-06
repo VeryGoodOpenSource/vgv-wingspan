@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: plan-grounds-the-plan-in-the-existing-codebase
+context:
+  scaffold_script: fixture.sh

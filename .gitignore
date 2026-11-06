@@ -7,3 +7,16 @@ docs/reviews/
 docs/hotfix-review/
 docs/code-review/
 docs/debriefs/
+evals/results/
+
+# A multi-turn run writes its session transcript back into the case directory, as
+# `<session-uuid>.jsonl` beside the input and as a `<session-uuid>/subagents/` tree below it.
+# The input is history.jsonl; everything else there is a run artifact.
+#
+# Match the artifact by name, at any depth. An earlier `evals/*/*/*/` matched by depth and
+# swallowed the graders/ of every case git did not already track — four cases were committed
+# without the graders that score them.
+evals/*/*/*.jsonl
+!evals/*/*/history.jsonl
+evals/**/subagents/
+evals/*/*/[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*/
