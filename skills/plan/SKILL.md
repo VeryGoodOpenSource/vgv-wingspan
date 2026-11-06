@@ -148,7 +148,7 @@ e.g. `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`.
 After writing the plan file and before presenting options, run a mandatory quality pass on it. This replaces the separate `/plan-technical-review` step — plans created here are reviewed here.
 
 - **Minimal template** → skip this section. The overhead is not worth it for a small plan.
-- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases or split it into part-N files.
+- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
 
 Return here once the review completes, then present the options below.
 
