@@ -5,11 +5,15 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
 
 - **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
   opening the PR still pause for approval.
+- **Auto-commit and apply review findings** — as above, and also apply Important review
+  findings without asking, per [review autonomy](review-autonomy.md).
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
 
 The choice is a per-developer preference, not a repo convention, so it never belongs in the
-project's `CLAUDE.md`.
+project's `CLAUDE.md`. Review autonomy can also come from its own saved preference (set by
+**Always apply** at the findings stop); when it does, honor it whichever commit mode is in
+effect.
 
 ## Applying it
 

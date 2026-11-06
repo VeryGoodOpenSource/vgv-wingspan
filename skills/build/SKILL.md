@@ -146,7 +146,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting chosen in Phase 0, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
@@ -166,9 +166,11 @@ rm -rf docs/reviews/
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
 
-To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
+To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md). `/create-pr` may build the body from the project's own template instead, so whichever template it uses, add the **Applied without asking** list from [review autonomy](references/review-autonomy.md) to the body before the PR is opened.
 
 ### Post-Ship
+
+Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits.
 
 Use **AskUserQuestion** to present options:
 

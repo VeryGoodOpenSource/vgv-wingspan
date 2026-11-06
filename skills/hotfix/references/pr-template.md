@@ -12,6 +12,10 @@
 
 - [ ] <How to verify the fix>
 
+## Applied without asking
+
+<the review-autonomy list of Important findings applied without asking; omit this section if empty>
+
 ## Notes
 
 - Cherry-pick friendly: single commit on `hotfix/<slug>`

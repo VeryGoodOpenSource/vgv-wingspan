@@ -58,6 +58,7 @@ skills/                # User-invocable and supporting skills (one dir per skill
       plan-review.md             # Quality pass applied to a drafted plan
       plan-templates/            # minimal, standard, extensive, phases, success criteria
       review-agent-instructions.md  # Instructions passed to each review agent
+      review-autonomy.md         # When /build and /hotfix apply Important findings without asking
       review-consolidation.md    # Deduplicate, order, and number findings
       review-dispatch.md         # Caller-side procedure for launching review agents
       review-report-template.md  # Shape of the consolidated report
