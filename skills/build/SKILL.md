@@ -165,6 +165,12 @@ what it costs, and run it. Reporting afterwards that the review was "skipped per
 instructions" is this phase failing, not this phase being waived. The user can decline to act
 on the findings; they cannot have the step deleted before it runs.
 
+**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
+would have run — five `Agent` calls, sent in parallel in a single message, each carrying the
+scope and the raw-reports directory. A reply that describes this phase without a dispatch in
+the trace has skipped it. If an agent is unavailable, say which and run the rest; if none can
+run, say so plainly rather than narrating the review as though it happened.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
 
 | Agent | Report name |
@@ -174,6 +180,11 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 | **@test-quality-review-agent** | `test-quality-review` |
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
 | **@pr-readiness-review-agent** | `pr-readiness-review` |
+
+Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
+and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
+scope constraint and the report name from the table above, and send all five in one message
+so they run at once rather than in turn.
 
 ### After all reviews complete
 
