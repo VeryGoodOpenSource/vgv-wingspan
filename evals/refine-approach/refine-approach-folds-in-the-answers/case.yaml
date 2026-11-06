@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: refine-approach-folds-in-the-answers
+context:
+  scaffold_script: fixture.sh
+  history_file: history.jsonl
