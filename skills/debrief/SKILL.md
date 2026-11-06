@@ -11,6 +11,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Produce a structured, blameless debrief document after an incident, failed release, or significant bug. Capture what happened, why, and what to change — while the context is still fresh.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 **Do not make code changes.** This skill produces a document; its action items become separate tickets.
 
 **Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
@@ -45,6 +51,10 @@ Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt b
 
 The skill must work with partial information. Not every debrief has full CI logs or a complete timeline. Note gaps explicitly in the document rather than blocking on them.
 
+When the source notes name people, record the role instead as you take them down — the author,
+the reviewer, the on-call engineer, QA. A name that never enters your notes cannot reach the
+document.
+
 ### 2. Gather evidence from the codebase
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
@@ -61,6 +71,8 @@ Synthesize the evidence to identify the **root cause** (specific change, gap, or
 
 **Blameless framing:** Focus on systems and processes, not individuals. Ask "what made this possible?" not "who caused this?"
 
+Write no person's name into the document, even when the source notes name people and assign fault. Replace each one with the role that matters to the cause — the author, the reviewer, the on-call engineer, QA. "Milan approved it in two minutes" becomes "the change carried a single approval and no one ran the build".
+
 ### 4. Draft action items
 
 Generate concrete, assignable follow-ups. Each must be specific (not "improve testing"), linked to code where possible, and categorized:
@@ -70,6 +82,8 @@ Generate concrete, assignable follow-ups. Each must be specific (not "improve te
 | **Prevent** | Would have stopped this incident | Add validation, add test |
 | **Detect** | Would have caught it sooner | Add monitoring, add CI check |
 | **Respond** | Would have made recovery faster | Add runbook, add feature flag |
+
+Render each item as a `- [ ]` checkbox grouped under its type, as the [debrief template](references/template.md) does.
 
 Action items are recorded in the document only — they become separate tickets.
 
