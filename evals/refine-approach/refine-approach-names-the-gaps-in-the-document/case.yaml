@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: refine-approach-names-the-gaps-in-the-document
+context:
+  scaffold_script: fixture.sh
