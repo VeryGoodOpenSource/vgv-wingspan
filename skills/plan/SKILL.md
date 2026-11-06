@@ -11,6 +11,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files that follow VGV conventions and best practices, at a detail level matched to the work.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
 **Never write code at this stage.** The output is a plan.
 
 ## Feature Description
@@ -117,6 +123,13 @@ Surface every rejected or rewritten criterion to the user with **AskUserQuestion
 
 These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
 
+`/build` reads the block back, so its shape holds even when the reference cannot be read from
+here. The plan carries a `## Success Criteria` section, and every criterion names what proves
+it after `verify:` — a shell command whose exit 0 is the pass, or `verify: manual` followed by
+numbered human steps. A criterion with nothing to run against it — "make it work", "the
+feature is done" — is not a criterion; rewrite it as something a command or a numbered
+procedure can settle.
+
 `verify:` commands reflect the project's own toolchain. If the project has a companion verification skill available, its gates are the canonical `verify:` commands.
 
 ### 5. Select implementation detail template
@@ -128,6 +141,12 @@ These criteria populate the `success-criteria` block defined in [success-criteri
 | **Minimal** | Simple bugs, small enhancements, straightforward implementation | [minimal](references/minimal.md) |
 | **Standard** (default) | Most features and bug fixes needing moderate detail | [standard](references/standard.md) |
 | **Extensive** | Major features, architectural changes, significant risk or uncertainty | [extensive](references/extensive.md) |
+
+Whatever the level, a plan that carries more than one phase embeds the
+[Implementation Phases block](references/implementation-phases.md) verbatim: `## Implementation Phases`,
+one `### Phase N:` each, and the `**Status:**`, `**Scope:**`, `**Files touched:**`,
+`**Acceptance criteria:**` and `**Validation:**` fields. `/build` parses those names to execute one
+phase per context window — renaming them to anything of your own, however clear, breaks execution.
 
 ### 5.1. Set up workspace
 
@@ -171,3 +190,23 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **Review and refine** → Load `/refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
+
+## The handoff block
+
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.
