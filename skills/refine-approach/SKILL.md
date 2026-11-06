@@ -112,7 +112,6 @@ After changes are complete, ask:
 
 After 2 refinement passes, recommend completion—diminishing returns are likely. But if the user wants to continue, allow it.
 
-
 ## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its

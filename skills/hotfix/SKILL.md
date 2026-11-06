@@ -149,7 +149,6 @@ If a reference file cannot be read from here, say so once and produce the review
 shape anyway. A review without ids is a review the user cannot take apart, which is most of
 why it was run.
 
-
 ### Cleanup
 
 Remove review reports after findings are addressed:

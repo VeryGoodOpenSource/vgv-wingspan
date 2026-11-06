@@ -213,7 +213,6 @@ Use **AskUserQuestion** to present options:
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
 - The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
 
-
 ## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its

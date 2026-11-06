@@ -191,7 +191,6 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 - **Review and refine** → Load `/refine-approach` skill.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
-
 ## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its

@@ -99,7 +99,6 @@ If a reference file cannot be read from here, say so once and produce the review
 shape anyway. A review without ids is a review the user cannot take apart, which is most of
 why it was run.
 
-
 **If no findings:** write the short all-clear report and tell the user the code looks good.
 
 ## Step 4 — Act

@@ -161,7 +161,6 @@ Key decisions:
 - [Decision 2]
 ```
 
-
 ## The handoff block
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its
