@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: create-declines-to-hand-roll-the-scaffold
-context:
-  scaffold_script: fixture.sh
