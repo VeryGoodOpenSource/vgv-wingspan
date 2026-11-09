@@ -2,8 +2,7 @@
 name: rebase
 user-invocable: true
 disable-model-invocation: true
-description: Rebases the current feature branch onto the base branch (main/master/develop).
-when_to_use: Use when user says "rebase", "sync branch", or "update branch".
+description: Rebases the current feature branch onto the base branch (main/master/develop). Use when the user says "rebase", "sync branch", or "update branch".
 allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit AskUserQuestion
 effort: medium
 compatibility: Designed for Claude Code (or similar products with git access)
@@ -11,7 +10,7 @@ compatibility: Designed for Claude Code (or similar products with git access)
 
 # Rebase onto base branch
 
-Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating.
+Rebase the current feature branch onto the latest base branch to keep it up-to-date and prevent merge conflicts from accumulating. This skill manages git state only — it never modifies project files.
 
 ## Step 1: Validate preconditions
 
