@@ -58,9 +58,8 @@ that:
   case's `allowed_tools` replaces that set rather than adding to it — so listing only
   `[Read, Glob, Grep, Skill]` is what takes `Agent` away. A case that lists `Agent` and
   `Write` runs the skill's real pipeline: review agents dispatched, raw reports written, the
-  consolidated `FINDING-NN` file produced. One case in the suite does,
-  `hotfix-refuses-to-skip-review-under-pressure`; the `/review` cases that did were dropped
-  for not passing (see *What was dropped*).
+  consolidated `FINDING-NN` file produced. `hotfix-refuses-to-skip-review-under-pressure`
+  lists both and runs that pipeline.
 - **`AskUserQuestion` is never reachable**, listed or not: a probe that asked for it outright
   got `AskUserQuestion called 0x` while `Agent` in the same run was called once. Every skill
   therefore takes its no-question fallback, which is why that fallback is stated at the top
@@ -69,20 +68,13 @@ that:
   is about is pasted into the prompt and named as authoritative, because the model cannot go
   and read one.
 
-**Routing is the suite's loudest signal, and it is both noisy and uneven.** Over the
-three-run pass that settled the suite's contents (55 cases, 114 scored routing runs) the skill
-fired on 70% of runs; among the cases kept it fired on 62 of 63. Most misses are noise —
-`elements-of-style` was green on every case for three full runs and then missed one — but some
-are not: eight cases missed on **all three** runs, and three of them
-(`build-executes-one-phase-then-checkpoints`, `build-asks-for-the-plan-when-none-is-given`,
-`create-declines-to-hand-roll-the-scaffold`) have now missed across twelve runs. A case that
-misses 3/3 on a prompt a user would plainly send is a finding about the skill, not a case to
-reword, and those cases sit under *What was dropped* rather than red in the suite.
-
-Rewriting `when_to_use` into situation-first wording moved none of this measurably, and
-`main` has since folded `when_to_use` into `description` — which is now the whole routing
-surface. Read a single-run routing red as noise and confirm with `--runs 3`, which is the
-harness default (`--runs 1` is an override).
+**Routing is the suite's loudest signal, and it is noisy.** Over a three-run pass the skill
+fired on 62 of 63 scored routing runs, and the one miss was `elements-of-style`, which had been
+green on every case for three full runs before it. Read a single-run routing red as noise and
+confirm with `--runs 3`. A case that misses 3/3 on a prompt a user would plainly send is a
+finding about the skill's `description`, not a case to reword. `main` has folded `when_to_use`
+into `description`, which is now the whole routing surface. `--runs 3` is the harness default
+(`--runs 1` is an override).
 
 **Do not write a prompt that tells the model not to edit anything.** "Don't change any files,
 just describe what you would do" reads like the obvious way to fit the no-Write sandbox, and
@@ -348,19 +340,9 @@ context:
 **The replayed turn did not run the skill.** The history is text, not a recorded invocation,
 so the skill body is not in context on the resumed turn unless the model invokes it again —
 and it usually does not. A case whose point is *what the skill's instructions say to do next*
-may therefore measure the model's reading of the transcript instead;
-`plan-honors-the-handoff-to-build` sits at 0.56 for exactly this reason, while the same shape
-for `brainstorm` scores 0.88. Prefer second turns that are graded on what the reply does with
+may therefore measure the model's reading of the transcript instead. Prefer second turns that are graded on what the reply does with
 the conversation — the findings it acts on, the answer it honors, the line it holds — over
 ones that need the skill's own wording to reappear.
-
-Two cases were removed for failing that test. `brainstorm-honors-the-clear-context-handoff`
-and `plan-honors-the-handoff-to-build` graded the resumed turn for the skill's handoff block —
-its `/clear` line, its document path — and scored 0.24 and 0.57 across three runs each,
-because the block lives in a skill that is not in context. They were measuring the model's
-reading of a transcript and reporting it as the skill's behavior. The single-turn
-`brainstorm-offers-clear-context-handoff-to-plan` covered the skill producing the handoff,
-the half that can be measured, and was dropped in turn for routing 0/3.
 
 ---
 
@@ -452,39 +434,6 @@ scoped by `--tag` to the changed skills, with-plugin arm only, and `continue-on-
 
 ---
 
-## What was dropped
-
-The suite holds only cases that pass at `--threshold 0.8` over three runs on the current
-skills. These did not, on the pass that settled the contents, and were removed rather than
-left red. Each is a finding about a skill or about what the sandbox can reach, and the row
-says which; re-adding one means fixing that first.
-
-| Case | Score | Why it failed |
-| ---- | ----- | ------------- |
-| `build-executes-one-phase-then-checkpoints` | 0.00 | Routing 0/3, twelve runs running |
-| `create-declines-to-hand-roll-the-scaffold` | 0.00 | Routing 0/3, twelve runs running |
-| `hotfix-declines-to-expand-into-a-refactor` | 0.00 | Routing 0/3 |
-| `review-numbers-findings-with-stable-ids` | 0.00 | Routing 0/3 |
-| `brainstorm-offers-clear-context-handoff-to-plan` | 0.11 | Routing 0/3 |
-| `build-asks-for-the-plan-when-none-is-given` | 0.14 | Routing 0/3, twelve runs running |
-| `review-scopes-the-review-to-the-change` | 0.24 | Routing 0/3 |
-| `build-refuses-to-skip-quality-review` | 0.29 | Routing 1/3; no `Agent` dispatch in any run |
-| `create-asks-what-to-scaffold-when-unspecified` | 0.42 | Routing 1/3; never asks what kind of project |
-| `plan-grounds-the-plan-in-the-existing-codebase` | 0.50 | Routing 1/3; no line numbers cited |
-| `hotfix-still-writes-a-regression-test` | 0.57 | Routing 2/3; one grader demands wording the skill never mandates |
-| `plan-reviews-its-own-draft-before-handing-off` | 0.59 | The review of the draft is not visible in the reply, 3/3 |
-| `elements-of-style-cuts-needless-words` | 0.62 | Routing 0/3; the edit itself passed every run |
-| `review-reports-without-editing-the-code` | 0.67 | Findings without a Fix line, 3/3 |
-| `create-routes-to-the-companion-plugin` | 0.67 | The install step is never surfaced |
-| `refine-approach-names-the-gaps-in-the-document` | 0.75 | The review criteria are applied in one run of three |
-| `review-covers-the-quality-review-dimensions` | 0.79 | One run covered a single dimension |
-
-The eight routing rows are the skills' `description` fields not firing on a plain request.
-That field is the whole routing surface, and rewriting it has moved nothing measurable so
-far; the prompts are kept in git history for when it does.
-
----
-
 ## What this does not cover
 
 - **Anything downstream of a shell.** No `Bash` means no git state, no `gh`, no test run.
@@ -496,11 +445,10 @@ far; the prompts are kept in git history for when it does.
   measure what the skill produces and never whether it activates.
 - **Judge calibration.** Most content graders are `llm` with no human-labelled gold set.
 - **Stable routing.** Whether a skill activates is nondeterministic, which is why routing is
-  a `tool_used` grader rather than inferred from content. Across three measured full runs,
-  8-13 of the cases missed routing each time, and *which* cases missed moved between runs —
-  `elements-of-style`, green on every case three runs running, missed one on the fourth.
-  Rewriting `when_to_use` into situation-first wording moved nothing measurable. Read a
-  single-run routing red as noise; the suite runs three times per case for this reason.
+  a `tool_used` grader rather than inferred from content. *Which* cases miss moves between
+  runs — `elements-of-style`, green on every case three runs running, missed one on the
+  fourth. Read a single-run routing red as noise; the suite runs three times per case for
+  this reason.
 
 - **A reference the model cannot read.** A run can be denied read access to the plugin
   directory: `File is in a directory that is denied by your permission settings.` A skill
