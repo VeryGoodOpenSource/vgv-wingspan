@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: plan-reviews-its-own-draft-before-handing-off
-context:
-  scaffold_script: fixture.sh

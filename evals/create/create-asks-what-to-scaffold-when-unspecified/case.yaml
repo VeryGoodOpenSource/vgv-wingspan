@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: create-asks-what-to-scaffold-when-unspecified
-context:
-  scaffold_script: fixture.sh

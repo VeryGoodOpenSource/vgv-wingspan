@@ -1,1 +1,0 @@
-../../_fixture/fixture.sh
