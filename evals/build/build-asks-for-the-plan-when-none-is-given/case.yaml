@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: build-asks-for-the-plan-when-none-is-given
-context:
-  scaffold_script: fixture.sh
