@@ -476,10 +476,12 @@ says which; re-adding one means fixing that first.
 | `elements-of-style-cuts-needless-words` | 0.62 | Routing 0/3; the edit itself passed every run |
 | `review-reports-without-editing-the-code` | 0.67 | Findings without a Fix line, 3/3 |
 | `create-routes-to-the-companion-plugin` | 0.67 | The install step is never surfaced |
+| `build-honors-the-autonomy-answer` | 0.71 | Multi-turn; the model implements, then stops at `npm test` with no shell to run it |
 | `refine-approach-names-the-gaps-in-the-document` | 0.75 | The review criteria are applied in one run of three |
 | `review-covers-the-quality-review-dimensions` | 0.79 | One run covered a single dimension |
 
-The eight routing rows are the skills' `description` fields not firing on a plain request.
+The multi-turn row needs `Bash` and a git-initialized fixture before it can be measured at
+all. The eight routing rows are the skills' `description` fields not firing on a plain request.
 That field is the whole routing surface, and rewriting it has moved nothing measurable so
 far; the prompts are kept in git history for when it does.
 
