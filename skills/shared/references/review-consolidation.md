@@ -13,7 +13,7 @@ Gather the findings from every agent that returned. Tag each finding with its **
 agent's `rule` slug with the category slug — `<category-slug>/<rule>`, e.g.
 `vgv/missing-null-check`, `architecture/layer-violation`. The rule id is the finding's
 stable *class* handle: it survives re-runs and lets a user suppress a whole class, while the
-`FINDING-NN` id (assigned in Step 3) is the conversational handle for this run.
+`FINDING-NN` id (assigned in Step 4) is the conversational handle for this run.
 
 | Agent | Category | Category slug |
 |-------|----------|---------------|
@@ -29,15 +29,36 @@ its **report `<name>`** by dropping the trailing `-agent` (`security-review-agen
 dropping the trailing `-review-agent` and kebab-casing the rest (`security-review-agent` →
 `security`).
 
-## Step 2 — Deduplicate
+## Step 2 — Verify quotes
+
+Before merging anything, check every finding's `quote` against the code, so a finding that
+cites code that does not exist never reaches the user. Read the file at the finding's
+`location` and compare the quote with its lines, ignoring leading and trailing whitespace:
+
+| `location` | `quote` | Keep the finding when the quote equals |
+|------------|---------|----------------------------------------|
+| `file:line` | a line | the cited line, or a line at most two lines away |
+| `file:start-end` | a line | a line in the range, or at most two lines outside it |
+| bare file | a line | any line of the file |
+| bare file | `none` | always keep: the finding reports something the code lacks |
+
+The two-line margin absorbs an off-by-one line number.
+
+Drop every other finding: a quote that matches no line, a missing quote, a line or range
+`location` quoting `none`, or a line or range in a file that does not exist. A dropped
+finding gets no `FINDING-NN` id and is never acted on, but it does not disappear silently:
+record why it was dropped, list it in the report's **Dropped findings** section (Step 5),
+and count it in the chat summary (Step 6).
+
+## Step 3 — Deduplicate
 
 If two agents report the same issue at the same `location` (same `file:line`, same root
-cause), merge them into one finding. Keep the highest severity, keep the clearest title, and
-record both agents under **Reported by**. Keep the rule id of the higher-severity finding; on
-a tie, the one whose category comes first in the Step 1 table. Only keep them separate when
-the severity or the actual concern genuinely differs.
+cause), merge them into one finding. Keep the highest severity, keep the clearest title and
+its quote, and record both agents under **Reported by**. Keep the rule id of the
+higher-severity finding; on a tie, the one whose category comes first in the Step 1 table.
+Only keep them separate when the severity or the actual concern genuinely differs.
 
-## Step 3 — Order deterministically, then number
+## Step 4 — Order deterministically, then number
 
 Sort the merged findings by, in order:
 
@@ -55,7 +76,7 @@ unambiguously. Ids are only guaranteed stable for an unchanged finding set: fixi
 adding or dropping an agent, changes which findings exist and renumbers the rest — the rule
 id is the handle that survives those changes, so prefer it when referring across runs.
 
-## Step 4 — Write ONE consolidated file
+## Step 5 — Write ONE consolidated file
 
 Render the ordered list into a single file using the
 [consolidated report template](review-report-template.md). Do not write one file per agent —
@@ -66,8 +87,10 @@ the per-agent detail lives in `raw/` for drill-down only. The consolidated file 
   Each row shows the `FINDING-NN` id, severity, rule id, location, and title.
 - **Detail sections** grouped by severity, each finding rendered with its id, rule id, `why`,
   `fix`, and a link to the agent's raw report.
+- A **Dropped findings** table listing every finding Step 2 dropped, with its agent,
+  location, title, quote, and the reason it was dropped. Omit it when nothing was dropped.
 
-## Step 5 — Print the aligned chat summary
+## Step 6 — Print the aligned chat summary
 
 Print the Critical and Important rows from the Findings Index **verbatim** — same ids, same
 order, same titles — so a summary bullet and a file entry are unambiguously the same finding.
@@ -87,7 +110,10 @@ Review complete — <N> findings (<c> critical, <i> important, <s> suggestions).
 The id, severity, rule id, and title in each bullet are copied verbatim from the Findings
 Index — never paraphrased.
 
-## Step 6 — Acting on findings
+When Step 2 dropped any finding, end the lead line, or the all-clear message when nothing
+was kept, with: `<d> dropped, quote did not match the code (see the report)`.
+
+## Step 7 — Acting on findings
 
 Each calling skill defines its own post-review menu (`/review` is advisory and asks first;
 `/build` and `/hotfix` fix before shipping). This section only fixes the shared vocabulary

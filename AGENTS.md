@@ -58,7 +58,7 @@ skills/                # User-invocable and supporting skills (one dir per skill
       plan-review.md             # Quality pass applied to a drafted plan
       plan-templates/            # minimal, standard, extensive, phases, success criteria
       review-agent-instructions.md  # Instructions passed to each review agent
-      review-consolidation.md    # Deduplicate, order, and number findings
+      review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
       review-dispatch.md         # Caller-side procedure for launching review agents
       review-report-template.md  # Shape of the consolidated report
       validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
@@ -128,7 +128,8 @@ Quality-review agents:
 - `pr-readiness-review-agent`
 
 Each agent writes a detailed report to a `raw/` subdirectory and returns a structured
-findings list. The calling skill deduplicates and orders those findings, assigns stable
+findings list, each finding quoting the line it cites. The calling skill drops findings
+whose quote does not match the code, deduplicates and orders the rest, assigns stable
 `FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
 class), and renders one consolidated report plus a matching chat summary (see
 `skills/shared/references/review-consolidation.md`).
