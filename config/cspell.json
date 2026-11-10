@@ -24,7 +24,10 @@
     "undiscussed",
     "unrequested",
     "pipefail",
-    "runnable"
+    "runnable",
+    "unstack",
+    "retarget",
+    "reflog"
   ],
   "flagWords": []
 }
