@@ -29,6 +29,18 @@ its **report `<name>`** by dropping the trailing `-agent` (`security-review-agen
 dropping the trailing `-review-agent` and kebab-casing the rest (`security-review-agent` →
 `security`).
 
+A [companion reviewer](review-dispatch.md) returns its own format instead of the findings
+block. Save its reply verbatim to `<RAW_DIR>/<name>.md`, so its details link works, then map
+each of its findings:
+
+- its location → `location`, its problem → `title` and `why`, its fix → `fix`, and its
+  category or standard column → `rule`;
+- severity → Critical when that category names security, Important otherwise;
+- category slug → the agent name without the plugin prefix and a trailing `-reviewer`
+  (`vgv-ai-flutter-plugin:flutter-reviewer` → `flutter`).
+
+A companion reply that says there was nothing to review counts as zero findings.
+
 ## Step 2 — Verify quotes
 
 Before merging anything, check every finding against the code, so a finding that cites code
@@ -61,6 +73,9 @@ the report all use the real line:
   window, take the one nearest the cited line, and the earlier one on a tie.
 - A `file:start-end` range widens just enough to include the matched line.
 - A bare file stays as it is.
+
+A companion reviewer's findings carry no quote, so check only their `location`: keep one
+when its file exists and its line is within the file. Keep its `location` as given.
 
 Drop every other finding: a quote that matches no line, a missing quote, a line or range
 `location` quoting `none`, a line or range in a file that does not exist, or a `missing`

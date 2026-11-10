@@ -81,6 +81,9 @@ Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSo
 
 Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
+On a Flutter project with the Flutter Plugin installed, `/review` and `/build` also run its
+`flutter-reviewer` and merge its findings into the same report.
+
 ### Tips
 
 - **Clear context between phases.** At the end of each phase, Wingspan offers a "Clear context and [next step]" option. Use it — a fresh context window produces better results.
