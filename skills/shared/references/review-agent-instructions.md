@@ -5,6 +5,11 @@ absolute raw-reports directory the calling skill provides (each skill gives its 
 `docs/reviews/raw`) and `<name>` with the bare report stem from that skill's table (e.g.
 `vgv-review`) — no directory, no `.md` extension.
 
+Each review agent also carries the findings block in its own `## Output Instructions`, so it
+returns the block even when dispatched directly as an agent type, with no calling skill. This
+file holds the rules behind that block; when you change the block here, change it in each
+review agent too.
+
 Each agent produces two outputs:
 
 1. **A detailed report on disk** (for deep reference), and
@@ -19,6 +24,10 @@ it exactly as given, do not convert to relative. Use your normal Output Format. 
 only when acting on a finding needs more than the one-line `fix`, so be thorough but keep it
 scannable.
 
+Dispatched without a raw report path, write no file: return the findings block, drop
+its **Report** line entirely (do not write it as `none`), and put the full report after the
+block instead.
+
 ## 2 — Return a structured findings list
 
 Return ONLY the block below to the caller. Do **not** return the full report text.
@@ -29,13 +38,13 @@ the caller can render them verbatim without re-reading the report.
 
 ```markdown
 ## <Agent Name> Findings
+**Verdict**: <pass|fail> | **Critical**: <count> | **Important**: <count> | **Suggestion**: <count>
 **Report**: `<RAW_DIR>/<name>.md`
-**Critical**: <count> | **Important**: <count> | **Suggestion**: <count>
 
 - severity: Critical
   rule: <short kebab-case slug for the check that fired, e.g. "missing-disposal">
   title: <short imperative title, e.g. "Dispose the stream subscription">
-  location: <file:line — or just the file path when the finding spans it>
+  location: <file:line, file:start-end, or just the file path when the finding spans it>
   quote: <the offending line, copied verbatim from the file at location>
   missing: <only with "quote: none" — "file <path>" or "text <text>">
   why: <one line — the concrete impact>
@@ -49,7 +58,12 @@ the caller can render them verbatim without re-reading the report.
   fix: ...
 ```
 
-If you found nothing, return the header with all counts at `0` and no list items.
+The verdict line always comes right after the heading, so a caller can tell a finished
+review from a missing or empty reply. The verdict is `fail` when the list has at least one
+Critical finding, and `pass` otherwise.
+
+If you found nothing, return the heading and the verdict line with every count at `0`, the
+verdict `pass`, and no list items.
 
 ### Severity
 
