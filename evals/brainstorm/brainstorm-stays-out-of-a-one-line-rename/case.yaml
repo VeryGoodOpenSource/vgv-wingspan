@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: brainstorm-stays-out-of-a-one-line-rename
+context:
+  scaffold_script: fixture.sh

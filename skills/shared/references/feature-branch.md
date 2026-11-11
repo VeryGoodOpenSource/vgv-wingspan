@@ -12,3 +12,13 @@ git rev-parse --abbrev-ref HEAD
   the conventional-commit type for the work (`feat`, `fix`, `refactor`, …).
 
 A hotfix is the exception: it uses the `hotfix/` prefix, not `fix/`.
+
+## When the command cannot run
+
+If git is unavailable or the command fails, skip the check and deliver the document or the
+change in your reply instead. Never let the question of where the file lives stop the work
+from being produced.
+
+Ask about a branch only on a branch name the command actually returned. Never infer the
+current branch from the directory, the prompt, or a guess — a document withheld behind an
+invented gate is a document the user did not get.
