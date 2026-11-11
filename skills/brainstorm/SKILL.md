@@ -140,12 +140,15 @@ and a heading of your own wording, however apt, is one it cannot find.
 Use the **AskUserQuestion tool**: "Brainstorm complete! What would you like to do next?"
 
 1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
-2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Review and refine approach**: improve the document using structured review
+2. **Review and refine approach**: improve the document using structured review
+3. **Publish as issue**: move the document to a GitHub issue, so the team tracks it there
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
 - **Clear context and plan** → follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path, then stop.
 - **Review and refine approach** → apply the @refine-approach skill to the document, then present these same options again without the refine one.
+- **Publish as issue** → follow [publish as issue](references/publish-as-issue.md). Once the
+  issue exists, `ISSUE_URL` replaces the doc path everywhere below, and only **Clear context
+  and plan** and **Done for now** remain. Refine before publishing, not after.
 
 ## Output Summary
 
@@ -154,7 +157,7 @@ When complete, display:
 ```md
 Brainstorm complete!
 
-Document: docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md
+Document: docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md (or ISSUE_URL once published)
 
 Key decisions:
 - [Decision 1]
@@ -165,7 +168,7 @@ Key decisions:
 
 The handoff is the user's only instruction for picking the work up in a fresh session, so its
 shape is fixed here as well as in the reference. Print exactly this and then **stop**,
-substituting the next skill and the real document path:
+substituting the next skill and the real document path, or `ISSUE_URL` once published:
 
 ```md
 To continue with a fresh context, run:

@@ -1,1 +1,0 @@
-../../brainstorm/references/template.md
