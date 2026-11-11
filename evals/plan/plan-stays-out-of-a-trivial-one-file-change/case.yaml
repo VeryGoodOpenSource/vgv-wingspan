@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: plan-stays-out-of-a-trivial-one-file-change
+context:
+  scaffold_script: fixture.sh
