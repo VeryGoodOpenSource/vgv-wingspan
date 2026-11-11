@@ -10,7 +10,8 @@ reference changes only the Important tier.
 per-developer preference, not a repo convention, so it never belongs in the project's
 `CLAUDE.md`. Each skill says where the choice is made:
 
-- `/build` settles it in Phase 0, in the commit-autonomy question.
+- `/build` reads the saved preference. With none saved, it settles the setting in Phase 0,
+  in the commit-autonomy question.
 - `/hotfix` reads the saved preference. With none saved, it asks at the Important findings
   stop, as it always has, and offers to remember the answer.
 

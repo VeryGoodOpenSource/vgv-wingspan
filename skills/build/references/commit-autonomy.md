@@ -11,9 +11,12 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
   Nothing is committed or pushed without them.
 
 The choice is a per-developer preference, not a repo convention, so it never belongs in the
-project's `CLAUDE.md`. Review autonomy can also come from its own saved preference (set by
-**Always apply** at the findings stop); when it does, honor it whichever commit mode is in
-effect.
+project's `CLAUDE.md`.
+
+Review autonomy can also be saved on its own, through **Always apply** at the findings stop.
+When it is saved, leave out **Auto-commit and apply review findings** and say in the question
+that Important findings will be applied per the saved preference. Only one source then decides review autonomy, so a
+Phase 0 choice never loses silently.
 
 ## Applying it
 
