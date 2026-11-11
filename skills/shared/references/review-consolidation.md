@@ -45,7 +45,14 @@ and trailing whitespace:
 | bare file | `none`, with `missing: text <text>` | the file exists and Grep finds no line of it containing `<text>` |
 | bare file | `none`, with no `missing` | always: keep it, marked unverified |
 
-The two-line margin absorbs an off-by-one line number.
+The two-line margin absorbs an off-by-one line number. When the quote matched off the cited
+line, correct the finding's `location` to where it matched, so deduplication, ordering, and
+the report all use the real line:
+
+- A `file:line` becomes the matched line. If the quote equals more than one line in the
+  window, take the one nearest the cited line, and the earlier one on a tie.
+- A `file:start-end` range widens just enough to include the matched line.
+- A bare file stays as it is.
 
 Drop every other finding: a quote that matches no line, a missing quote, a line or range
 `location` quoting `none`, a line or range in a file that does not exist, or a `missing`
@@ -61,8 +68,8 @@ mark appears everywhere the title does (report and chat), and never fix it witho
 
 ## Step 3 — Deduplicate
 
-If two agents report the same issue at the same `location` (same `file:line`, same root
-cause), merge them into one finding. Keep the highest severity, keep the clearest title with
+If two agents report the same issue at the same `location` as corrected in Step 2 (same
+`file:line`, same root cause), merge them into one finding. Keep the highest severity, keep the clearest title with
 its quote and `missing`, and record both agents under **Reported by**. Keep the rule id of the
 higher-severity finding; on a tie, the one whose category comes first in the Step 1 table.
 Only keep them separate when the severity or the actual concern genuinely differs.
