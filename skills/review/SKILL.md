@@ -1,7 +1,7 @@
 ---
 name: review
 user-invocable: true
-description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user says "review this code", "code review", "check this code", or "review before merging".
+description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user wants written code assessed rather than changed, and on "review this code", "code review", "check this code", "look this over", "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
@@ -13,6 +13,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 Run quality review agents. Review manually written code, assess existing codebases, or
 check a branch before merging. Output is **one consolidated report** with stable,
 numbered findings the user can act on by id.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Review Scope
 
@@ -74,6 +80,24 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 3. Print the aligned chat summary: lead with the report path and severity counts, then
    reprint the Critical and Important rows verbatim (same ids, order, titles) and collapse
    Suggestions to a count.
+
+### The findings contract
+
+These names leave this skill — the user acts on findings by id, and `/build` and `/hotfix`
+reuse them — so they are fixed here and not only in the reference. Hold them even when the
+reference cannot be read:
+
+- Every finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
+  consolidation procedure fixes, and a rule id `<category>/<rule>` from `vgv`, `architecture`,
+  `tests`, `simplicity` or `pr-readiness` — for example `tests/missing-test-file`.
+- Every finding carries one severity: **Critical**, **Important** or **Suggestion**.
+- Every finding carries a **Why** line and a **Fix** line.
+- The chat summary reprints the Critical and Important findings verbatim — same ids, same
+  order, same titles — and collapses Suggestions to a count.
+
+If a reference file cannot be read from here, say so once and produce the review in this
+shape anyway. A review without ids is a review the user cannot take apart, which is most of
+why it was run.
 
 **If no findings:** write the short all-clear report and tell the user the code looks good.
 
