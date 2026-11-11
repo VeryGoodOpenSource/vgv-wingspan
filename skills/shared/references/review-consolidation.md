@@ -80,7 +80,8 @@ If two agents report the same issue at the same `location` as corrected in Step 
 `file:line`, same root cause), merge them into one finding. Keep the higher-severity finding
 whole — its severity, rule id, title, quote, `missing`, `why`, and `fix` — and on a tie, the
 one whose category comes first in the Step 1 table. Record both agents under **Reported by**.
-Only keep them separate when the severity or the actual concern genuinely differs.
+Only keep them separate when the actual concern differs; a different severity alone is not
+a reason, since agents grade the same issue differently.
 
 ## Step 4 — Order deterministically, then number
 
@@ -112,7 +113,8 @@ the per-agent detail lives in `raw/` for drill-down only. The consolidated file 
 - **Detail sections** grouped by severity, each finding rendered with its id, rule id, `why`,
   `fix`, and a link to the agent's raw report.
 - A **Dropped findings** table listing every finding Step 2 dropped, with its agent,
-  location, title, quote, and the reason it was dropped. Omit it when nothing was dropped.
+  location, title, quote, and the reason it was dropped, in the Step 4 sort order so the
+  table is the same on every run. Omit it when nothing was dropped.
 
 ## Step 6 — Print the aligned chat summary
 
