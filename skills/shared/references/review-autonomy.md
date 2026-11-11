@@ -58,10 +58,7 @@ cleanup, so record the content, not the id:
 - `<rule id>` · `<location>` · <title> — <one line on what changed>
 ```
 
-Render this list, under the heading **Applied without asking**, in both:
-
-- the end-of-run summary in chat, and
-- the PR description.
-
-If nothing was applied without asking, omit the section. Never list a finding the user
+Render this list, under the heading **Applied without asking**, in the end-of-run summary
+in chat. The fixes are already visible in the diff, so the PR description does not repeat
+it. If nothing was applied without asking, omit the section. Never list a finding the user
 approved explicitly; the section exists to show the user what they did not see.

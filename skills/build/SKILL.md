@@ -166,7 +166,7 @@ rm -rf docs/reviews/
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
 
-To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md). `/create-pr` may build the body from the project's own template instead, so whichever template it uses, add the **Applied without asking** list from [review autonomy](references/review-autonomy.md) to the body before the PR is opened.
+To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 
 ### Post-Ship
 

@@ -11,7 +11,3 @@
 ## Test plan
 
 <bulleted checklist of how to verify the changes>
-
-## Applied without asking
-
-<the review-autonomy list of Important findings applied without asking; omit this section if empty>
