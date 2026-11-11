@@ -32,9 +32,17 @@ dropping the trailing `-review-agent` and kebab-casing the rest (`security-revie
 ## Step 2 — Verify quotes
 
 Before merging anything, check every finding against the code, so a finding that cites code
-that does not exist, or calls missing something that is there, never reaches the user. Read
-the file at the finding's `location` and compare the quote with its lines, ignoring leading
-and trailing whitespace:
+that does not exist, or calls missing something that is there, never reaches the user.
+Compare a quote with a line ignoring leading and trailing whitespace, and read only the lines
+a check needs, never whole files:
+
+- `file:line` or `file:start-end`: Read the cited line or range plus two lines on each side
+  (with offset and limit). When several findings cite one file, read overlapping windows once.
+- Bare file with a quote: Grep the file for the trimmed quote as fixed text. Grep also matches
+  part of a line, so confirm that a matching line, trimmed, equals the quote.
+- `missing: file`: check whether the path exists. `missing: text`: Grep the file for it.
+
+Keep or drop each finding by this table:
 
 | `location` | `quote` | Keep the finding when |
 |------------|---------|-----------------------|
