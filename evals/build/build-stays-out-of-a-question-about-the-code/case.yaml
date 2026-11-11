@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: build-stays-out-of-a-question-about-the-code
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: debrief-builds-a-timeline-before-root-cause
+context:
+  scaffold_script: fixture.sh

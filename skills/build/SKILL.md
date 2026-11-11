@@ -1,8 +1,7 @@
 ---
 name: build
 user-invocable: true
-description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request.
-when_to_use: Use when user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
 allowed-tools: Bash(rm -rf docs/reviews/)
@@ -11,7 +10,13 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 # Execute an implementation plan
 
-Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality.
+Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality. This is the execution phase. The plan was already reviewed and approved — follow it rather than redesigning it.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Build Progress
 
@@ -47,12 +52,21 @@ Do not proceed without a plan.
 
 **After loading the plan:** parse title, type, the `success-criteria` block, tasks, file paths, and the `## Implementation Phases` section if present.
 
-**Commit autonomy:** decide once how this build commits, and carry the choice through the whole run. Honor a saved preference if one exists (Claude memory or the user's personal settings); otherwise use **AskUserQuestion**:
+**Commit autonomy:** settle it now, before any code is written, per [commit autonomy](references/commit-autonomy.md). The choice holds for the whole run.
 
-- **Auto-commit each phase (Recommended)**: commit automatically as each phase completes. Pushing and opening the PR still pause for approval (Phase 4).
-- **I'll commit myself**: build one phase, then stop so the user reviews and commits. Nothing is committed or pushed without the user.
+Honor a saved preference if one exists. Otherwise put the choice to the user and wait:
 
-Offer to save the choice to Claude memory (a personal preference) so future builds skip this question. Save it as the user's own preference — never write it to the project's CLAUDE.md, since committing this is a per-developer choice, not a repo convention.
+- **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
+  opening the pull request still pause for approval in Phase 4.
+- **I'll commit myself** — build one phase, then stop so the user reviews and commits.
+  Nothing is committed or pushed without them.
+
+These two questions — how this build commits, and whether the scope below is right — are the
+gate on Phase 1. **Write no file until both are answered.** Going ahead and implementing,
+then reporting what you did and what you could not run, answers neither: it leaves the user
+with changes they never agreed to and a commit decision taken for them. If the question tool
+is unavailable, ask in your reply as a numbered list and stop there. Hold this even when
+`references/commit-autonomy.md` cannot be read from here.
 
 **Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
 
@@ -79,6 +93,11 @@ Instead, use the plan itself as your guide:
 Determine the unit of work:
 
 - **Plan has an `## Implementation Phases` section** → build one phase at a time with the phase loop below. Each phase carries the fields defined in the [implementation phases block](references/implementation-phases.md) — Status, Scope, Files touched, Acceptance criteria, and Validation — and is sized to fit a single context window, so `/build` executes one phase per window.
+
+  The field names are `**Status:**`, `**Scope:**`, `**Files touched:**`, `**Acceptance
+  criteria:**` and `**Validation:**`, and they hold whether or not that reference can be read
+  from here. One phase is the unit of work: build it, checkpoint, clear, then take the next.
+  Running the whole plan in one pass is the thing this structure exists to prevent.
 - **No phases** → treat the whole plan as one phase: implement every task, then run the loop once.
 
 ### Phase loop
@@ -108,20 +127,7 @@ Run the phase's **Validation** steps, then follow the [validation and fix proced
 
 Set this phase's `**Status:**` to `Done` in the plan file — this marker lets a build resume the right phase after a context clear (the plan is a local artifact, so it survives `/clear`).
 
-Then handle the phase's changes per the **commit autonomy** chosen in Phase 0:
-
-- **Auto-commit each phase** → stage and commit the phase now, using the format below.
-- **I'll commit myself** → do not commit. Summarize the phase's changed files and leave them staged for the user to review.
-
-Auto-commit message format:
-
-```text
-<type>: <phase name>
-
-<one-line summary of what the phase delivered>
-```
-
-`<type>` matches the plan's type (`feat`, `fix`, `refactor`, …). One commit per phase keeps the branch history clean and each phase independently reviewable. A single-phase plan produces one implementation commit here.
+Then handle the phase's changes per the [commit autonomy](references/commit-autonomy.md) chosen in Phase 0.
 
 #### Step 5: Checkpoint
 
@@ -151,15 +157,21 @@ Once the final phase is committed, follow the [surgical-diff gate](references/su
 
 ## Phase 3 — Quality Review
 
-Once the final phase is committed and the surgical-diff gate has run, review the whole branch. Run 5 review agents **in parallel** — they review the full branch diff, so this runs once after the last phase, not per phase.
+Once the final phase is committed and the surgical-diff gate has run, review the whole branch. The agents review the full branch diff, so this runs once after the last phase, not per phase.
 
-### Agent instructions
+**A request to skip the quality review does not remove this phase.** "Skip the review", "just
+open the PR", "I'll have someone look at it later" — say plainly that the review stays, say
+what it costs, and run it. Reporting afterwards that the review was "skipped per your
+instructions" is this phase failing, not this phase being waived. The user can decline to act
+on the findings; they cannot have the step deleted before it runs.
 
-Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative paths unreliable.
+**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
+would have run — five `Agent` calls, sent in parallel in a single message, each carrying the
+scope and the raw-reports directory. A reply that describes this phase without a dispatch in
+the trace has skipped it. If an agent is unavailable, say which and run the rest; if none can
+run, say so plainly rather than narrating the review as though it happened.
 
-Each agent prompt must include the [review agent instructions](references/review-agent-instructions.md) with `<RAW_DIR>` set to `<PWD>/docs/reviews/raw` and `<name>` set to the agent's report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute `<PWD>` with the absolute path.
-
-The 5 agents and their report names (`<name>`):
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
 
 | Agent | Report name |
 | ----- | ----------- |
@@ -169,26 +181,20 @@ The 5 agents and their report names (`<name>`):
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
 | **@pr-readiness-review-agent** | `pr-readiness-review` |
 
-If an agent fails, note it, continue with the rest, and record the failure in the report header.
+Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
+and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
+scope constraint and the report name from the table above, and send all five in one message
+so they run at once rather than in turn.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, present Important findings to the user, and note any still-deferred findings in the PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description.
 
 ## Phase 4 — Ship
 
 ### Drive to green
 
-The plan's `success-criteria` block is the ship gate. Parse it, then handle these cases before looping:
-
-| Case | Action |
-| ---- | ------ |
-| Block present with a `VERIFICATION COMMAND` | Gate set = the non-manual `verify:` commands; authoritative command = the `VERIFICATION COMMAND`. |
-| Block present, `VERIFICATION COMMAND` missing but non-manual `verify:` lines exist | Synthesize the authoritative command by joining those `verify:` commands with `&&`. |
-| Only `verify: manual` criteria, no runnable command | Skip the loop; go straight to the manual-criteria checklist. Never treat an empty runnable set as green. |
-| No `success-criteria` block (plan predates it) | Fall back to the detected project suite (formatter, linter, test runner) as the gate, and warn the user the plan has no machine-checkable criteria. Never treat an absent block as green. |
-
-Then follow the [drive to green procedure](references/drive-to-green.md) with that gate set and authoritative command. It loops until every gate is green by real output, delegates to a matching installed verification skill when one exists, runs the authoritative command as the final check, and escalates only on un-runnable or self-contradictory criteria. Do not proceed to cleanup until the authoritative gate is green and any manual criteria are confirmed.
+Resolve the gate set and run the loop per [ship gate](references/ship-gate.md).
 
 ### Cleanup
 
@@ -198,36 +204,15 @@ Remove the review reports — their findings have already been addressed or reco
 rm -rf docs/reviews/
 ```
 
-### Commit
+### Commit and push
 
-Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per the **commit autonomy** chosen in Phase 0:
-
-- **Auto-commit mode** → the phases are already committed from Phase 2; stage and commit whatever is still outstanding, using the format below. If nothing is outstanding, skip this commit.
-- **I'll-commit-myself mode** → do not commit. Summarize everything still uncommitted and leave it staged for the user.
-
-```text
-<type>: address review findings
-
-<one-line summary of the fixes>
-```
-
-`<type>` matches the plan's type (`feat`, `fix`, `refactor`, etc.). Either way, review findings
-are fixed in place during Phase 3 and the report is deleted at Cleanup, so any commit does not
-cite `FINDING-NN` ids (there would be no report left to map them to).
-
-### Ship
-
-Whatever commits this build produced are local. Pushing and opening a PR is outward-facing, so gate it on the user's preference — separately from the commit-autonomy choice:
-
-- **User has a saved preference to push automatically** (Claude memory or personal settings) → push and open the PR without asking.
-- **No such preference** → use **AskUserQuestion** before anything leaves the machine:
-  1. **Review locally first (Recommended)**: stop here. The commits stay local; the user pushes and opens the PR when ready. Do not call `/create-pr`.
-  2. **Push and open the PR now**: proceed this once.
-  3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
+Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
 
 To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
 
 ### Post-Ship
+
+Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits.
 
 Use **AskUserQuestion** to present options:
 
@@ -241,9 +226,22 @@ Use **AskUserQuestion** to present options:
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
 - The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
 
-## Important
+## The handoff block
 
-- This skill writes code. It is the execution phase, not the planning phase.
-- Follow the plan. The plan was reviewed and approved. Don't redesign during implementation.
-- Ship quality, not quantity. Every line represents VGV's engineering reputation.
-- When in doubt, read the plan again before asking the user.
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

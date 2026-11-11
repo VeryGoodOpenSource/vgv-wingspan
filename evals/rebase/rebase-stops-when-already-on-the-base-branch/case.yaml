@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: rebase-stops-when-already-on-the-base-branch
+context:
+  scaffold_script: fixture.sh

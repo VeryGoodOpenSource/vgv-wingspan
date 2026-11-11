@@ -7,14 +7,19 @@ Wingspan is a collection of AI-assisted engineering tools — skills, agents, an
 ```text
 .claude-plugin/
   plugin.json          # Plugin manifest (name, version, keywords)
-.mcp.json              # MCP server configuration (context7)
 AGENTS.md              # This file — portable, tech-agnostic conventions
 CLAUDE.md              # Claude Code entry point: imports AGENTS.md, adds Claude-specific Hooks
 README.md              # Human-facing overview and install instructions
 CONTRIBUTING.md        # Contributor guide (adding skills, hooks, commit format)
+skills_lint.yaml       # skills_lint rule config used by the CI skills lint workflow
 config/
   cspell.json          # Spell-check dictionary and settings
   custom.markdownlint.jsonc  # Markdown lint rule overrides
+evals/                 # `claude plugin eval` suite — one directory per skill
+  README.md            # Case format, grader reference, and what the suite leaves uncovered
+  _fixture/
+    fixture.sh         # The neutral workspace every case symlinks to
+  <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
 agents/                # Subagent definitions, grouped by role
   analysis/
     plan-splitting-agent.md       # Flags oversized plans to split across PRs
@@ -51,11 +56,35 @@ skills/                # User-invocable and supporting skills (one dir per skill
   rebase/SKILL.md                # Sync a feature branch with its base
   elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
   shared/              # Shared references and scripts used across skills
-    references/        # Plan templates, review procedures, handoff steps
+    references/
+      clear-context-handoff.md   # The "clear context and <next step>" handoff block
+      drive-to-green.md          # Loop until every gate is green by real output
+      feature-branch.md          # Branch check run before anything is written to disk
+      file-findings-on-pr.md     # Post review findings as PR comments
+      plan-review.md             # Quality pass applied to a drafted plan
+      plan-templates/            # minimal, standard, extensive, phases, success criteria
+      review-agent-instructions.md  # Instructions passed to each review agent
+      review-autonomy.md         # When /build and /hotfix apply Important findings without asking
+      review-consolidation.md    # Deduplicate, order, and number findings
+      review-dispatch.md         # Caller-side procedure for launching review agents
+      review-report-template.md  # Shape of the consolidated report
+      validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
     scripts/           # detect-base-branch.sh, detect-review-scope.sh
 ```
 
-Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts).
+Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A shared reference appears in each consuming skill as a symlink, so the skill always links it by its own local path.
+
+## Authoring Conventions
+
+A `SKILL.md` carries the workflow and the opinions behind it; everything else is demoted to
+`references/` or cut. Before adding or trimming a section, apply the KEEP / DEMOTE / DELETE
+rubric in `CONTRIBUTING.md` → _What belongs in a `SKILL.md`_. Two rules it is easy to get
+backwards:
+
+- The frontmatter `description` is the router and loads before the body, so it carries the
+  whole trigger surface. Never trim it for length, and never split it across a second field.
+- An agent's `description` is paid for on every request, run or not. Keep it expressive and
+  free of `<examples>` blocks (`CONTRIBUTING.md` → _Agent descriptions_).
 
 ## Philosophy
 
@@ -127,6 +156,28 @@ class), and renders one consolidated report plus a matching chat summary (see
 - **YAGNI:** Prefer the simplest solution that meets current requirements. Remove hypothetical features.
 - **Architecture:** Respect the project's established layer boundaries and dependency direction. Flag violations for review.
 - **Testing:** Non-negotiable. Every testable unit gets tests.
+
+## Evals
+
+Evals ask whether Claude routes to a skill and follows it. `evals/README.md` is the single
+source of truth for the case format, the grader reference, prerequisites, and what makes a
+case worth having — read it before writing a case, and put new eval documentation there
+rather than here.
+
+Cases live under `evals/<skill>/<case>/` and are discovered from the tree; nothing registers
+them. Run them with `claude plugin eval . --scaffold`. `--scaffold` is not optional: every
+run starts in an empty workspace, and without the flag the fixture is skipped silently and
+cases fail for reasons unrelated to the skill.
+
+Read the two arm scores, not the total. The no-plugin arm is supposed to fail.
+
+Evals do not run on a pull request, because they call real models.
+`.github/workflows/evals.yaml` runs them after a merge to `main`, scoped by `--tag` to the
+changed skills, with-plugin arm only, and always non-blocking. A full run is manual
+(`workflow_dispatch`).
+
+A run grants `Read`, `Glob`, `Grep` and `Skill` and nothing else, so a case measures the
+reply a skill produces, never a file it writes or a command it runs.
 
 ## Guidance
 

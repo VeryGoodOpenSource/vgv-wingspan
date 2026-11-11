@@ -1,8 +1,7 @@
 ---
 name: brainstorm
 user-invocable: true
-description: Explores requirements and approaches through collaborative dialogue before planning implementation.
-when_to_use: Use when user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
+description: Explores requirements and approaches through collaborative dialogue before planning implementation. Use when the user says "brainstorm", "explore idea", "what should we build", "think through this", or "let's discuss approaches".
 argument-hint: feature or idea to explore
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -11,13 +10,21 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Clarify **WHAT** to build before diving into **HOW** to build it. Explore user intent, approaches, and design decisions through collaborative dialogue.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
+**Do not write code.** The output is a brainstorm document.
+
 ## Feature description
 
 <feature description>$ARGUMENTS</feature description>
 
 **If the feature description above is empty, ask the user**: "What feature would you like to brainstorm? Describe the idea, problem or feature you are thinking about."
 
-DO NOT proceed until you have a description from the user.
+Do not proceed until you have a description from the user.
 
 ## Execution flow
 
@@ -44,7 +51,10 @@ Assess whether brainstorming is needed.
 | Specific acceptance criteria provided | Vague terms ("make it better", "add something like") |
 | Exact behavior described, scope constrained | Multiple reasonable interpretations, trade-offs undiscussed |
 
-**If clear:** Use **AskUserQuestion** to suggest proceeding directly to planning.
+**If clear:** the thinking is already done, so do not reopen it. Record it and go straight to
+the handoff step, offering the same options in the same order — **Clear context and plan**
+first and marked as recommended. A brainstorm that arrives settled still leaves by the
+handoff; skipping it drops the user somewhere other than `/plan`.
 
 ### 1. Understand the idea
 
@@ -62,6 +72,12 @@ Use the **AskUserQuestion tool** to ask questions one at a time. The tool automa
 
 **Question Techniques:** Prefer multiple choice over open-ended. Start broad (purpose, users) then narrow (constraints, edge cases). Validate assumptions explicitly. Ask about success criteria early.
 
+**Purpose and users come before the stack.** When the idea arrives as a pile of technology — a
+queue, a cache, a service — the first question is still what the feature has to do and for
+whom, not how the pieces wire together. Asking about deployment, storage or transport before
+anyone has said what the user should get accepts the stack as settled, which is the one thing
+this step exists to reopen.
+
 **Key Topics to Explore:**
 
 | Topic | Example Questions |
@@ -72,6 +88,9 @@ Use the **AskUserQuestion tool** to ask questions one at a time. The tool automa
 | Success | How will you measure success? What's the happy path? |
 | Edge Cases | What shouldn't happen? Any error states to consider? |
 | Existing Patterns | Are there similar features in the codebase to follow? |
+
+Present the emerging design in sections and validate each one as you go, rather than saving it all
+for the document.
 
 **Exit condition:** Continue until the idea is clear OR user says "proceed" or "let's move on."
 
@@ -101,41 +120,32 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 #### 1.4. Set up workspace
 
-Before writing any files, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
 
 ### 2. Capture the design document
 
 Write a brainstorm document to `docs/brainstorm/YYYY-MM-DD-<kebab-case-topic>-brainstorm-doc.md`.
 
+If the user names a path for the document, write it there instead and keep their name.
+
 Ensure `docs/brainstorm/` directory exists before writing.
 
-Use the [brainstorm template](references/template.md) as the document structure.
+Use the [brainstorm template](references/template.md) as the document structure, keeping its
+section headings as they are written — `## What We're Building`, `## Why This Approach`,
+`## Key Decisions`, `## Open Questions`. `/plan` reads the document back by those headings,
+and a heading of your own wording, however apt, is one it cannot find.
 
 ### 3. Handoff
 
-Use **AskUserQuestion tool** to consider next steps:
+Use the **AskUserQuestion tool**: "Brainstorm complete! What would you like to do next?"
 
-**Question**: "Brainstorm complete! What would you like to do next?"
-
-**Options:**
 1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
 2. **Continue with planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Review and refine approach:** improve the document using structured review
+3. **Review and refine approach**: improve the document using structured review
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
-**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
-
-**If the user selects "Review and refine approach"** then apply the @refine-approach skill to the document.
-
-When `refine-approach` is complete, present these options:
-
-1. **Clear context and plan (Recommended)**: clear context for a fresh start, then plan
-2. **Move to planning**: run the `/plan` skill to create a detailed implementation plan
-3. **Done for now**: ideation complete. To start planning later: `/plan`
-
-**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
+- **Clear context and plan** → follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path, then stop.
+- **Review and refine approach** → apply the @refine-approach skill to the document, then present these same options again without the refine one.
 
 ## Output Summary
 
@@ -151,15 +161,22 @@ Key decisions:
 - [Decision 2]
 ```
 
-## Key Principles
+## The handoff block
 
-- **One question at a time** - Don't overwhelm with multiple questions
-- **Multiple choice preferred** - Easier to answer than open-ended when possible
-- **YAGNI ruthlessly** - Remove unnecessary features from all designs
-- **Explore alternatives** - Always propose 2-3 approaches before settling
-- **Incremental validation** - Present design in sections, validate each
-- **Be flexible** - Go back and clarify when something doesn't make sense
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
 
-## Important Guidelines
+```md
+To continue with a fresh context, run:
 
-**DO NOT CODE!** Just explore and document decisions.
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

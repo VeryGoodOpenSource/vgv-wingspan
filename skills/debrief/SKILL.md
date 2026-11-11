@@ -1,8 +1,7 @@
 ---
 name: debrief
 user-invocable: true
-description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh.
-when_to_use: Use when user says "debrief", "post-mortem", "incident review", or "root cause analysis".
+description: Produces a structured post-incident analysis — timeline, root cause, and actionable follow-ups — while context is fresh. Use when the user says "debrief", "post-mortem", "incident review", or "root cause analysis".
 argument-hint: incident description, PR/commit refs, or error context
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
@@ -12,6 +11,14 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 
 Produce a structured, blameless debrief document after an incident, failed release, or significant bug. Capture what happened, why, and what to change — while the context is still fresh.
 
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
+
+**Do not make code changes.** This skill produces a document; its action items become separate tickets.
+
 **Use this when** a production incident, failed release, flaky deploy, or significant bug warrants more than just a fix — when the team needs to understand *why* it happened and prevent recurrence.
 
 ## Incident Context
@@ -20,7 +27,7 @@ Produce a structured, blameless debrief document after an incident, failed relea
 
 **If the incident context above is empty, ask the user**: "What incident would you like to debrief? Describe what happened, link to relevant PRs/commits, or paste error logs."
 
-DO NOT proceed until you have a description from the user.
+Do not proceed until you have a description from the user.
 
 ## Execution Flow
 
@@ -44,6 +51,10 @@ Use the **AskUserQuestion tool** to fill in gaps one question at a time. Adapt b
 
 The skill must work with partial information. Not every debrief has full CI logs or a complete timeline. Note gaps explicitly in the document rather than blocking on them.
 
+When the source notes name people, record the role instead as you take them down — the author,
+the reviewer, the on-call engineer, QA. A name that never enters your notes cannot reach the
+document.
+
 ### 2. Gather evidence from the codebase
 
 Based on the incident context, automatically collect evidence. Run these in parallel where possible:
@@ -60,6 +71,8 @@ Synthesize the evidence to identify the **root cause** (specific change, gap, or
 
 **Blameless framing:** Focus on systems and processes, not individuals. Ask "what made this possible?" not "who caused this?"
 
+Write no person's name into the document, even when the source notes name people and assign fault. Replace each one with the role that matters to the cause — the author, the reviewer, the on-call engineer, QA. "Milan approved it in two minutes" becomes "the change carried a single approval and no one ran the build".
+
 ### 4. Draft action items
 
 Generate concrete, assignable follow-ups. Each must be specific (not "improve testing"), linked to code where possible, and categorized:
@@ -70,13 +83,13 @@ Generate concrete, assignable follow-ups. Each must be specific (not "improve te
 | **Detect** | Would have caught it sooner | Add monitoring, add CI check |
 | **Respond** | Would have made recovery faster | Add runbook, add feature flag |
 
+Render each item as a `- [ ]` checkbox grouped under its type, as the [debrief template](references/template.md) does.
+
 Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 
-Before writing the debrief file, ensure the session is not on the base branch:
-
-- Run `git rev-parse --abbrev-ref HEAD`. If the current branch is a base branch (`main`, `master`, or `develop`), use **AskUserQuestion** to offer creating a feature branch — `git checkout -b <type>/<kebab-topic>`, name under 60 characters — before writing. If already on a feature branch, continue without prompting.
+Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
 
 ### 6. Write the debrief document
 
@@ -102,32 +115,7 @@ Use the **AskUserQuestion tool** to present next steps:
 
 **If the user selects "Review and refine"** → apply the @refine-approach skill to the document. When refinement is complete, present these options again (without the refine option).
 
-**If the user selects "Generate issue previews"** → read the action items from the written debrief document, then:
-
-1. **Check for issue templates**: look for `.github/ISSUE_TEMPLATE/` in the project root. Read every `.yaml` or `.yml` file found there (skip `config.yml`).
-
-2. **If templates exist**: render one preview block per action item using the most appropriate template. Map each item to a template based on its content (e.g., a missing test or validation gap → bug report; a new monitoring check → feature request; a dependency update or runbook → chore). Populate every required field defined in the template. Include a `Template:` line naming the chosen template file.
-
-3. **If no templates exist**: fall back to the generic format:
-
-```text
----
-Title: <specific, actionable title>
-Label: prevent | detect | respond
-Body:
-  ## Context
-  Debrief: docs/debriefs/YYYY-MM-DD-<topic>-debrief.md
-  Root cause: <one-line summary from debrief>
-
-  ## What happened
-  <relevant excerpt from the debrief timeline or root cause section>
-
-  ## What to do
-  <the action item, specific and linked to code/files where possible>
----
-```
-
-Render all previews in a single fenced block so the user can copy them. Do not call `gh`, `glab`, or any external CLI — output is display only.
+**If the user selects "Generate issue previews"** → render the action items per [issue previews](references/issue-previews.md).
 
 ## Output Summary
 
@@ -142,15 +130,3 @@ Severity: <severity>
 Root cause: [one-line summary]
 Action items: <N> prevent, <N> detect, <N> respond
 ```
-
-## Key Principles
-
-- **Blameless** — Focus on systems and processes, never individuals
-- **Evidence-based** — Link findings to commits, PRs, code paths, and logs
-- **Actionable** — Every action item is specific and assignable
-- **Honest about gaps** — Mark unknowns explicitly rather than guessing
-- **Tech-agnostic** — No language or framework assumptions in the skill itself
-
-## Important
-
-**DO NOT make code changes.** This skill produces a document only. Action items become separate tickets.

@@ -1,8 +1,7 @@
 ---
 name: refine-approach
 user-invocable: true
-description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound.
-when_to_use: Use when user says "refine this", "review my approach", or "is this ready".
+description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when the user says "refine this", "review my approach", or "is this ready".
 argument-hint: path to document to refine
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -10,6 +9,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 # Refine Approach
 
 Improve brainstorm and/or planning documents through structured review.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Step 1. Get the document that needs review
 
@@ -56,7 +61,10 @@ Present your findings, then:
 
 1. **Auto-fix** minor issues (vague language, formatting) without asking
 2. **Ask approval** before substantive changes (restructuring, removing sections, changing meaning)
-3. **Update** the document inline—no separate files, no metadata sections
+3. **Update** the document inline — no separate files, no metadata sections
+
+Refine what is there. Do not rewrite the whole document, and do not add sections or
+requirements the user never discussed.
 
 ### Simplification Guidance
 
@@ -104,9 +112,22 @@ After changes are complete, ask:
 
 After 2 refinement passes, recommend completion—diminishing returns are likely. But if the user wants to continue, allow it.
 
-## What NOT to Do
+## The handoff block
 
-- Do not rewrite the entire document
-- Do not add new sections or requirements the user didn't discuss
-- Do not over-engineer or add complexity
-- Do not create separate review files or add metadata sections
+The handoff is the user's only instruction for picking the work up in a fresh session, so its
+shape is fixed here as well as in the reference. Print exactly this and then **stop**,
+substituting the next skill and the real document path:
+
+```md
+To continue with a fresh context, run:
+
+/clear
+
+Then start <NEXT_ACTION> with:
+
+/<NEXT_SKILL> <DOC_PATH>
+```
+
+Print it even when the document cannot be read from here, and even when the reference file
+cannot be read — a cleared context is a new session, and the skill that picks it up validates
+the path. Withholding the block because a check failed strands the user mid-handoff.

@@ -1,8 +1,7 @@
 ---
 name: review
 user-invocable: true
-description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report.
-when_to_use: Use when user says "review this code", "review my code", "code review", "review", "check this code", or "review before merging".
+description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user wants written code assessed rather than changed, and on "review this code", "code review", "check this code", "look this over", "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
 allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
@@ -14,6 +13,12 @@ compatibility: Designed for Claude Code (or similar products with agent support)
 Run quality review agents. Review manually written code, assess existing codebases, or
 check a branch before merging. Output is **one consolidated report** with stable,
 numbered findings the user can act on by id.
+
+> **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
+> not available — another harness, or a non-interactive session — put the same question and
+> the same options in your reply as a short numbered list, and stop there for the answer.
+> Never answer a question on the user's behalf and carry on: a question the user never sees
+> is not a question, and a step that waits on one is not optional.
 
 ## Review Scope
 
@@ -49,23 +54,13 @@ ${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
 
 ## Step 2 — Run Reviews
 
-Run `pwd` and let `<PWD>` be the result — subagents may change directories, making relative
-paths unreliable. Each run gets its own directory `<PWD>/docs/code-review/<slug>/`, so raw
-per-agent reports go in `<PWD>/docs/code-review/<slug>/raw/` (absolute) and one run never
-clobbers another branch's kept report.
+Each run gets its own directory `<PWD>/docs/code-review/<slug>/`, so one run never clobbers
+another branch's kept report.
 
-Run the **default review agents** below **in parallel**. Projects may add agents in their
-`CLAUDE.md` (include them alongside the defaults) or replace the default set entirely.
-
-Each agent prompt must include:
-
-1. **The scope constraint** — changed-file list, specific paths, or no constraint.
-2. **The [review agent instructions](references/review-agent-instructions.md)** with
-   `<RAW_DIR>` set to `<PWD>/docs/code-review/<slug>/raw` and `<name>` set to the agent's
-   report name below (a bare stem — the agent writes `<RAW_DIR>/<name>.md`). Substitute
-   `<PWD>` and `<slug>` with their resolved values — do not pass a relative path.
-
-Default agents and their report names (`<name>`):
+Dispatch the **default agents** below per [review agent dispatch](references/review-dispatch.md),
+with `<RAW_DIR>` = `<PWD>/docs/code-review/<slug>/raw`. Projects may add agents in their
+`CLAUDE.md` (include them alongside the defaults) or replace the default set entirely. Offer
+to retry any agent that fails.
 
 | Agent | Report name |
 |-------|-------------|
@@ -73,9 +68,6 @@ Default agents and their report names (`<name>`):
 | **@architecture-review-agent** | `architecture-review` |
 | **@test-quality-review-agent** | `test-quality-review` |
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
-
-**If an agent fails:** note it, continue with the successful agents, and record the failure
-in the report header and chat summary so the user knows the review is incomplete. Offer to retry.
 
 ## Step 3 — Consolidate & Present
 
@@ -88,6 +80,24 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 3. Print the aligned chat summary: lead with the report path and severity counts, then
    reprint the Critical and Important rows verbatim (same ids, order, titles) and collapse
    Suggestions to a count.
+
+### The findings contract
+
+These names leave this skill — the user acts on findings by id, and `/build` and `/hotfix`
+reuse them — so they are fixed here and not only in the reference. Hold them even when the
+reference cannot be read:
+
+- Every finding gets an id `FINDING-NN`, numbered from `FINDING-01` in the order the
+  consolidation procedure fixes, and a rule id `<category>/<rule>` from `vgv`, `architecture`,
+  `tests`, `simplicity` or `pr-readiness` — for example `tests/missing-test-file`.
+- Every finding carries one severity: **Critical**, **Important** or **Suggestion**.
+- Every finding carries a **Why** line and a **Fix** line.
+- The chat summary reprints the Critical and Important findings verbatim — same ids, same
+  order, same titles — and collapses Suggestions to a count.
+
+If a reference file cannot be read from here, say so once and produce the review in this
+shape anyway. A review without ids is a review the user cannot take apart, which is most of
+why it was run.
 
 **If no findings:** write the short all-clear report and tell the user the code looks good.
 
@@ -126,11 +136,5 @@ brief summary of which findings (by id) were fixed.
   review is incomplete.
 - Auto-fix only touches files within the original scope. If a fix needs changes outside
   scope, flag it instead of silently expanding scope.
-
-## Important
-
-- One consolidated report per run. Per-agent raw reports live in `docs/code-review/<slug>/raw/`
-  for drill-down and are linked from the consolidated file.
-- Reports are untracked working files. Commit or delete them when no longer needed.
-- This skill is advisory. It presents findings and lets the user decide what to act on.
-- When in doubt about a finding, read its linked raw report for full detail before deciding.
+- Reports are untracked working files that survive the run — commit or delete them when no
+  longer needed. When a finding is ambiguous, its linked raw report carries the full detail.
