@@ -37,6 +37,7 @@ the caller can render them verbatim without re-reading the report.
   title: <short imperative title, e.g. "Dispose the stream subscription">
   location: <file:line — or just the file path when the finding spans it>
   quote: <the offending line, copied verbatim from the file at location>
+  missing: <only with "quote: none" — "file <path>" or "text <text>">
   why: <one line — the concrete impact>
   fix: <one line — the concrete action to take>
 - severity: Important
@@ -72,9 +73,18 @@ grading keeps the ids stable:
   For a `file:start-end` range, quote one line inside it. With a bare file `location`, quote
   the line that best identifies what the finding is about, such as the class declaration.
 - **Use `quote: none` only for what the code does not contain**, and only with a bare file
-  `location`: a missing file or entry, removed code, or a commit message (locate it at a file
-  the commit changed). The caller checks every quote against the file and drops the findings
-  whose quote does not match.
+  `location`. Follow it with a `missing` line that names what is missing, so the caller can
+  confirm it:
+  - `missing: file <path>` — a file that should exist and does not, such as a test file.
+    Keep `location` at the file the finding is about, such as the untested source file.
+  - `missing: text <text>` — text the file at `location` should contain and does not: an
+    entry, a call, or a line the change removed. Copy it exactly, on one line, specific enough
+    not to match unrelated code (`_subscription.cancel();`, not `cancel`).
+  - Leave `missing` out only when no file can show the problem, such as a commit message
+    (locate it at a file the commit changed). The caller keeps such a finding but marks it
+    unverified and asks before acting on it.
+- **The caller checks every finding against the code** — the `quote`, or what `missing`
+  names — and drops the findings the code does not confirm.
 - **`rule` names the check, not the instance.** Use a short, reusable kebab-case slug
   (`missing-null-check`, `swallowed-error`, `layer-violation`) — reuse the same slug
   every time the same check fires so the caller can namespace it and let users suppress a

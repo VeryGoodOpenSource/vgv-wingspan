@@ -9,7 +9,7 @@ and Important rows verbatim (same ids, order, titles) and collapses Suggestions 
 # Code Review — <scope: branch name, or "working tree", or the reviewed paths>
 
 <N> findings · 🔴 <critical> critical · 🟡 <important> important · 🔵 <suggestions> suggestions
-Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, quote did not match the code.">
+Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, not confirmed by the code.">
 
 ## Findings Index
 
@@ -52,11 +52,12 @@ Inline single-use helper.
 
 ## Dropped findings
 
-Their quote did not match the code at their location, so they were not numbered or acted on.
+The code did not confirm them, so they were not numbered or acted on.
 
 | Agent | Location | Finding | Quote | Reason |
 |-------|----------|---------|-------|--------|
 | vgv-review-agent | `lib/auth/session.dart:42` | Deduplicate the cached token list | `final tokens = <String>[];` | Matches no line in the file |
+| test-quality-review-agent | `lib/auth/auth_repository.dart` | AuthRepository has no test file | none | `test/auth/auth_repository_test.dart` exists |
 
 ## Why this matters
 
@@ -77,6 +78,9 @@ and what the biggest lever is. Keep it constructive, not a scold.>
 - **Dropped findings are never numbered.** They sit outside the `FINDING-NN` sequence, so
   they appear in neither the Findings Index nor the chat summary's bullets. Escape any `|`
   in a quote as `\|` so it does not break the table row.
+- **Unverified findings keep the mark in their title.** A finding the code could not confirm
+  ends its title with `(unverified)` in the Findings Index, its detail section, and the chat
+  bullet, so the user sees it before anything acts on it.
 - If **no findings at all**, write a short file: the header line with all-zero counts and a
   single line — "No findings. Code looks good." — and say the same in chat. If findings were
   dropped, still list them under **Dropped findings** and give their count in chat.

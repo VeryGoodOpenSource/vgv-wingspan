@@ -67,8 +67,8 @@ to retry any agent that fails.
 
 Follow the [review consolidation procedure](references/review-consolidation.md):
 
-1. Collect every agent's structured findings, verify each quote against the code (dropping
-   the findings that do not match), deduplicate, order deterministically, and assign stable
+1. Collect every agent's structured findings, verify each against the code (dropping the
+   findings it does not confirm), deduplicate, order deterministically, and assign stable
    `FINDING-NN` ids.
 2. Write **one** consolidated file to `<PWD>/docs/code-review/<slug>/review.md` using the
    [report template](references/review-report-template.md).

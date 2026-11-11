@@ -31,30 +31,39 @@ dropping the trailing `-review-agent` and kebab-casing the rest (`security-revie
 
 ## Step 2 — Verify quotes
 
-Before merging anything, check every finding's `quote` against the code, so a finding that
-cites code that does not exist never reaches the user. Read the file at the finding's
-`location` and compare the quote with its lines, ignoring leading and trailing whitespace:
+Before merging anything, check every finding against the code, so a finding that cites code
+that does not exist, or calls missing something that is there, never reaches the user. Read
+the file at the finding's `location` and compare the quote with its lines, ignoring leading
+and trailing whitespace:
 
-| `location` | `quote` | Keep the finding when the quote equals |
-|------------|---------|----------------------------------------|
-| `file:line` | a line | the cited line, or a line at most two lines away |
-| `file:start-end` | a line | a line in the range, or at most two lines outside it |
-| bare file | a line | any line of the file |
-| bare file | `none` | always keep: the finding reports something the code lacks |
+| `location` | `quote` | Keep the finding when |
+|------------|---------|-----------------------|
+| `file:line` | a line | the quote equals the cited line, or a line at most two lines away |
+| `file:start-end` | a line | the quote equals a line in the range, or at most two lines outside it |
+| bare file | a line | the quote equals any line of the file |
+| bare file | `none`, with `missing: file <path>` | no file exists at `<path>` |
+| bare file | `none`, with `missing: text <text>` | the file exists and Grep finds no line of it containing `<text>` |
+| bare file | `none`, with no `missing` | always: keep it, marked unverified |
 
 The two-line margin absorbs an off-by-one line number.
 
 Drop every other finding: a quote that matches no line, a missing quote, a line or range
-`location` quoting `none`, or a line or range in a file that does not exist. A dropped
-finding gets no `FINDING-NN` id and is never acted on, but it does not disappear silently:
-record why it was dropped, list it in the report's **Dropped findings** section (Step 5),
-and count it in the chat summary (Step 6).
+`location` quoting `none`, a line or range in a file that does not exist, or a `missing`
+file or text that the code does contain. A dropped finding gets no `FINDING-NN` id and is
+never acted on, but it does not disappear silently: record why it was dropped, list it in
+the report's **Dropped findings** section (Step 5), and count it in the chat summary
+(Step 6).
+
+Nothing in the code can confirm a `quote: none` finding with no `missing` line, such as one
+about a commit message. Mark it **unverified**: append `(unverified)` to its title, so the
+mark appears everywhere the title does (report and chat), and never fix it without asking
+(Step 7).
 
 ## Step 3 — Deduplicate
 
 If two agents report the same issue at the same `location` (same `file:line`, same root
-cause), merge them into one finding. Keep the highest severity, keep the clearest title and
-its quote, and record both agents under **Reported by**. Keep the rule id of the
+cause), merge them into one finding. Keep the highest severity, keep the clearest title with
+its quote and `missing`, and record both agents under **Reported by**. Keep the rule id of the
 higher-severity finding; on a tie, the one whose category comes first in the Step 1 table.
 Only keep them separate when the severity or the actual concern genuinely differs.
 
@@ -111,7 +120,7 @@ The id, severity, rule id, and title in each bullet are copied verbatim from the
 Index — never paraphrased.
 
 When Step 2 dropped any finding, end the lead line, or the all-clear message when nothing
-was kept, with: `<d> dropped, quote did not match the code (see the report)`.
+was kept, with: `<d> dropped, not confirmed by the code (see the report)`.
 
 ## Step 7 — Acting on findings
 
@@ -124,6 +133,8 @@ those menus use.
   the reports you need — never load every raw file into context.
 - **By rule** — a rule id acts on a whole class ("fix every `tests/missing-test-file`",
   "ignore all `simplicity/inline-single-use`"). Apply the action to every finding sharing it.
+- **Unverified** — never fix a finding marked unverified without the user's go-ahead,
+  whatever its severity, even where the calling skill fixes that severity on its own.
 - **Commit trace** — when fixes are committed and the consolidated report is kept (as in
   `/review`), reference the ids in the commit body, e.g. `Addresses FINDING-01, FINDING-03
   from review.` Skills that delete the report after acting (`/build`, `/hotfix`) fix findings

@@ -128,8 +128,9 @@ Quality-review agents:
 - `pr-readiness-review-agent`
 
 Each agent writes a detailed report to a `raw/` subdirectory and returns a structured
-findings list, each finding quoting the line it cites. The calling skill drops findings
-whose quote does not match the code, deduplicates and orders the rest, assigns stable
+findings list, each finding quoting the line it cites or naming what it says is missing.
+The calling skill drops findings the code does not confirm, marks the ones no file can
+confirm as unverified, deduplicates and orders the rest, assigns stable
 `FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
 class), and renders one consolidated report plus a matching chat summary (see
 `skills/shared/references/review-consolidation.md`).
