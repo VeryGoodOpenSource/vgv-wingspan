@@ -77,9 +77,9 @@ mark appears everywhere the title does (report and chat), and never fix it witho
 ## Step 3 — Deduplicate
 
 If two agents report the same issue at the same `location` as corrected in Step 2 (same
-`file:line`, same root cause), merge them into one finding. Keep the highest severity, keep the clearest title with
-its quote and `missing`, and record both agents under **Reported by**. Keep the rule id of the
-higher-severity finding; on a tie, the one whose category comes first in the Step 1 table.
+`file:line`, same root cause), merge them into one finding. Keep the higher-severity finding
+whole — its severity, rule id, title, quote, `missing`, `why`, and `fix` — and on a tie, the
+one whose category comes first in the Step 1 table. Record both agents under **Reported by**.
 Only keep them separate when the severity or the actual concern genuinely differs.
 
 ## Step 4 — Order deterministically, then number
