@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: brainstorm-offers-to-publish-as-an-issue
+context:
+  scaffold_script: fixture.sh
