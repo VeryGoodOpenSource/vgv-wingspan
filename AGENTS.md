@@ -103,7 +103,7 @@ The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, flow analysis, and a mandatory quality review of the draft. Splits large plans into phases so `/build` executes one phase per context window.
-3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits or full manual control — decided up front or from a saved preference.
+3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits, an unattended run that builds each phase in its own subagent, or full manual control — decided up front or from a saved preference.
 
 Standalone Skills:
 
