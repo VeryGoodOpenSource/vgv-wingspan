@@ -9,7 +9,7 @@ and Important rows verbatim (same ids, order, titles) and collapses Suggestions 
 # Code Review — <scope: branch name, or "working tree", or the reviewed paths>
 
 <N> findings · 🔴 <critical> critical · 🟡 <important> important · 🔵 <suggestions> suggestions
-Across <F> files. Agents: <list of agents that ran>.<note any agent that failed>
+Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, not confirmed by the code.">
 
 ## Findings Index
 
@@ -50,6 +50,15 @@ Inline single-use helper.
 - **Fix**: Inline the single call site and delete the helper.
 - **Reported by**: code-simplicity-review-agent · [details](raw/code-simplicity-review.md)
 
+## Dropped findings
+
+The code did not confirm them, so they were not numbered or acted on.
+
+| Agent | Location | Finding | Quote | Reason |
+|-------|----------|---------|-------|--------|
+| vgv-review-agent | `lib/auth/session.dart:42` | Deduplicate the cached token list | `final tokens = <String>[];` | Matches no line in the file |
+| test-quality-review-agent | `lib/auth/auth_repository.dart` | AuthRepository has no test file | none | `test/auth/auth_repository_test.dart` exists |
+
 ## Why this matters
 
 <One or two sentences framing the findings as a set: what shipping them unaddressed costs,
@@ -65,5 +74,13 @@ and what the biggest lever is. Keep it constructive, not a scold.>
   collapse to a count).
 - **Every finding carries a concrete `Fix`.** A finding with no actionable fix is noise.
 - Omit a severity section entirely if it has no findings (don't print an empty "Critical").
+  Omit **Dropped findings** the same way when nothing was dropped.
+- **Dropped findings are never numbered.** They sit outside the `FINDING-NN` sequence, so
+  they appear in neither the Findings Index nor the chat summary's bullets. Escape any `|`
+  in a quote as `\|` so it does not break the table row.
+- **Unverified findings keep the mark in their title.** A finding the code could not confirm
+  ends its title with `(unverified)` in the Findings Index, its detail section, and the chat
+  bullet, so the user sees it before anything acts on it.
 - If **no findings at all**, write a short file: the header line with all-zero counts and a
-  single line — "No findings. Code looks good." — and say the same in chat.
+  single line — "No findings. Code looks good." — and say the same in chat. If findings were
+  dropped, still list them under **Dropped findings** and give their count in chat.

@@ -45,7 +45,7 @@ Start here. Describe the problem or idea — the bigger and more open-ended, the
 /brainstorm how should we add authentication to this app?
 ```
 
-Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up.
+Providing context up front produces much better results than invoking `/brainstorm` on its own. This opens a collaborative dialogue to explore requirements, constraints, and approaches. The output is saved to `docs/brainstorm/` so the next phase can pick it up. To track it on GitHub instead, pick **Publish as issue** at the end, then run `/plan` with the issue.
 
 ### 2. `/plan`
 
