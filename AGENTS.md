@@ -176,8 +176,9 @@ Evals do not run on a pull request, because they call real models.
 changed skills, with-plugin arm only, and always non-blocking. A full run is manual
 (`workflow_dispatch`).
 
-A run grants `Read`, `Glob`, `Grep` and `Skill` and nothing else, so a case measures the
-reply a skill produces, never a file it writes or a command it runs.
+A case grants only the tools its `allowed_tools` lists, and no case runs `Bash` or `Edit`.
+Most cases grade the reply a skill produces; the few that list `Write` grade the file it
+writes. `evals/README.md` → _What these cases can reach_ has the details.
 
 ## Guidance
 
