@@ -154,8 +154,10 @@ Every reply starts with the same findings block:
 
 - **Verdict** is `fail` when there is at least one Critical finding. A reply without the
   verdict line means the review did not finish: treat it as a failure, not a clean review.
-- **Quote** is the offending line, copied verbatim, or `none` for something the code lacks,
-  such as a missing test file. Check it against the file before acting on the finding.
+- **Quote** is the offending line, copied verbatim, or `none` for something the code lacks.
+  A `none` quote comes with a `missing` line naming the absent file or text, such as
+  `missing: file test/home_test.dart`. Check either against the code before acting on the
+  finding.
 - **The full review** follows the block. To get it as a file instead, name a raw report path
   in the prompt; the agent writes the review there and returns only the block.
 

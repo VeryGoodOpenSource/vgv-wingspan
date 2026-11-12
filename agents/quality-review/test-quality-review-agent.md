@@ -133,6 +133,7 @@ tell a finished review from one that never ran:
   title: <short imperative title>
   location: <file:line, file:start-end, or file>
   quote: <the offending line copied verbatim from location, or none>
+  missing: <only with "quote: none": "file <path>" or "text <text>">
   why: <one line: the concrete impact>
   fix: <one line: the concrete action>
 ```
