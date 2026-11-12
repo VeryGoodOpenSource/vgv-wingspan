@@ -73,13 +73,14 @@ to retry any agent that fails.
 
 Follow the [review consolidation procedure](references/review-consolidation.md):
 
-1. Collect every agent's structured findings, deduplicate, order deterministically, and
-   assign stable `FINDING-NN` ids.
+1. Collect every agent's structured findings, verify each against the code (dropping the
+   findings it does not confirm), deduplicate, order deterministically, and assign stable
+   `FINDING-NN` ids.
 2. Write **one** consolidated file to `<PWD>/docs/code-review/<slug>/review.md` using the
    [report template](references/review-report-template.md).
-3. Print the aligned chat summary: lead with the report path and severity counts, then
-   reprint the Critical and Important rows verbatim (same ids, order, titles) and collapse
-   Suggestions to a count.
+3. Print the aligned chat summary: lead with the report path, severity counts, and any
+   dropped count, then reprint the Critical and Important rows verbatim (same ids, order,
+   titles) and collapse Suggestions to a count.
 
 ### The findings contract
 
@@ -99,7 +100,8 @@ If a reference file cannot be read from here, say so once and produce the review
 shape anyway. A review without ids is a review the user cannot take apart, which is most of
 why it was run.
 
-**If no findings:** write the short all-clear report and tell the user the code looks good.
+**If no findings:** write the short all-clear report and tell the user the code looks good,
+plus how many findings were dropped, if any.
 
 ## Step 4 — Act
 

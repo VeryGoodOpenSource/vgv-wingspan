@@ -188,7 +188,7 @@ so they run at once rather than in turn.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description.
+Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
 
 ## Phase 4 — Ship
 
