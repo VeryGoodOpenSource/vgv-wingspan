@@ -39,4 +39,6 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
 | `description`       | One-line summary shown in the recommendation                   |
 
+`detect` can also be an array of these objects. The plugin is recommended when any entry matches.
+
 **Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
