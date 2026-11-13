@@ -39,7 +39,9 @@ each of its findings:
 - category slug → the agent name without the plugin prefix and a trailing `-reviewer`
   (`vgv-ai-flutter-plugin:flutter-reviewer` → `flutter`).
 
-A companion reply that says there was nothing to review counts as zero findings.
+A companion reply that says there was nothing to review counts as zero findings. Any other
+companion reply without findings is a [failed agent](review-dispatch.md#handle-failures),
+not a clean review.
 
 ## Step 2 — Verify quotes
 

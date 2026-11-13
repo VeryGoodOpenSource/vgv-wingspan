@@ -40,5 +40,7 @@ a silently halved review reads as a clean one.
 
 A reply that does not start with the findings block and its **Verdict** line counts as a
 failure too, so a missing or empty reply never passes for a clean review. Companion
-reviewers are the exception: they return their own format, which
-[consolidation](review-consolidation.md) maps.
+reviewers return their own format instead, which [consolidation](review-consolidation.md)
+maps, so they skip the Verdict check. A companion reply that lists no findings counts as a
+failure unless it says there was nothing to review: a reviewer that could not work out a
+scope, or stopped for any other reason, did not review the code.
