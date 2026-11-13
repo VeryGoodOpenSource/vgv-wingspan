@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version) Bash(gh pr *) Bash(glab --version) Bash(glab mr *)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr *) Bash(glab --version *) Bash(glab mr *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
