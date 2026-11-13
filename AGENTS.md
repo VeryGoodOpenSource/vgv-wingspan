@@ -62,6 +62,8 @@ skills/                # User-invocable and supporting skills (one dir per skill
       file-findings-on-pr.md     # Post review findings as PR comments
       plan-review.md             # Quality pass applied to a drafted plan
       plan-templates/            # minimal, standard, extensive, phases, success criteria
+      pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
+      push.md                    # Push the branch and handle push failures
       review-agent-instructions.md  # Instructions passed to each review agent
       review-autonomy.md         # When /build and /hotfix apply Important findings without asking
       review-consolidation.md    # Verify quotes, deduplicate, order, and number findings

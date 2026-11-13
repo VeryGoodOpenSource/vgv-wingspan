@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
-allowed-tools: Bash(rm -rf docs/reviews/)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr *) Bash(glab --version *) Bash(glab mr *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -186,6 +186,11 @@ and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every 
 scope constraint and the report name from the table above, and send all five in one message
 so they run at once rather than in turn.
 
+Run them in the foreground (`run_in_background: false`) and wait for every result in this
+turn. Do not end your turn while a reviewer runs: the push and PR permissions in
+`allowed-tools` last only for the turn that invoked `/build`, so a build that resumes on a
+background agent's notification stops on a permission prompt at ship time.
+
 ### After all reviews complete
 
 Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
@@ -208,7 +213,7 @@ rm -rf docs/reviews/
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
 
-To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
+To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md).
 
 ### Post-Ship
 

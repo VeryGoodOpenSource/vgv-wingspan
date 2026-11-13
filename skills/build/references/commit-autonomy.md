@@ -52,6 +52,6 @@ preference to push automatically, push and open the PR without asking. Otherwise
 **AskUserQuestion** before anything leaves the machine:
 
 1. **Review locally first (Recommended)** — stop here; the commits stay local and the user
-   opens the PR when ready. Do not call `/create-pr`.
+   opens the PR when ready. Do not push or open the PR.
 2. **Push and open the PR now** — proceed this once.
 3. **Always push automatically** — proceed, and remember the preference for future builds.
