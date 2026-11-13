@@ -81,6 +81,9 @@ Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSo
 
 Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
+On a Flutter project with the Flutter Plugin installed, `/review` and `/build` also run its
+`flutter-reviewer` and merge its findings into the same report.
+
 ### Tips
 
 - **Clear context between phases.** At the end of each phase, Wingspan offers a "Clear context and [next step]" option. Use it — a fresh context window produces better results.
@@ -119,6 +122,44 @@ Wingspan ships subagents that Claude Code dispatches as isolated, specialized re
 | [**User Flow Analysis**](agents/analysis/user-flow-analysis-agent.md) | Analyzes specs and feature descriptions for flow completeness, edge cases, and requirement gaps |
 | [**Best Practices Research**](agents/research/best-practices-research-agent.md) | Researches best practices for the project's technology stack — VGV conventions first, then official docs and industry standards |
 | [**Official Docs Research**](agents/research/official-docs-research-agent.md) | Gathers documentation for frameworks, libraries, or dependencies — official docs, version constraints, and implementation patterns |
+
+### Running review agents headless
+
+The five review agents also work outside the workflow skills: from a fleet, an
+orchestrator, or another plugin. Dispatch one by its agent type and put the scope in the
+prompt, for example "Review the changes on this branch against main".
+
+| Agent type | Reviews |
+| ---------- | ------- |
+| `vgv-wingspan:codebase-review:vgv-review-agent` | VGV engineering standards |
+| `vgv-wingspan:codebase-review:code-simplicity-review-agent` | YAGNI, premature abstraction, dead code |
+| `vgv-wingspan:quality-review:architecture-review-agent` | Layer separation and dependency direction |
+| `vgv-wingspan:quality-review:test-quality-review-agent` | Test coverage and test quality |
+| `vgv-wingspan:quality-review:pr-readiness-review-agent` | Formatting, analysis, debug artifacts, commit hygiene |
+
+Every reply starts with the same findings block:
+
+```markdown
+## Architecture Review Findings
+**Verdict**: fail | **Critical**: 1 | **Important**: 0 | **Suggestion**: 0
+
+- severity: Critical
+  rule: layer-violation
+  title: Route the call through the repository
+  location: lib/ui/home.dart:12
+  quote: import 'package:api_client/api_client.dart';
+  why: Presentation now depends on the data layer.
+  fix: Inject the repository into the cubit and call it there.
+```
+
+- **Verdict** is `fail` when there is at least one Critical finding. A reply without the
+  verdict line means the review did not finish: treat it as a failure, not a clean review.
+- **Quote** is the offending line, copied verbatim, or `none` for something the code lacks.
+  A `none` quote comes with a `missing` line naming the absent file or text, such as
+  `missing: file test/home_test.dart`. Check either against the code before acting on the
+  finding.
+- **The full review** follows the block. To get it as a file instead, name a raw report path
+  in the prompt; the agent writes the review there and returns only the block.
 
 ## Hooks
 

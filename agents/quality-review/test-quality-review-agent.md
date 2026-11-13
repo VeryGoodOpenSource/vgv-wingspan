@@ -120,7 +120,31 @@ Flag these immediately:
 
 ## Output Instructions
 
-Follow the review agent instructions provided in your task prompt: write the full report to
-the given raw report path, then return only the structured findings list — not the full
-report text, and with no finding ids (the caller assigns those). If no report path is
-provided, return the full review in your response.
+Start your reply with this block, whether a skill dispatched you or not, so the caller can
+tell a finished review from one that never ran:
+
+```markdown
+## Test Quality Review Findings
+**Verdict**: <pass|fail> | **Critical**: <count> | **Important**: <count> | **Suggestion**: <count>
+**Report**: `<raw report path>`
+
+- severity: <Critical|Important|Suggestion>
+  rule: <kebab-case slug for the check that fired>
+  title: <short imperative title>
+  location: <file:line, file:start-end, or file>
+  quote: <the offending line copied verbatim from location, or none>
+  missing: <only with "quote: none": "file <path>" or "text <text>">
+  why: <one line: the concrete impact>
+  fix: <one line: the concrete action>
+```
+
+The verdict is `fail` when you report at least one Critical finding, and `pass` otherwise.
+With no findings, return the heading and the verdict line with every count at `0`. Never
+add finding ids; the caller assigns them.
+
+The review agent instructions at
+`${CLAUDE_PLUGIN_ROOT}/skills/shared/references/review-agent-instructions.md` define the
+severities, the quote rules, and the raw report. Read them before you answer, unless your
+task prompt already includes them. With a raw report path in your task prompt, write your
+full review there and return only the block. Without one, drop the **Report** line entirely
+(do not write it as `none`) and put your full review after the block.
