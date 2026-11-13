@@ -48,7 +48,14 @@ teardown() {
 
 # Run the hook from the test project directory. Captures stdout.
 run_hook() {
-  echo '{}' | (cd "$TEST_DIR" && bash "$WRAPPER") 2>/dev/null || true
+  echo '{}' | (cd "$TEST_DIR" && env -u VGV_AI_INSTALL_COMMAND -u VGV_AI_PLUGINS bash "$WRAPPER") 2>/dev/null || true
+}
+
+# Run the hook as a vgv_ai hook copy would, with [plugins] installed.
+# Captures stdout.
+run_hook_under_vgv_ai() {
+  local plugins="$1"
+  echo '{}' | (cd "$TEST_DIR" && VGV_AI_INSTALL_COMMAND="vgv_ai install --plugin" VGV_AI_PLUGINS="$plugins" bash "$WRAPPER") 2>/dev/null || true
 }
 
 # Add a recommendation JSON file to the test fixtures.
@@ -508,6 +515,42 @@ test_files_detection_is_case_insensitive() {
   teardown
 }
 
+test_vgv_ai_recommends_its_install_command() {
+  echo "test: under vgv_ai recommends its install command"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  # Claude Code settings do not count under vgv_ai.
+  add_settings ".claude/settings.json" '{"plugins": ["test-plugin"]}'
+  local output
+  output=$(run_hook_under_vgv_ai "other-plugin")
+  assert_contains "$output" "vgv_ai install --plugin test-plugin" "vgv_ai install command"
+  assert_not_contains "$output" "/plugin" "no Claude Code plugin commands"
+  teardown
+}
+
+test_vgv_ai_skips_installed_plugin() {
+  echo "test: under vgv_ai skips plugin it already installed"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  local output
+  output=$(run_hook_under_vgv_ai "vgv-wingspan test-plugin")
+  assert_empty "$output" "no output when vgv_ai lists the plugin"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -552,6 +595,10 @@ echo ""
 test_file_detection_is_case_insensitive
 echo ""
 test_files_detection_is_case_insensitive
+echo ""
+test_vgv_ai_recommends_its_install_command
+echo ""
+test_vgv_ai_skips_installed_plugin
 echo ""
 
 echo "=== Results: $PASS passed, $FAIL failed ==="

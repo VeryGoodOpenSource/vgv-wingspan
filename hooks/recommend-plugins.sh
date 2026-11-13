@@ -3,7 +3,12 @@
 #
 # Scans JSON files in the recommendations/ directory. Each file describes
 # a plugin to recommend: how to detect the project type (a file + grep
-# pattern) and the plugin name to look for in Claude Code settings.
+# pattern) and the plugin name to look for among installed plugins.
+#
+# Installed plugins come from Claude Code settings, and the hint is the
+# /plugin commands, unless the host sets VGV_AI_INSTALL_COMMAND. vgv_ai sets
+# it, with the installed plugins in VGV_AI_PLUGINS, in the hook copies it
+# installs for other harnesses.
 #
 # To add a new recommendation, drop a JSON file in recommendations/ with:
 #   {
@@ -53,6 +58,10 @@ SETTINGS_FILES=(
 
 is_plugin_installed() {
   local plugin_name="$1"
+  if [[ -n "${VGV_AI_INSTALL_COMMAND:-}" ]]; then
+    [[ " ${VGV_AI_PLUGINS:-} " == *" $plugin_name "* ]]
+    return
+  fi
   for settings_file in "${SETTINGS_FILES[@]}"; do
     if [[ -f "$settings_file" ]] && grep -q "$plugin_name" "$settings_file" 2>/dev/null; then
       return 0
@@ -113,6 +122,10 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   fi
 
   # Collect recommendation
+  if [[ -n "${VGV_AI_INSTALL_COMMAND:-}" ]]; then
+    RECOMMENDATIONS+=("The '${plugin}' plugin is not installed. It provides: ${description} Recommend the user install it with: ${VGV_AI_INSTALL_COMMAND} ${plugin}")
+    continue
+  fi
   RECOMMENDATIONS+=("The '${plugin}' Claude Code plugin is not installed. It provides: ${description} Recommend the user install it by first adding the marketplace with: /plugin marketplace add ${marketplace} — then installing via: /plugin install ${plugin}")
 done
 
