@@ -3,7 +3,12 @@
 #
 # Scans JSON files in the recommendations/ directory. Each file describes
 # a plugin to recommend: how to detect the project type (a file + grep
-# pattern) and the plugin name to look for in Claude Code settings.
+# pattern) and the plugin name to look for among installed plugins.
+#
+# Under Claude Code, installed plugins come from .claude/settings*.json and
+# the install hint is the /plugin commands. Elsewhere — Codex, Copilot CLI or
+# Antigravity CLI after `vgv_ai install` — they come from
+# ~/.vgv_ai/manifest.json and the hint is `vgv_ai install --plugin <name>`.
 #
 # To add a new recommendation, drop a JSON file in recommendations/ with:
 #   {
@@ -44,6 +49,17 @@ if [[ ! -d "$RECOMMENDATIONS_DIR" ]]; then
   exit 0
 fi
 
+# Claude Code sets CLAUDE_PROJECT_DIR for every hook it runs. The preamble
+# vgv_ai splices into the copies it installs for other harnesses exports
+# only CLAUDE_PLUGIN_ROOT, so an unset CLAUDE_PROJECT_DIR means another host.
+if [[ -n "${CLAUDE_PROJECT_DIR:-}" ]]; then
+  IN_CLAUDE_CODE=true
+else
+  IN_CLAUDE_CODE=false
+fi
+
+VGV_AI_MANIFEST="$HOME/.vgv_ai/manifest.json"
+
 # Collect settings files to check (local > project > user).
 SETTINGS_FILES=(
   ".claude/settings.local.json"
@@ -53,6 +69,11 @@ SETTINGS_FILES=(
 
 is_plugin_installed() {
   local plugin_name="$1"
+  if [[ "$IN_CLAUDE_CODE" != "true" ]]; then
+    jq -e --arg p "$plugin_name" '.plugins | has($p)' \
+      "$VGV_AI_MANIFEST" >/dev/null 2>&1
+    return
+  fi
   for settings_file in "${SETTINGS_FILES[@]}"; do
     if [[ -f "$settings_file" ]] && grep -q "$plugin_name" "$settings_file" 2>/dev/null; then
       return 0
@@ -113,6 +134,10 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   fi
 
   # Collect recommendation
+  if [[ "$IN_CLAUDE_CODE" != "true" ]]; then
+    RECOMMENDATIONS+=("The '${plugin}' plugin is not installed. It provides: ${description} Recommend the user install it with: vgv_ai install --plugin ${plugin}")
+    continue
+  fi
   RECOMMENDATIONS+=("The '${plugin}' Claude Code plugin is not installed. It provides: ${description} Recommend the user install it by first adding the marketplace with: /plugin marketplace add ${marketplace} — then installing via: /plugin install ${plugin}")
 done
 

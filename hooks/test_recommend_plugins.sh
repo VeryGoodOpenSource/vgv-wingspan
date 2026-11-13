@@ -46,9 +46,16 @@ teardown() {
   rm -rf "$TEST_DIR" 2>/dev/null || true
 }
 
-# Run the hook from the test project directory. Captures stdout.
+# Run the hook from the test project directory as Claude Code would, with
+# CLAUDE_PROJECT_DIR set. Captures stdout.
 run_hook() {
-  echo '{}' | (cd "$TEST_DIR" && bash "$WRAPPER") 2>/dev/null || true
+  echo '{}' | (cd "$TEST_DIR" && CLAUDE_PROJECT_DIR="$TEST_DIR" bash "$WRAPPER") 2>/dev/null || true
+}
+
+# Run the hook as another harness would after `vgv_ai install`, without
+# CLAUDE_PROJECT_DIR. Captures stdout.
+run_hook_outside_claude() {
+  echo '{}' | (cd "$TEST_DIR" && env -u CLAUDE_PROJECT_DIR bash "$WRAPPER") 2>/dev/null || true
 }
 
 # Add a recommendation JSON file to the test fixtures.
@@ -508,6 +515,44 @@ test_files_detection_is_case_insensitive() {
   teardown
 }
 
+test_outside_claude_recommends_vgv_ai_install() {
+  echo "test: outside Claude Code recommends vgv_ai install"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  # Claude Code settings do not count outside Claude Code.
+  add_settings ".claude/settings.json" '{"plugins": ["test-plugin"]}'
+  local output
+  output=$(run_hook_outside_claude)
+  assert_contains "$output" "vgv_ai install --plugin test-plugin" "vgv_ai install command"
+  assert_not_contains "$output" "/plugin" "no Claude Code plugin commands"
+  teardown
+}
+
+test_outside_claude_skips_plugin_in_vgv_ai_manifest() {
+  echo "test: outside Claude Code skips plugin vgv_ai already installed"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  # HOME is overridden to TEST_DIR by setup.
+  add_settings ".vgv_ai/manifest.json" '{"version": 2, "plugins": {"test-plugin": "0.0.5"}}'
+  local output
+  output=$(run_hook_outside_claude)
+  assert_empty "$output" "no output when plugin in vgv_ai manifest"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -552,6 +597,10 @@ echo ""
 test_file_detection_is_case_insensitive
 echo ""
 test_files_detection_is_case_insensitive
+echo ""
+test_outside_claude_recommends_vgv_ai_install
+echo ""
+test_outside_claude_skips_plugin_in_vgv_ai_manifest
 echo ""
 
 echo "=== Results: $PASS passed, $FAIL failed ==="
