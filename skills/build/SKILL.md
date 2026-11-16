@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr *) Bash(glab --version *) Bash(glab mr *)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -189,7 +189,10 @@ so they run at once rather than in turn.
 Run them in the foreground (`run_in_background: false`) and wait for every result in this
 turn. Do not end your turn while a reviewer runs: the push and PR permissions in
 `allowed-tools` last only for the turn that invoked `/build`, so a build that resumes on a
-background agent's notification stops on a permission prompt at ship time.
+background agent's notification stops on a permission prompt at ship time. This holds in
+headless runs. In an interactive session the harness may still run the reviewers in the
+background; if the build resumes in a new turn, tell the user the push and PR need their
+approval before you run them.
 
 ### After all reviews complete
 
