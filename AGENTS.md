@@ -8,7 +8,8 @@ Wingspan is a collection of AI-assisted engineering tools — skills, agents, an
 .claude-plugin/
   plugin.json          # Plugin manifest (name, version, keywords)
 AGENTS.md              # This file — portable, tech-agnostic conventions
-CLAUDE.md              # Claude Code entry point: imports AGENTS.md, adds Claude-specific Hooks
+.claude/
+  CLAUDE.md            # Claude Code entry point: imports AGENTS.md, adds Claude-specific Hooks
 README.md              # Human-facing overview and install instructions
 CONTRIBUTING.md        # Contributor guide (adding skills, hooks, commit format)
 skills_lint.yaml       # skills_lint rule config used by the CI skills lint workflow
