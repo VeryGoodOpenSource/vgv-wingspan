@@ -64,8 +64,8 @@ Honor a saved preference if one exists. Otherwise put the choice to the user and
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
 
-Leave out **Run all phases unattended** when fewer than two phases are left to build. Keep
-the other labels as written.
+Leave out **Run all phases unattended** when fewer than two phases are left to build, or when
+this session has no subagent tool to run each phase in. Keep the other labels as written.
 
 These two questions — how this build commits, and whether the scope below is right — are the
 gate on Phase 1. **Write no file until both are answered.** Going ahead and implementing,
@@ -126,7 +126,9 @@ runs each remaining phase in its own subagent, per [unattended phases](reference
    as usual.
 
 Hold this shape even when the reference cannot be read: one phase per subagent, one subagent
-at a time, no question between phases that completed cleanly.
+at a time, no question between phases that completed cleanly. If no subagent can be
+dispatched, do not build the remaining phases in this session: say so, and continue as
+**Auto-commit each phase**.
 
 ### Phase loop
 

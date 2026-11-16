@@ -13,7 +13,9 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
   Nothing is committed or pushed without them.
 
 Leave out **Run all phases unattended** when fewer than two phases are left to build: a single
-phase has nothing to run unattended between.
+phase has nothing to run unattended between. Leave it out too when this session has no
+subagent tool (such as `Agent`): the option exists to give each phase a fresh context, and
+building every phase in one session is what it prevents.
 
 The choice is a per-developer preference, not a repo convention, so it never belongs in the
 project's `CLAUDE.md`.

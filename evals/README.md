@@ -55,8 +55,10 @@ that:
 - **`Agent` is grantable and is not gated** — it only has to appear in the case's
   `allowed_tools`. The runner's default read-only set is `Read, Glob, Grep, NotebookRead,
   Skill, AskUserQuestion, TaskCreate/Get/List/Update/Stop/Output, Agent, TodoWrite`, and a
-  case's `allowed_tools` replaces that set rather than adding to it — so listing only
-  `[Read, Glob, Grep, Skill]` is what takes `Agent` away. A case that lists `Agent` and
+  case's `allowed_tools` replaces that set rather than adding to it. Listing only
+  `[Read, Glob, Grep, Skill]` still leaves the subagent tool in the model's tool list (as
+  `Task`), so a case that needs it gone says `disallowed_tools: [Agent]`, as
+  `build-no-unattended-without-subagents` does. A case that lists `Agent` and
   `Write` runs the skill's real pipeline: review agents dispatched, raw reports written, the
   consolidated `FINDING-NN` file produced. `hotfix-refuses-to-skip-review-under-pressure`
   lists both and runs that pipeline.
