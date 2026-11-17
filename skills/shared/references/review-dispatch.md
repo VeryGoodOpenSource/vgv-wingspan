@@ -39,8 +39,8 @@ both the report header and the chat summary so the user knows the review is inco
 a silently halved review reads as a clean one.
 
 Find the findings block anywhere in the reply, not only at the top: its heading line
-(`## <Agent Name> Findings`) followed, with only blank lines between, by a `**Verdict**:`
-line whose verdict is literally `pass` or `fail`. Ignore any text before or after the block,
+(`## <Agent Name> Findings`) directly followed by a `**Verdict**:` line whose verdict is
+literally `pass` or `fail`. Ignore any text before or after the block,
 such as a one-line intro. A reply with no such pair counts as a failure too, so a missing or
 empty reply never passes for a clean review.
 

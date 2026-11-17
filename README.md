@@ -153,7 +153,7 @@ Every reply carries the same findings block, normally first:
 ```
 
 - **Verdict** is `fail` when there is at least one Critical finding. Look for the
-  `## … Findings` heading followed by the verdict line anywhere in the reply, so a
+  `## … Findings` heading directly followed by the verdict line anywhere in the reply, so a
   one-line intro before the block does not matter. A reply without that pair means the
   review did not finish: treat it as a failure, not a clean review.
 - **Quote** is the offending line, copied verbatim, or `none` for something the code lacks.
