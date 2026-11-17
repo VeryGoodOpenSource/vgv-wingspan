@@ -77,7 +77,9 @@ the report all use the real line:
 - A bare file stays as it is.
 
 A companion reviewer's findings carry no quote, so check only their `location`: keep one
-when its file exists and its line is within the file. Keep its `location` as given.
+when its file exists and its line is within the file. Keep its `location` as given. A real
+line is not a confirmed problem, so mark every kept companion finding **unverified**, as
+below.
 
 Drop every other finding: a quote that matches no line, a missing quote, a line or range
 `location` quoting `none`, a line or range in a file that does not exist, or a `missing`
