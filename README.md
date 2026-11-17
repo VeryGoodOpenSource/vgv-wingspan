@@ -137,7 +137,7 @@ prompt, for example "Review the changes on this branch against main".
 | `vgv-wingspan:quality-review:test-quality-review-agent` | Test coverage and test quality |
 | `vgv-wingspan:quality-review:pr-readiness-review-agent` | Formatting, analysis, debug artifacts, commit hygiene |
 
-Every reply starts with the same findings block:
+Every reply carries the same findings block, normally first:
 
 ```markdown
 ## Architecture Review Findings
@@ -152,8 +152,10 @@ Every reply starts with the same findings block:
   fix: Inject the repository into the cubit and call it there.
 ```
 
-- **Verdict** is `fail` when there is at least one Critical finding. A reply without the
-  verdict line means the review did not finish: treat it as a failure, not a clean review.
+- **Verdict** is `fail` when there is at least one Critical finding. Look for the
+  `## … Findings` heading followed by the verdict line anywhere in the reply, so a
+  one-line intro before the block does not matter. A reply without that pair means the
+  review did not finish: treat it as a failure, not a clean review.
 - **Quote** is the offending line, copied verbatim, or `none` for something the code lacks.
   A `none` quote comes with a `missing` line naming the absent file or text, such as
   `missing: file test/home_test.dart`. Check either against the code before acting on the

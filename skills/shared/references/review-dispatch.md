@@ -38,8 +38,11 @@ An agent failure is non-fatal. Note it, continue with the rest, and record the f
 both the report header and the chat summary so the user knows the review is incomplete —
 a silently halved review reads as a clean one.
 
-A reply that does not start with the findings block and its **Verdict** line counts as a
-failure too, so a missing or empty reply never passes for a clean review.
+Find the findings block anywhere in the reply, not only at the top: its heading line
+(`## <Agent Name> Findings`) followed, with only blank lines between, by a `**Verdict**:`
+line whose verdict is literally `pass` or `fail`. Ignore any text before or after the block,
+such as a one-line intro. A reply with no such pair counts as a failure too, so a missing or
+empty reply never passes for a clean review.
 
 Companion reviewers return their own format instead, which
 [consolidation](review-consolidation.md) maps, so they skip the Verdict check. Judge a
