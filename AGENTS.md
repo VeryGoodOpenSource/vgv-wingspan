@@ -32,6 +32,7 @@ agents/                # Subagent definitions, grouped by role
     architecture-review-agent.md  # Validates layer separation and dependency direction
     pr-readiness-review-agent.md  # Checks formatting, static analysis, commit hygiene
     test-quality-review-agent.md  # Verifies test coverage and quality
+  test_review_contract.sh  # Fails when the review agents' findings block drifts
   research/
     best-practices-research-agent.md  # Synthesizes best practices for the stack
     official-docs-research-agent.md   # Gathers official framework/library docs

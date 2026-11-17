@@ -76,3 +76,5 @@ jobs:
       - uses: actions/checkout@v7
       - name: Recommend plugins hook tests
         run: bash hooks/test_recommend_plugins.sh
+      - name: Review contract tests
+        run: bash agents/test_review_contract.sh
