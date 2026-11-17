@@ -29,8 +29,8 @@ field. Evaluate its `detect` rule against the current project, with the same log
 `reviewAgent` is available, dispatch it in the same parallel message as the skill's own
 agents. Pass it only the scope constraint: a companion reviewer has its own output format,
 so it gets no review agent instructions. Its report name is the agent name without the
-plugin prefix (`vgv-ai-flutter-plugin:flutter-reviewer` → `flutter-reviewer`). When the
-agent type is not installed, skip it; the recommendation hook already suggests the plugin.
+plugin prefix (`plugin-name:plugin-reviewer` → `plugin-reviewer`). When the agent type is
+not installed, skip it; the recommendation hook already suggests the plugin.
 
 ## Handle failures
 

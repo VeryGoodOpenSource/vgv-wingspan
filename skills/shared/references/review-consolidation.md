@@ -37,7 +37,7 @@ each of its findings:
   category or standard column → `rule`;
 - severity → Critical when that category names security, Important otherwise;
 - category slug → the agent name without the plugin prefix and a trailing `-reviewer`
-  (`vgv-ai-flutter-plugin:flutter-reviewer` → `flutter`).
+  (`plugin-name:plugin-reviewer` → `plugin`).
 
 Classify a companion reply by its shape, never its wording, since a companion gets no output
 contract:
