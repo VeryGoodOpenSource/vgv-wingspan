@@ -39,9 +39,22 @@ each of its findings:
 - category slug → the agent name without the plugin prefix and a trailing `-reviewer`
   (`vgv-ai-flutter-plugin:flutter-reviewer` → `flutter`).
 
-A companion reply with an empty findings list, or that says it found no problems or that
-there was nothing to review, counts as zero findings. Any other companion reply without
-findings is a [failed agent](review-dispatch.md#handle-failures), not a clean review.
+Classify a companion reply by its shape, never its wording, since a companion gets no output
+contract:
+
+- **Findings** — it lists at least one finding: map and merge them as above.
+- **Ran, no findings** — any other non-empty reply, whether it reports no problems, nothing
+  to review, or a scope it skipped. It adds no findings and is neither clean nor failed:
+  record the agent with a reason, so the user judges whether it looked at the code. The
+  reason is the first line of prose in the reply, skipping table rows and headings, quoted
+  verbatim; when the reply holds only an empty table, the reason is `returned an empty
+  table`.
+- **Failed** — an empty reply or an error: a
+  [failed agent](review-dispatch.md#handle-failures).
+
+A companion may add a prose note beside its findings, such as areas it did not review. Quote
+that note verbatim next to the agent's name in the report header, so its findings never read
+as full coverage.
 
 ## Step 2 — Verify quotes
 
@@ -157,6 +170,11 @@ Index — never paraphrased.
 
 When Step 2 dropped any finding, end the lead line, or the all-clear message when nothing
 was kept, with: `<d> dropped, not confirmed by the code (see the report)`.
+
+For each companion that ran with no findings, add a line after the lead line:
+`<name> ran, no findings: "<its quoted reason>"`. It never reads as an all-clear for that
+companion. Likewise, for each companion note beside its findings, add
+`<name> notes: "<its note>"`.
 
 ## Step 7 — Acting on findings
 

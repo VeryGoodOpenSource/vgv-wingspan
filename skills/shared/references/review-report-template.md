@@ -9,7 +9,7 @@ and Important rows verbatim (same ids, order, titles) and collapses Suggestions 
 # Code Review — <scope: branch name, or "working tree", or the reviewed paths>
 
 <N> findings · 🔴 <critical> critical · 🟡 <important> important · 🔵 <suggestions> suggestions
-Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, not confirmed by the code.">
+Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, not confirmed by the code."><for each companion that ran with no findings: " <name> ran, no findings: \"<its quoted reason>\"."><for each companion note beside its findings: " <name> notes: \"<its note>\".">
 
 ## Findings Index
 

@@ -39,9 +39,10 @@ both the report header and the chat summary so the user knows the review is inco
 a silently halved review reads as a clean one.
 
 A reply that does not start with the findings block and its **Verdict** line counts as a
-failure too, so a missing or empty reply never passes for a clean review. Companion
-reviewers return their own format instead, which [consolidation](review-consolidation.md)
-maps, so they skip the Verdict check. A companion reply counts as a review only when it lists
-its findings (an empty list included), says it found no problems, or says there was nothing
-to review. Any other reply is a failure: an empty reply, an error, or a note that it could
-not work out a scope and stopped means the reviewer never looked at the code.
+failure too, so a missing or empty reply never passes for a clean review.
+
+Companion reviewers return their own format instead, which
+[consolidation](review-consolidation.md) maps, so they skip the Verdict check. Judge a
+companion reply by its shape, never its wording: an empty reply or an error is a failure;
+any other reply that lists no findings is **ran, no findings**, which consolidation reports
+on its own line, neither clean nor failed.
