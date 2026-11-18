@@ -1,6 +1,8 @@
 {
   "name": "vgv-wingspan",
+  "displayName": "VGV Wingspan",
   "description": "VGV Wingspan - AI-native workflows following Very Good Ventures best practices.",
+  "icon": "./assets/icon.png",
   "version": "0.0.5",
   "author": {
     "name": "Very Good Ventures",
