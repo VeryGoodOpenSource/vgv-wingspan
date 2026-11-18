@@ -181,10 +181,12 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 | **@code-simplicity-review-agent** | `code-simplicity-review` |
 | **@pr-readiness-review-agent** | `pr-readiness-review` |
 
+Include the installed companion reviewers too, per the same dispatch reference.
+
 Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
 and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
-scope constraint and the report name from the table above, and send all five in one message
-so they run at once rather than in turn.
+scope constraint and the report name from the table above, and send all five, plus any
+companion reviewers, in one message so they run at once rather than in turn.
 
 ### After all reviews complete
 
