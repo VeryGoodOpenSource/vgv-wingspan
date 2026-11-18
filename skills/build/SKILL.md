@@ -17,6 +17,10 @@ Take a plan from `docs/plan/` and turn it into shipped code: implement features,
 > the same options in your reply as a short numbered list, and stop there for the answer.
 > Never answer a question on the user's behalf and carry on: a question the user never sees
 > is not a question, and a step that waits on one is not optional.
+>
+> **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
+> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> recommended option, record the decision in the decision log, and keep going.
 
 ## Build Progress
 

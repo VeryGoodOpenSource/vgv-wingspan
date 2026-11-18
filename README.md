@@ -75,6 +75,16 @@ As simple as this:
 /review
 ```
 
+### Running without a human: agent mode
+
+To run Wingspan unattended, for example under an orchestrator, add `--agent-mode` or say "use Wingspan in agent mode":
+
+```text
+/build docs/plan/add-authentication.md --agent-mode
+```
+
+Each skill runs every step as usual, but takes the recommended option instead of asking. Every decision lands in `docs/agent-decisions/decisions.md` with its question, context, options, reasons, and how much it matters. Agent mode never pushes, publishes, or deletes on its own unless you allow it in the request. At the end, review the log: accept each decision or pick another, and the agent reworks what changed, moves the decisions worth keeping to your PR or docs, and deletes the log.
+
 ## Better Together: Working With The Very Good AI Flutter Plugin
 
 Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSource/vgv-ai-flutter-plugin) are designed as complementary layers of VGV's AI-assisted engineering stack. The Flutter Plugin embeds battle-tested best practices — architecture patterns, accessibility, testing, performance, and security — directly into Claude Code, so AI-generated code follows VGV's production-quality standards from the first line.
