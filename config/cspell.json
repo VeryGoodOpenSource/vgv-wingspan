@@ -2,6 +2,7 @@
   "language": "en",
   "words": [
     "Anson",
+    "Jetpack",
     "PIPESTATUS",
     "Sidechain",
     "Strunk's",
@@ -18,6 +19,7 @@
     "goldens",
     "hotfixes",
     "lockfiles",
+    "mktemp",
     "mocktail",
     "oneline",
     "pasteable",

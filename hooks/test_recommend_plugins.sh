@@ -585,6 +585,37 @@ android-application = { id = "com.android.application", version.ref = "agp" }'
   teardown
 }
 
+test_android_settings_gradle_kotlin_dsl() {
+  echo "test: android-cli recommended from settings.gradle.kts alone"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "settings.gradle.kts" 'pluginManagement {
+    plugins {
+        id("com.android.application") version "8.5.0"
+    }
+}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "android-cli" "recommends android-cli"
+  teardown
+}
+
+test_android_description_names_android_not_flutter() {
+  echo "test: android-cli description names the technology and never Flutter"
+  local desc
+  desc=$(jq -r '.description' "$SCRIPT_DIR/recommendations/android-cli.json")
+  assert_contains "$desc" "Android" "description names Android"
+  assert_contains "$desc" "Kotlin" "description names Kotlin"
+  assert_contains "$desc" "Jetpack Compose" "description names Jetpack Compose"
+  if echo "$desc" | grep -qi "flutter"; then
+    FAIL=$((FAIL + 1))
+    echo "  FAIL: description must not mention Flutter"
+  else
+    PASS=$((PASS + 1))
+    echo "  PASS: description does not mention Flutter"
+  fi
+}
+
 test_android_gradle_non_android_plugin() {
   echo "test: android-cli not recommended for Gradle files without an Android plugin"
   setup
@@ -740,6 +771,18 @@ class MainActivity : FlutterActivity() {
     output=$(run_hook)
     assert_contains "$output" "android-cli" "recommends android-cli at $pkg"
   done
+
+  # Each keyword alone, so no alternative in the pattern is masked by another.
+  local keyword
+  for keyword in MethodChannel EventChannel BasicMessageChannel PlatformView FlutterPlugin configureFlutterEngine; do
+    rm -rf "$TEST_DIR/android"
+    rm -f "$MARKER"
+    add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.app
+
+// $keyword"
+    output=$(run_hook)
+    assert_contains "$output" "android-cli" "recommends android-cli on '$keyword' alone"
+  done
   teardown
 }
 
@@ -765,9 +808,14 @@ test_android_docs_native_keywords() {
   use_real_recommendation "android-cli"
   local output
 
-  add_project_file "docs/plan/x.md" "We will build the screen with Jetpack Compose."
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends from docs/plan"
+  local keyword
+  for keyword in Kotlin "Jetpack Compose" androidx; do
+    rm -rf "$TEST_DIR/docs"
+    rm -f "$MARKER"
+    add_project_file "docs/plan/x.md" "We will build the screen with $keyword."
+    output=$(run_hook)
+    assert_contains "$output" "android-cli" "recommends from docs/plan on '$keyword'"
+  done
 
   rm -rf "$TEST_DIR/docs"
   rm -f "$MARKER"
@@ -781,7 +829,7 @@ test_android_docs_flutter_plan_not_recommended() {
   echo "test: android-cli not recommended for a Flutter plan that mentions Android"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "docs/plan/x.md" "Build the Flutter app. Run the Gradle build for the android flavor."
+  add_project_file "docs/plan/x.md" "Build the Flutter app. Run it from Android Studio. Run the Gradle build for the android flavor."
   local output
   output=$(run_hook)
   assert_empty "$output" "no output for a Flutter plan"
@@ -839,6 +887,8 @@ test_android_already_installed() {
   teardown
 }
 
+# Documents a known gap in is_plugin_installed (it substring-matches). When the
+# hook matches on the plugin@marketplace key, flip this test to expect a recommendation.
 test_android_marketplace_only_counts_as_installed() {
   echo "test: a settings file listing only the marketplace counts as installed (known gap)"
   setup
@@ -904,6 +954,10 @@ echo ""
 test_android_version_catalog_alias
 echo ""
 test_android_version_catalog_file
+echo ""
+test_android_settings_gradle_kotlin_dsl
+echo ""
+test_android_description_names_android_not_flutter
 echo ""
 test_android_gradle_non_android_plugin
 echo ""
