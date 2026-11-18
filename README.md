@@ -171,14 +171,7 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 | ---- | ------- | -------- |
 | **Recommend Plugins** (`recommend-plugins.sh`) | PreToolUse (`Read`/`Glob`/`Grep`) | Scans detection rules in `hooks/recommendations/`, recommends missing companion plugins once per session; non-blocking |
 
-### Companion plugins
-
-| Plugin | Recommended when | Install |
-| ------ | ---------------- | ------- |
-| [**Very Good AI Flutter Plugin**](https://github.com/VeryGoodOpenSource/vgv-ai-flutter-plugin) (`vgv-ai-flutter-plugin`) | The project has a `pubspec.yaml`, or a plan or brainstorm mentions Flutter or Dart | `/plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketplace` then `/plugin install vgv-ai-flutter-plugin` |
-| [**Android CLI**](https://github.com/android/android-cli-plugin) (`android-cli`) | The project has a native Android Gradle build, a Flutter plugin or add-to-app module with Android code, custom Kotlin platform-channel code, or a plan or brainstorm mentions Kotlin, Jetpack Compose, or androidX | `/plugin marketplace add android/android-cli-plugin` then `/plugin install android-cli` |
-
-A Flutter app with no native Android code does not trigger the Android recommendation.
+Detection rules live in `hooks/recommendations/`; today they cover the Flutter plugin (`vgv-ai-flutter-plugin`) and the Android plugin (`android-cli`).
 
 ### Prerequisites
 
