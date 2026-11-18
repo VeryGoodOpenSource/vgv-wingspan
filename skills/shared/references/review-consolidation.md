@@ -29,6 +29,33 @@ its **report `<name>`** by dropping the trailing `-agent` (`security-review-agen
 dropping the trailing `-review-agent` and kebab-casing the rest (`security-review-agent` →
 `security`).
 
+A [companion reviewer](review-dispatch.md) returns its own format instead of the findings
+block. Save its reply verbatim to `<RAW_DIR>/<name>.md`, so its details link works, then map
+each of its findings:
+
+- its location → `location`, its problem → `title` and `why`, its fix → `fix`, and its
+  category or standard column → `rule`;
+- severity → Critical when that category names security, Important otherwise;
+- category slug → the agent name without the plugin prefix and a trailing `-reviewer`
+  (`plugin-name:plugin-reviewer` → `plugin`).
+
+Classify a companion reply by its shape, never its wording, since a companion gets no output
+contract:
+
+- **Findings** — it lists at least one finding: map and merge them as above.
+- **Ran, no findings** — any other non-empty reply, whether it reports no problems, nothing
+  to review, or a scope it skipped. It adds no findings and is neither clean nor failed:
+  record the agent with a reason, so the user judges whether it looked at the code. The
+  reason is the first line of prose in the reply, skipping table rows and headings, quoted
+  verbatim; when the reply holds only an empty table, the reason is `returned an empty
+  table`.
+- **Failed** — an empty reply or an error: a
+  [failed agent](review-dispatch.md#handle-failures).
+
+A companion may add a prose note beside its findings, such as areas it did not review. Quote
+that note verbatim next to the agent's name in the report header, so its findings never read
+as full coverage.
+
 ## Step 2 — Verify quotes
 
 Before merging anything, check every finding against the code, so a finding that cites code
@@ -61,6 +88,11 @@ the report all use the real line:
   window, take the one nearest the cited line, and the earlier one on a tie.
 - A `file:start-end` range widens just enough to include the matched line.
 - A bare file stays as it is.
+
+A companion reviewer's findings carry no quote, so check only their `location`: keep one
+when its file exists and its line is within the file. Keep its `location` as given. A real
+line is not a confirmed problem, so mark every kept companion finding **unverified**, as
+below.
 
 Drop every other finding: a quote that matches no line, a missing quote, a line or range
 `location` quoting `none`, a line or range in a file that does not exist, or a `missing`
@@ -138,6 +170,11 @@ Index — never paraphrased.
 
 When Step 2 dropped any finding, end the lead line, or the all-clear message when nothing
 was kept, with: `<d> dropped, not confirmed by the code (see the report)`.
+
+For each companion that ran with no findings, add a line after the lead line:
+`<name> ran, no findings: "<its quoted reason>"`. It never reads as an all-clear for that
+companion. Likewise, for each companion note beside its findings, add
+`<name> notes: "<its note>"`.
 
 ## Step 7 — Acting on findings
 

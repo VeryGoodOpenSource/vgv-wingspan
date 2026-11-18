@@ -6,6 +6,7 @@
     { "files": "docs/brainstorm/*.md", "pattern": "flutter|dart" }
   ],
   "verificationSkill": "vgv-ai-flutter-plugin:green-gate",
+  "reviewAgent": "vgv-ai-flutter-plugin:flutter-reviewer",
   "marketplace": "VeryGoodOpenSource/very-good-claude-code-marketplace",
   "description": "Dart and Flutter best-practice skills (accessibility, BLoC, testing, theming, navigation, security, i18n, architecture) and automated dart analyze/format hooks."
 }

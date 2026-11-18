@@ -31,6 +31,7 @@ agents/                # Subagent definitions, grouped by role
     architecture-review-agent.md  # Validates layer separation and dependency direction
     pr-readiness-review-agent.md  # Checks formatting, static analysis, commit hygiene
     test-quality-review-agent.md  # Verifies test coverage and quality
+  test_review_contract.sh  # Fails when the review agents' findings block drifts
   research/
     best-practices-research-agent.md  # Synthesizes best practices for the stack
     official-docs-research-agent.md   # Gathers official framework/library docs
@@ -199,6 +200,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
   "plugin": "plugin-name",
   "detect": { "file": "Gemfile", "pattern": "^\\s*gem\\s+['\"]rails['\"]" },
   "verificationSkill": "plugin-name:green-gate",
+  "reviewAgent": "plugin-name:plugin-reviewer",
   "marketplace": "OrgName/repo-name",
   "description": "What the plugin provides."
 }
@@ -211,6 +213,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `detect.files`      | Shell glob — greps inside every matching file for `pattern`    |
 | `detect.pattern`    | Regex grep pattern to confirm the match                        |
 | `verificationSkill` | Optional. Skill the `/build` and `/hotfix` ship gate delegates to when this file's `detect` matches and the skill is installed |
+| `reviewAgent`       | Optional. Companion review agent type that `/review` and `/build` dispatch alongside their own reviewers when this file's `detect` matches and the agent is installed |
 | `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
 | `description`       | One-line summary shown in the recommendation                   |
 
