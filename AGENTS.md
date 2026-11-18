@@ -48,7 +48,6 @@ skills/                # User-invocable and supporting skills (one dir per skill
   review/SKILL.md                # Run quality-review agents on demand
   hotfix/SKILL.md                # Fast path for emergency fixes
   debrief/SKILL.md               # Post-incident analysis document
-  create/SKILL.md                # Scaffold a new project via companion plugins
   create-pr/SKILL.md             # Generate a PR title and description
   plan-technical-review/SKILL.md # Review externally-authored plans
   refine-approach/SKILL.md       # Iteratively improve a document
@@ -119,7 +118,6 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 Supporting skills:
 
-- `/create` (project creation — routes to companion plugins)
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
 - `/plan-technical-review` (review externally-authored plans; `/plan` reviews the plans it creates inline)
 - `/refine-approach` (iterative document improvement)

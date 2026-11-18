@@ -39,7 +39,7 @@ Determine whether this is a **new project** or a **feature for the current proje
 
 **If new project**, use **AskUserQuestion**: "This sounds like a new project. Where would you like to work?"
 
-1. **Create project first (Recommended)** — output instructions to run `/create`, open the new folder, then `/brainstorm <description>` in that workspace. Then stop.
+1. **Create project first (Recommended)** — output instructions to scaffold the project with its companion plugin, open the new folder, then `/brainstorm <description>` in that workspace. Then stop.
 2. **Continue here** — proceed to Step 0.1
 
 ### 0.1. Assess clarity of requirements
