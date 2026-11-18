@@ -40,6 +40,7 @@ hooks/
   recommend-plugins.sh          # Detects project type, recommends companion plugins
   test_recommend_plugins.sh     # Tests for the recommendation hook
   recommendations/
+    android-cli.json            # Detection rule + recommendation for the Android plugin
     vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
 skills/                # User-invocable and supporting skills (one dir per skill)
   brainstorm/SKILL.md            # Explore requirements and approaches
