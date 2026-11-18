@@ -59,8 +59,8 @@ Honor a saved preference if one exists. Otherwise put the choice to the user and
 - **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
   opening the pull request still pause for approval in Phase 4.
 - **Run all phases unattended** — each phase runs in its own subagent and is committed when
-  it completes, with no stop between phases; the run asks only when a phase is blocked.
-  Pushing still pauses for approval.
+  it completes, with no stop between phases unless a phase is blocked. Pushing still pauses
+  for approval.
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
 
@@ -113,16 +113,23 @@ Determine the unit of work:
 When the user chose **Run all phases unattended**, the main session does not implement. It
 runs each remaining phase in its own subagent, per [unattended phases](references/unattended-phases.md):
 
-1. If the working tree has uncommitted changes, ask before the first dispatch.
-2. Dispatch one subagent for the first phase whose `**Status:**` is not `Done`. It runs Steps
-   1–4 of the phase loop below for that phase only, commits it, and reports `done` or
-   `blocked`. It never asks the user; it reports instead.
-3. **Done** → confirm the `Done` marker and the commit, print the checkpoint (Step 5), and
+1. If the working tree has uncommitted changes other than the plan file, ask before the first
+   dispatch.
+2. Dispatch one subagent, in the foreground, for the first phase whose `**Status:**` is not
+   `Done`. It runs Steps 1–4 of the phase loop below for that phase only, commits it, and
+   reports `done` or `blocked`. It never asks the user; it reports instead.
+3. **Done** → confirm the `Done` marker, that `HEAD` is the commit it returned, and that the
+   working tree is clean apart from the plan file. Then print the checkpoint (Step 5) and
    dispatch the next phase without asking.
-4. **Blocked** — validation still failing after the usual fix attempts, or a decision the plan
-   does not cover → ask the user, pass the answer back to that phase's subagent, and wait
-   again. **Stop here** ends the run; `/build` resumes from the markers.
-5. **No phases remain** → go to the Surgical-Diff Gate; review and ship run in the main session
+4. **Blocked** — validation still failing after the usual fix attempts, a decision the plan
+   does not cover, or a command denied permission → ask the user, pass the answer back to that
+   phase's subagent with `SendMessage`, and wait again. If it cannot be continued, dispatch a
+   new one with the answer and the phase's partial work. **Stop here** ends the run; `/build`
+   resumes from the markers.
+5. **Anything else** — no `STATUS` block, an error, or a `done` that fails the checks in Step 3
+   → stop, show the user what came back and what `git status` shows, and ask before
+   dispatching that phase again.
+6. **No phases remain** → go to the Surgical-Diff Gate; review and ship run in the main session
    as usual.
 
 Hold this shape even when the reference cannot be read: one phase per subagent, one subagent

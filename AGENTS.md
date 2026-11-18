@@ -176,8 +176,9 @@ Evals do not run on a pull request, because they call real models.
 changed skills, with-plugin arm only, and always non-blocking. A full run is manual
 (`workflow_dispatch`).
 
-A run grants `Read`, `Glob`, `Grep` and `Skill` and nothing else, so a case measures the
-reply a skill produces, never a file it writes or a command it runs.
+A run grants `Read`, `Glob`, `Grep` and `Skill`, plus the subagent tool unless a case lists
+it in `disallowed_tools`, so a case measures the reply a skill produces, never a file it
+writes or a command it runs.
 
 ## Guidance
 
