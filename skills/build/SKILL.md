@@ -45,12 +45,17 @@ ships it as its own PR, so there is no resumed build; settle commit autonomy and
 as below. Before Phase 1, cut a new branch for the phase from the up-to-date base branch,
 even when already on a feature branch: the previous phase merged, so its branch is finished.
 Resolve `<base>` as the [surgical-diff gate](references/surgical-diff-gate.md) does, and name
-the branch as the [feature branch check](references/feature-branch.md) does:
+the branch as the [feature branch check](references/feature-branch.md) does. Bring the local
+`<base>` up to date too, since the surgical-diff gate diffs against it:
 
 ```bash
-git fetch origin <base>
-git checkout -b <type>/<kebab-topic> origin/<base>
+git checkout <base>
+git pull --ff-only origin <base>
+git checkout -b <type>/<kebab-topic>
 ```
+
+If the pull cannot fast-forward, stop and tell the user: their local `<base>` has commits the
+remote does not.
 
 ```bash
 ls docs/plan/
