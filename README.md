@@ -6,8 +6,6 @@
 
 Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 
-![wingspan logo by very good ventures in blue](./assets/wingspan-logo.jpeg)
-
 ## Installation
 
 ### From the Marketplace
