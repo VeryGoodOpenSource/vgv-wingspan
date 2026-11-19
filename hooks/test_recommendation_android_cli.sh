@@ -270,7 +270,7 @@ class MainActivity : FlutterActivity() {
 
   # Each keyword alone, so no alternative in the pattern is masked by another.
   local keyword
-  for keyword in MethodChannel EventChannel BasicMessageChannel PlatformView FlutterPlugin configureFlutterEngine; do
+  for keyword in MethodChannel EventChannel BasicMessageChannel PlatformView configureFlutterEngine; do
     rm -rf "$TEST_DIR/android"
     rm -f "$MARKER"
     add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.app
@@ -375,6 +375,168 @@ test_android_already_installed() {
   teardown
 }
 
+test_android_plugin_pubspec_other_indent() {
+  echo "test: android-cli recommended for a plugin pubspec at any indent"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_plugin
+flutter:
+  plugin:
+    platforms:
+        android:
+            package: com.example.my_plugin
+            pluginClass: MyPlugin"
+  assert_recommended "android-cli" "recommends at an eight/twelve-space indent"
+  add_project_file "pubspec.yaml" "name: my_plugin
+flutter:
+  plugin:
+    platforms:
+      android:
+    package: com.example.my_plugin"
+  assert_recommended "android-cli" "recommends at a four-space indent"
+  teardown
+}
+
+test_android_ffi_plugin() {
+  echo "test: android-cli recommended for an FFI plugin"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_ffi
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true
+      ios:
+        ffiPlugin: true"
+  # Shaped like templates/plugin_ffi/android.tmpl/build.gradle.tmpl.
+  add_project_file "android/build.gradle" "group = 'com.example.my_ffi'
+version = '1.0'
+
+buildscript {
+    dependencies {
+        classpath('com.android.tools.build:gradle:8.1.0')
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    namespace = 'com.example.my_ffi'
+    compileSdk = 34
+}"
+  assert_recommended "android-cli" "recommends for ffiPlugin with a library build.gradle"
+  teardown
+}
+
+test_android_ffi_plugin_kotlin_dsl() {
+  echo "test: android-cli recommended for an FFI plugin using build.gradle.kts"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_ffi
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true"
+  add_project_file "android/build.gradle.kts" 'plugins {
+    id("com.android.library")
+}'
+  assert_recommended "android-cli" "recommends for a Kotlin DSL library build"
+  teardown
+}
+
+test_android_plain_app_real_gradle_shape() {
+  echo "test: android-cli not recommended for a plain app's android/build.gradle"
+  setup
+  use_real_recommendation "android-cli"
+  # Shaped like the flutter_tools app template: repositories only.
+  add_project_file "android/build.gradle" "allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = \"\${rootProject.buildDir}/\${project.name}\"
+}"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter"
+  assert_silent "silent for a repositories-only android/build.gradle"
+  teardown
+}
+
+test_android_unrelated_pubspec_keys() {
+  echo "test: android-cli not recommended for unrelated package-like pubspec keys"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_app
+package_rename_config:
+  android:
+    package_name: com.example.my_app
+  ios:
+    package_name: com.example.myApp
+packages:
+  - first
+  - second"
+  assert_silent "silent for package_rename_config and a packages: list"
+  teardown
+}
+
+test_android_java_channel_code() {
+  echo "test: android-cli recommended for Java channel code"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "android/app/src/main/java/dev/flutter/app/MainActivity.java" "package dev.flutter.app;
+
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.plugin.common.MethodChannel;
+
+public class MainActivity extends FlutterActivity {
+}"
+  assert_recommended "android-cli" "recommends for a MainActivity.java using MethodChannel"
+  teardown
+}
+
+test_android_deep_package_channel_code() {
+  echo "test: android-cli recommended for channel code in a deeply nested package"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "android/app/src/main/kotlin/com/example/very/deep/nested/package/impl/Bridge.kt" "package com.example.very.deep.nested.pkg.impl
+
+import io.flutter.plugin.common.EventChannel"
+  assert_recommended "android-cli" "recommends for a Kotlin file seven segments deep"
+  teardown
+}
+
+test_android_generated_registrant_not_recommended() {
+  echo "test: android-cli not recommended for the generated plugin registrant"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java" "package io.flutter.plugins;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import io.flutter.embedding.engine.FlutterEngine;
+
+@Keep
+public final class GeneratedPluginRegistrant {
+  public static void registerWith(@NonNull FlutterEngine flutterEngine) {
+    flutterEngine.getPlugins().add(new io.flutter.plugins.webviewflutter.WebViewFlutterPlugin());
+  }
+}"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter"
+  assert_silent "silent for a registrant that names WebViewFlutterPlugin"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -419,5 +581,21 @@ echo ""
 test_android_flutter_installed_still_recommends_android
 echo ""
 test_android_already_installed
+echo ""
+test_android_plugin_pubspec_other_indent
+echo ""
+test_android_ffi_plugin
+echo ""
+test_android_ffi_plugin_kotlin_dsl
+echo ""
+test_android_plain_app_real_gradle_shape
+echo ""
+test_android_unrelated_pubspec_keys
+echo ""
+test_android_java_channel_code
+echo ""
+test_android_deep_package_channel_code
+echo ""
+test_android_generated_registrant_not_recommended
 echo ""
 finish
