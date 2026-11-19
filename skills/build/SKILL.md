@@ -191,8 +191,7 @@ turn. Do not end your turn while a reviewer runs: the push and PR permissions in
 `allowed-tools` last only for the turn that invoked `/build`, so a build that resumes on a
 background agent's notification stops on a permission prompt at ship time. This holds in
 headless runs. In an interactive session the harness may still run the reviewers in the
-background; if the build resumes in a new turn, tell the user the push and PR need their
-approval before you run them.
+background.
 
 ### After all reviews complete
 
@@ -215,6 +214,8 @@ rm -rf docs/reviews/
 ### Commit and push
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
+
+If the build has resumed in a new turn since `/build` was invoked (a background reviewer's notification, the user's answer to a question), the push and PR permissions no longer apply: tell the user the push and PR need their approval before you run them.
 
 To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md).
 
