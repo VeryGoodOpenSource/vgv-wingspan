@@ -47,7 +47,8 @@ drops a phase says so in the plan comment rather than deleting its issue.
 
 Write the draft to its usual `docs/plan/` path, so the plan review and refine steps work
 on it unchanged. Skip the feature branch check: the draft leaves the repository once it is
-published, and `/build` cuts a branch per phase.
+published, and `/build` cuts a branch per phase. If the user declines to publish, run the
+check then.
 
 When the plan review recommends a split, offer only **Restructure into phases** and **Keep
 as one plan, no phases**. On an issue every phase already ships as its own pull request, so
@@ -63,7 +64,7 @@ removed once they exist."
 
 1. **Yes** — publish
 2. **Edit** — ask what to change, revise, ask again
-3. **No** — keep the local plan file and continue as a local plan
+3. **No** — keep the local plan file, run the feature branch check, and continue as a local plan
 
 ### Publish
 

@@ -166,7 +166,8 @@ phase per context window — renaming them to anything of your own, however clea
 ### 5.1. Set up workspace
 
 Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
-Planning from an issue, skip it: the draft leaves the repository once it is published.
+Planning from an issue, skip it: the draft leaves the repository once it is published. If
+the user declines to publish, run it then, before the plan continues as a local plan.
 
 ### 6. Write and review the plan file
 
