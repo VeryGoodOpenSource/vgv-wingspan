@@ -42,9 +42,15 @@ that issue, in the comment whose first line is `<!-- wingspan:plan -->`. Skip th
 [plan on an issue](references/plan-on-issue.md): the first open, unblocked phase, or the phase
 given. Announce "Building Phase N: [name] (#<phase>)". This run builds that one phase and
 ships it as its own PR, so there is no resumed build; settle commit autonomy and confirm scope
-as below. Before Phase 1, run the [feature branch check](references/feature-branch.md) and cut
-a new branch from the up-to-date base branch even when already on a feature branch: the
-previous phase merged, so its branch is finished.
+as below. Before Phase 1, cut a new branch for the phase from the up-to-date base branch,
+even when already on a feature branch: the previous phase merged, so its branch is finished.
+Resolve `<base>` as the [surgical-diff gate](references/surgical-diff-gate.md) does, and name
+the branch as the [feature branch check](references/feature-branch.md) does:
+
+```bash
+git fetch origin <base>
+git checkout -b <type>/<kebab-topic> origin/<base>
+```
 
 ```bash
 ls docs/plan/
