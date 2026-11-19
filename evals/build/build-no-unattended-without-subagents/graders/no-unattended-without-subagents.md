@@ -1,6 +1,6 @@
 ---
 type: regex
-pattern: '\*\*Run all phases unattended'
-flags: i
+pattern: '^\s*(?:[-*]|\d+[.)])\s*(?:\*\*)?Run all phases unattended'
+flags: im
 match: not_contains
 ---
