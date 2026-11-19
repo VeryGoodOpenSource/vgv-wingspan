@@ -7,8 +7,15 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
   opening the PR still pause for approval.
 - **Auto-commit and apply review findings** — as above, and also apply Important review
   findings without asking, per [review autonomy](review-autonomy.md).
+- **Run all phases unattended** — auto-commit each phase, and run each phase in its own
+  subagent with no stop between phases, per [unattended phases](unattended-phases.md).
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
+
+Leave out **Run all phases unattended** when fewer than two phases are left to build: a single
+phase has nothing to run unattended between. Leave it out too when this session has no
+subagent tool (such as `Agent`): the option exists to give each phase a fresh context, and
+building every phase in one session is what it prevents.
 
 The choice is a per-developer preference, not a repo convention, so it never belongs in the
 project's `CLAUDE.md`.
@@ -20,9 +27,9 @@ Phase 0 choice never loses silently.
 
 ## Applying it
 
-| Moment | Auto-commit | I'll commit myself |
-| ------ | ----------- | ------------------ |
-| A phase completes (Phase 2, Step 4) | Stage and commit the phase | Summarize the changed files, leave them staged, stop |
+| Moment | Auto-commit or unattended | I'll commit myself |
+| ------ | ------------------------- | ------------------ |
+| A phase completes (Phase 2, Step 4) | Stage and commit the phase (unattended: the phase's subagent does) | Summarize the changed files, leave them staged, stop |
 | Review fixes and drive-to-green land (Phase 4) | Commit whatever is still outstanding; skip if nothing is | Summarize everything uncommitted, leave it staged |
 
 Commit message formats:
