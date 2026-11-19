@@ -33,7 +33,7 @@ Check `gh auth status` succeeds. Then look for a plan already on `ISSUE`: a comm
 starting with `<!-- wingspan:plan -->`, or sub-issues.
 
 ```bash
-gh api repos/REPO/issues/ISSUE/comments -q '.[] | select(.body | test("^<!-- wingspan:plan -->")) | .id'
+gh api --paginate repos/REPO/issues/ISSUE/comments -q '.[] | select(.body | test("^<!-- wingspan:plan -->")) | .id'
 gh api repos/REPO/issues/ISSUE/sub_issues -q 'length'
 ```
 
