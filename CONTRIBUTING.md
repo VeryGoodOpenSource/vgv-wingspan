@@ -364,7 +364,7 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skills lint | Validates every skill's `SKILL.md` frontmatter, structure, and links via VGV's `skills_lint` reusable workflow | `skills_lint.yaml` |
-| Plugin validation | Validates plugin manifests via Claude Code CLI, checks `plugin/` holds 512 files or fewer and no symbolic links, checks every shared copy matches its source, and checks every eval case loads `plugin/` and links the fixture | `claude plugin validate --strict plugin`, `tool/sync-shared.sh --check` |
+| Plugin validation | Validates plugin manifests via Claude Code CLI, checks every shared copy matches its source, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate --strict plugin`, `tool/sync-shared.sh --check` |
 | Script tests | Runs the hook script's own test suite, and checks the review agents' findings block has not drifted | `plugin/hooks/test_recommend_plugins.sh`, `plugin/agents/test_review_contract.sh` |
 
 Evals do **not** run on a pull request. They call real models, so they run after a merge to

@@ -180,8 +180,7 @@ context:
 
 `plugins` loads the plugin under test. The plugin lives in `plugin/`, outside this suite,
 so the submitted plugin folder stays under 512 files and holds no symbolic links. The
-runner cannot find it by walking up from the case, so copy the line verbatim. CI fails a
-case that lacks it.
+runner cannot find it by walking up from the case, so copy the line verbatim.
 
 A grader, `graders/numbers-the-phases.md`:
 
