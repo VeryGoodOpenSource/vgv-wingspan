@@ -171,7 +171,7 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 | ---- | ------- | -------- |
 | **Recommend Plugins** (`recommend-plugins.sh`) | PreToolUse (`Read`/`Glob`/`Grep`) | Scans detection rules in `hooks/recommendations/`, recommends missing companion plugins once per session; non-blocking |
 
-Detection rules live in `hooks/recommendations/`; today they cover the Flutter plugin (`vgv-ai-flutter-plugin`) and the Android plugin (`android-cli`).
+Detection rules live in `hooks/recommendations/`.
 
 ### Prerequisites
 

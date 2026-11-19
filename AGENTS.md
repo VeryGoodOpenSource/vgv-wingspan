@@ -38,7 +38,10 @@ agents/                # Subagent definitions, grouped by role
 hooks/
   hooks.json                    # Hook definitions (PreToolUse)
   recommend-plugins.sh          # Detects project type, recommends companion plugins
-  test_recommend_plugins.sh     # Tests for the recommendation hook
+  test_recommend_plugins.sh     # Tests for the hook's detection and output logic
+  test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
+  lib/
+    test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
   recommendations/
     android-cli.json            # Detection rule + recommendation for the Android plugin
     vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
