@@ -1,0 +1,13 @@
+{
+  "plugin": "xcode",
+  "detect": [
+    { "files": "*.xcodeproj/project.pbxproj *.xcodeproj/project.xcproj", "pattern": "IPHONEOS_DEPLOYMENT_TARGET" },
+    { "file": "Package.swift", "pattern": "\\.iOS\\(" },
+    { "files": "ios/*.podspec darwin/*.podspec ios/*/Package.swift darwin/*/Package.swift", "pattern": "Pod::Spec|PackageDescription" },
+    { "file": "pubspec.yaml", "pattern": "^\\s+iosBundleIdentifier:" },
+    { "files": "ios/Runner/*.swift ios/Runner/*/*.swift", "pattern": "FlutterMethodChannel|FlutterEventChannel|FlutterBasicMessageChannel|FlutterPlatformView|FlutterPlugin" },
+    { "files": "docs/plan/*.md docs/brainstorm/*.md", "pattern": "swiftui|uikit|app intents" }
+  ],
+  "marketplace": "anthropics/claude-plugins-official",
+  "description": "Apple's official Xcode plugin for native iOS development in Swift and SwiftUI: build, run and test schemes, render SwiftUI previews, drive simulators and devices, read build logs and diagnostics, search Apple's developer documentation, plus SwiftUI, App Intents, accessibility and xctrace skills."
+}

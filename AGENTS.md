@@ -45,6 +45,7 @@ hooks/
   recommendations/
     android-cli.json            # Detection rule + recommendation for the Android plugin
     vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
+    xcode.json                  # Detection rule + recommendation for Apple's Xcode plugin
 skills/                # User-invocable and supporting skills (one dir per skill)
   brainstorm/SKILL.md            # Explore requirements and approaches
   plan/SKILL.md                  # Turn a brainstorm into an implementation plan

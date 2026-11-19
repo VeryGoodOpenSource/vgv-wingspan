@@ -510,6 +510,302 @@ test_detect_precedence_file_files_dir() {
 }
 
 # ---------------------------------------------------------------------------
+# iOS (xcode) recommendation tests — run against the shipped xcode.json
+# ---------------------------------------------------------------------------
+
+assert_ios_recommended() { assert_recommended "xcode" "$1"; }
+assert_ios_silent() { assert_silent "$1"; }
+
+test_ios_pbxproj_and_xcproj_at_root() {
+  echo "test: iOS .xcodeproj at the root is recommended in both file formats"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "App.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
+  assert_ios_recommended "project.pbxproj with an iOS deployment target"
+  add_project_file "App.xcodeproj/project.xcproj" '"IPHONEOS_DEPLOYMENT_TARGET": "12.0",'
+  assert_ios_recommended "JSON project.xcproj with an iOS deployment target"
+  teardown
+}
+
+test_ios_macos_only_projects_not_recommended() {
+  echo "test: macOS-only .xcodeproj is not recommended in either file format"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "App.xcodeproj/project.pbxproj" "SDKROOT = macosx;
+MACOSX_DEPLOYMENT_TARGET = 13.0;"
+  assert_ios_silent "macOS-only project.pbxproj"
+  add_project_file "App.xcodeproj/project.xcproj" '"SDKROOT": "macosx",
+"MACOSX_DEPLOYMENT_TARGET": "13.0",'
+  assert_ios_silent "macOS-only JSON project.xcproj"
+  teardown
+}
+
+test_ios_flutter_app_xcodeproj_not_at_root() {
+  echo "test: Flutter app whose Xcode project is under ios/ is not recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter"
+  add_project_file "ios/Runner.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
+  assert_ios_silent "ios/Runner.xcodeproj is not detected"
+  teardown
+}
+
+test_ios_swift_package_platforms() {
+  echo "test: Swift package is recommended only when it targets iOS"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "Package.swift" "// swift-tools-version: 5.9
+import PackageDescription
+let package = Package(
+  name: \"Lib\",
+  platforms: [.iOS(.v16), .macOS(.v13)]
+)"
+  assert_ios_recommended "Package.swift with .iOS("
+  add_project_file "Package.swift" "// swift-tools-version: 5.9
+import PackageDescription
+let package = Package(
+  name: \"Lib\",
+  platforms: [.macOS(.v13)]
+)"
+  assert_ios_silent "macOS-only Package.swift"
+  teardown
+}
+
+test_ios_flutter_plugin_podspec() {
+  echo "test: Flutter plugin with an iOS or darwin podspec is recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "ios/my_plugin.podspec" "Pod::Spec.new do |s|
+  s.name = 'my_plugin'
+end"
+  assert_ios_recommended "ios/<name>.podspec"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "darwin/my_plugin.podspec" "Pod::Spec.new do |s|
+  s.name = 'my_plugin'
+end"
+  assert_ios_recommended "darwin/<name>.podspec"
+  teardown
+}
+
+test_ios_flutter_plugin_swift_package_only() {
+  echo "test: Flutter plugin that only ships a Package.swift is recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "ios/my_plugin/Package.swift" "// swift-tools-version: 5.9
+import PackageDescription"
+  assert_ios_recommended "ios/<name>/Package.swift"
+  teardown
+}
+
+test_ios_flutter_macos_only_plugin_not_recommended() {
+  echo "test: macOS-only Flutter plugin is not recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_plugin
+flutter:
+  plugin:
+    platforms:
+      macos:
+        pluginClass: MyPlugin"
+  add_project_file "macos/my_plugin.podspec" "Pod::Spec.new do |s|
+  s.name = 'my_plugin'
+end"
+  assert_ios_silent "macos/<name>.podspec is not detected"
+  teardown
+}
+
+test_ios_federated_app_facing_not_recommended() {
+  echo "test: app-facing federated Flutter package is not recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: url_launcher
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: url_launcher_android
+      ios:
+        default_package: url_launcher_ios"
+  assert_ios_silent "pubspec naming a default_package, no ios/ folder"
+  teardown
+}
+
+test_ios_add_to_app_pubspec() {
+  echo "test: add-to-app module pubspec is recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_module
+flutter:
+  module:
+    androidX: true
+    androidPackage: com.example.my_module
+    iosBundleIdentifier: com.example.myModule"
+  assert_ios_recommended "module: iosBundleIdentifier:"
+  teardown
+}
+
+test_ios_plain_flutter_app_not_recommended() {
+  echo "test: plain Flutter app is not recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter
+flutter_launcher_icons:
+  android: true
+  ios: true"
+  add_project_file "ios/Runner/AppDelegate.swift" "import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+}"
+  add_project_file "ios/Runner.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
+  assert_ios_silent "classic AppDelegate.swift and flutter_launcher_icons ios: true"
+  add_project_file "pubspec.yaml" "name: my_app
+flutter_launcher_icons:
+  ios: \"icon\""
+  add_project_file "ios/Runner/AppDelegate.swift" "import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+  }
+}"
+  assert_ios_silent "FlutterImplicitEngineDelegate AppDelegate.swift and ios: \"icon\""
+  teardown
+}
+
+test_ios_plain_app_native_channel_code() {
+  echo "test: plain Flutter app with native channel code is recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "ios/Runner/AppDelegate.swift" "let channel = FlutterMethodChannel(name: \"battery\", binaryMessenger: controller.binaryMessenger)"
+  assert_ios_recommended "FlutterMethodChannel in AppDelegate.swift"
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "ios/Runner/Handlers/BatteryHandler.swift" "let channel = FlutterMethodChannel(name: \"battery\", binaryMessenger: messenger)"
+  assert_ios_recommended "FlutterMethodChannel under ios/Runner/Handlers/"
+  local keyword
+  for keyword in FlutterEventChannel FlutterBasicMessageChannel FlutterPlatformView FlutterPlugin; do
+    add_project_file "pubspec.yaml" "name: my_app"
+    add_project_file "ios/Runner/Native.swift" "final class Native: NSObject, $keyword {}"
+    assert_ios_recommended "$keyword alone"
+  done
+  teardown
+}
+
+test_ios_docs_native_keywords() {
+  echo "test: plan and brainstorm docs naming native iOS frameworks are recommended"
+  setup
+  use_real_recommendation "xcode"
+  local keyword
+  for keyword in "SwiftUI" "UIKit" "App Intents"; do
+    add_project_file "docs/plan/x.md" "We will build the screen in $keyword."
+    assert_ios_recommended "docs/plan saying $keyword"
+  done
+  add_project_file "docs/brainstorm/x.md" "We will build the screen in SwiftUI."
+  assert_ios_recommended "docs/brainstorm saying SwiftUI"
+  teardown
+}
+
+test_ios_docs_flutter_plan_not_recommended() {
+  echo "test: Flutter plan that only mentions generic iOS tooling is not recommended"
+  setup
+  use_real_recommendation "xcode"
+  local phrase
+  for phrase in "Xcode" "CocoaPods" "Swift Package Manager" "iOS build" "Flutter"; do
+    add_project_file "docs/plan/x.md" "The release needs a working $phrase setup."
+    assert_ios_silent "docs/plan saying $phrase"
+  done
+  teardown
+}
+
+test_ios_and_flutter_recommended_together() {
+  echo "test: Flutter plugin project gets both recommendations in one message"
+  setup
+  use_real_recommendation "xcode"
+  use_real_recommendation "vgv-ai-flutter-plugin"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "ios/my_plugin.podspec" "Pod::Spec.new do |s|
+  s.name = 'my_plugin'
+end"
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "The 'xcode' Claude Code plugin" "xcode plugin recommended"
+  assert_contains "$output" "The 'vgv-ai-flutter-plugin' Claude Code plugin" "Flutter plugin recommended"
+  assert_contains "$output" "/plugin marketplace add anthropics/claude-plugins-official" "Apple marketplace named"
+  local json_count
+  json_count=$(echo "$output" | grep -c '"hookSpecificOutput"' || true)
+  if [[ "$json_count" -eq 1 ]]; then
+    PASS=$((PASS + 1))
+    echo "  PASS: single JSON output block"
+  else
+    FAIL=$((FAIL + 1))
+    echo "  FAIL: expected 1 JSON block, got $json_count"
+  fi
+  teardown
+}
+
+test_ios_flutter_installed_still_recommends_ios() {
+  echo "test: installed Flutter plugin does not silence the xcode recommendation"
+  setup
+  use_real_recommendation "xcode"
+  use_real_recommendation "vgv-ai-flutter-plugin"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "ios/my_plugin.podspec" "Pod::Spec.new do |s|
+  s.name = 'my_plugin'
+end"
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"vgv-ai-flutter-plugin@very-good-claude-code-marketplace": true}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "The 'xcode' Claude Code plugin" "xcode plugin recommended"
+  assert_not_contains "$output" "vgv-ai-flutter-plugin" "installed Flutter plugin not recommended"
+  teardown
+}
+
+test_ios_already_installed() {
+  echo "test: installed xcode plugin is not recommended again"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "Package.swift" "platforms: [.iOS(.v16)]"
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"xcode@claude-plugins-official": true}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "no output when xcode is installed"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+test_ios_xcodebuild_rule_counts_as_installed() {
+  echo "test: a Bash(xcodebuild:*) permission rule counts as installed (known gap)"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "Package.swift" "platforms: [.iOS(.v16)]"
+  add_settings ".claude/settings.json" '{"permissions": {"allow": ["Bash(xcodebuild:*)"]}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "installed check matches the substring xcode"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+# ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
 
@@ -567,5 +863,39 @@ echo ""
 test_dir_include_mixed_array
 echo ""
 test_detect_precedence_file_files_dir
+echo ""
+test_ios_pbxproj_and_xcproj_at_root
+echo ""
+test_ios_macos_only_projects_not_recommended
+echo ""
+test_ios_flutter_app_xcodeproj_not_at_root
+echo ""
+test_ios_swift_package_platforms
+echo ""
+test_ios_flutter_plugin_podspec
+echo ""
+test_ios_flutter_plugin_swift_package_only
+echo ""
+test_ios_flutter_macos_only_plugin_not_recommended
+echo ""
+test_ios_federated_app_facing_not_recommended
+echo ""
+test_ios_add_to_app_pubspec
+echo ""
+test_ios_plain_flutter_app_not_recommended
+echo ""
+test_ios_plain_app_native_channel_code
+echo ""
+test_ios_docs_native_keywords
+echo ""
+test_ios_docs_flutter_plan_not_recommended
+echo ""
+test_ios_and_flutter_recommended_together
+echo ""
+test_ios_flutter_installed_still_recommends_ios
+echo ""
+test_ios_already_installed
+echo ""
+test_ios_xcodebuild_rule_counts_as_installed
 echo ""
 finish
