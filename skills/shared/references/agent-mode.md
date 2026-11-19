@@ -16,7 +16,10 @@ Agent mode is on when any of these is true:
   agent mode.
 
 It stays on for the rest of the session. When one skill calls another, or dispatches a
-subagent that may ask questions, pass `--agent-mode` along. Agent mode is never inferred: a
+subagent that may ask questions, pass `--agent-mode` along. When the skill hands off to a
+skill outside Wingspan that has no agent mode, such as a companion plugin's skill, record in
+the log each choice that skill made on the user's behalf, such as a default it took or an
+option it picked, from what it reports. Agent mode is never inferred: a
 non-interactive session, a missing question tool, or a user who seems busy does not turn it
 on. Without it, the skill's normal question rule applies.
 
@@ -29,6 +32,9 @@ At every point where the skill would ask the user, do not ask. Instead:
 2. **Pick an answer:**
    - The option marked **(Recommended)**, when there is one.
    - Otherwise, the option the skill's text names as the default or prefers.
+   - When going past the skill's default, never pick an option that skips a review or
+     validation step. Take the default instead, and record why. This also applies to
+     choices the skill makes without asking, such as a plan's detail level.
    - Otherwise, the option the gathered context supports best. For an open question with no
      options, such as a brainstorm question, answer it from context and state the
      assumption you made.
@@ -47,17 +53,23 @@ Some questions are not choices between options, and agent mode does not answer t
   option is marked recommended, unless the agent-mode request explicitly allows that
   action (for example "agent mode, push and open the PR"). Record the decision either way.
 - **Handoffs that wait for a human.** A "Clear context and …" option ends the run until a
-  human types `/clear`. Take the option that continues in this context when the skill
-  offers one. When it does not, end the skill and record the next step in the log. In
+  human types `/clear`. When that option is the recommended one, do not swap it for one
+  that continues in this context: end the skill and record the next step in the log. In
   place of the clear-context handoff block, print the next command with the flag, such as
-  `/plan <doc path> --agent-mode`, so the next run stays in agent mode.
+  `/plan <doc path> --agent-mode`, so the next run stays in agent mode. Continue into the
+  next skill only when the request asked for it (for example "agent mode, plan and build
+  it").
 - **Attestations.** A question that asks the human to confirm something only a human can
   know, such as a `verify: manual` check, is not answered. Record it as **Pending human**,
-  keep going, and never report it as confirmed.
+  keep going, and never report it as confirmed. **Pending human** is only for attestations:
+  never use it for a choice agent mode made itself, such as keeping work local (that is
+  **Decided**), or to keep going past a decision that needs a human (that is **Blocked**).
 - **Blockers.** When the skill would stop because it cannot proceed, such as validation
-  still failing after the allowed attempts, a missing tool, a missing dependency, or a
-  decision nothing in the context settles, do not guess past it. Record it as **Blocked**,
-  finish the decision log, and end the run with a blocked status.
+  still failing after the allowed attempts, a missing tool, a missing dependency, a
+  decision nothing in the context settles, or a question the skill asks because it lacks
+  information the context does not give (for example a root cause it cannot pin down), do
+  not guess past it. Do not work around it by acting on several candidate answers at once.
+  Record it as **Blocked**, finish the decision log, and end the run with a blocked status.
 
 ## The decision log
 
@@ -65,6 +77,20 @@ Keep one log per run at `docs/agent-decisions/decisions.md`. Create it on the fi
 decision. If it already exists, append to it, so a run that goes from `/brainstorm` to
 `/plan` to `/build` keeps one log. The log is a working file: never stage or commit it, and
 delete it once the human has reviewed it (below).
+
+Start a new log with this header, so the review can be applied from any session, even one
+that never loaded this reference:
+
+```markdown
+# Agent decisions
+
+Working file from a Wingspan agent-mode run. Never stage or commit it.
+
+To apply the review: for each decision the reviewer changed, redo the work it affected, in
+log order, and re-run validation. Move what should outlast the run to where the project
+keeps decisions (the PR description, the plan or brainstorm document, an ADR). Then delete
+`docs/agent-decisions/`.
+```
 
 Write each decision so that someone who was not there can understand it from the entry
 alone:

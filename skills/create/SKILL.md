@@ -83,5 +83,7 @@ The available skills are listed in the system-reminder in your conversation cont
 
 Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
 
+**In agent mode**, the companion skill has no agent mode of its own, so once it returns, record each choice it made on the user's behalf (template, location, defaults it took) in the decision log and end the run as [agent mode](references/agent-mode.md) describes.
+
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.
