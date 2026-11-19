@@ -44,10 +44,13 @@ Each recommendation file has this structure:
 ```json
 {
   "plugin": "plugin-name",
+  "skillPrefix": "skill-prefix",
   "description": "What the plugin provides.",
   "marketplace": "OrgName/repo-name"
 }
 ```
+
+`skillPrefix` is optional. A recommendation sets it only when the plugin's skills carry a different prefix than its `plugin` name.
 
 ## Step 2: Match the user's request to a plugin
 
@@ -59,7 +62,9 @@ Compare the user's project description against each recommendation's `plugin` na
 
 ## Step 3: Verify the plugin is installed
 
-Check the available skills listed in the system-reminder in your conversation context for any skill prefixed with the matched plugin name (`<plugin-name>:`).
+The skill prefix is the recommendation's `skillPrefix` when it is a non-empty string, otherwise its `plugin` value. The prefix is for detection only: the install prompt and commands below always use `plugin`, the installable marketplace name.
+
+Check the available skills listed in the system-reminder in your conversation context for any skill prefixed `<skill-prefix>:`.
 
 If **no skills from that plugin are listed**, the plugin is not installed. Use **AskUserQuestion tool**:
 
@@ -79,7 +84,7 @@ Tell the user to run these commands, then re-invoke `/create` with the same proj
 
 ## Step 4: Find and invoke the plugin's project-creation skill
 
-The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed with the matched plugin name (`<plugin-name>:<skill-name>`). Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
+The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed `<skill-prefix>:` (the prefix defined in Step 3), as in `<skill-prefix>:<skill-name>`. Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
 
 Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
 

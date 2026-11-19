@@ -222,6 +222,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | Field               | Purpose                                                        |
 |---------------------|----------------------------------------------------------------|
 | `plugin`            | Plugin name as registered in the marketplace                   |
+| `skillPrefix`       | Optional. Skill-name prefix when it differs from `plugin`; defaults to `plugin`. `/create` matches installed skills on `<skillPrefix>:` |
 | `detect.file`       | Exact file path whose presence signals the project type        |
 | `detect.files`      | Space-separated shell globs — greps inside every matching file for `pattern` |
 | `detect.dir`        | Directory searched recursively; pairs with `detect.include`    |
