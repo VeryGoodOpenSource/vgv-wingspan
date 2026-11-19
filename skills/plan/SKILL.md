@@ -194,8 +194,9 @@ Return here once the review completes, then present the options below.
 ## Publish to the issue
 
 Planning from an issue, publish the reviewed plan per
-[plan on an issue](references/plan-on-issue.md): confirm first, then create the phase
-sub-issues and post the plan comment, whose first line is `<!-- wingspan:plan -->`. Once published, `ISSUE_URL` replaces the plan file path
+[plan on an issue](references/plan-on-issue.md): confirm first, then post the plan comment,
+whose first line is `<!-- wingspan:plan -->`, create the phase sub-issues, and fill their
+numbers into the comment. Once published, `ISSUE_URL` replaces the plan file path
 everywhere below, **Open the plan file in my code editor** opens the issue instead
 (`gh issue view <number> --web`), and **Review and refine** is dropped: refine through
 **Edit** before publishing, not after. If the user declines, the local plan file stands and

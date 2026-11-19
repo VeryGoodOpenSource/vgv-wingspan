@@ -68,8 +68,16 @@ removed once they exist."
 
 ### Publish
 
-Write every body to a temporary file so the formatting survives the shell. Then, for each
-phase in order:
+Write every body to a temporary file so the formatting survives the shell. Post the plan
+comment first, so the issue never has sub-issues without a plan. Until the sub-issues exist,
+its phases read `- Phase N: <name>`, with no number:
+
+```bash
+gh issue comment ISSUE --repo REPO --body-file <path>   # prints the comment URL; the id ends it
+gh api -X PATCH repos/REPO/issues/comments/<comment id> -F body=@<path>   # instead, when replacing the plan comment
+```
+
+Then, for each phase in order:
 
 ```bash
 gh issue create --repo REPO --title "<title>" --body-file <path>   # prints the URL; the number ends it
@@ -78,11 +86,10 @@ gh api -X POST repos/REPO/issues/ISSUE/sub_issues -F sub_issue_id=<id>
 gh api -X POST repos/REPO/issues/<number>/dependencies/blocked_by -F issue_id=<previous phase id>   # from phase 2 on
 ```
 
-Then post the plan comment with the sub-issue numbers filled in:
+Then fill the sub-issue numbers into the plan comment, `- Phase N: <name> — #<sub-issue>`:
 
 ```bash
-gh issue comment ISSUE --repo REPO --body-file <path>
-gh api -X PATCH repos/REPO/issues/comments/<comment id> -F body=@<path>   # instead, when replacing the plan comment
+gh api -X PATCH repos/REPO/issues/comments/<comment id> -F body=@<path>
 ```
 
 Store the issue's URL as `ISSUE_URL`, and delete the local plan file so the repository and the
@@ -91,8 +98,10 @@ issue never disagree.
 ### On failure
 
 If a command fails — issues disabled, sub-issues or dependencies unavailable, insufficient
-permissions — report the error and the issues already created, and keep the local plan file.
-Never delete an issue to roll back; the user decides what to clean up.
+permissions — report the error, the plan comment if it was posted, and the sub-issues already
+created, and keep the local plan file. If the plan comment is up, fill in the numbers of the
+sub-issues that exist, so `/build` can pick them up, and name the phases still missing one.
+Never delete an issue or comment to roll back; the user decides what to clean up.
 
 ## Picking up a phase (`/build`)
 
