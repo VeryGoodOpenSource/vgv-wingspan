@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
 effort: high
 argument-hint: plan file path
-allowed-tools: Bash(rm -rf docs/reviews/)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -58,8 +58,14 @@ Honor a saved preference if one exists. Otherwise put the choice to the user and
 
 - **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
   opening the pull request still pause for approval in Phase 4.
+- **Run all phases unattended** — each phase runs in its own subagent and is committed when
+  it completes, with no stop between phases unless a phase is blocked. Pushing still pauses
+  for approval.
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
+
+Leave out **Run all phases unattended** when fewer than two phases are left to build, or when
+this session has no subagent tool to run each phase in. Keep the other labels as written.
 
 These two questions — how this build commits, and whether the scope below is right — are the
 gate on Phase 1. **Write no file until both are answered.** Going ahead and implementing,
@@ -68,7 +74,7 @@ with changes they never agreed to and a commit decision taken for them. If the q
 is unavailable, ask in your reply as a numbered list and stop there. Hold this even when
 `references/commit-autonomy.md` cannot be read from here.
 
-**Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase. Skip the scope-confirmation question below.
+**Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase, or to the [unattended run](#unattended-run) if the user chose it. Skip the scope-confirmation question below.
 
 **Otherwise**, summarize scope to the user, then use **AskUserQuestion** to confirm:
 
@@ -79,6 +85,8 @@ is unavailable, ask in your reply as a numbered list and stop there. Hold this e
 Do not proceed until the user selects "Start building."
 
 ## Phase 1 — Setup
+
+In an unattended run, skip this phase: each phase's subagent reads its own context.
 
 **Do not run `codebase-review-agent` here.** The plan was already informed by codebase context from `/brainstorm` and `/plan`.
 
@@ -99,6 +107,35 @@ Determine the unit of work:
   from here. One phase is the unit of work: build it, checkpoint, clear, then take the next.
   Running the whole plan in one pass is the thing this structure exists to prevent.
 - **No phases** → treat the whole plan as one phase: implement every task, then run the loop once.
+
+### Unattended run
+
+When the user chose **Run all phases unattended**, the main session does not implement. It
+runs each remaining phase in its own subagent, per [unattended phases](references/unattended-phases.md):
+
+1. If the working tree has uncommitted changes other than the plan file, ask before the first
+   dispatch.
+2. Dispatch one subagent, in the foreground, for the first phase whose `**Status:**` is not
+   `Done`. It runs Steps 1–4 of the phase loop below for that phase only, commits it, and
+   reports `done` or `blocked`. It never asks the user; it reports instead.
+3. **Done** → confirm the `Done` marker, that `HEAD` is the commit it returned, and that the
+   working tree is clean apart from the plan file. Then print the checkpoint (Step 5) and
+   dispatch the next phase without asking.
+4. **Blocked** — validation still failing after the usual fix attempts, a decision the plan
+   does not cover, or a command denied permission → ask the user, pass the answer back to that
+   phase's subagent with `SendMessage`, and wait again. If it cannot be continued, dispatch a
+   new one with the answer and the phase's partial work. **Stop here** ends the run; `/build`
+   resumes from the markers.
+5. **Anything else** — no `STATUS` block, an error, or a `done` that fails the checks in Step 3
+   → stop, show the user what came back and what `git status` shows, and ask before
+   dispatching that phase again.
+6. **No phases remain** → go to the Surgical-Diff Gate; review and ship run in the main session
+   as usual.
+
+Hold this shape even when the reference cannot be read: one phase per subagent, one subagent
+at a time, no question between phases that completed cleanly. If no subagent can be
+dispatched, do not build the remaining phases in this session: say so, and continue as
+**Auto-commit each phase**.
 
 ### Phase loop
 
@@ -188,6 +225,13 @@ and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every 
 scope constraint and the report name from the table above, and send all five, plus any
 companion reviewers, in one message so they run at once rather than in turn.
 
+Run them in the foreground (`run_in_background: false`) and wait for every result in this
+turn. Do not end your turn while a reviewer runs: the push and PR permissions in
+`allowed-tools` last only for the turn that invoked `/build`, so a build that resumes on a
+background agent's notification stops on a permission prompt at ship time. This holds in
+headless runs. In an interactive session the harness may still run the reviewers in the
+background.
+
 ### After all reviews complete
 
 Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
@@ -210,7 +254,9 @@ rm -rf docs/reviews/
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
 
-To push, call `/create-pr skip-checks` — it pushes and opens the PR. Validation already ran above. The PR body uses the [PR template](references/pr-template.md).
+If the build has resumed in a new turn since `/build` was invoked (a background reviewer's notification, the user's answer to a question), the push and PR permissions no longer apply: tell the user the push and PR need their approval before you run them.
+
+To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md).
 
 ### Post-Ship
 

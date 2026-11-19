@@ -62,6 +62,8 @@ skills/                # User-invocable and supporting skills (one dir per skill
       file-findings-on-pr.md     # Post review findings as PR comments
       plan-review.md             # Quality pass applied to a drafted plan
       plan-templates/            # minimal, standard, extensive, phases, success criteria
+      pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
+      push.md                    # Push the branch and handle push failures
       review-agent-instructions.md  # Instructions passed to each review agent
       review-autonomy.md         # When /build and /hotfix apply Important findings without asking
       review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
@@ -103,7 +105,7 @@ The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, flow analysis, and a mandatory quality review of the draft. Splits large plans into phases so `/build` executes one phase per context window.
-3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits or full manual control — decided up front or from a saved preference.
+3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits, an unattended run that builds each phase in its own subagent, or full manual control — decided up front or from a saved preference.
 
 Standalone Skills:
 
@@ -176,9 +178,10 @@ Evals do not run on a pull request, because they call real models.
 changed skills, with-plugin arm only, and always non-blocking. A full run is manual
 (`workflow_dispatch`).
 
-A case grants only the tools its `allowed_tools` lists, and no case runs `Bash` or `Edit`.
-Most cases grade the reply a skill produces; the few that list `Write` grade the file it
-writes. `evals/README.md` → _What these cases can reach_ has the details.
+A run grants `Read`, `Glob`, `Grep` and `Skill`, plus the subagent tool unless a case lists
+it in `disallowed_tools`. No case runs `Bash` or `Edit`. Most cases grade the reply a skill
+produces; the few that list `Write` grade the file it writes. `evals/README.md` →
+_What these cases can reach_ has the details.
 
 ## Hooks
 

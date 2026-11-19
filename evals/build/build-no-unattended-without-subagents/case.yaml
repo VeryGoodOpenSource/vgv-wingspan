@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: build-no-unattended-without-subagents
+context:
+  scaffold_script: fixture.sh
