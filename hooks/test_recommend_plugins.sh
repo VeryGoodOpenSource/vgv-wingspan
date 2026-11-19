@@ -11,6 +11,54 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/lib/test_helpers.sh"
 
+# Remove every project fixture but keep the hook and the settings files, so
+# one test can check several fixtures in a row.
+reset_project() {
+  local entry
+  for entry in "$TEST_DIR"/* "$TEST_DIR"/.[!.]*; do
+    case "$(basename "$entry")" in
+      hooks | .claude) continue ;;
+    esac
+    [[ -e "$entry" ]] && rm -rf "$entry"
+  done
+  rm -f "$MARKER"
+}
+
+# Run the hook on the current fixtures and assert the xcode plugin is
+# recommended, then reset for the next fixture.
+assert_ios_recommended() {
+  local msg="$1"
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "The 'xcode' Claude Code plugin" "$msg"
+  reset_project
+}
+
+# Run the hook on the current fixtures and assert it stays silent, then reset.
+assert_ios_silent() {
+  local msg="$1"
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "$msg"
+  reset_project
+}
+
+# Assert the output holds exactly one hook JSON block, not one per plugin.
+assert_single_json_block() {
+  local output="$1"
+  local msg="$2"
+  local json_count
+  json_count=$(echo "$output" | grep -c '"hookSpecificOutput"' || true)
+  if [[ "$json_count" -eq 1 ]]; then
+    PASS=$((PASS + 1))
+    echo "  PASS: $msg"
+  else
+    FAIL=$((FAIL + 1))
+    echo "  FAIL: $msg"
+    echo "    expected 1 JSON block, got $json_count"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
@@ -599,6 +647,10 @@ test_ios_flutter_plugin_swift_package_only() {
   add_project_file "ios/my_plugin/Package.swift" "// swift-tools-version: 5.9
 import PackageDescription"
   assert_ios_recommended "ios/<name>/Package.swift"
+  add_project_file "pubspec.yaml" "name: my_plugin"
+  add_project_file "darwin/my_plugin/Package.swift" "// swift-tools-version: 5.9
+import PackageDescription"
+  assert_ios_recommended "darwin/<name>/Package.swift"
   teardown
 }
 
@@ -750,15 +802,7 @@ end"
   assert_contains "$output" "The 'xcode' Claude Code plugin" "xcode plugin recommended"
   assert_contains "$output" "The 'vgv-ai-flutter-plugin' Claude Code plugin" "Flutter plugin recommended"
   assert_contains "$output" "/plugin marketplace add anthropics/claude-plugins-official" "Apple marketplace named"
-  local json_count
-  json_count=$(echo "$output" | grep -c '"hookSpecificOutput"' || true)
-  if [[ "$json_count" -eq 1 ]]; then
-    PASS=$((PASS + 1))
-    echo "  PASS: single JSON output block"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: expected 1 JSON block, got $json_count"
-  fi
+  assert_single_json_block "$output" "single JSON output block"
   teardown
 }
 
