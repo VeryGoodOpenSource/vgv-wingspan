@@ -20,8 +20,32 @@ carries:
    the resolved absolute directory and `<name>` set to that agent's report name from the
    table (a bare stem — the agent writes `<RAW_DIR>/<name>.md`).
 
+## Companion reviewers
+
+When the calling skill includes companion reviewers, read the plugin's
+`hooks/recommendations/*.json`. A file participates only if it carries a `reviewAgent`
+field. Evaluate its `detect` rule against the current project, with the same logic the
+`recommend-plugins.sh` hook applies. When `detect` matches and the agent type named in
+`reviewAgent` is available, dispatch it in the same parallel message as the skill's own
+agents. Pass it only the scope constraint: a companion reviewer has its own output format,
+so it gets no review agent instructions. Its report name is the agent name without the
+plugin prefix (`plugin-name:plugin-reviewer` → `plugin-reviewer`). When the agent type is
+not installed, skip it; the recommendation hook already suggests the plugin.
+
 ## Handle failures
 
 An agent failure is non-fatal. Note it, continue with the rest, and record the failure in
 both the report header and the chat summary so the user knows the review is incomplete —
 a silently halved review reads as a clean one.
+
+Find the findings block anywhere in the reply, not only at the top: its heading line
+(`## <Agent Name> Findings`) directly followed by a `**Verdict**:` line whose verdict is
+literally `pass` or `fail`. Ignore any text before or after the block,
+such as a one-line intro. A reply with no such pair counts as a failure too, so a missing or
+empty reply never passes for a clean review.
+
+Companion reviewers return their own format instead, which
+[consolidation](review-consolidation.md) maps, so they skip the Verdict check. Judge a
+companion reply by its shape, never its wording: an empty reply or an error is a failure;
+any other reply that lists no findings is **ran, no findings**, which consolidation reports
+on its own line, neither clean nor failed.

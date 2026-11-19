@@ -1,13 +1,10 @@
-# VGV Wingspan
+![VGV Wingspan, AI-assisted engineering workflows: a blue pixel texture beside the name, with the VGV logo in the corner](assets/readme-header.png)
 
-[![Very Good Ventures][logo_white]][very_good_ventures_link_dark]
-[![Very Good Ventures][logo_black]][very_good_ventures_link_light]
+# VGV Wingspan
 
 🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards.
 
 Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
-
-![wingspan logo by very good ventures in blue](./assets/wingspan-logo.jpeg)
 
 ## Installation
 
@@ -81,6 +78,9 @@ Wingspan and the [Very Good AI Flutter Plugin](https://github.com/VeryGoodOpenSo
 
 Wingspan operates at a higher level, orchestrating agentic workflows across the full software development lifecycle: planning, code review, brainstorming, and cross-tool coordination. Together, they create a system where Wingspan handles the what and when of engineering work while the Flutter Plugin ensures the how meets enterprise-grade standards — meaning teams don't just move faster, they move faster in the right direction.
 
+On a Flutter project with the Flutter Plugin installed, `/review` and `/build` also run its
+`flutter-reviewer` and merge its findings into the same report.
+
 ### Tips
 
 - **Clear context between phases.** At the end of each phase, Wingspan offers a "Clear context and [next step]" option. Use it — a fresh context window produces better results.
@@ -120,6 +120,46 @@ Wingspan ships subagents that Claude Code dispatches as isolated, specialized re
 | [**Best Practices Research**](agents/research/best-practices-research-agent.md) | Researches best practices for the project's technology stack — VGV conventions first, then official docs and industry standards |
 | [**Official Docs Research**](agents/research/official-docs-research-agent.md) | Gathers documentation for frameworks, libraries, or dependencies — official docs, version constraints, and implementation patterns |
 
+### Running review agents headless
+
+The five review agents also work outside the workflow skills: from a fleet, an
+orchestrator, or another plugin. Dispatch one by its agent type and put the scope in the
+prompt, for example "Review the changes on this branch against main".
+
+| Agent type | Reviews |
+| ---------- | ------- |
+| `vgv-wingspan:codebase-review:vgv-review-agent` | VGV engineering standards |
+| `vgv-wingspan:codebase-review:code-simplicity-review-agent` | YAGNI, premature abstraction, dead code |
+| `vgv-wingspan:quality-review:architecture-review-agent` | Layer separation and dependency direction |
+| `vgv-wingspan:quality-review:test-quality-review-agent` | Test coverage and test quality |
+| `vgv-wingspan:quality-review:pr-readiness-review-agent` | Formatting, analysis, debug artifacts, commit hygiene |
+
+Every reply carries the same findings block, normally first:
+
+```markdown
+## Architecture Review Findings
+**Verdict**: fail | **Critical**: 1 | **Important**: 0 | **Suggestion**: 0
+
+- severity: Critical
+  rule: layer-violation
+  title: Route the call through the repository
+  location: lib/ui/home.dart:12
+  quote: import 'package:api_client/api_client.dart';
+  why: Presentation now depends on the data layer.
+  fix: Inject the repository into the cubit and call it there.
+```
+
+- **Verdict** is `fail` when there is at least one Critical finding. Look for the
+  `## … Findings` heading directly followed by the verdict line anywhere in the reply, so a
+  one-line intro before the block does not matter. A reply without that pair means the
+  review did not finish: treat it as a failure, not a clean review.
+- **Quote** is the offending line, copied verbatim, or `none` for something the code lacks.
+  A `none` quote comes with a `missing` line naming the absent file or text, such as
+  `missing: file test/home_test.dart`. Check either against the code before acting on the
+  finding.
+- **The full review** follows the block. To get it as a file instead, name a raw report path
+  in the prompt; the agent writes the review there and returns only the block.
+
 ## Hooks
 
 Wingspan includes a `PreToolUse` hook that detects your project type and recommends companion plugins you haven't installed yet.
@@ -149,7 +189,3 @@ See [evals/README.md](evals/README.md) for the case format, the grader reference
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add or improve skills, test your changes locally, and open a pull request. All contributors are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 [vgv_link]: https://verygood.ventures
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only
