@@ -2,6 +2,7 @@
 
 Does Claude route to the skill, and does the output follow it? Cases run through
 [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) against real models.
+Run them from the repository root:
 
 ```bash
 E="claude plugin eval . --scaffold --allow-tools Write --judge-model opus"
@@ -140,7 +141,7 @@ A case is a directory. Nothing registers it; it is found by being there.
 ```text
 evals/<skill>/<case-name>/
 ├── prompt.md          # frontmatter: run limits; body: the prompt
-├── case.yaml          # schema_version, name, and the fixture hook
+├── case.yaml          # schema_version, name, the plugin path, and the fixture hook
 ├── fixture.sh         # symlink to ../../_fixture/fixture.sh — never a real file
 └── graders/
     ├── skill-fired.md
@@ -172,9 +173,15 @@ directory name under `evals/` is the tag, and the tag is what CI scopes a run by
 ```yaml
 schema_version: "1.1"
 name: plan-splits-a-multi-layer-feature-into-phases
+plugins: ["../../../plugin"]
 context:
   scaffold_script: fixture.sh
 ```
+
+`plugins` loads the plugin under test. The plugin lives in `plugin/`, outside this suite,
+so the submitted plugin folder stays under 512 files and holds no symbolic links. The
+runner cannot find it by walking up from the case, so copy the line verbatim. CI fails a
+case that lacks it.
 
 A grader, `graders/numbers-the-phases.md`:
 
@@ -317,6 +324,7 @@ prompt:
 ```yaml
 schema_version: "1.1"
 name: review-acts-on-the-findings-the-user-picked
+plugins: ["../../../plugin"]
 context:
   scaffold_script: fixture.sh
   history_file: history.jsonl
@@ -422,7 +430,7 @@ Every run writes `results/<timestamp>/` with `aggregate-result.json` and a self-
 `.github/workflows/evals.yaml` runs after a merge to `main`, never on a pull request,
 scoped by `--tag` to the changed skills, with-plugin arm only, and `continue-on-error`.
 
-- Changing `_fixture/`, `skills/shared/` or `agents/` widens the scope to every skill.
+- Changing `_fixture/`, `plugin/skills/shared/` or `plugin/agents/` widens the scope to every skill.
 - A directory under `evals/` only becomes a `--tag` if it holds `*/case.yaml`. `results/`
   sits there without being a skill.
 - The scope job's `find` uses `-exec dirname {} \;` rather than `-printf '%h\n'`, which is

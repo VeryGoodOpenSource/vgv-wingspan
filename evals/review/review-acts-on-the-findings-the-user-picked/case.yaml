@@ -1,5 +1,6 @@
 schema_version: "1.1"
 name: review-acts-on-the-findings-the-user-picked
+plugins: ["../../../plugin"]
 context:
   scaffold_script: fixture.sh
   history_file: history.jsonl

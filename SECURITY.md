@@ -34,19 +34,19 @@ Send an email to `tools@verygood.ventures` with a `[SECURITY]` subject prefix.
 
 Wingspan is a Claude Code plugin with no runtime application code. The security-relevant surface areas are:
 
-### Skill Files (`skills/*/`)
+### Skill Files (`plugin/skills/*/`)
 
 - Insecure code examples that developers may copy into production
 - Outdated or misleading security guidance
 - Recommendations that contradict current best practices
 
-### Hook Shell Scripts (`hooks/*.sh`)
+### Hook Shell Scripts (`plugin/hooks/*.sh`)
 
 - Command injection vulnerabilities
 - Unsafe path handling
 - Unintended code execution
 
-### Plugin Manifest (`.claude-plugin/plugin.json`)
+### Plugin Manifest (`plugin/.claude-plugin/plugin.json`)
 
 - Excessive permissions
 

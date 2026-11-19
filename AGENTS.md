@@ -5,10 +5,8 @@ Wingspan is a collection of AI-assisted engineering tools — skills, agents, an
 ## Repository Structure
 
 ```text
-.claude-plugin/
-  plugin.json          # Plugin manifest (name, version, keywords)
 AGENTS.md              # This file — portable, tech-agnostic conventions
-README.md              # Human-facing overview and install instructions
+README.md              # Short repository overview; points at plugin/README.md
 CONTRIBUTING.md        # Contributor guide (adding skills, hooks, commit format)
 skills_lint.yaml       # skills_lint rule config used by the CI skills lint workflow
 config/
@@ -19,59 +17,67 @@ evals/                 # `claude plugin eval` suite — one directory per skill
   _fixture/
     fixture.sh         # The neutral workspace every case symlinks to
   <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
-agents/                # Subagent definitions, grouped by role
-  analysis/
-    plan-splitting-agent.md       # Flags oversized plans to split across PRs
-    user-flow-analysis-agent.md   # Analyzes specs for flow gaps and edge cases
-  codebase-review/
-    codebase-review-agent.md         # Reviews structure, conventions, pattern consistency
-    code-simplicity-review-agent.md  # Flags YAGNI violations and over-engineering
-    vgv-review-agent.md              # Reviews against VGV engineering standards
-  quality-review/
-    architecture-review-agent.md  # Validates layer separation and dependency direction
-    pr-readiness-review-agent.md  # Checks formatting, static analysis, commit hygiene
-    test-quality-review-agent.md  # Verifies test coverage and quality
-  test_review_contract.sh  # Fails when the review agents' findings block drifts
-  research/
-    best-practices-research-agent.md  # Synthesizes best practices for the stack
-    official-docs-research-agent.md   # Gathers official framework/library docs
-hooks/
-  hooks.json                    # Hook definitions (PreToolUse)
-  recommend-plugins.sh          # Detects project type, recommends companion plugins
-  test_recommend_plugins.sh     # Tests for the recommendation hook
-  recommendations/
-    vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
-skills/                # User-invocable and supporting skills (one dir per skill)
-  brainstorm/SKILL.md            # Explore requirements and approaches
-  plan/SKILL.md                  # Turn a brainstorm into an implementation plan
-  build/SKILL.md                 # Execute a plan: implement, review, ship
-  review/SKILL.md                # Run quality-review agents on demand
-  hotfix/SKILL.md                # Fast path for emergency fixes
-  debrief/SKILL.md               # Post-incident analysis document
-  create/SKILL.md                # Scaffold a new project via companion plugins
-  create-pr/SKILL.md             # Generate a PR title and description
-  plan-technical-review/SKILL.md # Review externally-authored plans
-  refine-approach/SKILL.md       # Iteratively improve a document
-  rebase/SKILL.md                # Sync a feature branch with its base
-  elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
-  shared/              # Shared references and scripts used across skills
-    references/
-      clear-context-handoff.md   # The "clear context and <next step>" handoff block
-      drive-to-green.md          # Loop until every gate is green by real output
-      feature-branch.md          # Branch check run before anything is written to disk
-      file-findings-on-pr.md     # Post review findings as PR comments
-      plan-review.md             # Quality pass applied to a drafted plan
-      plan-templates/            # minimal, standard, extensive, phases, success criteria
-      review-agent-instructions.md  # Instructions passed to each review agent
-      review-autonomy.md         # When /build and /hotfix apply Important findings without asking
-      review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
-      review-dispatch.md         # Caller-side procedure for launching review agents
-      review-report-template.md  # Shape of the consolidated report
-      validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
-    scripts/           # detect-base-branch.sh, detect-review-scope.sh
+tool/
+  shared-copies.txt    # Every copy of a shared skill file: <source> <copy>
+  sync-shared.sh       # Writes the copies; --check fails CI on drift
+plugin/                # The plugin folder: everything the plugin loads, and all a user installs
+  LICENSE              # Copy of the root LICENSE, shipped with the plugin
+  README.md            # Plugin README: installation, skills, agents, hooks
+  .claude-plugin/
+    plugin.json          # Plugin manifest (name, version, keywords)
+  agents/                # Subagent definitions, grouped by role
+    analysis/
+      plan-splitting-agent.md       # Flags oversized plans to split across PRs
+      user-flow-analysis-agent.md   # Analyzes specs for flow gaps and edge cases
+    codebase-review/
+      codebase-review-agent.md         # Reviews structure, conventions, pattern consistency
+      code-simplicity-review-agent.md  # Flags YAGNI violations and over-engineering
+      vgv-review-agent.md              # Reviews against VGV engineering standards
+    quality-review/
+      architecture-review-agent.md  # Validates layer separation and dependency direction
+      pr-readiness-review-agent.md  # Checks formatting, static analysis, commit hygiene
+      test-quality-review-agent.md  # Verifies test coverage and quality
+    test_review_contract.sh  # Fails when the review agents' findings block drifts
+    research/
+      best-practices-research-agent.md  # Synthesizes best practices for the stack
+      official-docs-research-agent.md   # Gathers official framework/library docs
+  hooks/
+    hooks.json                    # Hook definitions (PreToolUse)
+    recommend-plugins.sh          # Detects project type, recommends companion plugins
+    test_recommend_plugins.sh     # Tests for the recommendation hook
+    recommendations/
+      vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
+  skills/                # User-invocable and supporting skills (one dir per skill)
+    brainstorm/SKILL.md            # Explore requirements and approaches
+    plan/SKILL.md                  # Turn a brainstorm into an implementation plan
+    build/SKILL.md                 # Execute a plan: implement, review, ship
+    review/SKILL.md                # Run quality-review agents on demand
+    hotfix/SKILL.md                # Fast path for emergency fixes
+    debrief/SKILL.md               # Post-incident analysis document
+    create/SKILL.md                # Scaffold a new project via companion plugins
+    create-pr/SKILL.md             # Generate a PR title and description
+    plan-technical-review/SKILL.md # Review externally-authored plans
+    refine-approach/SKILL.md       # Iteratively improve a document
+    rebase/SKILL.md                # Sync a feature branch with its base
+    elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
+    shared/              # Shared references and scripts used across skills
+      references/
+        clear-context-handoff.md   # The "clear context and <next step>" handoff block
+        drive-to-green.md          # Loop until every gate is green by real output
+        feature-branch.md          # Branch check run before anything is written to disk
+        file-findings-on-pr.md     # Post review findings as PR comments
+        plan-review.md             # Quality pass applied to a drafted plan
+        plan-templates/            # minimal, standard, extensive, phases, success criteria
+        review-agent-instructions.md  # Instructions passed to each review agent
+        review-autonomy.md         # When /build and /hotfix apply Important findings without asking
+        review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
+        review-dispatch.md         # Caller-side procedure for launching review agents
+        review-report-template.md  # Shape of the consolidated report
+        validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
+      scripts/           # detect-base-branch.sh, detect-review-scope.sh
 ```
 
-Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A shared reference appears in each consuming skill as a symlink, so the skill always links it by its own local path.
+Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A shared reference appears in each consuming skill as a real copy, so the skill always links it by its own local path. The plugin folder holds no symbolic links: edit the source in `plugin/skills/shared/` and run `bash tool/sync-shared.sh`.
 
 ## Authoring Conventions
 
@@ -139,7 +145,7 @@ The calling skill drops findings the code does not confirm, marks the ones no fi
 confirm as unverified, deduplicates and orders the rest, assigns stable
 `FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
 class), and renders one consolidated report plus a matching chat summary (see
-`skills/shared/references/review-consolidation.md`).
+`plugin/skills/shared/references/review-consolidation.md`).
 
 ## Output Directories
 
@@ -165,7 +171,9 @@ case worth having — read it before writing a case, and put new eval documentat
 rather than here.
 
 Cases live under `evals/<skill>/<case>/` and are discovered from the tree; nothing registers
-them. Run them with `claude plugin eval . --scaffold`. `--scaffold` is not optional: every
+them. Run them with `claude plugin eval . --scaffold` from the repository root. Each
+`case.yaml` loads the plugin with `plugins: ["../../../plugin"]`, because the suite stays
+outside `plugin/` to keep the submitted folder under 512 files and free of symbolic links. `--scaffold` is not optional: every
 run starts in an empty workspace, and without the flag the fixture is skipped silently and
 cases fail for reasons unrelated to the skill.
 
@@ -181,7 +189,7 @@ reply a skill produces, never a file it writes or a command it runs.
 
 ## Hooks
 
-Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `hooks/hooks.json`.
+Wingspan uses Claude Code hooks to automate behavior at tool-call boundaries. Hooks are defined in `plugin/hooks/hooks.json`.
 
 ### Companion Plugin Recommendations
 
@@ -189,11 +197,11 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 
 **How it works:**
 
-1. `hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
+1. `plugin/hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `plugin/hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
 2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message.
 3. A marker file (`/tmp/wingspan-recommend-plugins-<hash>`) is written only when at least one recommendation is emitted, suppressing repeats for the rest of the session. If no plugins are missing, no marker is written and the script re-evaluates on the next tool call — so a newly added recommendation file can still fire later in the same session.
 
-**Recommendation file format** (`hooks/recommendations/<plugin-name>.json`):
+**Recommendation file format** (`plugin/hooks/recommendations/<plugin-name>.json`):
 
 ```json
 {
@@ -217,7 +225,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
 | `description`       | One-line summary shown in the recommendation                   |
 
-**Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
+**Adding a new recommendation:** Drop a JSON file in `plugin/hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 
 ## Guidance
 

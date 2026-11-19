@@ -1,4 +1,5 @@
 schema_version: "1.1"
 name: elements-of-style-stays-out-of-a-code-rename
+plugins: ["../../../plugin"]
 context:
   scaffold_script: fixture.sh
