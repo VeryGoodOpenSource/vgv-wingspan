@@ -477,6 +477,38 @@ test_dir_include_mixed_array() {
   teardown
 }
 
+test_detect_precedence_file_files_dir() {
+  echo "test: within one entry, file wins over files, and files wins over dir"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "src/Bridge.kt" "NativeBridge"
+  assert_silent "file set: the dir match is ignored"
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "files": "docs/*.md", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "docs/a.md" "nothing here"
+  add_project_file "src/Bridge.kt" "NativeBridge"
+  assert_silent "files set: the dir match is ignored"
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "files": "docs/*.md", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "docs/a.md" "NativeBridge"
+  assert_recommended "test-plugin" "files set and matching"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -533,5 +565,7 @@ echo ""
 test_dir_include_glob_not_expanded
 echo ""
 test_dir_include_mixed_array
+echo ""
+test_detect_precedence_file_files_dir
 echo ""
 finish

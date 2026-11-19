@@ -214,7 +214,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 |---------------------|----------------------------------------------------------------|
 | `plugin`            | Plugin name as registered in the marketplace                   |
 | `detect.file`       | Exact file path whose presence signals the project type        |
-| `detect.files`      | Shell glob — greps inside every matching file for `pattern`    |
+| `detect.files`      | Space-separated shell globs — greps inside every matching file for `pattern` |
 | `detect.dir`        | Directory searched recursively; pairs with `detect.include`    |
 | `detect.include`    | Space-separated filename globs (`*.kt *.java`) limiting the `dir` search; no spaces inside a glob |
 | `detect.pattern`    | Regex grep pattern to confirm the match                        |
@@ -223,7 +223,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
 | `description`       | One-line summary shown in the recommendation                   |
 
-Keep `detect.dir` narrow: the hook does not exclude `build/` or `node_modules/`, and the search runs on every matched tool call until a recommendation is emitted.
+Within one `detect` entry the precedence is `file`, then `files`, then `dir`. Keep `detect.dir` narrow: the hook does not exclude `build/` or `node_modules/`, and the search runs on every matched tool call until a recommendation is emitted.
 
 **Adding a new recommendation:** Drop a JSON file in `hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 

@@ -103,13 +103,7 @@ test_android_description_names_android_not_flutter() {
   assert_contains "$desc" "Android" "description names Android"
   assert_contains "$desc" "Kotlin" "description names Kotlin"
   assert_contains "$desc" "Jetpack Compose" "description names Jetpack Compose"
-  if echo "$desc" | grep -qi "flutter"; then
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: description must not mention Flutter"
-  else
-    PASS=$((PASS + 1))
-    echo "  PASS: description does not mention Flutter"
-  fi
+  assert_not_contains "$(echo "$desc" | tr '[:upper:]' '[:lower:]')" "flutter" "description does not mention Flutter"
 }
 
 test_android_gradle_non_android_plugin() {
@@ -386,13 +380,14 @@ flutter:
         android:
             package: com.example.my_plugin
             pluginClass: MyPlugin"
-  assert_recommended "android-cli" "recommends at an eight/twelve-space indent"
+  assert_recommended "android-cli" "recommends at a twelve-space indent"
   add_project_file "pubspec.yaml" "name: my_plugin
 flutter:
-  plugin:
-    platforms:
-      android:
-    package: com.example.my_plugin"
+ plugin:
+  platforms:
+   android:
+    package: com.example.my_plugin
+    pluginClass: MyPlugin"
   assert_recommended "android-cli" "recommends at a four-space indent"
   teardown
 }
@@ -537,6 +532,27 @@ dependencies:
   teardown
 }
 
+test_android_plain_app_full_gradle_tree() {
+  echo "test: android-cli not recommended for a plain app's app-level Gradle files"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter"
+  add_project_file "android/app/build.gradle" "plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}"
+  add_project_file "android/settings.gradle" "pluginManagement {
+    plugins {
+        id 'com.android.application' version '8.1.0' apply false
+    }
+}"
+  assert_silent "silent for android/app/build.gradle and android/settings.gradle"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -597,5 +613,7 @@ echo ""
 test_android_deep_package_channel_code
 echo ""
 test_android_generated_registrant_not_recommended
+echo ""
+test_android_plain_app_full_gradle_tree
 echo ""
 finish

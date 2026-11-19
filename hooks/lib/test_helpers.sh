@@ -10,6 +10,8 @@
 #   ... define test_* functions, call them ...
 #   finish
 
+# Public globals test files may read: SCRIPT_DIR (the hooks/ directory), HOOK_SCRIPT,
+# TEST_DIR, MARKER, RECOMMENDATIONS_DIR, PASS, FAIL.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOOK_SCRIPT="$SCRIPT_DIR/recommend-plugins.sh"
 
