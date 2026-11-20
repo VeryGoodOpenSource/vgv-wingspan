@@ -57,7 +57,9 @@ SETTINGS_FILES=(
 is_plugin_installed() {
   local plugin_name="$1"
   for settings_file in "${SETTINGS_FILES[@]}"; do
-    if [[ -f "$settings_file" ]] && grep -q "$plugin_name" "$settings_file" 2>/dev/null; then
+    if [[ -f "$settings_file" ]] && jq -e --arg plugin "$plugin_name" \
+      '(.enabledPlugins // {}) | any(to_entries[]; (.key | startswith($plugin + "@")) and .value == true)' \
+      "$settings_file" >/dev/null 2>&1; then
       return 0
     fi
   done

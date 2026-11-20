@@ -157,7 +157,7 @@ test_plugin_already_installed_local_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.local.json" '{"plugins": ["test-plugin"]}'
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin already installed"
@@ -175,7 +175,7 @@ test_plugin_already_installed_project_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.json" '{"plugins": ["test-plugin"]}'
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin in project settings"
@@ -196,10 +196,80 @@ test_plugin_already_installed_user_settings() {
   # HOME is overridden to TEST_DIR by setup, so this writes to the path
   # the script checks as $HOME/.claude/settings.json.
   mkdir -p "$TEST_DIR/.claude"
-  echo '{"plugins": ["test-plugin"]}' > "$TEST_DIR/.claude/settings.json"
+  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$TEST_DIR/.claude/settings.json"
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin in user-level settings"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+# The installed check reads the enabledPlugins key (<plugin>@<marketplace>),
+# not any mention of the plugin name in a settings file.
+add_installed_check_fixture() {
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+}
+
+test_installed_permission_rule_not_installed() {
+  echo "test: a permission rule naming the plugin does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"permissions": {"allow": ["Bash(test-plugin:*)"]}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_marketplace_only_not_installed() {
+  echo "test: a marketplace entry without enabledPlugins does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"extraKnownMarketplaces": {"test-marketplace": {"source": {"source": "github", "repo": "Org/repo"}}}, "note": "test-plugin@test-marketplace"}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_disabled_plugin_not_installed() {
+  echo "test: a disabled plugin does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": false}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_malformed_settings_not_installed() {
+  echo "test: malformed JSON and a non-object enabledPlugins count as not installed"
+  setup
+  add_installed_check_fixture
+  # HOME is TEST_DIR, so settings.json is both the project and the user file.
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true'
+  add_settings ".claude/settings.json" '{"enabledPlugins": ["test-plugin@test-marketplace"]}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_enabled_plugin() {
+  echo "test: an enabled <plugin>@<marketplace> key counts as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"other@x": false, "test-plugin@test-marketplace": true}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "no output when the plugin is enabled"
   assert_file_not_exists "$MARKER" "no marker written"
   teardown
 }
@@ -283,7 +353,7 @@ test_mixed_match_and_skip() {
     "description": "Not installed."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.local.json" '{"plugins": ["installed-plugin"]}'
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"installed-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_not_contains "$output" "installed-plugin" "installed plugin excluded"
@@ -537,6 +607,16 @@ echo ""
 test_plugin_already_installed_project_settings
 echo ""
 test_plugin_already_installed_user_settings
+echo ""
+test_installed_permission_rule_not_installed
+echo ""
+test_installed_marketplace_only_not_installed
+echo ""
+test_installed_disabled_plugin_not_installed
+echo ""
+test_installed_malformed_settings_not_installed
+echo ""
+test_installed_enabled_plugin
 echo ""
 test_files_glob_no_matching_files
 echo ""
