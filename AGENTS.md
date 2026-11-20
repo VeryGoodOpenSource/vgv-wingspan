@@ -59,6 +59,7 @@ skills/                # User-invocable and supporting skills (one dir per skill
   rebase/SKILL.md                # Sync a feature branch with its base
   shared/              # Shared references and scripts used across skills
     references/
+      agent-mode.md              # Run without a human: take the recommended option, log each decision
       clear-context-handoff.md   # The "clear context and <next step>" handoff block
       drive-to-green.md          # Loop until every gate is green by real output
       elements-of-style.md       # Writing rules passed to review and flow-analysis agents
@@ -124,6 +125,8 @@ Each phase persists its output to `docs/` so the next phase can discover it from
 
 **Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, clear the context, then present the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
 
+**Agent mode:** for runs with no human at the keyboard, such as under an orchestrator. Turned on by `--agent-mode` in a skill's arguments or by asking to "use Wingspan in agent mode". Every skill still runs every step, but at each question it takes the recommended option instead of asking, and records the question, context, options, decision, and its impact in an ephemeral decision log for a human to review at the end. It never pushes, publishes, or deletes on its own unless the request allows it, and stops with a blocked status rather than guessing past a blocker. See `skills/shared/references/agent-mode.md`.
+
 Supporting skills:
 
 - `/create` (project creation — routes to companion plugins)
@@ -156,6 +159,7 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
 - `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
+- `docs/agent-decisions/` — Decision log from any skill run in agent mode (ephemeral, never committed, deleted once the human has reviewed it)
 
 ## Key Conventions
 
