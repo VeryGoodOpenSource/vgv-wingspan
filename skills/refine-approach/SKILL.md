@@ -36,12 +36,14 @@ Pick the mode from the document and from who invoked the skill. Do not ask the u
 | Situation | Mode |
 |-----------|------|
 | Invoked by another skill (`/plan`, `/brainstorm`, `/debrief`) | **Document critique** |
-| Invoked by the user on an implementation plan | **Technical review** |
+| Invoked by the user on an implementation plan from outside `docs/plan/` | **Technical review** |
+| Invoked by the user on a plan in `docs/plan/` | **Document critique** |
 | Invoked by the user on any other document (brainstorm, debrief, spec) | **Document critique** |
 
 An implementation plan is a file under `docs/plan/`, or a document with a plan's shape: a
-type, a proposed solution, and a task list. `/plan` runs the technical review on the plans
-it creates, so a plan it hands over gets the critique only.
+type, a proposed solution, and a task list. `/plan` writes its plans to `docs/plan/` and
+runs the technical review on them as it creates them, so a plan there gets the critique
+only, whether `/plan` hands it over or the user opens it later.
 
 If the user names a mode — "run the review agents", "just critique the wording" — use that
 mode instead.
@@ -127,7 +129,7 @@ After changes are complete, ask:
 2. **Refine again** — another review pass
 3. **Done for now** — document is ready
 
-**If the document is a plan** (from `docs/plan/`):
+**If the document is an implementation plan** (see `Step 2. Choose the mode`):
 
 1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building** — execute the plan with `/build`
