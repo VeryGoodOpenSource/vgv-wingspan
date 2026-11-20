@@ -3,7 +3,8 @@
 #
 # Scans JSON files in the recommendations/ directory. Each file describes
 # a plugin to recommend: how to detect the project type (a file + grep
-# pattern) and the plugin name to look for in Claude Code settings.
+# pattern) and the plugin name. A plugin counts as installed when an
+# enabledPlugins key starting with "<plugin>@" is true in Claude Code settings.
 #
 # To add a new recommendation, drop a JSON file in recommendations/ with:
 #   {
@@ -57,7 +58,9 @@ SETTINGS_FILES=(
 is_plugin_installed() {
   local plugin_name="$1"
   for settings_file in "${SETTINGS_FILES[@]}"; do
-    if [[ -f "$settings_file" ]] && grep -q "$plugin_name" "$settings_file" 2>/dev/null; then
+    if [[ -f "$settings_file" ]] && jq -e --arg plugin "$plugin_name" \
+      '(.enabledPlugins // {}) | any(to_entries[]; (.key | startswith($plugin + "@")) and .value == true)' \
+      "$settings_file" >/dev/null 2>&1; then
       return 0
     fi
   done
@@ -114,7 +117,8 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
         for include_glob in "${include_globs[@]}"; do
           include_args+=(--include="$include_glob")
         done
-        if grep -rqiE "${include_args[@]}" -- "$entry_pattern" "$entry_dir" 2>/dev/null; then
+        # The trailing slash makes BSD grep descend into a dir that is a symlink.
+        if grep -rqiE "${include_args[@]}" -- "$entry_pattern" "$entry_dir/" 2>/dev/null; then
           matched=true
           break
         fi

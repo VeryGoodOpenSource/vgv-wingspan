@@ -44,14 +44,17 @@ Each recommendation file has this structure:
 ```json
 {
   "plugin": "plugin-name",
+  "scaffold": false,
   "description": "What the plugin provides.",
   "marketplace": "OrgName/repo-name"
 }
 ```
 
+`scaffold` is optional. A recommendation sets it to `false` only when the plugin ships no project-creation skill.
+
 ## Step 2: Match the user's request to a plugin
 
-Compare the user's project description against each recommendation's `plugin` name and `description` (case-insensitive). Pick the plugin whose description best matches the requested technology.
+Compare the user's project description against each recommendation's `plugin` name and `description` (case-insensitive), leaving out recommendations with `scaffold` set to `false`. Pick the plugin whose description best matches the requested technology.
 
 - **No match:** Inform the user no companion plugin is registered for this project type. Stop.
 - **Multiple matches:** Pick the most specific match for the requested project type.
