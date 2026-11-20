@@ -172,7 +172,7 @@ e.g. `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`.
 
 ## Plan Review
 
-After writing the plan file and before presenting options, run a mandatory quality pass on it. This replaces the separate `/plan-technical-review` step — plans created here are reviewed here.
+After writing the plan file and before presenting options, run a mandatory quality pass on it. This is the technical review that `/refine-approach` runs on externally-authored plans — plans created here are reviewed here.
 
 - **Minimal template** → skip this section. The overhead is not worth it for a small plan.
 - **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
@@ -196,7 +196,7 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 
 - **Start building** → Call the `/build` skill with the plan file path
 - **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
-- **Review and refine** → Load `/refine-approach` skill.
+- **Review and refine** → Load `/refine-approach` skill. It runs a document critique, since the plan review above already covered the technical review.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
 ## The handoff block
