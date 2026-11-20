@@ -3,8 +3,8 @@
 Apply these principles to produce clear, vigorous prose.
 
 Skills pass these rules to the agents whose prose a reader sees: the review agents get them
-with `review-agent-instructions.md`, and `/plan` passes them
-to `user-flow-analysis-agent`. An agent cannot follow a relative link, so the caller pastes
+with `review-agent-instructions.md`, `plan-review.md` passes them to the simplicity and VGV
+agents when they review a plan, and `/plan` passes them to `user-flow-analysis-agent`. An agent cannot follow a relative link, so the caller pastes
 this file's text into the agent prompt.
 
 ## Core Principles
