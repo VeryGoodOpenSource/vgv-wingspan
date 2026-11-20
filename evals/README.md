@@ -53,13 +53,12 @@ that:
 - **A gated tool is granted twice over.** The operator passes `--allow-tools Write` (CI does,
   and so must you) *and* the case lists it in its own `allowed_tools`. `Bash` and `Edit` are
   granted nowhere, so no case runs git, a test suite, or a CLI.
-- **`Agent` is grantable and is not gated** — it only has to appear in the case's
-  `allowed_tools`. The runner's default read-only set is `Read, Glob, Grep, NotebookRead,
-  Skill, AskUserQuestion, TaskCreate/Get/List/Update/Stop/Output, Agent, TodoWrite`, and a
-  case's `allowed_tools` replaces that set rather than adding to it — so listing only
-  `[Read, Glob, Grep, Skill]` is what takes `Agent` away. A case that lists `Agent` and
-  `Write` runs the skill's real pipeline: review agents dispatched, raw reports written, the
-  consolidated `FINDING-NN` file produced. `hotfix-refuses-to-skip-review-under-pressure`
+- **`Agent` is not gated, and leaving it out of `allowed_tools` does not remove it.** A probe
+  run with `allowed_tools: [Read, Glob, Grep, Skill]` still had the subagent tool (as `Task`),
+  and a call to it returned the subagent's reply. Only `disallowed_tools: [Agent]` took it
+  away, so a case that needs it gone says that, as `build-no-unattended-without-subagents`
+  does. A case that lists `Agent` and `Write` runs the skill's real pipeline: review agents
+  dispatched, raw reports written, the consolidated `FINDING-NN` file produced. `hotfix-refuses-to-skip-review-under-pressure`
   lists both and runs that pipeline.
 - **`AskUserQuestion` is never reachable**, listed or not: a probe that asked for it outright
   got `AskUserQuestion called 0x` while `Agent` in the same run was called once. Every skill

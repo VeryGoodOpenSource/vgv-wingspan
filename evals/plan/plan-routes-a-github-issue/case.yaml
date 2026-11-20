@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: plan-routes-a-github-issue
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

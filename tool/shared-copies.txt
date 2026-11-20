@@ -1,6 +1,17 @@
 # Every copy of a shared file. One line each: <source> <copy>.
 # <source> is relative to plugin/skills/shared, <copy> to plugin/skills.
 # tool/sync-shared.sh writes the copies; tool/sync-shared.sh --check fails on drift.
+references/agent-mode.md brainstorm/references/agent-mode.md
+references/agent-mode.md build/references/agent-mode.md
+references/agent-mode.md create-pr/references/agent-mode.md
+references/agent-mode.md create/references/agent-mode.md
+references/agent-mode.md debrief/references/agent-mode.md
+references/agent-mode.md hotfix/references/agent-mode.md
+references/agent-mode.md plan-technical-review/references/agent-mode.md
+references/agent-mode.md plan/references/agent-mode.md
+references/agent-mode.md rebase/references/agent-mode.md
+references/agent-mode.md refine-approach/references/agent-mode.md
+references/agent-mode.md review/references/agent-mode.md
 references/clear-context-handoff.md brainstorm/references/clear-context-handoff.md
 references/clear-context-handoff.md build/references/clear-context-handoff.md
 references/clear-context-handoff.md plan-technical-review/references/clear-context-handoff.md
@@ -8,10 +19,18 @@ references/clear-context-handoff.md plan/references/clear-context-handoff.md
 references/clear-context-handoff.md refine-approach/references/clear-context-handoff.md
 references/drive-to-green.md build/references/drive-to-green.md
 references/drive-to-green.md hotfix/references/drive-to-green.md
+references/elements-of-style.md build/references/elements-of-style.md
+references/elements-of-style.md hotfix/references/elements-of-style.md
+references/elements-of-style.md plan-technical-review/references/elements-of-style.md
+references/elements-of-style.md plan/references/elements-of-style.md
+references/elements-of-style.md review/references/elements-of-style.md
 references/feature-branch.md brainstorm/references/feature-branch.md
+references/feature-branch.md build/references/feature-branch.md
 references/feature-branch.md debrief/references/feature-branch.md
 references/feature-branch.md plan/references/feature-branch.md
 references/file-findings-on-pr.md review/references/file-findings-on-pr.md
+references/plan-on-issue.md build/references/plan-on-issue.md
+references/plan-on-issue.md plan/references/plan-on-issue.md
 references/plan-review.md plan-technical-review/references/plan-review.md
 references/plan-review.md plan/references/plan-review.md
 references/plan-templates/extensive.md plan/references/extensive.md
@@ -20,6 +39,10 @@ references/plan-templates/implementation-phases.md plan/references/implementatio
 references/plan-templates/minimal.md plan/references/minimal.md
 references/plan-templates/standard.md plan/references/standard.md
 references/plan-templates/success-criteria.md plan/references/success-criteria.md
+references/pr-cli.md build/references/pr-cli.md
+references/pr-cli.md create-pr/references/pr-cli.md
+references/push.md build/references/push.md
+references/push.md create-pr/references/push.md
 references/review-agent-instructions.md build/references/review-agent-instructions.md
 references/review-agent-instructions.md hotfix/references/review-agent-instructions.md
 references/review-agent-instructions.md review/references/review-agent-instructions.md

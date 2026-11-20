@@ -9,139 +9,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-HOOK_SCRIPT="$SCRIPT_DIR/recommend-plugins.sh"
-
-PASS=0
-FAIL=0
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-setup() {
-  TEST_DIR=$(mktemp -d)
-  RECOMMENDATIONS_DIR="$TEST_DIR/hooks/recommendations"
-  mkdir -p "$RECOMMENDATIONS_DIR"
-
-  # Copy hook script so SCRIPT_DIR resolves to the temp hooks/ dir.
-  WRAPPER="$TEST_DIR/hooks/recommend-plugins.sh"
-  cp "$HOOK_SCRIPT" "$WRAPPER"
-  chmod +x "$WRAPPER"
-
-  # Override HOME so the script's $HOME/.claude/settings.json check
-  # reads from the test directory instead of the real user home.
-  ORIGINAL_HOME="$HOME"
-  export HOME="$TEST_DIR"
-
-  # Ensure no stale marker exists for this test dir.
-  PROJECT_HASH=$(echo "$TEST_DIR" | shasum | cut -d' ' -f1)
-  MARKER="/tmp/wingspan-recommend-plugins-$PROJECT_HASH"
-  rm -f "$MARKER"
-}
-
-teardown() {
-  export HOME="$ORIGINAL_HOME"
-  rm -f "$MARKER" 2>/dev/null || true
-  rm -rf "$TEST_DIR" 2>/dev/null || true
-}
-
-# Run the hook from the test project directory. Captures stdout.
-run_hook() {
-  echo '{}' | (cd "$TEST_DIR" && bash "$WRAPPER") 2>/dev/null || true
-}
-
-# Add a recommendation JSON file to the test fixtures.
-add_recommendation() {
-  local name="$1"
-  local content="$2"
-  echo "$content" > "$RECOMMENDATIONS_DIR/$name.json"
-}
-
-# Add a settings file relative to the test dir.
-add_settings() {
-  local path="$1"
-  local content="$2"
-  mkdir -p "$TEST_DIR/$(dirname "$path")"
-  echo "$content" > "$TEST_DIR/$path"
-}
-
-# Add a project file relative to the test dir.
-add_project_file() {
-  local path="$1"
-  local content="$2"
-  mkdir -p "$TEST_DIR/$(dirname "$path")"
-  echo "$content" > "$TEST_DIR/$path"
-}
-
-assert_contains() {
-  local output="$1"
-  local expected="$2"
-  local msg="$3"
-  if echo "$output" | grep -q "$expected"; then
-    PASS=$((PASS + 1))
-    echo "  PASS: $msg"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: $msg"
-    echo "    expected to contain: $expected"
-    echo "    got: $output"
-  fi
-}
-
-assert_not_contains() {
-  local output="$1"
-  local unexpected="$2"
-  local msg="$3"
-  if echo "$output" | grep -q "$unexpected"; then
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: $msg"
-    echo "    expected NOT to contain: $unexpected"
-    echo "    got: $output"
-  else
-    PASS=$((PASS + 1))
-    echo "  PASS: $msg"
-  fi
-}
-
-assert_empty() {
-  local output="$1"
-  local msg="$2"
-  if [[ -z "$output" ]]; then
-    PASS=$((PASS + 1))
-    echo "  PASS: $msg"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: $msg"
-    echo "    expected empty output, got: $output"
-  fi
-}
-
-assert_file_exists() {
-  local path="$1"
-  local msg="$2"
-  if [[ -f "$path" ]]; then
-    PASS=$((PASS + 1))
-    echo "  PASS: $msg"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: $msg"
-    echo "    file does not exist: $path"
-  fi
-}
-
-assert_file_not_exists() {
-  local path="$1"
-  local msg="$2"
-  if [[ ! -f "$path" ]]; then
-    PASS=$((PASS + 1))
-    echo "  PASS: $msg"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: $msg"
-    echo "    file should not exist: $path"
-  fi
-}
+source "$(dirname "${BASH_SOURCE[0]}")/lib/test_helpers.sh"
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -395,15 +263,7 @@ test_multiple_recommendations_single_message() {
   assert_contains "$output" "plugin-a" "first plugin in output"
   assert_contains "$output" "plugin-b" "second plugin in output"
   # Should be a single JSON object, not two.
-  local json_count
-  json_count=$(echo "$output" | grep -c '"hookSpecificOutput"' || true)
-  if [[ "$json_count" -eq 1 ]]; then
-    PASS=$((PASS + 1))
-    echo "  PASS: single JSON output block"
-  else
-    FAIL=$((FAIL + 1))
-    echo "  FAIL: expected 1 JSON block, got $json_count"
-  fi
+  assert_single_json_block "$output" "single JSON output block"
   teardown
 }
 
@@ -508,6 +368,147 @@ test_files_detection_is_case_insensitive() {
   teardown
 }
 
+test_dir_include_matches() {
+  echo "test: 'dir' + 'include' finds a match at any depth under dir"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt *.java", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "src/a/b/c/d/e/f/Bridge.java" "class Bridge { NativeBridge b; }"
+  assert_recommended "test-plugin" "match in a .java file seven levels deep"
+  add_project_file "src/Bridge.kt" "class Bridge(val b: NativeBridge)"
+  assert_recommended "test-plugin" "match in a .kt file directly under dir"
+  teardown
+}
+
+test_dir_include_no_match() {
+  echo "test: 'dir' + 'include' is silent when no included file matches"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt *.java", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "src/a/Other.kt" "class Other"
+  assert_silent "files exist but the pattern does not match"
+  add_project_file "src/a/Bridge.txt" "NativeBridge"
+  assert_silent "pattern matches only in a file the include glob excludes"
+  teardown
+}
+
+test_dir_include_missing_dir() {
+  echo "test: 'dir' + 'include' is silent when dir does not exist"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  assert_silent "no output when dir is missing"
+  # A file named like the dir is not a directory.
+  add_project_file "src" "NativeBridge"
+  assert_silent "no output when dir is a regular file"
+  teardown
+}
+
+test_dir_include_absent() {
+  echo "test: 'dir' without 'include' matches nothing"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "src/Bridge.kt" "class Bridge"
+  assert_silent "no output when include is missing"
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "src/Bridge.kt" "class Bridge"
+  assert_silent "no output when include is empty"
+  teardown
+}
+
+test_dir_include_glob_not_expanded() {
+  echo "test: 'include' globs are not expanded against the working directory"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  # A stray x.kt in the project root would replace the include glob if it
+  # were expanded by the shell, and then x.kt would be the only match.
+  add_project_file "x.kt" "class X"
+  add_project_file "src/Bridge.kt" "class Bridge(val b: NativeBridge)"
+  assert_recommended "test-plugin" "include glob still filters by pattern, not by a root file"
+  teardown
+}
+
+test_dir_include_mixed_array() {
+  echo "test: a 'dir' entry mixes with 'file' and 'files' entries (OR logic)"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": [
+      { "file": "pubspec.yaml", "pattern": "never-matches-here" },
+      { "files": "docs/plan/*.md", "pattern": "never-matches-here" },
+      { "dir": "src", "include": "*.kt", "pattern": "NativeBridge" }
+    ],
+    "marketplace": "Org/repo",
+    "description": "Mixed plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "docs/plan/p.md" "a plan"
+  add_project_file "src/a/Bridge.kt" "class Bridge(val b: NativeBridge)"
+  assert_recommended "test-plugin" "matched via the dir entry"
+  add_project_file "pubspec.yaml" "name: never-matches-here"
+  assert_recommended "test-plugin" "matched via the file entry with no dir match"
+  teardown
+}
+
+test_detect_precedence_file_files_dir() {
+  echo "test: within one entry, file wins over files, and files wins over dir"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "src/Bridge.kt" "NativeBridge"
+  assert_silent "file set: the dir match is ignored"
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "files": "docs/*.md", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "docs/a.md" "nothing here"
+  add_project_file "src/Bridge.kt" "NativeBridge"
+  assert_silent "files set: the dir match is ignored"
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "files": "docs/*.md", "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Precedence plugin."
+  }'
+  add_project_file "docs/a.md" "NativeBridge"
+  assert_recommended "test-plugin" "files set and matching"
+  teardown
+}
+
 # ---------------------------------------------------------------------------
 # Run all tests
 # ---------------------------------------------------------------------------
@@ -553,8 +554,18 @@ test_file_detection_is_case_insensitive
 echo ""
 test_files_detection_is_case_insensitive
 echo ""
-
-echo "=== Results: $PASS passed, $FAIL failed ==="
-if [[ $FAIL -gt 0 ]]; then
-  exit 1
-fi
+test_dir_include_matches
+echo ""
+test_dir_include_no_match
+echo ""
+test_dir_include_missing_dir
+echo ""
+test_dir_include_absent
+echo ""
+test_dir_include_glob_not_expanded
+echo ""
+test_dir_include_mixed_array
+echo ""
+test_detect_precedence_file_files_dir
+echo ""
+finish

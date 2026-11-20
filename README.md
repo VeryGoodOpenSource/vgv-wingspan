@@ -1,7 +1,6 @@
-# VGV Wingspan
+![VGV Wingspan, AI-assisted engineering workflows: a blue pixel texture beside the name, with the VGV logo in the corner](assets/readme-header.png)
 
-[![Very Good Ventures][logo_white]][very_good_ventures_link_dark]
-[![Very Good Ventures][logo_black]][very_good_ventures_link_light]
+# VGV Wingspan
 
 🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards.
 
@@ -17,7 +16,3 @@ The plugin lives in [`plugin/`](plugin/). Its [README](plugin/README.md) covers 
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to add or change a skill, and how to test it locally.         |
 
 [vgv_link]: https://verygood.ventures
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only

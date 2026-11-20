@@ -23,6 +23,8 @@ tool/
 plugin/                # The plugin folder: everything the plugin loads, and all a user installs
   LICENSE              # Copy of the root LICENSE, shipped with the plugin
   README.md            # Plugin README: installation, skills, agents, hooks
+  assets/
+    icon.png           # Listing icon, referenced from plugin.json
   .claude-plugin/
     plugin.json          # Plugin manifest (name, version, keywords)
   agents/                # Subagent definitions, grouped by role
@@ -44,8 +46,12 @@ plugin/                # The plugin folder: everything the plugin loads, and all
   hooks/
     hooks.json                    # Hook definitions (PreToolUse)
     recommend-plugins.sh          # Detects project type, recommends companion plugins
-    test_recommend_plugins.sh     # Tests for the recommendation hook
+    test_recommend_plugins.sh     # Tests for the hook's detection and output logic
+    test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
+    lib/
+      test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
     recommendations/
+      android-cli.json            # Detection rule + recommendation for the Android plugin
       vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
   skills/                # User-invocable and supporting skills (one dir per skill)
     brainstorm/SKILL.md            # Explore requirements and approaches
@@ -59,15 +65,19 @@ plugin/                # The plugin folder: everything the plugin loads, and all
     plan-technical-review/SKILL.md # Review externally-authored plans
     refine-approach/SKILL.md       # Iteratively improve a document
     rebase/SKILL.md                # Sync a feature branch with its base
-    elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
     shared/              # Shared references and scripts used across skills
       references/
+        agent-mode.md              # Run without a human: take the recommended option, log each decision
         clear-context-handoff.md   # The "clear context and <next step>" handoff block
         drive-to-green.md          # Loop until every gate is green by real output
+        elements-of-style.md       # Writing rules passed to review and flow-analysis agents
         feature-branch.md          # Branch check run before anything is written to disk
         file-findings-on-pr.md     # Post review findings as PR comments
+        plan-on-issue.md           # Plan on a GitHub issue: plan comment, phase sub-issues, picking a phase
         plan-review.md             # Quality pass applied to a drafted plan
         plan-templates/            # minimal, standard, extensive, phases, success criteria
+        pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
+        push.md                    # Push the branch and handle push failures
         review-agent-instructions.md  # Instructions passed to each review agent
         review-autonomy.md         # When /build and /hotfix apply Important findings without asking
         review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
@@ -109,7 +119,7 @@ The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, flow analysis, and a mandatory quality review of the draft. Splits large plans into phases so `/build` executes one phase per context window.
-3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits or full manual control — decided up front or from a saved preference.
+3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits, an unattended run that builds each phase in its own subagent, or full manual control — decided up front or from a saved preference.
 
 Standalone Skills:
 
@@ -117,11 +127,13 @@ Standalone Skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
-Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
+Each phase persists its output to `docs/` so the next phase can discover it from a cold start. Started from a GitHub issue, `/plan` and `/build` read from and write to the issue instead: `/plan` posts the plan and one sub-issue per phase, and `/build` ships the first open, unblocked phase as its own PR (see `plugin/skills/shared/references/plan-on-issue.md`).
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
 
 **Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, clear the context, then present the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
+
+**Agent mode:** for runs with no human at the keyboard, such as under an orchestrator. Turned on by `--agent-mode` in a skill's arguments or by asking to "use Wingspan in agent mode". Every skill still runs every step, but at each question it takes the recommended option instead of asking, and records the question, context, options, decision, and its impact in an ephemeral decision log for a human to review at the end. It never pushes, publishes, or deletes on its own unless the request allows it, and stops with a blocked status rather than guessing past a blocker. See `plugin/skills/shared/references/agent-mode.md`.
 
 Supporting skills:
 
@@ -155,6 +167,7 @@ class), and renders one consolidated report plus a matching chat summary (see
 - `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
 - `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
+- `docs/agent-decisions/` — Decision log from any skill run in agent mode (ephemeral, never committed, deleted once the human has reviewed it)
 
 ## Key Conventions
 
@@ -184,8 +197,9 @@ Evals do not run on a pull request, because they call real models.
 changed skills, with-plugin arm only, and always non-blocking. A full run is manual
 (`workflow_dispatch`).
 
-A run grants `Read`, `Glob`, `Grep` and `Skill` and nothing else, so a case measures the
-reply a skill produces, never a file it writes or a command it runs.
+A run grants `Read`, `Glob`, `Grep` and `Skill`, plus the subagent tool unless a case lists
+it in `disallowed_tools`, so a case measures the reply a skill produces, never a file it
+writes or a command it runs.
 
 ## Hooks
 
@@ -218,12 +232,16 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 |---------------------|----------------------------------------------------------------|
 | `plugin`            | Plugin name as registered in the marketplace                   |
 | `detect.file`       | Exact file path whose presence signals the project type        |
-| `detect.files`      | Shell glob — greps inside every matching file for `pattern`    |
+| `detect.files`      | Space-separated shell globs — greps inside every matching file for `pattern` |
+| `detect.dir`        | Directory searched recursively; pairs with `detect.include`    |
+| `detect.include`    | Space-separated filename globs (`*.kt *.java`) limiting the `dir` search; no spaces inside a glob |
 | `detect.pattern`    | Regex grep pattern to confirm the match                        |
 | `verificationSkill` | Optional. Skill the `/build` and `/hotfix` ship gate delegates to when this file's `detect` matches and the skill is installed |
 | `reviewAgent`       | Optional. Companion review agent type that `/review` and `/build` dispatch alongside their own reviewers when this file's `detect` matches and the agent is installed |
 | `marketplace`       | GitHub `owner/repo` for the marketplace registry               |
 | `description`       | One-line summary shown in the recommendation                   |
+
+Within one `detect` entry the precedence is `file`, then `files`, then `dir`. Keep `detect.dir` narrow: the hook does not exclude `build/` or `node_modules/`, and the search runs on every matched tool call until a recommendation is emitted.
 
 **Adding a new recommendation:** Drop a JSON file in `plugin/hooks/recommendations/` following the format above. No code changes required. All matching files are evaluated.
 

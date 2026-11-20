@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: plan-keeps-its-review-in-agent-mode
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: build-offers-unattended-for-a-phased-plan
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

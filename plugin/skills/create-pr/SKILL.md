@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts an optional skip-checks argument to bypass validation when called from /build. Use when the user says "create a PR", "open a PR", "submit a pull request", or "open a merge request", or when work on a branch is complete and ready to publish for review.
+description: Stage, commit, push, and open a pull request following project conventions and the Conventional Commits spec. Accepts an optional skip-checks argument to bypass validation when the checks already ran. Use when the user says "create a PR", "open a PR", "submit a pull request", or "open a merge request", or when work on a branch is complete and ready to publish for review.
 argument-hint: "[optional: skip-checks | ticket/issue number e.g. VGV-123 | short description]"
 disable-model-invocation: true
 allowed-tools: Bash(git push *) Bash(git add *) Bash(git commit *) Bash(gh *) Bash(glab *)
@@ -16,6 +16,10 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 > the same options in your reply as a short numbered list, and stop there for the answer.
 > Never answer a question on the user's behalf and carry on: a question the user never sees
 > is not a question, and a step that waits on one is not optional.
+>
+> **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
+> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> recommended option, record the decision in the decision log, and keep going.
 
 ## Steps checklist
 

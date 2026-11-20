@@ -19,6 +19,8 @@ carries:
 2. **The [review agent instructions](review-agent-instructions.md)**, with `<RAW_DIR>` set to
    the resolved absolute directory and `<name>` set to that agent's report name from the
    table (a bare stem — the agent writes `<RAW_DIR>/<name>.md`).
+3. **The [writing rules](elements-of-style.md)** — paste the file's full text verbatim after the
+   instructions. The agent cannot follow the relative link the instructions carry.
 
 ## Companion reviewers
 

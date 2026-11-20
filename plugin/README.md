@@ -1,13 +1,10 @@
-# VGV Wingspan
+![VGV Wingspan, AI-assisted engineering workflows: a blue pixel texture beside the name, with the VGV logo in the corner](https://raw.githubusercontent.com/VeryGoodOpenSource/vgv-wingspan/main/assets/readme-header.png)
 
-[![Very Good Ventures][logo_white]][very_good_ventures_link_dark]
-[![Very Good Ventures][logo_black]][very_good_ventures_link_light]
+# VGV Wingspan
 
 🦋 AI-assisted workflows that follow [Very Good Ventures][vgv_link] best practices and standards.
 
 Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
-
-![wingspan logo by very good ventures in blue](https://raw.githubusercontent.com/VeryGoodOpenSource/wingspan/main/assets/wingspan-logo.jpeg)
 
 ## Installation
 
@@ -57,6 +54,8 @@ Once you're happy with the brainstorm, turn it into an actionable implementation
 
 This reviews your codebase, references the brainstorm, runs a mandatory quality pass on the draft, and produces a phased, step-by-step plan saved to `docs/plan/`. Large plans are split into phases so `/build` can execute one phase per context window.
 
+Started from a GitHub issue (`/plan #123`), the plan goes back to that issue instead: a plan comment, plus one sub-issue per phase, each blocked by the one before.
+
 ### 3. `/build`
 
 Execute the plan — write code, write tests, run quality review, and open a PR:
@@ -64,6 +63,8 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 ```text
 /build docs/plan/add-authentication.md
 ```
+
+Given a planned issue (`/build #123`), it builds the first open, unblocked phase and opens a PR that closes it.
 
 ### 4. `/review`
 
@@ -74,6 +75,16 @@ As simple as this:
 ```text
 /review
 ```
+
+### Running without a human: agent mode
+
+To run Wingspan unattended, for example under an orchestrator, add `--agent-mode` or say "use Wingspan in agent mode":
+
+```text
+/build docs/plan/add-authentication.md --agent-mode
+```
+
+Each skill runs every step as usual, but takes the recommended option instead of asking. Every decision lands in `docs/agent-decisions/decisions.md` with its question, context, options, reasons, and how much it matters. Agent mode never pushes, publishes, or deletes on its own unless you allow it in the request. At the end, review the log: accept each decision or pick another, and the agent reworks what changed, moves the decisions worth keeping to your PR or docs, and deletes the log.
 
 ## Better Together: Working With The Very Good AI Flutter Plugin
 
@@ -96,9 +107,9 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
 | [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
-| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
+| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, improvement, or issue>` | Transform brainstorm output into a reviewed, phased implementation plan |
 | [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
-| [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
+| [**Build**](skills/build/SKILL.md) | `/build <plan file path or issue>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |
@@ -109,6 +120,8 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 ## Agents
 
 Wingspan ships subagents that Claude Code dispatches as isolated, specialized reviewers. Unlike skills, agents are **not** invoked as slash commands — the workflow skills dispatch them automatically, or you can ask Claude to run one by name (e.g. "review my changes with the vgv-review-agent").
+
+The review agents and the user flow analysis agent write to shared [writing rules](skills/shared/references/elements-of-style.md), based on Strunk's _Elements of Style_. The skill that dispatches an agent passes it the rules.
 
 | Agent | Description |
 | ----- | ----------- |
@@ -171,6 +184,8 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 | ---- | ------- | -------- |
 | **Recommend Plugins** (`recommend-plugins.sh`) | PreToolUse (`Read`/`Glob`/`Grep`) | Scans detection rules in `hooks/recommendations/`, recommends missing companion plugins once per session; non-blocking |
 
+Detection rules live in `hooks/recommendations/`.
+
 ### Prerequisites
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
@@ -194,11 +209,7 @@ See [evals/README.md][evals_readme_link] for the case format, the grader referen
 See [CONTRIBUTING.md][contributing_link] for how to add or improve skills, test your changes locally, and open a pull request. All contributors are expected to follow the [Code of Conduct][code_of_conduct_link].
 
 [vgv_link]: https://verygood.ventures
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only
-[evals_readme_link]: https://github.com/VeryGoodOpenSource/wingspan/blob/main/evals/README.md
-[evals_readme_ci_link]: https://github.com/VeryGoodOpenSource/wingspan/blob/main/evals/README.md#running-in-ci
-[contributing_link]: https://github.com/VeryGoodOpenSource/wingspan/blob/main/CONTRIBUTING.md
-[code_of_conduct_link]: https://github.com/VeryGoodOpenSource/wingspan/blob/main/CODE_OF_CONDUCT.md
+[evals_readme_link]: https://github.com/VeryGoodOpenSource/vgv-wingspan/blob/main/evals/README.md
+[evals_readme_ci_link]: https://github.com/VeryGoodOpenSource/vgv-wingspan/blob/main/evals/README.md#running-in-ci
+[contributing_link]: https://github.com/VeryGoodOpenSource/vgv-wingspan/blob/main/CONTRIBUTING.md
+[code_of_conduct_link]: https://github.com/VeryGoodOpenSource/vgv-wingspan/blob/main/CODE_OF_CONDUCT.md

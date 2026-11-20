@@ -1,6 +1,5 @@
 ---
 name: code-simplicity-review-agent
-skills: [elements-of-style]
 description: Final review pass over completed code for YAGNI violations, premature abstraction, and dead code. Returns findings that name what to remove and why an abstraction does not earn its keep — single-implementation interfaces, options no caller passes, hypothetical extension points. Use after implementation is complete, before opening a PR.
 model: sonnet
 effort: medium

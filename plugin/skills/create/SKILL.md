@@ -17,6 +17,10 @@ Route project creation to the right companion plugin. Wingspan does not scaffold
 > the same options in your reply as a short numbered list, and stop there for the answer.
 > Never answer a question on the user's behalf and carry on: a question the user never sees
 > is not a question, and a step that waits on one is not optional.
+>
+> **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
+> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> recommended option, record the decision in the decision log, and keep going.
 
 ## Project description
 
@@ -78,6 +82,8 @@ Tell the user to run these commands, then re-invoke `/create` with the same proj
 The available skills are listed in the system-reminder in your conversation context. Look for skills prefixed with the matched plugin name (`<plugin-name>:<skill-name>`). Among those, find the skill whose name or description best indicates project creation (look for terms like "create", "scaffold", "new project", "generate", "init").
 
 Invoke it using the **Skill tool** with its fully qualified name (e.g., `my-plugin:scaffold-project`), passing the user's full project description as arguments.
+
+**In agent mode**, the companion skill has no agent mode of its own, so once it returns, record each choice it made on the user's behalf (template, location, defaults it took) in the decision log and end the run as [agent mode](references/agent-mode.md) describes.
 
 - **No project-creation skill found for the plugin:** Inform the user the companion plugin is registered but does not provide a project-creation skill. Stop.
 - **If the skill invocation fails:** Surface the error to the user and suggest verifying the companion plugin is properly installed.

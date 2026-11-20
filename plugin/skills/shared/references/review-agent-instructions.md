@@ -108,4 +108,6 @@ grading keeps the ids stable:
 - **No IDs.** The caller assigns the stable `FINDING-NN` id after collecting every
   agent's list. Do not invent your own ids.
 - **`why` and `fix` are mandatory and one line each.** A finding with no fix is noise.
+- **Write to the [writing rules](elements-of-style.md).** The caller pastes them below these
+  instructions. Apply them to the detailed report and to every `title`, `why`, and `fix`.
 - Do not apply fixes. You review and report; the caller decides what to act on.
