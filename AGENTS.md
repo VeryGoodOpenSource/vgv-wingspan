@@ -40,6 +40,7 @@ hooks/
   recommend-plugins.sh          # Detects project type, recommends companion plugins
   test_recommend_plugins.sh     # Tests for the hook's detection and output logic
   test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
+  test_recommendation_xcode.sh  # Tests for the shipped xcode rule
   lib/
     test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
   recommendations/
