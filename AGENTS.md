@@ -48,11 +48,13 @@ plugin/                # The plugin folder: everything the plugin loads, and all
     recommend-plugins.sh          # Detects project type, recommends companion plugins
     test_recommend_plugins.sh     # Tests for the hook's detection and output logic
     test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
+    test_recommendation_xcode.sh  # Tests for the shipped xcode rule
     lib/
       test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
     recommendations/
       android-cli.json            # Detection rule + recommendation for the Android plugin
       vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
+      xcode.json                  # Detection rule + recommendation for Apple's Xcode plugin
   skills/                # User-invocable and supporting skills (one dir per skill)
     brainstorm/SKILL.md            # Explore requirements and approaches
     plan/SKILL.md                  # Turn a brainstorm into an implementation plan
@@ -212,7 +214,7 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 **How it works:**
 
 1. `plugin/hooks/recommend-plugins.sh` fires on the first matched tool call and scans every JSON file in `plugin/hooks/recommendations/`. Each file declares a detection rule and the plugin to recommend.
-2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. All matching recommendations are emitted together in a single `additionalContext` message.
+2. Every file whose detection rule matches — and whose plugin isn't already installed — is collected. A plugin counts as installed when `enabledPlugins` in a local, project or user settings file holds a key starting with `<plugin>@` set to `true`; a permission rule, a marketplace-only entry or a disabled plugin does not. All matching recommendations are emitted together in a single `additionalContext` message.
 3. A marker file (`/tmp/wingspan-recommend-plugins-<hash>`) is written only when at least one recommendation is emitted, suppressing repeats for the rest of the session. If no plugins are missing, no marker is written and the script re-evaluates on the next tool call — so a newly added recommendation file can still fire later in the same session.
 
 **Recommendation file format** (`plugin/hooks/recommendations/<plugin-name>.json`):
@@ -230,7 +232,8 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 
 | Field               | Purpose                                                        |
 |---------------------|----------------------------------------------------------------|
-| `plugin`            | Plugin name as registered in the marketplace                   |
+| `plugin`            | Marketplace entry name, the `<plugin>` in the `<plugin>@<marketplace>` key of `enabledPlugins` |
+| `scaffold`          | Optional. Set `false` when the plugin ships no project-creation skill; `/create` then never routes to it |
 | `detect.file`       | Exact file path whose presence signals the project type        |
 | `detect.files`      | Space-separated shell globs — greps inside every matching file for `pattern` |
 | `detect.dir`        | Directory searched recursively; pairs with `detect.include`    |

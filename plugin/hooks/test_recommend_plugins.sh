@@ -157,7 +157,7 @@ test_plugin_already_installed_local_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.local.json" '{"plugins": ["test-plugin"]}'
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin already installed"
@@ -175,7 +175,7 @@ test_plugin_already_installed_project_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.json" '{"plugins": ["test-plugin"]}'
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin in project settings"
@@ -193,14 +193,109 @@ test_plugin_already_installed_user_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  # HOME is overridden to TEST_DIR by setup, so this writes to the path
-  # the script checks as $HOME/.claude/settings.json.
-  mkdir -p "$TEST_DIR/.claude"
-  echo '{"plugins": ["test-plugin"]}' > "$TEST_DIR/.claude/settings.json"
+  # setup points HOME at TEST_DIR, which is also the project directory. Move HOME
+  # one level down so this file is reachable only as $HOME/.claude/settings.json.
+  export HOME="$TEST_DIR/home"
+  mkdir -p "$HOME/.claude"
+  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$HOME/.claude/settings.json"
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin in user-level settings"
   assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+# The installed check reads the enabledPlugins key (<plugin>@<marketplace>),
+# not any mention of the plugin name in a settings file.
+add_installed_check_fixture() {
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+}
+
+test_installed_permission_rule_not_installed() {
+  echo "test: a permission rule naming the plugin does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"permissions": {"allow": ["Bash(test-plugin:*)"]}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_marketplace_only_not_installed() {
+  echo "test: a marketplace entry without enabledPlugins does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"extraKnownMarketplaces": {"test-marketplace": {"source": {"source": "github", "repo": "Org/repo"}}}, "note": "test-plugin@test-marketplace"}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_disabled_plugin_not_installed() {
+  echo "test: a disabled plugin does not count as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": false}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_malformed_settings_not_installed() {
+  echo "test: malformed settings JSON counts as not installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_enabled_plugin() {
+  echo "test: an enabled <plugin>@<marketplace> key counts as installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"other@x": false, "test-plugin@test-marketplace": true}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "no output when the plugin is enabled"
+  assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+test_installed_longer_plugin_name_not_installed() {
+  echo "test: an enabled plugin whose name only starts with the rule's plugin is not installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin-extra@test-marketplace": true}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_enabled_in_any_settings_file() {
+  echo "test: one settings file enabling the plugin counts even when another disables it"
+  setup
+  add_installed_check_fixture
+  # The user-level file is the only one that enables it; the local file disables it.
+  export HOME="$TEST_DIR/home"
+  mkdir -p "$HOME/.claude"
+  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$HOME/.claude/settings.json"
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": false}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "no output when any file enables the plugin"
   teardown
 }
 
@@ -283,7 +378,7 @@ test_mixed_match_and_skip() {
     "description": "Not installed."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.local.json" '{"plugins": ["installed-plugin"]}'
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"installed-plugin@test-marketplace": true}}'
   local output
   output=$(run_hook)
   assert_not_contains "$output" "installed-plugin" "installed plugin excluded"
@@ -381,6 +476,21 @@ test_dir_include_matches() {
   assert_recommended "test-plugin" "match in a .java file seven levels deep"
   add_project_file "src/Bridge.kt" "class Bridge(val b: NativeBridge)"
   assert_recommended "test-plugin" "match in a .kt file directly under dir"
+  teardown
+}
+
+test_dir_include_symlinked_dir() {
+  echo "test: 'dir' + 'include' searches a dir that is itself a symlink"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "shared/src/Bridge.kt" "class Bridge(val b: NativeBridge)"
+  ln -s shared/src "$TEST_DIR/src"
+  assert_recommended "test-plugin" "match inside a symlinked dir"
   teardown
 }
 
@@ -538,6 +648,20 @@ test_plugin_already_installed_project_settings
 echo ""
 test_plugin_already_installed_user_settings
 echo ""
+test_installed_permission_rule_not_installed
+echo ""
+test_installed_marketplace_only_not_installed
+echo ""
+test_installed_disabled_plugin_not_installed
+echo ""
+test_installed_malformed_settings_not_installed
+echo ""
+test_installed_enabled_plugin
+echo ""
+test_installed_longer_plugin_name_not_installed
+echo ""
+test_installed_enabled_in_any_settings_file
+echo ""
 test_files_glob_no_matching_files
 echo ""
 test_marker_suppresses_second_run
@@ -555,6 +679,8 @@ echo ""
 test_files_detection_is_case_insensitive
 echo ""
 test_dir_include_matches
+echo ""
+test_dir_include_symlinked_dir
 echo ""
 test_dir_include_no_match
 echo ""
