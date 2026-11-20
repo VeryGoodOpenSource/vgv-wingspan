@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: elements-of-style-stays-out-of-a-code-rename
-context:
-  scaffold_script: fixture.sh

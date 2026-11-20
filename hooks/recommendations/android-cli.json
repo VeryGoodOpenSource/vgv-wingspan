@@ -1,0 +1,13 @@
+{
+  "plugin": "android-cli",
+  "detect": [
+    { "files": "build.gradle* settings.gradle*", "pattern": "com\\.android\\.(application|library)|plugins\\.android\\.(application|library)" },
+    { "file": "gradle/libs.versions.toml", "pattern": "com\\.android\\.(application|library)" },
+    { "file": "pubspec.yaml", "pattern": "^\\s+(package|androidPackage):" },
+    { "files": "android/build.gradle*", "pattern": "com\\.android\\.library" },
+    { "dir": "android/app/src/main", "include": "*.kt *.java", "pattern": "MethodChannel|EventChannel|BasicMessageChannel|PlatformView|configureFlutterEngine" },
+    { "files": "docs/plan/*.md docs/brainstorm/*.md", "pattern": "kotlin|jetpack compose|androidx" }
+  ],
+  "marketplace": "android/android-cli-plugin",
+  "description": "Google's official Android CLI skill for native Android development in Kotlin and Jetpack Compose: create projects, build and run apps on emulators and devices, manage the Android SDK, and search the Android documentation."
+}
