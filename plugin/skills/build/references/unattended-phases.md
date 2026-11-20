@@ -27,7 +27,8 @@ a phase commit would sweep those changes in, so use **AskUserQuestion** before d
 
 Dispatch the phase with the `Agent` tool (a general-purpose subagent). Run it in the
 foreground (`run_in_background: false`) and wait for its result in this turn: permissions in
-`allowed-tools` last only for the turn that invoked `/build`. Substitute the placeholders:
+`allowed-tools` last only for the turn that invoked `/build`. Before each dispatch, note the
+phase's `**Status:**` and `git rev-parse HEAD`. Substitute the placeholders:
 
 ```text
 You are building one phase of an implementation plan, as one step of an unattended build.
@@ -116,7 +117,10 @@ checks above, as unknown, never as done or blocked:
 2. Show the user what came back: the tail of the reply, or the error.
 3. Run `git status --porcelain --untracked-files=all` and `git log -1 --oneline`, and show what
    the phase left: uncommitted changes, a commit, or nothing.
-4. Use **AskUserQuestion**:
+4. If the plan marks the phase `Done` but `HEAD` is still the commit noted before the
+   dispatch, set its `**Status:**` back to the one noted. A `Done` with no commit would make
+   a resume skip the phase.
+5. Use **AskUserQuestion**:
    1. **Dispatch the phase again** — a new subagent, with `<PARTIAL_WORK>` naming any
       uncommitted changes.
    2. **Stop here** — end the run; `/build` resumes from the `**Status:**` markers.
