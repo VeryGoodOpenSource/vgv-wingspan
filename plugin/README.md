@@ -13,7 +13,7 @@ Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 One-line install from your terminal:
 
 ```bash
-claude plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketplace && claude plugin install vgv-wingspan
+claude plugin install vgv-wingspan --marketplace VeryGoodOpenSource/very-good-claude-code-marketplace
 ```
 
 Or inside an active Claude Code session, run these as **two separate commands** (the second only after the first completes):
@@ -186,9 +186,21 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 
 Detection rules live in `hooks/recommendations/`.
 
+What the hook reads and writes:
+
+- It reads `.claude/settings.local.json`, `.claude/settings.json` and `~/.claude/settings.json` to see which plugins are installed.
+- It writes an empty marker file, `/tmp/wingspan-recommend-plugins-<hash>`, so it recommends only once per project.
+- It makes no network calls.
+
 ### Prerequisites
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
+
+## Scripts
+
+Some skills run helper scripts: `detect-base-branch.sh` and `detect-review-scope.sh`.
+They only read local git state.
+They write no files and make no network calls.
 
 ## Evals
 
