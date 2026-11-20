@@ -155,8 +155,8 @@ runs each remaining phase in its own subagent, per [unattended phases](reference
    new one with the answer and the phase's partial work. **Stop here** ends the run; `/build`
    resumes from the markers.
 5. **Anything else** — no `STATUS` block, an error, or a `done` that fails the checks in Step 3
-   → stop, show the user what came back and what `git status` shows, and ask before
-   dispatching that phase again.
+   → stop, set back a `Done` marker the phase never committed, show the user what came back
+   and what `git status` shows, and ask before dispatching that phase again.
 6. **No phases remain** → go to the Surgical-Diff Gate; review and ship run in the main session
    as usual.
 
