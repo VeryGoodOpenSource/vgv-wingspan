@@ -10,7 +10,7 @@
 #
 # Fixtures are shaped like real files: share_plus (a plugin implementation),
 # url_launcher (an app-facing federated package), the Flutter module template
-# (add-to-app), and flutter/samples platform_channels.
+# (add-to-app), and templates/plugin_ffi (an FFI plugin).
 
 set -euo pipefail
 
@@ -68,6 +68,10 @@ test_android_version_catalog_file() {
   add_project_file "gradle/libs.versions.toml" '[plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }'
   assert_recommended "android-cli" "recommends from the version catalog"
+
+  add_project_file "gradle/libs.versions.toml" '[plugins]
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }'
+  assert_silent "silent for a catalog without an Android plugin"
   teardown
 }
 
@@ -75,7 +79,7 @@ test_android_flutter_plugin_pubspec() {
   echo "test: android-cli recommended for a Flutter plugin's pubspec"
   setup
   use_real_recommendation "android-cli"
-  # Shaped like share_plus. A federated implementation takes the same package: branch.
+  # Shaped like share_plus. A federated implementation reaches this same package: branch.
   add_project_file "pubspec.yaml" "name: share_plus
 flutter:
   plugin:
@@ -86,6 +90,16 @@ flutter:
       ios:
         pluginClass: FPPSharePlusPlugin"
   assert_recommended "android-cli" "recommends for a native plugin implementation"
+
+  # The same branch at another indent: package: sits four spaces in.
+  add_project_file "pubspec.yaml" "name: my_plugin
+flutter:
+ plugin:
+  platforms:
+   android:
+    package: com.example.my_plugin
+    pluginClass: MyPlugin"
+  assert_recommended "android-cli" "recommends at a four-space package: indent"
   teardown
 }
 
@@ -101,21 +115,6 @@ flutter:
     androidPackage: dev.flutter.flutter_module_books
     iosBundleIdentifier: dev.flutter.flutterModuleBooks"
   assert_recommended "android-cli" "recommends for androidPackage"
-  teardown
-}
-
-test_android_plugin_pubspec_other_indent() {
-  echo "test: android-cli recommended for a plugin pubspec at a one-space indent"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: my_plugin
-flutter:
- plugin:
-  platforms:
-   android:
-    package: com.example.my_plugin
-    pluginClass: MyPlugin"
-  assert_recommended "android-cli" "recommends at a one-space indent"
   teardown
 }
 
@@ -138,7 +137,7 @@ flutter:
 }
 
 test_android_plain_flutter_app_not_recommended() {
-  echo "test: android-cli not recommended for a plain Flutter app"
+  echo "test: android-cli not recommended for a plain Flutter app or package-like keys"
   setup
   use_real_recommendation "android-cli"
   add_project_file "pubspec.yaml" "name: my_app
@@ -156,13 +155,7 @@ flutter_native_splash:
 flutter:
   uses-material-design: true"
   assert_silent "silent for 'android: true' and 'android_12:'"
-  teardown
-}
 
-test_android_unrelated_pubspec_keys() {
-  echo "test: android-cli not recommended for unrelated package-like pubspec keys"
-  setup
-  use_real_recommendation "android-cli"
   add_project_file "pubspec.yaml" "name: my_app
 package_rename_config:
   android:
@@ -180,6 +173,8 @@ test_android_ffi_plugin() {
   echo "test: android-cli recommended for an FFI plugin"
   setup
   use_real_recommendation "android-cli"
+  # The pubspec is context only: ffiPlugin: true has no package: line, so the
+  # match comes from android/build.gradle (the com.android.library entry).
   add_project_file "pubspec.yaml" "name: my_ffi
 flutter:
   plugin:
@@ -216,8 +211,13 @@ test_android_plain_app_gradle_files_not_recommended() {
 dependencies:
   flutter:
     sdk: flutter"
-  # Shaped like the flutter_tools app template: repositories only.
-  add_project_file "android/build.gradle" "allprojects {
+  # Shaped like the flutter_tools app template, plus an application plugin id:
+  # only com.android.library may match in android/build.gradle.
+  add_project_file "android/build.gradle" "plugins {
+    id 'com.android.application' apply false
+}
+
+allprojects {
     repositories {
         google()
         mavenCentral()
@@ -275,6 +275,8 @@ test_android_plain_app_generated_files_not_recommended() {
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity: FlutterActivity()"
+  # The registrant names WebViewFlutterPlugin: it guards the dir entry against a
+  # FlutterPlugin keyword, which would match every generated registrant.
   add_project_file "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java" "package io.flutter.plugins;
 
 import androidx.annotation.Keep;
@@ -333,13 +335,9 @@ test_android_flutter_plugin_pubspec
 echo ""
 test_android_add_to_app_pubspec
 echo ""
-test_android_plugin_pubspec_other_indent
-echo ""
 test_android_federated_app_facing_not_recommended
 echo ""
 test_android_plain_flutter_app_not_recommended
-echo ""
-test_android_unrelated_pubspec_keys
 echo ""
 test_android_ffi_plugin
 echo ""
