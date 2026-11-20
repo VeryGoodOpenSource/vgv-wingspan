@@ -54,6 +54,8 @@ Once you're happy with the brainstorm, turn it into an actionable implementation
 
 This reviews your codebase, references the brainstorm, runs a mandatory quality pass on the draft, and produces a phased, step-by-step plan saved to `docs/plan/`. Large plans are split into phases so `/build` can execute one phase per context window.
 
+Started from a GitHub issue (`/plan #123`), the plan goes back to that issue instead: a plan comment, plus one sub-issue per phase, each blocked by the one before.
+
 ### 3. `/build`
 
 Execute the plan — write code, write tests, run quality review, and open a PR:
@@ -61,6 +63,8 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 ```text
 /build docs/plan/add-authentication.md
 ```
+
+Given a planned issue (`/build #123`), it builds the first open, unblocked phase and opens a PR that closes it.
 
 ### 4. `/review`
 
@@ -93,9 +97,9 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
 | [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
-| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, or improvement>` | Transform brainstorm output into a reviewed, phased implementation plan |
+| [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, improvement, or issue>` | Transform brainstorm output into a reviewed, phased implementation plan |
 | [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
-| [**Build**](skills/build/SKILL.md) | `/build <plan file path>` | Execute a plan — write code and tests, run quality review, ship a PR |
+| [**Build**](skills/build/SKILL.md) | `/build <plan file path or issue>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
 | [**Create**](skills/create/SKILL.md) | `/create <what to create>` | Scaffold a new project by routing to the right companion plugin |

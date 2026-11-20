@@ -1,16 +1,16 @@
 ---
 name: build
 user-invocable: true
-description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it".
+description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it", or when handed a planned GitHub issue to build.
 effort: high
-argument-hint: plan file path
+argument-hint: plan file path or GitHub issue
 allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Execute an implementation plan
 
-Take a plan from `docs/plan/` and turn it into shipped code: implement features, write tests, and validate quality. This is the execution phase. The plan was already reviewed and approved — follow it rather than redesigning it.
+Take a plan from `docs/plan/`, or from a GitHub issue, and turn it into shipped code: implement features, write tests, and validate quality. This is the execution phase. The plan was already reviewed and approved — follow it rather than redesigning it.
 
 > **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
 > not available — another harness, or a non-interactive session — put the same question and
@@ -36,6 +36,26 @@ Build Progress:
 <plan_path>$ARGUMENTS</plan_path>
 
 ## Phase 0 — Load Plan
+
+**Plan on a GitHub issue:** if `<plan_path>` is an issue URL or `#<number>`, the plan lives on
+that issue, in the comment whose first line is `<!-- wingspan:plan -->`. Skip the table below and pick the phase per
+[plan on an issue](references/plan-on-issue.md): the first open, unblocked phase, or the phase
+given. Announce "Building Phase N: [name] (#<phase>)". This run builds that one phase and
+ships it as its own PR, so there is no resumed build; settle commit autonomy and confirm scope
+as below. Before Phase 1, cut a new branch for the phase from the up-to-date base branch,
+even when already on a feature branch: the previous phase merged, so its branch is finished.
+Resolve `<base>` as the [surgical-diff gate](references/surgical-diff-gate.md) does, and name
+the branch as the [feature branch check](references/feature-branch.md) does. Bring the local
+`<base>` up to date too, since the surgical-diff gate diffs against it:
+
+```bash
+git checkout <base>
+git pull --ff-only origin <base>
+git checkout -b <type>/<kebab-topic>
+```
+
+If the pull cannot fast-forward, stop and tell the user: their local `<base>` has commits the
+remote does not.
 
 ```bash
 ls docs/plan/
@@ -64,8 +84,9 @@ Honor a saved preference if one exists. Otherwise put the choice to the user and
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
   Nothing is committed or pushed without them.
 
-Leave out **Run all phases unattended** when fewer than two phases are left to build, or when
-this session has no subagent tool to run each phase in. Keep the other labels as written.
+Leave out **Run all phases unattended** when fewer than two phases are left to build, when
+building from an issue (each run builds one phase), or when this session has no subagent tool
+to run each phase in. Keep the other labels as written.
 
 These two questions — how this build commits, and whether the scope below is right — are the
 gate on Phase 1. **Write no file until both are answered.** Going ahead and implementing,
@@ -107,6 +128,9 @@ Determine the unit of work:
   from here. One phase is the unit of work: build it, checkpoint, clear, then take the next.
   Running the whole plan in one pass is the thing this structure exists to prevent.
 - **No phases** → treat the whole plan as one phase: implement every task, then run the loop once.
+- **Built from an issue** → the phase picked in Phase 0 is the one phase. Its sub-issue carries
+  the same fields, minus `**Status:**`; run the loop once for it. A plan with no phases runs
+  the loop once for the whole plan, as above.
 
 ### Unattended run
 
@@ -162,7 +186,7 @@ Run the phase's **Validation** steps, then follow the [validation and fix proced
 
 #### Step 4: Record the phase
 
-Set this phase's `**Status:**` to `Done` in the plan file — this marker lets a build resume the right phase after a context clear (the plan is a local artifact, so it survives `/clear`).
+Set this phase's `**Status:**` to `Done` in the plan file — this marker lets a build resume the right phase after a context clear (the plan is a local artifact, so it survives `/clear`). Built from an issue, skip this: merging the PR closes the phase's sub-issue, and that marks it done.
 
 Then handle the phase's changes per the [commit autonomy](references/commit-autonomy.md) chosen in Phase 0.
 
@@ -172,6 +196,7 @@ Brief progress update to the user: phase completed, phases remaining.
 
 #### Step 6: Advance
 
+- **Built from an issue** → the one phase this run takes is done; proceed to the Surgical-Diff Gate.
 - **More phases remain, auto-commit mode** → use **AskUserQuestion**:
   1. **Clear context and continue (Recommended)**: build the next phase in a fresh window. Follow the [clear context handoff](references/clear-context-handoff.md) with `<NEXT_SKILL>` = `build`, `<DOC_PATH>` = this plan's path, and `<NEXT_ACTION>` = "the next phase". Then **stop**.
   2. **Continue in this context**: loop back and build the next phase now.
@@ -256,11 +281,11 @@ Handle the outstanding changes — the drive-to-green loop, the surgical-diff ga
 
 If the build has resumed in a new turn since `/build` was invoked (a background reviewer's notification, the user's answer to a question), the push and PR permissions no longer apply: tell the user the push and PR need their approval before you run them.
 
-To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md).
+To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md), with the `Closes` lines from [plan on an issue](references/plan-on-issue.md) when the plan came from one.
 
 ### Post-Ship
 
-Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits.
+Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
 
 Use **AskUserQuestion** to present options:
 

@@ -5,6 +5,7 @@ the authoritative command before running the drive-to-green loop.
 
 | Case | Gate set and authoritative command |
 | ---- | ---------------------------------- |
+| Built from a GitHub issue, and phases remain after this one | Gate set and authoritative command are this phase's `**Validation:**`. The plan's criteria test the later phases' work too, so they gate the last phase's PR |
 | Block present with a `VERIFICATION COMMAND` | Gate set is the non-manual `verify:` commands; the `VERIFICATION COMMAND` is authoritative |
 | Block present, `VERIFICATION COMMAND` missing, non-manual `verify:` lines exist | Synthesize the authoritative command by joining those `verify:` commands with `&&` |
 | Only `verify: manual` criteria | Skip the loop; go straight to the manual-criteria checklist |

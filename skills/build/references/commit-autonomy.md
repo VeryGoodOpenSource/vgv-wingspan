@@ -13,7 +13,9 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
   Nothing is committed or pushed without them.
 
 Leave out **Run all phases unattended** when fewer than two phases are left to build: a single
-phase has nothing to run unattended between. Leave it out too when this session has no
+phase has nothing to run unattended between. Leave it out when building from a GitHub issue,
+for the same reason: each run builds one phase and ships it as its own pull request, per
+[plan on an issue](plan-on-issue.md). Leave it out too when this session has no
 subagent tool (such as `Agent`): the option exists to give each phase a fresh context, and
 building every phase in one session is what it prevents.
 

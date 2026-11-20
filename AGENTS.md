@@ -60,6 +60,7 @@ skills/                # User-invocable and supporting skills (one dir per skill
       drive-to-green.md          # Loop until every gate is green by real output
       feature-branch.md          # Branch check run before anything is written to disk
       file-findings-on-pr.md     # Post review findings as PR comments
+      plan-on-issue.md           # Plan on a GitHub issue: plan comment, phase sub-issues, picking a phase
       plan-review.md             # Quality pass applied to a drafted plan
       plan-templates/            # minimal, standard, extensive, phases, success criteria
       pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
@@ -113,7 +114,7 @@ Standalone Skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
-Each phase persists its output to `docs/` so the next phase can discover it from a cold start.
+Each phase persists its output to `docs/` so the next phase can discover it from a cold start. Started from a GitHub issue, `/plan` and `/build` read from and write to the issue instead: `/plan` posts the plan and one sub-issue per phase, and `/build` ships the first open, unblocked phase as its own PR (see `skills/shared/references/plan-on-issue.md`).
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
 

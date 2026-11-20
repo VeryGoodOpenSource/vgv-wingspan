@@ -1,9 +1,9 @@
 ---
 name: plan
 user-invocable: true
-description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when the user says "plan this", "create a plan", "how should we implement", or "write an implementation plan".
+description: Turns high-level brainstorming and ideas into well-structured, actionable implementation plans. Use when the user says "plan this", "create a plan", "how should we implement", or "write an implementation plan", or when handed a GitHub issue to plan.
 effort: high
-argument-hint: feature, bug fix, or improvement to plan
+argument-hint: feature, bug fix, or improvement to plan, or a GitHub issue
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -34,6 +34,11 @@ gh issue view <url-or-number> --json title,body
 ```
 
 Treat the issue body as the brainstorm document, announce "Found brainstorm issue: [title]", and proceed. If the command fails, fall back to the local search below.
+
+**Planned from an issue, the plan goes back to it**: one plan comment, and one sub-issue per
+phase, each blocked by the one before. Follow [plan on an issue](references/plan-on-issue.md)
+from here on. Its _Before planning_ check runs now, and the steps below say where the rest
+applies.
 
 ```bash
 ls docs/brainstorm/
@@ -129,6 +134,8 @@ Before selecting a template, derive the plan's success criteria and make each on
 
 Surface every rejected or rewritten criterion to the user with **AskUserQuestion** before writing the plan file — do not silently change the spec they approved.
 
+Planning from an issue, start from the acceptance criteria it already states, and surface any you rewrite the same way.
+
 These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
 
 `/build` reads the block back, so its shape holds even when the reference cannot be read from
@@ -159,6 +166,8 @@ phase per context window — renaming them to anything of your own, however clea
 ### 5.1. Set up workspace
 
 Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
+Planning from an issue, skip it: the draft leaves the repository once it is published. If
+the user declines to publish, run it then, before the plan continues as a local plan.
 
 ### 6. Write and review the plan file
 
@@ -177,7 +186,21 @@ After writing the plan file and before presenting options, run a mandatory quali
 - **Minimal template** → skip this section. The overhead is not worth it for a small plan.
 - **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
 
+Planning from an issue, a recommended split offers only phases or no phases: each phase
+already ships as its own PR (see [plan on an issue](references/plan-on-issue.md)).
+
 Return here once the review completes, then present the options below.
+
+## Publish to the issue
+
+Planning from an issue, publish the reviewed plan per
+[plan on an issue](references/plan-on-issue.md): confirm first, then post the plan comment,
+whose first line is `<!-- wingspan:plan -->`, create the phase sub-issues, and fill their
+numbers into the comment. Once published, `ISSUE_URL` replaces the plan file path
+everywhere below, **Open the plan file in my code editor** opens the issue instead
+(`gh issue view <number> --web`), and **Review and refine** is dropped: refine through
+**Edit** before publishing, not after. If the user declines, the local plan file stands and
+nothing below changes.
 
 ## Post-Generation Options
 
