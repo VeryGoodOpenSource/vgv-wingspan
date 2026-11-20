@@ -193,10 +193,11 @@ test_plugin_already_installed_user_settings() {
     "description": "Test plugin."
   }'
   add_project_file "pubspec.yaml" "name: my_app"
-  # HOME is overridden to TEST_DIR by setup, so this writes to the path
-  # the script checks as $HOME/.claude/settings.json.
-  mkdir -p "$TEST_DIR/.claude"
-  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$TEST_DIR/.claude/settings.json"
+  # setup points HOME at TEST_DIR, which is also the project directory. Move HOME
+  # one level down so this file is reachable only as $HOME/.claude/settings.json.
+  export HOME="$TEST_DIR/home"
+  mkdir -p "$HOME/.claude"
+  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$HOME/.claude/settings.json"
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when plugin in user-level settings"
@@ -250,11 +251,20 @@ test_installed_disabled_plugin_not_installed() {
 }
 
 test_installed_malformed_settings_not_installed() {
-  echo "test: malformed JSON and a non-object enabledPlugins count as not installed"
+  echo "test: malformed settings JSON counts as not installed"
   setup
   add_installed_check_fixture
-  # HOME is TEST_DIR, so settings.json is both the project and the user file.
-  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true'
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_non_object_enabled_plugins_not_installed() {
+  echo "test: a non-object enabledPlugins counts as not installed"
+  setup
+  add_installed_check_fixture
   add_settings ".claude/settings.json" '{"enabledPlugins": ["test-plugin@test-marketplace"]}'
   local output
   output=$(run_hook)
@@ -271,6 +281,48 @@ test_installed_enabled_plugin() {
   output=$(run_hook)
   assert_empty "$output" "no output when the plugin is enabled"
   assert_file_not_exists "$MARKER" "no marker written"
+  teardown
+}
+
+test_installed_longer_plugin_name_not_installed() {
+  echo "test: an enabled plugin whose name only starts with the rule's plugin is not installed"
+  setup
+  add_installed_check_fixture
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin-extra@test-marketplace": true}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "test-plugin" "still recommended"
+  teardown
+}
+
+test_installed_enabled_in_any_settings_file() {
+  echo "test: one settings file enabling the plugin counts even when another disables it"
+  setup
+  add_installed_check_fixture
+  # The user-level file is the only one that enables it; the local file disables it.
+  export HOME="$TEST_DIR/home"
+  mkdir -p "$HOME/.claude"
+  echo '{"enabledPlugins": {"test-plugin@test-marketplace": true}}' > "$HOME/.claude/settings.json"
+  add_settings ".claude/settings.local.json" '{"enabledPlugins": {"test-plugin@test-marketplace": false}}'
+  local output
+  output=$(run_hook)
+  assert_empty "$output" "no output when any file enables the plugin"
+  teardown
+}
+
+test_installed_check_reads_plugin_not_skill_prefix() {
+  echo "test: the shipped xcode rule is installed under its plugin name, not its skillPrefix"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "App.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"xcode-integration@claude-plugins-official": true}}'
+  local output
+  output=$(run_hook)
+  assert_contains "$output" "xcode" "the skillPrefix key does not count as installed"
+  rm -f "$MARKER"
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"xcode@claude-plugins-official": true}}'
+  output=$(run_hook)
+  assert_empty "$output" "the plugin key counts as installed"
   teardown
 }
 
@@ -616,7 +668,15 @@ test_installed_disabled_plugin_not_installed
 echo ""
 test_installed_malformed_settings_not_installed
 echo ""
+test_installed_non_object_enabled_plugins_not_installed
+echo ""
 test_installed_enabled_plugin
+echo ""
+test_installed_longer_plugin_name_not_installed
+echo ""
+test_installed_enabled_in_any_settings_file
+echo ""
+test_installed_check_reads_plugin_not_skill_prefix
 echo ""
 test_files_glob_no_matching_files
 echo ""

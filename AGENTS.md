@@ -223,7 +223,8 @@ A `PreToolUse` hook runs on every `Read`, `Glob`, or `Grep` call. It detects the
 | Field               | Purpose                                                        |
 |---------------------|----------------------------------------------------------------|
 | `plugin`            | Marketplace entry name, the `<plugin>` in the `<plugin>@<marketplace>` key of `enabledPlugins`; the hook treats the plugin as installed when that key is `true` |
-| `skillPrefix`       | Optional. Skill-name prefix when it differs from `plugin`; defaults to `plugin`. `/create` matches installed skills on `<skillPrefix>:`; it covers skills only, never the installed check |
+| `skillPrefix`       | Optional. Skill-name prefix when it differs from `plugin`; defaults to `plugin`. `/create` matches installed skills on `<skillPrefix>:` |
+| `scaffold`          | Optional. Set `false` when the plugin ships no project-creation skill; `/create` then never routes to it |
 | `detect.file`       | Exact file path whose presence signals the project type        |
 | `detect.files`      | Space-separated shell globs — greps inside every matching file for `pattern` |
 | `detect.dir`        | Directory searched recursively; pairs with `detect.include`    |

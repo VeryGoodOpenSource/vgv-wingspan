@@ -3,7 +3,8 @@
 #
 # Scans JSON files in the recommendations/ directory. Each file describes
 # a plugin to recommend: how to detect the project type (a file + grep
-# pattern) and the plugin name to look for in Claude Code settings.
+# pattern) and the plugin name. A plugin counts as installed when an
+# enabledPlugins key starting with "<plugin>@" is true in Claude Code settings.
 #
 # To add a new recommendation, drop a JSON file in recommendations/ with:
 #   {

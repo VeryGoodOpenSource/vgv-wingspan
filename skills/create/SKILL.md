@@ -45,6 +45,7 @@ Each recommendation file has this structure:
 {
   "plugin": "plugin-name",
   "skillPrefix": "skill-prefix",
+  "scaffold": false,
   "description": "What the plugin provides.",
   "marketplace": "OrgName/repo-name"
 }
@@ -52,9 +53,11 @@ Each recommendation file has this structure:
 
 `skillPrefix` is optional. A recommendation sets it only when the plugin's skills carry a different prefix than its `plugin` name.
 
+`scaffold` is optional. A recommendation sets it to `false` only when the plugin ships no project-creation skill; Step 2 skips it.
+
 ## Step 2: Match the user's request to a plugin
 
-Compare the user's project description against each recommendation's `plugin` name and `description` (case-insensitive). Pick the plugin whose description best matches the requested technology.
+Compare the user's project description against each recommendation's `plugin` name and `description` (case-insensitive), leaving out recommendations with `scaffold` set to `false`. Pick the plugin whose description best matches the requested technology.
 
 - **No match:** Inform the user no companion plugin is registered for this project type. Stop.
 - **Multiple matches:** Pick the most specific match for the requested project type.
@@ -62,7 +65,7 @@ Compare the user's project description against each recommendation's `plugin` na
 
 ## Step 3: Verify the plugin is installed
 
-The skill prefix is the recommendation's `skillPrefix` when it is a non-empty string, otherwise its `plugin` value. The prefix is for detection only: the install prompt and commands below always use `plugin`, the installable marketplace name.
+The skill prefix is the recommendation's `skillPrefix` when it is a non-empty string, otherwise its `plugin` value. The install commands below use `plugin`.
 
 Check the available skills listed in the system-reminder in your conversation context for any skill prefixed `<skill-prefix>:`.
 
