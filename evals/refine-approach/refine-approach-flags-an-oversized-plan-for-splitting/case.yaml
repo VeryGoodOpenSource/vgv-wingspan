@@ -1,4 +1,4 @@
 schema_version: "1.1"
-name: plan-technical-review-stays-out-of-a-code-question
+name: refine-approach-flags-an-oversized-plan-for-splitting
 context:
   scaffold_script: fixture.sh

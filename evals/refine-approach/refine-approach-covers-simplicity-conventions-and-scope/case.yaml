@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: refine-approach-covers-simplicity-conventions-and-scope
+context:
+  scaffold_script: fixture.sh

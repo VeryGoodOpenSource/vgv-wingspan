@@ -54,8 +54,7 @@ skills/                # User-invocable and supporting skills (one dir per skill
   debrief/SKILL.md               # Post-incident analysis document
   create/SKILL.md                # Scaffold a new project via companion plugins
   create-pr/SKILL.md             # Generate a PR title and description
-  plan-technical-review/SKILL.md # Review externally-authored plans
-  refine-approach/SKILL.md       # Iteratively improve a document
+  refine-approach/SKILL.md       # Review a plan or document: technical review or critique
   rebase/SKILL.md                # Sync a feature branch with its base
   shared/              # Shared references and scripts used across skills
     references/
@@ -131,8 +130,7 @@ Supporting skills:
 
 - `/create` (project creation — routes to companion plugins)
 - `/create-pr` (generate a PR title and description from branch commits and optionally open it on GitHub or GitLab)
-- `/plan-technical-review` (review externally-authored plans; `/plan` reviews the plans it creates inline)
-- `/refine-approach` (iterative document improvement)
+- `/refine-approach` (review a plan or document: technical review for externally-authored plans, document critique for everything else; `/plan` reviews the plans it creates inline)
 - `/rebase` (sync feature branch with base branch)
 
 Quality-review agents:

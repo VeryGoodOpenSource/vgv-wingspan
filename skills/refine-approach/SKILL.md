@@ -1,14 +1,15 @@
 ---
 name: refine-approach
 user-invocable: true
-description: Reviews and refines brainstorm or planning documents before implementation. Identifies gaps, clarifies assumptions, and ensures the approach is sound. Use when the user says "refine this", "review my approach", or "is this ready".
-argument-hint: path to document to refine
+description: Reviews brainstorm, planning, and other documents before the next step, in one of two modes. An implementation plan not created by /plan — hand-written, from another tool, or from a teammate — gets a technical review that checks simplicity, VGV conventions, and scope with review agents and applies their findings to the plan. Any other document, or one handed over by /plan, /brainstorm, or /debrief, gets a document critique that finds gaps, unstated assumptions, and unsound reasoning. Use when the user says "review the plan", "is this plan ready", "validate my plan", "check the plan", "refine this", "review my approach", or "is this ready".
+argument-hint: path to plan or document to review
+effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
 # Refine Approach
 
-Improve brainstorm and/or planning documents through structured review.
+Review a brainstorm, plan, or other document before the next step, and improve it in place.
 
 > **Every question in this skill goes through the AskUserQuestion tool.** When that tool is
 > not available — another harness, or a non-interactive session — put the same question and
@@ -24,11 +25,37 @@ Improve brainstorm and/or planning documents through structured review.
 
 **Document path:** `$ARGUMENTS`
 
-**If `$ARGUMENTS` is non-empty**, treat it as the document path and proceed to `Step 2. Assess`.
+**If `$ARGUMENTS` is non-empty**, treat it as the document path and proceed to `Step 2. Choose the mode`.
 
 **If `$ARGUMENTS` is empty**, ask the user which document to review. Check `docs/brainstorm/` and `docs/plan/` for recent documents to suggest.
 
-## Step 2. Assess
+## Step 2. Choose the mode
+
+Pick the mode from the document and from who invoked the skill. Do not ask the user.
+
+| Situation | Mode |
+|-----------|------|
+| Invoked by another skill (`/plan`, `/brainstorm`, `/debrief`) | **Document critique** |
+| Invoked by the user on an implementation plan | **Technical review** |
+| Invoked by the user on any other document (brainstorm, debrief, spec) | **Document critique** |
+
+An implementation plan is a file under `docs/plan/`, or a document with a plan's shape: a
+type, a proposed solution, and a task list. `/plan` runs the technical review on the plans
+it creates, so a plan it hands over gets the critique only.
+
+If the user names a mode — "run the review agents", "just critique the wording" — use that
+mode instead.
+
+- **Technical review** → follow `Step 3. Technical review`, then go to `Step 8. Next steps`.
+- **Document critique** → skip Step 3 and follow Steps 4 to 7.
+
+## Step 3. Technical review
+
+Follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the
+plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their
+findings to the plan inline, and resolves any scope-splitting recommendation.
+
+## Step 4. Assess
 
 Read the document, then ask and clarify:
 
@@ -39,9 +66,9 @@ Read the document, then ask and clarify:
 - What risks are not addressed?
 - What part of the scope has been under-estimated?
 
-Do not fix yet anything. Simply take notes about what you find to inform what you do in `Step 3. Evaluate and score`.
+Do not fix yet anything. Simply take notes about what you find to inform what you do in `Step 5. Evaluate and score`.
 
-## Step 3. Evaluate and score
+## Step 5. Evaluate and score
 
 Apply the following criteria to evaluate the document:
 
@@ -55,11 +82,11 @@ Apply the following criteria to evaluate the document:
 
 If invoked during a brainstorm phase (after `/brainstorm`), validate that the document reflects with fidelity the user intent.
 
-## Step 4. Critical improvements
+## Step 6. Critical improvements
 
-Among everything found in Steps 2-3, does one issue stand out? If something would significantly improve the document's quality, this is the **must address** item. Highlight it prominently.
+Among everything found in Steps 4-5, does one issue stand out? If something would significantly improve the document's quality, this is the **must address** item. Highlight it prominently, under a heading or label that reads "Must address".
 
-## Step 5. Update the document
+## Step 7. Update the document
 
 Present your findings, then:
 
@@ -85,7 +112,7 @@ Simplification is purposeful removal of unnecessary complexity, not shortening f
 - Rationale that explains why alternatives were rejected
 - Open questions that need resolution
 
-## Step 6: Next steps
+## Step 8. Next steps
 
 After changes are complete, ask:
 
@@ -103,12 +130,18 @@ After changes are complete, ask:
 **If the document is a plan** (from `docs/plan/`):
 
 1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
-2. **Refine again** — another review pass
-3. **Done for now** — document is ready
+2. **Start building** — execute the plan with `/build`
+3. **Refine again** — another review pass
+4. **Done for now** — document is ready
 
 **If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
 
 **If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+
+**If the user selects "Start building"** → Call the `/build` skill with the plan file path.
+
+**If the user selects "Refine again"** → run a document critique pass (Steps 4 to 7). The
+review agents have already run, so a second technical review repeats their findings.
 
 **When invoked by another skill** (e.g., from `/brainstorm` or `/plan`), only offer "Refine again" and "Review complete", then return control to the caller.
 
