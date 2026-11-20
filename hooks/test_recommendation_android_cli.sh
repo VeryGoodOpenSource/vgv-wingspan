@@ -4,10 +4,13 @@
 #
 # Usage: bash hooks/test_recommendation_android_cli.sh
 #
-# Runs the hook against fixtures shaped like real files: share_plus and
-# url_launcher_android (plugin implementations), url_launcher (app-facing
-# federated package), the Flutter module template (add-to-app), and
-# flutter/samples platform_channels.
+# One question: does the rule fire on the right projects? Each detect entry
+# gets a positive and a negative. How the hook scans, installs and combines
+# recommendations is covered by test_recommend_plugins.sh.
+#
+# Fixtures are shaped like real files: share_plus (a plugin implementation),
+# url_launcher (an app-facing federated package), the Flutter module template
+# (add-to-app), and flutter/samples platform_channels.
 
 set -euo pipefail
 
@@ -17,93 +20,33 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/test_helpers.sh"
 # Tests
 # ---------------------------------------------------------------------------
 
-# Pubspec shaped like share_plus: a native implementation of a plugin.
-ANDROID_PLUGIN_PUBSPEC="name: share_plus
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: dev.fluttercommunity.plus.share
-        pluginClass: SharePlusPlugin
-      ios:
-        pluginClass: FPPSharePlusPlugin"
-
-test_android_gradle_kotlin_dsl() {
-  echo "test: android-cli recommended for a Kotlin DSL build.gradle.kts"
+test_android_root_gradle_files() {
+  echo "test: android-cli recommended for an Android plugin in a root Gradle file"
   setup
   use_real_recommendation "android-cli"
+
   add_project_file "build.gradle.kts" 'plugins {
     id("com.android.application") version "8.5.0" apply false
 }'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
-  assert_file_exists "$MARKER" "marker file created"
-  teardown
-}
+  assert_recommended "android-cli" "recommends for a Kotlin DSL application"
 
-test_android_gradle_groovy_library() {
-  echo "test: android-cli recommended for a Groovy build.gradle library"
-  setup
-  use_real_recommendation "android-cli"
   add_project_file "build.gradle" "plugins {
     id 'com.android.library'
 }"
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
-  teardown
-}
+  assert_recommended "android-cli" "recommends for a Groovy library"
 
-test_android_version_catalog_alias() {
-  echo "test: android-cli recommended for a version catalog plugin alias"
-  setup
-  use_real_recommendation "android-cli"
   add_project_file "build.gradle.kts" 'plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
 }'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
-  teardown
-}
+  assert_recommended "android-cli" "recommends for a version catalog alias"
 
-test_android_version_catalog_file() {
-  echo "test: android-cli recommended from gradle/libs.versions.toml alone"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "gradle/libs.versions.toml" '[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
-  teardown
-}
-
-test_android_settings_gradle_kotlin_dsl() {
-  echo "test: android-cli recommended from settings.gradle.kts alone"
-  setup
-  use_real_recommendation "android-cli"
   add_project_file "settings.gradle.kts" 'pluginManagement {
     plugins {
         id("com.android.application") version "8.5.0"
     }
 }'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
+  assert_recommended "android-cli" "recommends from settings.gradle.kts alone"
   teardown
-}
-
-test_android_description_names_android_not_flutter() {
-  echo "test: android-cli description names the technology and never Flutter"
-  local desc
-  desc=$(jq -r '.description' "$SCRIPT_DIR/recommendations/android-cli.json")
-  assert_contains "$desc" "Android" "description names Android"
-  assert_contains "$desc" "Kotlin" "description names Kotlin"
-  assert_contains "$desc" "Jetpack Compose" "description names Jetpack Compose"
-  assert_not_contains "$(echo "$desc" | tr '[:upper:]' '[:lower:]')" "flutter" "description does not mention Flutter"
 }
 
 test_android_gradle_non_android_plugin() {
@@ -114,10 +57,17 @@ test_android_gradle_non_android_plugin() {
     alias(libs.plugins.kotlin.android) apply false
     id("org.jetbrains.kotlin.android") version "2.0.0" apply false
 }'
-  local output
-  output=$(run_hook)
-  assert_empty "$output" "no output for a non-Android Gradle plugin"
-  assert_file_not_exists "$MARKER" "no marker written"
+  assert_silent "silent for a non-Android Gradle plugin"
+  teardown
+}
+
+test_android_version_catalog_file() {
+  echo "test: android-cli recommended from gradle/libs.versions.toml alone"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "gradle/libs.versions.toml" '[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }'
+  assert_recommended "android-cli" "recommends from the version catalog"
   teardown
 }
 
@@ -125,28 +75,47 @@ test_android_flutter_plugin_pubspec() {
   echo "test: android-cli recommended for a Flutter plugin's pubspec"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "$ANDROID_PLUGIN_PUBSPEC"
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
+  # Shaped like share_plus. A federated implementation takes the same package: branch.
+  add_project_file "pubspec.yaml" "name: share_plus
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: dev.fluttercommunity.plus.share
+        pluginClass: SharePlusPlugin
+      ios:
+        pluginClass: FPPSharePlusPlugin"
+  assert_recommended "android-cli" "recommends for a native plugin implementation"
   teardown
 }
 
-test_android_federated_implementation_pubspec() {
-  echo "test: android-cli recommended for a federated Android implementation"
+test_android_add_to_app_pubspec() {
+  echo "test: android-cli recommended for an add-to-app module"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: url_launcher_android
+  add_project_file "pubspec.yaml" "name: flutter_module_books
 flutter:
-  plugin:
-    implements: url_launcher
-    platforms:
-      android:
-        package: io.flutter.plugins.urllauncher
-        pluginClass: UrlLauncherPlugin"
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
+  uses-material-design: true
+  module:
+    androidX: true
+    androidPackage: dev.flutter.flutter_module_books
+    iosBundleIdentifier: dev.flutter.flutterModuleBooks"
+  assert_recommended "android-cli" "recommends for androidPackage"
+  teardown
+}
+
+test_android_plugin_pubspec_other_indent() {
+  echo "test: android-cli recommended for a plugin pubspec at a one-space indent"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_plugin
+flutter:
+ plugin:
+  platforms:
+   android:
+    package: com.example.my_plugin
+    pluginClass: MyPlugin"
+  assert_recommended "android-cli" "recommends at a one-space indent"
   teardown
 }
 
@@ -162,31 +131,9 @@ flutter:
         default_package: url_launcher_android
       ios:
         default_package: url_launcher_ios
-      linux:
-        default_package: url_launcher_linux
       web:
         default_package: url_launcher_web"
-  local output
-  output=$(run_hook)
-  assert_empty "$output" "no output for default_package only"
-  assert_file_not_exists "$MARKER" "no marker written"
-  teardown
-}
-
-test_android_add_to_app_pubspec() {
-  echo "test: android-cli recommended for an add-to-app module"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: flutter_module_books
-flutter:
-  uses-material-design: true
-  module:
-    androidX: true
-    androidPackage: dev.flutter.flutter_module_books
-    iosBundleIdentifier: dev.flutter.flutterModuleBooks"
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends android-cli"
+  assert_silent "silent for default_package only"
   teardown
 }
 
@@ -194,9 +141,6 @@ test_android_plain_flutter_app_not_recommended() {
   echo "test: android-cli not recommended for a plain Flutter app"
   setup
   use_real_recommendation "android-cli"
-  local output
-
-  # flutter_launcher_icons: boolean form, with flutter_native_splash.
   add_project_file "pubspec.yaml" "name: my_app
 dependencies:
   flutter:
@@ -211,184 +155,24 @@ flutter_native_splash:
     color: '#ffffff'
 flutter:
   uses-material-design: true"
-  output=$(run_hook)
-  assert_empty "$output" "silent for 'android: true' and 'android_12:'"
+  assert_silent "silent for 'android: true' and 'android_12:'"
+  teardown
+}
 
-  # flutter_launcher_icons: string form.
+test_android_unrelated_pubspec_keys() {
+  echo "test: android-cli not recommended for unrelated package-like pubspec keys"
+  setup
+  use_real_recommendation "android-cli"
   add_project_file "pubspec.yaml" "name: my_app
-flutter_launcher_icons:
-  android: \"launcher_icon\"
-  image_path: assets/icon.png"
-  output=$(run_hook)
-  assert_empty "$output" "silent for 'android: \"launcher_icon\"'"
-
-  # flutter_launcher_icons: nested block.
-  add_project_file "pubspec.yaml" "name: my_app
-flutter_launcher_icons:
-  image_path: assets/icon.png
+package_rename_config:
   android:
-    generate: true
-    image_path: assets/android.png
-    adaptive_icon_background: '#ffffff'"
-  output=$(run_hook)
-  assert_empty "$output" "silent for a nested 'android:' block"
-
-  assert_file_not_exists "$MARKER" "no marker written"
-  teardown
-}
-
-test_android_plain_app_native_channel_code() {
-  echo "test: android-cli recommended for a plain app with native channel code"
-  setup
-  use_real_recommendation "android-cli"
-  local output pkg
-  # Package paths of three, four, and five segments.
-  for pkg in dev/flutter/app dev/flutter/samples/app dev/flutter/samples/app/channels; do
-    rm -rf "$TEST_DIR/android"
-    rm -f "$MARKER"
-    add_project_file "android/app/src/main/kotlin/$pkg/MainActivity.kt" "package dev.flutter.platform_channels
-
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
-
-class MainActivity : FlutterActivity() {
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, \"samples.flutter.dev/battery\")
-    }
-}"
-    output=$(run_hook)
-    assert_contains "$output" "android-cli" "recommends android-cli at $pkg"
-  done
-
-  # Each keyword alone, so no alternative in the pattern is masked by another.
-  local keyword
-  for keyword in MethodChannel EventChannel BasicMessageChannel PlatformView configureFlutterEngine; do
-    rm -rf "$TEST_DIR/android"
-    rm -f "$MARKER"
-    add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.app
-
-// $keyword"
-    output=$(run_hook)
-    assert_contains "$output" "android-cli" "recommends android-cli on '$keyword' alone"
-  done
-  teardown
-}
-
-test_android_plain_app_default_main_activity() {
-  echo "test: android-cli not recommended for the generated MainActivity"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.animations
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity: FlutterActivity()"
-  local output
-  output=$(run_hook)
-  assert_empty "$output" "no output for the default MainActivity"
-  assert_file_not_exists "$MARKER" "no marker written"
-  teardown
-}
-
-test_android_docs_native_keywords() {
-  echo "test: android-cli recommended when a plan or brainstorm names native Android tech"
-  setup
-  use_real_recommendation "android-cli"
-  local output
-
-  local keyword
-  for keyword in Kotlin "Jetpack Compose" androidx; do
-    rm -rf "$TEST_DIR/docs"
-    rm -f "$MARKER"
-    add_project_file "docs/plan/x.md" "We will build the screen with $keyword."
-    output=$(run_hook)
-    assert_contains "$output" "android-cli" "recommends from docs/plan on '$keyword'"
-  done
-
-  rm -rf "$TEST_DIR/docs"
-  rm -f "$MARKER"
-  add_project_file "docs/brainstorm/x.md" "We will build the screen with Jetpack Compose."
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "recommends from docs/brainstorm"
-  teardown
-}
-
-test_android_docs_flutter_plan_not_recommended() {
-  echo "test: android-cli not recommended for a Flutter plan that mentions Android"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "docs/plan/x.md" "Build the Flutter app. Run it from Android Studio. Run the Gradle build for the android flavor."
-  local output
-  output=$(run_hook)
-  assert_empty "$output" "no output for a Flutter plan"
-  assert_file_not_exists "$MARKER" "no marker written"
-  teardown
-}
-
-test_android_and_flutter_recommended_together() {
-  echo "test: android-cli and the Flutter plugin share one message"
-  setup
-  use_real_recommendation "android-cli"
-  use_real_recommendation "vgv-ai-flutter-plugin"
-  add_project_file "pubspec.yaml" "$ANDROID_PLUGIN_PUBSPEC"
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "android-cli in output"
-  assert_contains "$output" "vgv-ai-flutter-plugin" "Flutter plugin in output"
-  assert_contains "$output" "android/android-cli-plugin" "Android marketplace in output"
-  assert_single_json_block "$output" "single JSON output block"
-  teardown
-}
-
-test_android_flutter_installed_still_recommends_android() {
-  echo "test: android-cli still recommended when only the Flutter plugin is installed"
-  setup
-  use_real_recommendation "android-cli"
-  use_real_recommendation "vgv-ai-flutter-plugin"
-  add_project_file "pubspec.yaml" "$ANDROID_PLUGIN_PUBSPEC"
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"vgv-ai-flutter-plugin@very-good-claude-code-marketplace": true}}'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "android-cli" "android-cli in output"
-  assert_not_contains "$output" "vgv-ai-flutter-plugin" "installed Flutter plugin excluded"
-  teardown
-}
-
-test_android_already_installed() {
-  echo "test: android-cli not recommended when it is already installed"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "build.gradle.kts" 'plugins { id("com.android.application") }'
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"android-cli@android-cli-plugin": true}}'
-  local output
-  output=$(run_hook)
-  assert_empty "$output" "no output when android-cli is installed"
-  assert_file_not_exists "$MARKER" "no marker written"
-  teardown
-}
-
-test_android_plugin_pubspec_other_indent() {
-  echo "test: android-cli recommended for a plugin pubspec at any indent"
-  setup
-  use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: my_plugin
-flutter:
-  plugin:
-    platforms:
-        android:
-            package: com.example.my_plugin
-            pluginClass: MyPlugin"
-  assert_recommended "android-cli" "recommends at a twelve-space indent"
-  add_project_file "pubspec.yaml" "name: my_plugin
-flutter:
- plugin:
-  platforms:
-   android:
-    package: com.example.my_plugin
-    pluginClass: MyPlugin"
-  assert_recommended "android-cli" "recommends at a four-space indent"
+    package_name: com.example.my_app
+  ios:
+    package_name: com.example.myApp
+packages:
+  - first
+  - second"
+  assert_silent "silent for package_rename_config and a packages: list"
   teardown
 }
 
@@ -424,27 +208,14 @@ android {
   teardown
 }
 
-test_android_ffi_plugin_kotlin_dsl() {
-  echo "test: android-cli recommended for an FFI plugin using build.gradle.kts"
+test_android_plain_app_gradle_files_not_recommended() {
+  echo "test: android-cli not recommended for a plain app's Gradle files"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: my_ffi
-flutter:
-  plugin:
-    platforms:
-      android:
-        ffiPlugin: true"
-  add_project_file "android/build.gradle.kts" 'plugins {
-    id("com.android.library")
-}'
-  assert_recommended "android-cli" "recommends for a Kotlin DSL library build"
-  teardown
-}
-
-test_android_plain_app_real_gradle_shape() {
-  echo "test: android-cli not recommended for a plain app's android/build.gradle"
-  setup
-  use_real_recommendation "android-cli"
+  add_project_file "pubspec.yaml" "name: my_app
+dependencies:
+  flutter:
+    sdk: flutter"
   # Shaped like the flutter_tools app template: repositories only.
   add_project_file "android/build.gradle" "allprojects {
     repositories {
@@ -457,35 +228,33 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = \"\${rootProject.buildDir}/\${project.name}\"
 }"
-  add_project_file "pubspec.yaml" "name: my_app
-dependencies:
-  flutter:
-    sdk: flutter"
-  assert_silent "silent for a repositories-only android/build.gradle"
+  add_project_file "android/app/build.gradle" "plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}"
+  add_project_file "android/settings.gradle" "pluginManagement {
+    plugins {
+        id 'com.android.application' version '8.1.0' apply false
+    }
+}"
+  assert_silent "silent for the android/ Gradle files of a plain app"
   teardown
 }
 
-test_android_unrelated_pubspec_keys() {
-  echo "test: android-cli not recommended for unrelated package-like pubspec keys"
+test_android_native_channel_code() {
+  echo "test: android-cli recommended for native channel code"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: my_app
-package_rename_config:
-  android:
-    package_name: com.example.my_app
-  ios:
-    package_name: com.example.myApp
-packages:
-  - first
-  - second"
-  assert_silent "silent for package_rename_config and a packages: list"
-  teardown
-}
 
-test_android_java_channel_code() {
-  echo "test: android-cli recommended for Java channel code"
-  setup
-  use_real_recommendation "android-cli"
+  # Each keyword alone, so no alternative in the pattern is masked by another.
+  local keyword
+  for keyword in MethodChannel EventChannel BasicMessageChannel PlatformView configureFlutterEngine; do
+    add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.app
+
+// $keyword"
+    assert_recommended "android-cli" "recommends on '$keyword' alone"
+  done
+
   add_project_file "android/app/src/main/java/dev/flutter/app/MainActivity.java" "package dev.flutter.app;
 
 import io.flutter.embedding.android.FlutterActivity;
@@ -497,21 +266,15 @@ public class MainActivity extends FlutterActivity {
   teardown
 }
 
-test_android_deep_package_channel_code() {
-  echo "test: android-cli recommended for channel code in a deeply nested package"
+test_android_plain_app_generated_files_not_recommended() {
+  echo "test: android-cli not recommended for the files Flutter generates"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "android/app/src/main/kotlin/com/example/very/deep/nested/package/impl/Bridge.kt" "package com.example.very.deep.nested.pkg.impl
+  add_project_file "android/app/src/main/kotlin/dev/flutter/app/MainActivity.kt" "package dev.flutter.animations
 
-import io.flutter.plugin.common.EventChannel"
-  assert_recommended "android-cli" "recommends for a Kotlin file seven segments deep"
-  teardown
-}
+import io.flutter.embedding.android.FlutterActivity
 
-test_android_generated_registrant_not_recommended() {
-  echo "test: android-cli not recommended for the generated plugin registrant"
-  setup
-  use_real_recommendation "android-cli"
+class MainActivity: FlutterActivity()"
   add_project_file "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java" "package io.flutter.plugins;
 
 import androidx.annotation.Keep;
@@ -524,32 +287,32 @@ public final class GeneratedPluginRegistrant {
     flutterEngine.getPlugins().add(new io.flutter.plugins.webviewflutter.WebViewFlutterPlugin());
   }
 }"
-  add_project_file "pubspec.yaml" "name: my_app
-dependencies:
-  flutter:
-    sdk: flutter"
-  assert_silent "silent for a registrant that names WebViewFlutterPlugin"
+  assert_silent "silent for the default MainActivity and a registrant naming WebViewFlutterPlugin"
   teardown
 }
 
-test_android_plain_app_full_gradle_tree() {
-  echo "test: android-cli not recommended for a plain app's app-level Gradle files"
+test_android_docs_native_keywords() {
+  echo "test: android-cli recommended when a plan or brainstorm names native Android tech"
   setup
   use_real_recommendation "android-cli"
-  add_project_file "pubspec.yaml" "name: my_app
-dependencies:
-  flutter:
-    sdk: flutter"
-  add_project_file "android/app/build.gradle" "plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}"
-  add_project_file "android/settings.gradle" "pluginManagement {
-    plugins {
-        id 'com.android.application' version '8.1.0' apply false
-    }
-}"
-  assert_silent "silent for android/app/build.gradle and android/settings.gradle"
+
+  local keyword
+  for keyword in Kotlin "Jetpack Compose" androidx; do
+    add_project_file "docs/plan/x.md" "We will build the screen with $keyword."
+    assert_recommended "android-cli" "recommends from docs/plan on '$keyword'"
+  done
+
+  add_project_file "docs/brainstorm/x.md" "We will build the screen with Jetpack Compose."
+  assert_recommended "android-cli" "recommends from docs/brainstorm"
+  teardown
+}
+
+test_android_docs_flutter_plan_not_recommended() {
+  echo "test: android-cli not recommended for a Flutter plan that mentions Android"
+  setup
+  use_real_recommendation "android-cli"
+  add_project_file "docs/plan/x.md" "Build the Flutter app. Run it from Android Studio. Run the Gradle build for the android flavor."
+  assert_silent "silent for a Flutter plan"
   teardown
 }
 
@@ -560,60 +323,34 @@ dependencies:
 echo "=== android-cli recommendation tests ==="
 echo ""
 
-test_android_gradle_kotlin_dsl
-echo ""
-test_android_gradle_groovy_library
-echo ""
-test_android_version_catalog_alias
-echo ""
-test_android_version_catalog_file
-echo ""
-test_android_settings_gradle_kotlin_dsl
-echo ""
-test_android_description_names_android_not_flutter
+test_android_root_gradle_files
 echo ""
 test_android_gradle_non_android_plugin
 echo ""
+test_android_version_catalog_file
+echo ""
 test_android_flutter_plugin_pubspec
-echo ""
-test_android_federated_implementation_pubspec
-echo ""
-test_android_federated_app_facing_not_recommended
 echo ""
 test_android_add_to_app_pubspec
 echo ""
+test_android_plugin_pubspec_other_indent
+echo ""
+test_android_federated_app_facing_not_recommended
+echo ""
 test_android_plain_flutter_app_not_recommended
 echo ""
-test_android_plain_app_native_channel_code
+test_android_unrelated_pubspec_keys
 echo ""
-test_android_plain_app_default_main_activity
+test_android_ffi_plugin
+echo ""
+test_android_plain_app_gradle_files_not_recommended
+echo ""
+test_android_native_channel_code
+echo ""
+test_android_plain_app_generated_files_not_recommended
 echo ""
 test_android_docs_native_keywords
 echo ""
 test_android_docs_flutter_plan_not_recommended
-echo ""
-test_android_and_flutter_recommended_together
-echo ""
-test_android_flutter_installed_still_recommends_android
-echo ""
-test_android_already_installed
-echo ""
-test_android_plugin_pubspec_other_indent
-echo ""
-test_android_ffi_plugin
-echo ""
-test_android_ffi_plugin_kotlin_dsl
-echo ""
-test_android_plain_app_real_gradle_shape
-echo ""
-test_android_unrelated_pubspec_keys
-echo ""
-test_android_java_channel_code
-echo ""
-test_android_deep_package_channel_code
-echo ""
-test_android_generated_registrant_not_recommended
-echo ""
-test_android_plain_app_full_gradle_tree
 echo ""
 finish
