@@ -1,6 +1,5 @@
 {
   "plugin": "xcode",
-  "skillPrefix": "xcode-integration",
   "scaffold": false,
   "detect": [
     { "files": "*.xcodeproj/project.pbxproj *.xcodeproj/project.xcproj", "pattern": "IPHONEOS_DEPLOYMENT_TARGET" },
