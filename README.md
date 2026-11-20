@@ -172,6 +172,8 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 | ---- | ------- | -------- |
 | **Recommend Plugins** (`recommend-plugins.sh`) | PreToolUse (`Read`/`Glob`/`Grep`) | Scans detection rules in `hooks/recommendations/`, recommends missing companion plugins once per session; non-blocking |
 
+Detection rules live in `hooks/recommendations/`.
+
 ### Prerequisites
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed

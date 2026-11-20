@@ -77,7 +77,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Recommend plugins hook tests
-        run: bash hooks/test_recommend_plugins.sh
+      - name: Hook script tests
+        run: |
+          status=0
+          for f in hooks/test_*.sh; do
+            bash "$f" || status=1
+          done
+          exit $status
       - name: Review contract tests
         run: bash agents/test_review_contract.sh
