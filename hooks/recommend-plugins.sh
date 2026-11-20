@@ -117,7 +117,8 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
         for include_glob in "${include_globs[@]}"; do
           include_args+=(--include="$include_glob")
         done
-        if grep -rqiE "${include_args[@]}" -- "$entry_pattern" "$entry_dir" 2>/dev/null; then
+        # The trailing slash makes BSD grep descend into a dir that is a symlink.
+        if grep -rqiE "${include_args[@]}" -- "$entry_pattern" "$entry_dir/" 2>/dev/null; then
           matched=true
           break
         fi

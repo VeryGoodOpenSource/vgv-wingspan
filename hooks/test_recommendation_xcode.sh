@@ -212,6 +212,9 @@ test_ios_plain_app_native_channel_code() {
   add_project_file "pubspec.yaml" "name: my_app"
   add_project_file "ios/Runner/AppDelegate.m" "FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:@\"battery\" binaryMessenger:controller.binaryMessenger];"
   assert_recommended "xcode" "FlutterMethodChannel in Objective-C AppDelegate.m"
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "ios/Runner/BatteryChannel.mm" "FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:@\"battery\" binaryMessenger:messenger];"
+  assert_recommended "xcode" "FlutterMethodChannel in Objective-C++ BatteryChannel.mm"
   local keyword
   for keyword in FlutterEventChannel FlutterBasicMessageChannel FlutterPlatformView; do
     add_project_file "pubspec.yaml" "name: my_app"

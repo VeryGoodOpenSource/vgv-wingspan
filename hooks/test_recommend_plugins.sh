@@ -311,16 +311,23 @@ test_installed_enabled_in_any_settings_file() {
 }
 
 test_installed_check_reads_plugin_not_skill_prefix() {
-  echo "test: the shipped xcode rule is installed under its plugin name, not its skillPrefix"
+  echo "test: the installed check reads the plugin name, never the skillPrefix"
   setup
-  use_real_recommendation "xcode"
-  add_project_file "App.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"xcode-integration@claude-plugins-official": true}}'
+  # Shaped like xcode.json: the marketplace entry is "test-plugin", the skills run as "test-skills".
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "skillPrefix": "test-skills",
+    "detect": { "file": "pubspec.yaml", "pattern": "." },
+    "marketplace": "Org/repo",
+    "description": "Test plugin."
+  }'
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-skills@test-marketplace": true}}'
   local output
   output=$(run_hook)
-  assert_contains "$output" "xcode" "the skillPrefix key does not count as installed"
+  assert_contains "$output" "test-plugin" "the skillPrefix key does not count as installed"
   rm -f "$MARKER"
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"xcode@claude-plugins-official": true}}'
+  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
   output=$(run_hook)
   assert_empty "$output" "the plugin key counts as installed"
   teardown
@@ -503,6 +510,21 @@ test_dir_include_matches() {
   assert_recommended "test-plugin" "match in a .java file seven levels deep"
   add_project_file "src/Bridge.kt" "class Bridge(val b: NativeBridge)"
   assert_recommended "test-plugin" "match in a .kt file directly under dir"
+  teardown
+}
+
+test_dir_include_symlinked_dir() {
+  echo "test: 'dir' + 'include' searches a dir that is itself a symlink"
+  setup
+  add_recommendation "test-plugin" '{
+    "plugin": "test-plugin",
+    "detect": { "dir": "src", "include": "*.kt", "pattern": "NativeBridge" },
+    "marketplace": "Org/repo",
+    "description": "Dir plugin."
+  }'
+  add_project_file "shared/src/Bridge.kt" "class Bridge(val b: NativeBridge)"
+  ln -s shared/src "$TEST_DIR/src"
+  assert_recommended "test-plugin" "match inside a symlinked dir"
   teardown
 }
 
@@ -695,6 +717,8 @@ echo ""
 test_files_detection_is_case_insensitive
 echo ""
 test_dir_include_matches
+echo ""
+test_dir_include_symlinked_dir
 echo ""
 test_dir_include_no_match
 echo ""
