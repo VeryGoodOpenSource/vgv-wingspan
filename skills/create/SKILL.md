@@ -53,7 +53,7 @@ Each recommendation file has this structure:
 
 `skillPrefix` is optional. A recommendation sets it only when the plugin's skills carry a different prefix than its `plugin` name.
 
-`scaffold` is optional. A recommendation sets it to `false` only when the plugin ships no project-creation skill; Step 2 skips it.
+`scaffold` is optional. A recommendation sets it to `false` only when the plugin ships no project-creation skill.
 
 ## Step 2: Match the user's request to a plugin
 

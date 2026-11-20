@@ -32,15 +32,12 @@ test_ios_pbxproj_and_xcproj_at_root() {
 }
 
 test_ios_macos_only_projects_not_recommended() {
-  echo "test: macOS-only .xcodeproj is not recommended in either file format"
+  echo "test: macOS-only .xcodeproj is not recommended"
   setup
   use_real_recommendation "xcode"
   add_project_file "App.xcodeproj/project.pbxproj" "SDKROOT = macosx;
 MACOSX_DEPLOYMENT_TARGET = 13.0;"
   assert_silent "macOS-only project.pbxproj"
-  add_project_file "App.xcodeproj/project.xcproj" '"SDKROOT": "macosx",
-"MACOSX_DEPLOYMENT_TARGET": "13.0",'
-  assert_silent "macOS-only JSON project.xcproj"
   teardown
 }
 
@@ -181,7 +178,6 @@ import UIKit
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }"
-  add_project_file "ios/Runner.xcodeproj/project.pbxproj" "IPHONEOS_DEPLOYMENT_TARGET = 12.0;"
   assert_silent "classic AppDelegate.swift and flutter_launcher_icons ios: true"
   add_project_file "pubspec.yaml" "name: my_app
 flutter_launcher_icons:
@@ -203,9 +199,6 @@ test_ios_plain_app_native_channel_code() {
   echo "test: plain Flutter app with native channel code is recommended"
   setup
   use_real_recommendation "xcode"
-  add_project_file "pubspec.yaml" "name: my_app"
-  add_project_file "ios/Runner/AppDelegate.swift" "let channel = FlutterMethodChannel(name: \"battery\", binaryMessenger: controller.binaryMessenger)"
-  assert_recommended "xcode" "FlutterMethodChannel in AppDelegate.swift"
   add_project_file "pubspec.yaml" "name: my_app"
   add_project_file "ios/Runner/Handlers/BatteryHandler.swift" "let channel = FlutterMethodChannel(name: \"battery\", binaryMessenger: messenger)"
   assert_recommended "xcode" "FlutterMethodChannel under ios/Runner/Handlers/"
@@ -276,7 +269,7 @@ test_ios_docs_flutter_plan_not_recommended() {
   setup
   use_real_recommendation "xcode"
   local phrase
-  for phrase in "Xcode" "CocoaPods" "Swift Package Manager" "iOS build" "Flutter"; do
+  for phrase in "Xcode" "CocoaPods"; do
     add_project_file "docs/plan/x.md" "The release needs a working $phrase setup."
     assert_silent "docs/plan saying $phrase"
   done

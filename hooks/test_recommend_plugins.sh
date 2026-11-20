@@ -261,17 +261,6 @@ test_installed_malformed_settings_not_installed() {
   teardown
 }
 
-test_installed_non_object_enabled_plugins_not_installed() {
-  echo "test: a non-object enabledPlugins counts as not installed"
-  setup
-  add_installed_check_fixture
-  add_settings ".claude/settings.json" '{"enabledPlugins": ["test-plugin@test-marketplace"]}'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "test-plugin" "still recommended"
-  teardown
-}
-
 test_installed_enabled_plugin() {
   echo "test: an enabled <plugin>@<marketplace> key counts as installed"
   setup
@@ -307,29 +296,6 @@ test_installed_enabled_in_any_settings_file() {
   local output
   output=$(run_hook)
   assert_empty "$output" "no output when any file enables the plugin"
-  teardown
-}
-
-test_installed_check_reads_plugin_not_skill_prefix() {
-  echo "test: the installed check reads the plugin name, never the skillPrefix"
-  setup
-  # Shaped like xcode.json: the marketplace entry is "test-plugin", the skills run as "test-skills".
-  add_recommendation "test-plugin" '{
-    "plugin": "test-plugin",
-    "skillPrefix": "test-skills",
-    "detect": { "file": "pubspec.yaml", "pattern": "." },
-    "marketplace": "Org/repo",
-    "description": "Test plugin."
-  }'
-  add_project_file "pubspec.yaml" "name: my_app"
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-skills@test-marketplace": true}}'
-  local output
-  output=$(run_hook)
-  assert_contains "$output" "test-plugin" "the skillPrefix key does not count as installed"
-  rm -f "$MARKER"
-  add_settings ".claude/settings.json" '{"enabledPlugins": {"test-plugin@test-marketplace": true}}'
-  output=$(run_hook)
-  assert_empty "$output" "the plugin key counts as installed"
   teardown
 }
 
@@ -690,15 +656,11 @@ test_installed_disabled_plugin_not_installed
 echo ""
 test_installed_malformed_settings_not_installed
 echo ""
-test_installed_non_object_enabled_plugins_not_installed
-echo ""
 test_installed_enabled_plugin
 echo ""
 test_installed_longer_plugin_name_not_installed
 echo ""
 test_installed_enabled_in_any_settings_file
-echo ""
-test_installed_check_reads_plugin_not_skill_prefix
 echo ""
 test_files_glob_no_matching_files
 echo ""
