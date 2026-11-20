@@ -14,11 +14,14 @@
 #   }
 #
 # The "detect" field can be a single object or an array of objects (OR logic).
-# Each object supports either "file" (exact path) or "files" (shell glob for
-# content search — greps inside every matching file for "pattern"):
+# Each object supports "file" (exact path), "files" (shell glob for content
+# search — greps inside every matching file for "pattern"), or "dir" with
+# "include" (recursive search of every file under dir matching a
+# space-separated list of filename globs). Precedence is file, files, dir:
 #   "detect": [
 #     { "file": "pubspec.yaml", "pattern": "." },
-#     { "files": "docs/plan/*.md", "pattern": "flutter|dart" }
+#     { "files": "docs/plan/*.md", "pattern": "flutter|dart" },
+#     { "dir": "android/app/src/main", "include": "*.kt *.java", "pattern": "MethodChannel" }
 #   ]
 #
 # All matching recommendations are collected and emitted together in a
@@ -72,7 +75,8 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   description=$(jq -r '.description' "$rec_file")
 
   # Project type detection — supports single object or array of objects (OR logic).
-  # Each object can use "file" (exact path) or "files" (shell glob pattern).
+  # Each object can use "file" (exact path), "files" (shell glob pattern), or
+  # "dir" with "include" (recursive search).
   detect_type=$(jq -r '.detect | type' "$rec_file")
   if [[ "$detect_type" == "array" ]]; then
     detect_entries=$(jq -c '.detect[]' "$rec_file")
@@ -84,6 +88,8 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
   while IFS= read -r entry; do
     entry_file=$(echo "$entry" | jq -r '.file // empty')
     entry_files=$(echo "$entry" | jq -r '.files // empty')
+    entry_dir=$(echo "$entry" | jq -r '.dir // empty')
+    entry_include=$(echo "$entry" | jq -r '.include // empty')
     entry_pattern=$(echo "$entry" | jq -r '.pattern')
 
     if [[ -n "$entry_file" ]]; then
@@ -100,6 +106,19 @@ for rec_file in "$RECOMMENDATIONS_DIR"/*.json; do
           break 2
         fi
       done
+    elif [[ -n "$entry_dir" ]]; then
+      # Recursive content search — grep every file under dir that matches an include glob
+      read -r -a include_globs <<< "$entry_include"
+      if [[ -d "$entry_dir" && ${#include_globs[@]} -gt 0 ]]; then
+        include_args=()
+        for include_glob in "${include_globs[@]}"; do
+          include_args+=(--include="$include_glob")
+        done
+        if grep -rqiE "${include_args[@]}" -- "$entry_pattern" "$entry_dir" 2>/dev/null; then
+          matched=true
+          break
+        fi
+      fi
     fi
   done <<< "$detect_entries"
 

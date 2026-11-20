@@ -1,6 +1,5 @@
 ---
 name: test-quality-review-agent
-skills: [elements-of-style]
 description: Reviews test coverage and quality — whether every state management unit, repository, data model, and UI component has a test file, and whether those tests cover success, failure, and edge cases with meaningful assertions. Returns coverage gaps and anti-patterns, including tautological assertions and missing async settling. Use after code is written, before opening a PR.
 model: sonnet
 ---

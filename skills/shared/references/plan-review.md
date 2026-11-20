@@ -9,7 +9,9 @@ of `/refine-approach` (the entry point for externally-authored plans).
 
 ## 1. Run the review agents in parallel
 
-Pass `<PLAN_PATH>` to each. Run all three concurrently:
+Pass `<PLAN_PATH>` to each. Give the simplicity and VGV agents the
+[writing rules](elements-of-style.md) too: paste the file's full text verbatim into their
+prompts, since an agent cannot follow the relative link. Run all three concurrently:
 
 - **@code-simplicity-review-agent** — review the plan for simplicity and clarity; the implementation should be as straightforward as possible while still meeting every requirement.
 - **@vgv-review-agent** — review the plan for adherence to Very Good Engineering practices and project conventions.
