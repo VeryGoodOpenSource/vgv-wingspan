@@ -1,4 +1,0 @@
-schema_version: "1.1"
-name: elements-of-style-keeps-the-authors-meaning
-context:
-  scaffold_script: fixture.sh

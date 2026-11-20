@@ -109,7 +109,10 @@ Draft the plan's title, derive its filename, and gather supporting material per
 
 After planning the issue structure, run the **user-flow-analysis-agent** to analyze the plan for flow completeness and gap identification:
 
-- Task @user-flow-analysis-agent(feature_description, research_findings)
+- Task @user-flow-analysis-agent(feature_description, research_findings, writing_rules)
+
+`writing_rules` is the full text of [elements-of-style.md](references/elements-of-style.md).
+Paste it verbatim into the prompt so the agent writes its gaps and questions to those rules.
 
 **Flow Analysis Output:**
 

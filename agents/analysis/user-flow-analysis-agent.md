@@ -1,6 +1,5 @@
 ---
 name: user-flow-analysis-agent
-skills: [elements-of-style]
 description: Analyzes a specification, plan, or feature description for user-flow completeness — maps the distinct journeys, their decision points and branches, and the states a user can reach. Returns the flows, a gap list organized by category (error handling, validation, auth, persistence, accessibility), and clarifying questions prioritized by whether they block implementation. Use when a spec needs validating before it becomes a plan, or when edge cases are likely under-specified. It analyzes and questions; it does not amend the spec.
 model: inherit
 ---

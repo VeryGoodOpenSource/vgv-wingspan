@@ -1,6 +1,5 @@
 ---
 name: vgv-review-agent
-skills: [elements-of-style]
 description: Reviews code against Very Good Ventures engineering standards — architecture, layer separation, state management conventions, testing quality, and code simplicity. Returns findings graded Critical, Important, or Suggestion. Use after implementing a feature, adding a package, or refactoring, and before opening a PR. Reviews deviations from the project's established state-management pattern most strictly.
 model: inherit
 ---

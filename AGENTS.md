@@ -53,11 +53,11 @@ skills/                # User-invocable and supporting skills (one dir per skill
   plan-technical-review/SKILL.md # Review externally-authored plans
   refine-approach/SKILL.md       # Iteratively improve a document
   rebase/SKILL.md                # Sync a feature branch with its base
-  elements-of-style/SKILL.md     # Apply Strunk's Elements of Style to prose
   shared/              # Shared references and scripts used across skills
     references/
       clear-context-handoff.md   # The "clear context and <next step>" handoff block
       drive-to-green.md          # Loop until every gate is green by real output
+      elements-of-style.md       # Writing rules passed to review and flow-analysis agents
       feature-branch.md          # Branch check run before anything is written to disk
       file-findings-on-pr.md     # Post review findings as PR comments
       plan-review.md             # Quality pass applied to a drafted plan

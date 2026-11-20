@@ -1,6 +1,5 @@
 ---
 name: codebase-review-agent
-skills: [elements-of-style]
 description: Surveys a codebase's structure, conventions, and pattern consistency. Returns the established pattern for the area under review, the files that best demonstrate it, the project's own guidance (CLAUDE.md, issue and PR templates), and any place the pattern is applied inconsistently. Use to orient in unfamiliar code, or to find the representative example a new implementation should follow.
 model: sonnet
 effort: medium

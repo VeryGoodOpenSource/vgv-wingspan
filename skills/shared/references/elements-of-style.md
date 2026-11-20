@@ -1,13 +1,11 @@
----
-name: elements-of-style
-user-invocable: false
-description: Applies Strunk's Elements of Style principles when writing or editing prose. Triggers on "write clearly", "edit for style", "improve writing", or tasks requiring clear, vigorous English — documents, emails, reviews.
-compatibility: Designed for Claude Code (or similar products)
----
-
 # Elements of Style
 
 Apply these principles to produce clear, vigorous prose.
+
+Skills pass these rules to the agents whose prose a reader sees: the review agents get them
+with `review-agent-instructions.md`, and `/plan` passes them
+to `user-flow-analysis-agent`. An agent cannot follow a relative link, so the caller pastes
+this file's text into the agent prompt.
 
 ## Core Principles
 
