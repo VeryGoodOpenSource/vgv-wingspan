@@ -209,12 +209,48 @@ test_ios_plain_app_native_channel_code() {
   add_project_file "pubspec.yaml" "name: my_app"
   add_project_file "ios/Runner/Handlers/BatteryHandler.swift" "let channel = FlutterMethodChannel(name: \"battery\", binaryMessenger: messenger)"
   assert_recommended "xcode" "FlutterMethodChannel under ios/Runner/Handlers/"
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "ios/Runner/AppDelegate.m" "FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:@\"battery\" binaryMessenger:controller.binaryMessenger];"
+  assert_recommended "xcode" "FlutterMethodChannel in Objective-C AppDelegate.m"
   local keyword
-  for keyword in FlutterEventChannel FlutterBasicMessageChannel FlutterPlatformView FlutterPlugin; do
+  for keyword in FlutterEventChannel FlutterBasicMessageChannel FlutterPlatformView; do
     add_project_file "pubspec.yaml" "name: my_app"
     add_project_file "ios/Runner/Native.swift" "final class Native: NSObject, $keyword {}"
     assert_recommended "xcode" "$keyword alone"
   done
+  teardown
+}
+
+test_ios_plain_app_generated_files_not_recommended() {
+  echo "test: plain Flutter app's generated Objective-C files are not recommended"
+  setup
+  use_real_recommendation "xcode"
+  add_project_file "pubspec.yaml" "name: my_app"
+  add_project_file "ios/Runner/AppDelegate.m" "#import \"AppDelegate.h\"
+#import \"GeneratedPluginRegistrant.h\"
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [GeneratedPluginRegistrant registerWithRegistry:self];
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+@end"
+  # The registrant names FlutterPluginRegistry and FLTWebViewFlutterPlugin: it
+  # guards the dir entry against a FlutterPlugin keyword, which would match
+  # every generated registrant.
+  add_project_file "ios/Runner/GeneratedPluginRegistrant.m" "#import \"GeneratedPluginRegistrant.h\"
+
+@implementation GeneratedPluginRegistrant
+
++ (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
+  [FLTWebViewFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@\"FLTWebViewFlutterPlugin\"]];
+}
+
+@end"
+  assert_silent "stock AppDelegate.m and a registrant naming FlutterPluginRegistry"
   teardown
 }
 
@@ -272,6 +308,8 @@ echo ""
 test_ios_plain_flutter_app_not_recommended
 echo ""
 test_ios_plain_app_native_channel_code
+echo ""
+test_ios_plain_app_generated_files_not_recommended
 echo ""
 test_ios_docs_native_keywords
 echo ""

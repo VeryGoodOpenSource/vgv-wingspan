@@ -6,7 +6,7 @@
     { "file": "Package.swift", "pattern": "\\.iOS\\(" },
     { "files": "ios/*.podspec darwin/*.podspec ios/*/Package.swift darwin/*/Package.swift", "pattern": "Pod::Spec|PackageDescription" },
     { "file": "pubspec.yaml", "pattern": "^\\s+iosBundleIdentifier:" },
-    { "files": "ios/Runner/*.swift ios/Runner/*/*.swift", "pattern": "FlutterMethodChannel|FlutterEventChannel|FlutterBasicMessageChannel|FlutterPlatformView|FlutterPlugin" },
+    { "dir": "ios/Runner", "include": "*.swift *.m", "pattern": "FlutterMethodChannel|FlutterEventChannel|FlutterBasicMessageChannel|FlutterPlatformView" },
     { "files": "docs/plan/*.md docs/brainstorm/*.md", "pattern": "swiftui|uikit|app intents" }
   ],
   "marketplace": "anthropics/claude-plugins-official",
