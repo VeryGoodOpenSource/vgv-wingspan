@@ -28,11 +28,14 @@ glab --version 2>/dev/null
 gh extension list 2>/dev/null
 ```
 
+Pick the CLI by where `<REMOTE>` lives (`git remote get-url <REMOTE>`), not by which one is
+installed: `gh` for a GitHub remote, `glab` for a GitLab one. A machine often has both.
+
 | Result | Path |
 | ------ | ---- |
-| `gh` present and `gh-stack` listed | **Native stack** below. |
-| `gh` present, `gh-stack` missing | Offer to install it with `gh extension install github/gh-stack`. On decline, use the **manual fallback**. When the caller set **no install offer**, skip the offer, use the fallback, and say why in the closing summary. |
-| Only `glab`, or neither | **Manual fallback**. GitLab has no equivalent of GitHub stacks. |
+| GitHub remote, `gh` present and `gh-stack` listed | **Native stack** below. |
+| GitHub remote, `gh` present, `gh-stack` missing | Offer to install it with `gh extension install github/gh-stack`. On decline, use the **manual fallback**. When the caller set **no install offer**, skip the offer, use the fallback, and say why in the closing summary. |
+| GitLab remote, or no matching CLI | **Manual fallback**, with `glab` when it is present. GitLab has no equivalent of GitHub stacks. |
 
 **A fork** changes the shape. Check with
 `gh repo view "$(git remote get-url <REMOTE>)" --json isFork -q .isFork`. When `<REMOTE>` is a
