@@ -60,78 +60,55 @@ every branch inherits the markers below it.
 
 ## Landing fixes after the last phase
 
-The surgical-diff gate, the review fixes and the drive-to-green loop all edit the working tree
-of the top branch, the last phase's. A fix belongs to the phase whose code it changes, so that
-phase's pull request shows the fix next to the code. Land the fixes each time they are
-committed: once after the surgical-diff gate, and once at **Commit and push** for the review
-and drive-to-green fixes. This applies only in the auto-commit and unattended modes. In the
-**I'll commit myself** mode, leave the changes on the top branch and, in the summary, name
-the phase branch each changed file belongs on.
+The surgical-diff gate, the review and the drive-to-green loop run on the top branch, the last
+phase's, and its diff against the base covers the whole stack. A fix belongs to the phase whose
+code it changes, so that phase's pull request shows the fix next to the code. Make each fix on
+the branch that owns it, rather than on the top branch and moving it afterwards. This applies
+only in the auto-commit and unattended modes. In the **I'll commit myself** mode, make every
+fix on the top branch and, in the summary, name the phase branch each fix belongs on.
 
 Nothing has been pushed yet at this point, so rebasing the phase branches above an owner
 rewrites only local commits. That is the one exception to the surgical-diff gate's rule
 against rewriting history.
 
-### 1. Find each file's owner
+### 1. Find each fix's owner
 
-First run `git add -N <new files>` for every untracked file the fixes created (not the plan file
-or the decision log), so the diffs below include them. For every changed file,
-`git diff HEAD --unified=0 -- <file>` lists its hunks. For each hunk:
+A fix is one unit of change: one review finding, one churn removal, or the change that turns
+one failing gate green. Its code and the tests that cover it share one owner.
 
-- **It changes or removes lines.** Blame them as committed: `git blame -L <start>,<end> HEAD
-  -- <file>`, using the hunk's old line range. The owner is the lowest phase branch that
-  contains that commit: `git branch --contains <commit>`, kept to the phase branches and
-  compared by phase number, with the root as phase 1.
-- **It only adds lines.** Blame the line just above it the same way. At the top of a file, blame
-  the line just below it.
-- **The file is new.** The latest phase whose **Files touched** lists it. When none lists it,
-  the top phase.
+- **It changes or removes existing lines.** Blame them on the top branch: `git blame -L
+  <start>,<end> HEAD -- <file>`. The owner is the lowest phase branch that contains that commit:
+  `git branch --contains <commit>`, kept to the phase branches and compared by phase number,
+  with the root as phase 1.
+- **It only adds code, such as a missing test or a guard.** The owner of the code it covers or
+  guards, found the same way.
+- **It touches code from several phases.** The highest of them, since that branch has all of
+  the code.
 
-A file owned by several phases goes to the highest of them, since that branch has all the code
-it touches.
+### 2. Land the fixes, bottom up
 
-### 2. Move each lower phase's fixes off the top branch
+Group the fixes by owner. Start from a clean working tree: commit anything outstanding on the
+top branch first, per [commit autonomy](commit-autonomy.md). Then, for each owner below the top,
+lowest first:
 
-For each owning phase below the top, save its files' changes as a patch inside the git
-directory, where nothing commits it, and restore those files:
-
-```bash
-git diff HEAD -- <its files> > "$(git rev-parse --git-dir)/wingspan-fix-phase-<N>.patch"
-git restore --source=HEAD --staged --worktree -- <its files>
-```
-
-Then commit what is left, the top phase's own fixes, on the top branch per
-[commit autonomy](commit-autonomy.md). The working tree is now clean.
-
-### 3. Land the patches, bottom up
-
-For each owning phase, lowest first:
-
-1. `git checkout <phase branch>`
-2. `git apply --3way <patch>`. Run the phase's **Validation**, then commit per commit autonomy.
+1. `git checkout <phase branch>` and make that phase's fixes, code and tests together.
+2. Run the phase's **Validation**, then commit per commit autonomy.
 3. `git checkout <top branch>` and `git rebase --update-refs <phase branch>`. That replays every
    phase above it onto the fix and moves their branches with it.
 
-A fix next to lines a later phase changed can conflict, at the `apply` or at the `rebase`.
-On a conflict, keep the fix on the top branch instead:
+Make the top phase's own fixes on the top branch last, as usual.
 
-- At `apply`: `git restore --source=HEAD --staged --worktree -- <all the patch's files>`. The
-  apply stages the files that merged cleanly too, so restore every file in the patch.
-- At `rebase`: `git rebase --abort`, then `git branch -f <phase branch> <phase branch>~1` to drop
-  the fix commit just made there.
-- Then `git checkout <top branch>`, `git apply --3way <patch>` (it was cut from the top branch,
-  so it applies), and commit it there. Tell the user which fixes stayed on the top branch and
-  why.
+A fix next to lines a later phase changed can conflict at the rebase. Then run
+`git rebase --abort` and `git branch -f <phase branch> <phase branch>~1` to drop the fix commit
+just made there, and make those fixes on the top branch instead. Tell the user which fixes
+stayed on the top branch and why.
 
-### 4. Check the rebased branches
+### 3. Check the rebased branches
 
 Each branch the rebases rewrote, between the lowest owner and the top, now holds code its
 phase's Validation has not run against. Check out each one, run its phase's **Validation**, and
 return to the top branch. A failure stops the run: ask the user, or in agent mode stop with a
-blocked status. The top branch's content matches what the ship gate already checked, so the
-gate needs no second run unless a fix stayed on top after a conflict.
-
-Delete the patch files once every phase is landed.
+blocked status. The ship gate runs on the top branch as usual, after the last fix.
 
 ## Shipping the stack
 

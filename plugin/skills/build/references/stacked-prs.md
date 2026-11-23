@@ -116,7 +116,7 @@ the stack changed outside this run: stop and ask the user.
 | CLI | Command |
 | --- | ------- |
 | `gh` | `gh pr create --head <branch> --base <parent> --title "<title>" --body-file <file>` |
-| `glab` | `glab mr create --source-branch <branch> --target-branch <parent> --title "<title>" --description "<body>" --yes` |
+| `glab` | `glab mr create --source-branch <branch> --target-branch <parent> --title "<title>" --description-file <file> --yes` |
 | neither | Output each title and body as Markdown for the user to open by hand, with the branch it targets. |
 
 Nothing renders the stack, so start each body with its position and dependency:
