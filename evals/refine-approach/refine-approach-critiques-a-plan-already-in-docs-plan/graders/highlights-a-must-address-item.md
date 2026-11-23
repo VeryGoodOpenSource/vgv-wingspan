@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: 'Specificity'
+pattern: 'Must address'
 flags: i
 ---
