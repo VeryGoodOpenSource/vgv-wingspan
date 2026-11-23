@@ -85,6 +85,7 @@ plugin/                # The plugin folder: everything the plugin loads, and all
         review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
         review-dispatch.md         # Caller-side procedure for launching review agents
         review-report-template.md  # Shape of the consolidated report
+        stacked-prs.md             # Publish a stack of branches as one PR each: gh stack or the git fallback
         validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
       scripts/           # detect-base-branch.sh, detect-review-scope.sh
 ```
@@ -121,7 +122,7 @@ The plugin supports three sequential phases:
 
 1. **`/brainstorm`** — Explore requirements and approaches through collaborative dialogue. Produces a brainstorm document.
 2. **`/plan`** — Transform brainstorm output into an actionable implementation plan. Includes codebase review, optional external research, flow analysis, and a mandatory quality review of the draft. Splits large plans into phases so `/build` executes one phase per context window.
-3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits, an unattended run that builds each phase in its own subagent, or full manual control — decided up front or from a saved preference.
+3. **`/build`** — Execute implementation plans: implement one phase per context window (implement → validate → commit → checkpoint → clear), run quality review, and ship a pull request — one per phase for a local plan with two or more phases, each stacked on the previous phase's. Committing and pushing follow the user's chosen autonomy — per-phase auto-commits, an unattended run that builds each phase in its own subagent, or full manual control — decided up front or from a saved preference.
 
 Standalone Skills:
 

@@ -57,6 +57,7 @@ references/review-dispatch.md review/references/review-dispatch.md
 references/review-report-template.md build/references/review-report-template.md
 references/review-report-template.md hotfix/references/review-report-template.md
 references/review-report-template.md review/references/review-report-template.md
+references/stacked-prs.md build/references/stacked-prs.md
 references/validate-and-fix.md build/references/validate-and-fix.md
 references/validate-and-fix.md hotfix/references/validate-and-fix.md
 scripts/detect-base-branch.sh rebase/scripts/detect-base-branch.sh

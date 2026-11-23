@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: build-ships-a-stacked-pr-per-phase
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

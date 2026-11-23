@@ -27,8 +27,9 @@ a phase commit would sweep those changes in, so use **AskUserQuestion** before d
 
 Dispatch the phase with the `Agent` tool (a general-purpose subagent). Run it in the
 foreground (`run_in_background: false`) and wait for its result in this turn: permissions in
-`allowed-tools` last only for the turn that invoked `/build`. Before each dispatch, note the
-phase's `**Status:**` and `git rev-parse HEAD`. Substitute the placeholders:
+`allowed-tools` last only for the turn that invoked `/build`. Before each dispatch, cut or check
+out the phase's branch per [phase branches](phase-branches.md), so the subagent commits on it.
+Then note the phase's `**Status:**` and `git rev-parse HEAD`. Substitute the placeholders:
 
 ```text
 You are building one phase of an implementation plan, as one step of an unattended build.
@@ -127,7 +128,8 @@ checks above, as unknown, never as done or blocked:
 
 ## What does not change
 
-- No subagent pushes. The push question in Phase 4 still applies.
+- No subagent pushes. The push question in Phase 4 still applies, once for the whole stack.
+  Publishing the stack skips the offer to install `gh-stack`, per [phase branches](phase-branches.md#shipping-the-stack).
 - The quality review runs once, in the main session, after the last phase. Important findings
   follow [review autonomy](review-autonomy.md), so they still stop unless the user saved the
   preference.

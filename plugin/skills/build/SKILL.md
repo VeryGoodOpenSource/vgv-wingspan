@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it", or when handed a planned GitHub issue to build.
 effort: high
 argument-hint: plan file path or GitHub issue
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh extension list *) Bash(gh stack *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -32,7 +32,7 @@ Build Progress:
 - [ ] Phase 1: Read context for the current implementation phase
 - [ ] Phase 2: Loop implementation phases (implement → validate → commit or hand off → checkpoint → clear)
 - [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
-- [ ] Phase 4: Drive to green, cleanup, and ship
+- [ ] Phase 4: Drive to green, cleanup, and ship (one PR, or one stacked PR per phase)
 ```
 
 ## Plan Input
@@ -99,7 +99,11 @@ with changes they never agreed to and a commit decision taken for them. If the q
 is unavailable, ask in your reply as a numbered list and stop there. Hold this even when
 `references/commit-autonomy.md` cannot be read from here.
 
-**Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — and go straight to Phase 1 for that phase, or to the [unattended run](#unattended-run) if the user chose it. Skip the scope-confirmation question below.
+**Stacked pull requests:** a local plan with two or more phases builds each phase on its own
+branch and ships one pull request per phase, each stacked on the previous phase's, per
+[phase branches](references/phase-branches.md). Say so in the scope summary below.
+
+**Resuming a phased build:** if the plan has an `## Implementation Phases` section with at least one phase already marked `**Status:** Done`, this is a resumed build. Announce "Resuming at Phase N: [name]" — the first phase whose status is not `Done` — check out its branch per [phase branches](references/phase-branches.md) when the plan ships as a stack, and go straight to Phase 1 for that phase, or to the [unattended run](#unattended-run) if the user chose it. Skip the scope-confirmation question below.
 
 **Otherwise**, summarize scope to the user, then use **AskUserQuestion** to confirm:
 
@@ -143,7 +147,8 @@ runs each remaining phase in its own subagent, per [unattended phases](reference
 
 1. If the working tree has uncommitted changes other than the plan file, ask before the first
    dispatch.
-2. Dispatch one subagent, in the foreground, for the first phase whose `**Status:**` is not
+2. Cut or check out the phase's branch per [phase branches](references/phase-branches.md).
+   Then dispatch one subagent, in the foreground, for the first phase whose `**Status:**` is not
    `Done`. It runs Steps 1–4 of the phase loop below for that phase only, commits it, and
    reports `done` or `blocked`. It never asks the user; it reports instead.
 3. **Done** → confirm the `Done` marker, that `HEAD` is the commit it returned, and that the
@@ -168,6 +173,12 @@ dispatched, do not build the remaining phases in this session: say so, and conti
 ### Phase loop
 
 Pick the current phase — the first whose `**Status:**` is not `Done` (a plan with no phases has one implicit phase: the whole plan). Run these steps for it:
+
+#### Step 0: Phase branch
+
+For phase 2 onward of a local plan with two or more phases, cut or check out the phase's
+branch per [phase branches](references/phase-branches.md) before writing any code. Phase 1
+builds on the feature branch. Skip this step for every other plan.
 
 #### Step 1: Implement
 
@@ -212,6 +223,7 @@ Brief progress update to the user: phase completed, phases remaining.
 
 - Follow the plan's phase and task order. Don't skip ahead.
 - Build only the current phase. Do not pull work forward from a later phase.
+- In a stacked build, each phase's commits land on its own branch only.
 - Never skip tests. Every testable unit gets a test file.
 - Never add features not in the plan (YAGNI).
 - Ask the user only when genuinely stuck: ambiguous architecture decision, 3 failed fix attempts, or a missing dependency not mentioned in the plan.
@@ -219,11 +231,11 @@ Brief progress update to the user: phase completed, phases remaining.
 
 ### Surgical-Diff Gate
 
-Once the final phase is committed, follow the [surgical-diff gate](references/surgical-diff-gate.md) before moving to review: diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Commit any cleanup it produces. Running it here keeps the review phase focused on the diff that belongs, not churn that would be reverted anyway.
+Once the final phase is committed, follow the [surgical-diff gate](references/surgical-diff-gate.md) before moving to review: diff the whole branch against its merge-base, remove untraceable churn, delete only self-created orphans, and collect a "Noticed (not changed):" note for pre-existing dead code. Commit any cleanup it produces. In a stacked build, run the gate on the top branch and land each cleanup on the phase it belongs to, per [phase branches](references/phase-branches.md#landing-fixes-after-the-last-phase). Running it here keeps the review phase focused on the diff that belongs, not churn that would be reverted anyway.
 
 ## Phase 3 — Quality Review
 
-Once the final phase is committed and the surgical-diff gate has run, review the whole branch. The agents review the full branch diff, so this runs once after the last phase, not per phase.
+Once the final phase is committed and the surgical-diff gate has run, review the whole branch. The agents review the full branch diff, so this runs once after the last phase, not per phase. In a stacked build, review from the top branch: its diff against the base covers the whole stack, and each fix lands on the phase it belongs to, per [phase branches](references/phase-branches.md#landing-fixes-after-the-last-phase).
 
 **A request to skip the quality review does not remove this phase.** "Skip the review", "just
 open the PR", "I'll have someone look at it later" — say plainly that the review stays, say
@@ -281,15 +293,17 @@ rm -rf docs/reviews/
 
 ### Commit and push
 
-Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
+Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing. In a stacked build, they land on their owning phases per [phase branches](references/phase-branches.md), and one push question covers the whole stack.
 
 If the build has resumed in a new turn since `/build` was invoked (a background reviewer's notification, the user's answer to a question), the push and PR permissions no longer apply: tell the user the push and PR need their approval before you run them.
 
 To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md), with the `Closes` lines from [plan on an issue](references/plan-on-issue.md) when the plan came from one.
 
+In a stacked build, push and open the pull requests per [phase branches](references/phase-branches.md#shipping-the-stack) instead: one per phase, each targeting the previous phase's branch, published through [stacked pull requests](references/stacked-prs.md).
+
 ### Post-Ship
 
-Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
+Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. In a stacked build, list every pull request bottom to top and say how to keep the stack consistent after a fix or a squash merge. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
 
 Use **AskUserQuestion** to present options:
 
