@@ -8,7 +8,7 @@ reference changes only the Important tier.
 
 **Apply Important findings without asking** is opt-in and off by default. It is a
 per-developer preference, not a repo convention, so it never belongs in the project's
-`CLAUDE.md`. Each skill says where the choice is made:
+`CLAUDE.md` or `AGENTS.md`. Each skill says where the choice is made:
 
 - `/build` reads the saved preference. With none saved, it settles the setting in Phase 0,
   in the commit-autonomy question.
