@@ -12,16 +12,16 @@ First of all, thank you for taking the time to contribute! 🎉👍 Before you d
 
 | Contribution | Where |
 | ------------ | ----- |
-| **New skill** | `skills/<skill-name>/SKILL.md` |
-| **Improve an existing skill** | Edit the relevant `skills/*/SKILL.md` or `reference.md` |
-| **Hooks** | `hooks/` directory |
+| **New skill** | `plugin/skills/<skill-name>/SKILL.md` |
+| **Improve an existing skill** | Edit the relevant `plugin/skills/*/SKILL.md` or `reference.md` |
+| **Hooks** | `plugin/hooks/` directory |
 | **Bug reports & feature requests** | [GitHub Issues](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues) |
 
 ## Adding a New Skill
 
 ### 1. Create the skill file
 
-Create `skills/<skill-name>/SKILL.md`. The file must begin with YAML frontmatter:
+Create `plugin/skills/<skill-name>/SKILL.md`. The file must begin with YAML frontmatter:
 
 ```yaml
 ---
@@ -47,11 +47,11 @@ After the frontmatter, structure the file as:
 
 ### 2. Update `plugin.json` tags
 
-Add relevant keywords to the `keywords` array in `.claude-plugin/plugin.json`.
+Add relevant keywords to the `keywords` array in `plugin/.claude-plugin/plugin.json`.
 
 ### 3. Update the README skills table
 
-Add a row to the skills table in `README.md`:
+Add a row to the skills table in `plugin/README.md`:
 
 ```markdown
 | **Skill Name** | `/skill-name <args>` | Short description of what the skill covers |
@@ -70,7 +70,7 @@ Create one case directory per prompt under `evals/<skill-name>/`. See [Eval Case
 Evals ask one question: does Claude route to the skill, and does the output follow it?
 [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals) runs every case twice,
 once with this plugin loaded and once with no plugin at all, so a grader that passes in both
-arms is measuring the model rather than the skill.
+arms is measuring the model rather than the skill. Run it from the repository root:
 
 ```bash
 claude plugin eval . --scaffold
@@ -79,7 +79,8 @@ claude plugin eval . --scaffold
 Adding a skill means adding an `evals/<skill>/<case-name>/` directory per case, each with a
 `prompt.md`, a `case.yaml`, and one file per grader under `graders/`. There is no central
 registry to update — cases are discovered from the tree — and the new case's `fixture.sh` is
-a symlink to `evals/_fixture/fixture.sh`.
+a symlink to `evals/_fixture/fixture.sh`. Its `case.yaml` loads the plugin with
+`plugins: ["../../../plugin"]`, because the suite lives outside `plugin/`.
 
 [evals/README.md](evals/README.md) is the single source of truth — the case format, the
 grader reference, prerequisites, what makes a case worth having, and what these evals
@@ -162,12 +163,14 @@ A skill can only reference files inside its own directory. Paths that escape the
 
 ### Sharing content across skills
 
-When multiple skills need the same content (templates, instructions, procedures), store the canonical file in `skills/shared/` and create a **symlink** inside each skill that needs it.
+When multiple skills need the same content (templates, instructions, procedures), store the canonical file in `plugin/skills/shared/` and put a **copy** inside each skill that needs it.
+
+The plugin folder holds no symbolic links, so each copy is a real file. Never edit a copy. Edit the source in `plugin/skills/shared/`, then run the sync script. CI fails when a copy differs from its source.
 
 **Directory layout:**
 
 ```text
-skills/
+plugin/skills/
   shared/
     references/
       validate-and-fix.md          # canonical file
@@ -175,19 +178,25 @@ skills/
       detect-base-branch.sh        # canonical file
   build/
     references/
-      validate-and-fix.md -> ../../shared/references/validate-and-fix.md
+      validate-and-fix.md          # copy of shared/references/validate-and-fix.md
     SKILL.md
   hotfix/
     references/
-      validate-and-fix.md -> ../../shared/references/validate-and-fix.md
+      validate-and-fix.md          # copy of shared/references/validate-and-fix.md
     SKILL.md
 ```
 
-**Creating a symlink:**
+**Adding a copy:** add a line to `tool/shared-copies.txt`, then run the sync script:
+
+```text
+# <source in plugin/skills/shared> <copy in plugin/skills>
+references/validate-and-fix.md build/references/validate-and-fix.md
+```
 
 ```bash
 # From the repo root
-ln -s ../../shared/references/validate-and-fix.md skills/build/references/validate-and-fix.md
+bash tool/sync-shared.sh          # writes every copy
+bash tool/sync-shared.sh --check  # what CI runs
 ```
 
 **Referencing in SKILL.md** — always use the local path:
@@ -196,17 +205,17 @@ ln -s ../../shared/references/validate-and-fix.md skills/build/references/valida
 Follow the [validation and fix procedure](references/validate-and-fix.md).
 ```
 
-Never reference `../shared/` directly in a SKILL.md — the symlink makes the shared file appear local.
+Never reference `../shared/` directly in a SKILL.md — the copy makes the shared file local.
 
 ### Shared scripts
 
-The same boundary rule applies to scripts. Store canonical scripts in `skills/shared/scripts/`, symlink into each skill's `scripts/` directory, and reference them with an absolute path via `${CLAUDE_SKILL_DIR}`.
+The same boundary rule applies to scripts. Store canonical scripts in `plugin/skills/shared/scripts/`, copy them into each skill's `scripts/` directory, and reference them with an absolute path via `${CLAUDE_SKILL_DIR}`.
 
 **Example — adding a shared script to a skill:**
 
 ```bash
-mkdir -p skills/my-skill/scripts
-ln -s ../../shared/scripts/detect-base-branch.sh skills/my-skill/scripts/detect-base-branch.sh
+echo "scripts/detect-base-branch.sh my-skill/scripts/detect-base-branch.sh" >> tool/shared-copies.txt
+bash tool/sync-shared.sh
 ```
 
 **Referencing in SKILL.md** — use `${CLAUDE_SKILL_DIR}` in the skill body (substitutes to an absolute path at skill-load time) and a `*` glob in `allowed-tools` (frontmatter patterns do not substitute variables) to skip the per-invocation permission prompt:
@@ -262,15 +271,15 @@ session and exercise it before you commit.
 
 ### Load your local copy
 
-From the repository root, launch Claude Code pointed at this directory:
+From the repository root, launch Claude Code pointed at the plugin folder:
 
 ```bash
-claude --plugin-dir .
+claude --plugin-dir plugin
 ```
 
 `--plugin-dir` loads the plugin for that session only, needs no install or
 marketplace, and overrides any marketplace-installed copy of the same plugin.
-`${CLAUDE_PLUGIN_ROOT}` (used in `hooks/hooks.json`) resolves to the directory
+`${CLAUDE_PLUGIN_ROOT}` (used in `plugin/hooks/hooks.json`) resolves to the directory
 you pass, so the hook script paths resolve correctly.
 
 ### Verify each component loaded
@@ -291,9 +300,9 @@ rm -f /tmp/wingspan-recommend-plugins-*
 
 ### Iterate on changes
 
-After editing a `SKILL.md` or `hooks/hooks.json`, **restart the
-`claude --plugin-dir .` session** to guarantee the change is picked up. Changes
-to `.claude-plugin/plugin.json` always require a restart. Edits to the hook
+After editing a `SKILL.md` or `plugin/hooks/hooks.json`, **restart the
+`claude --plugin-dir plugin` session** to guarantee the change is picked up. Changes
+to `plugin/.claude-plugin/plugin.json` always require a restart. Edits to the hook
 `.sh` scripts take effect on the next matching tool call with no restart, since
 each hook runs the script fresh.
 
@@ -301,7 +310,7 @@ each hook runs the script fresh.
 
 To mimic the marketplace install flow without pushing anything, register a
 throwaway local marketplace. Create `.claude-plugin/marketplace.json` in a temp
-directory with an **absolute** path to this repo:
+directory with an **absolute** path to this repo's `plugin/` folder:
 
 ```jsonc
 // /tmp/vgv-test-marketplace/.claude-plugin/marketplace.json
@@ -311,7 +320,7 @@ directory with an **absolute** path to this repo:
       "name": "vgv-wingspan",
       "source": {
         "type": "directory",
-        "path": "/ABSOLUTE/path/to/wingspan"
+        "path": "/ABSOLUTE/path/to/wingspan/plugin"
       }
     }
   ]
@@ -330,7 +339,7 @@ Then, inside a session:
 Run the same check CI runs, from the repository root:
 
 ```bash
-claude plugin validate .
+claude plugin validate plugin
 ```
 
 This validates the manifest, skill frontmatter, hook JSON, and file references.
@@ -340,10 +349,10 @@ It is static, so it confirms structure but does not replace the live checks abov
 
 | Symptom | Likely cause | Fix |
 | ------- | ------------ | --- |
-| Skill missing from `/help` | Invalid frontmatter | Run `claude plugin validate .` and fix the reported error |
+| Skill missing from `/help` | Invalid frontmatter | Run `claude plugin validate plugin` and fix the reported error |
 | Hook never fires | `jq` not installed, marker file left over, or script lacks `+x` / a shebang | Install `jq`; remove the `/tmp/wingspan-recommend-plugins-*` marker; `chmod +x` the script |
-| Skill references a shared file that 404s | Symlink missing or points outside the skill directory | Recreate the symlink per [Sharing content across skills](#sharing-content-across-skills) |
-| `${CLAUDE_PLUGIN_ROOT}` not resolving | Session not launched via `--plugin-dir` (or restart pending) | Restart with `claude --plugin-dir .` from the repo root |
+| Skill references a shared file that 404s | Copy missing from the skill directory | Add it per [Sharing content across skills](#sharing-content-across-skills) |
+| `${CLAUDE_PLUGIN_ROOT}` not resolving | Session not launched via `--plugin-dir` (or restart pending) | Restart with `claude --plugin-dir plugin` from the repo root |
 | Local marketplace won't install | `source.path` is relative | Use an absolute path in `marketplace.json` |
 
 ## CI Checks
@@ -355,8 +364,8 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skills lint | Validates every skill's `SKILL.md` frontmatter, structure, and links via VGV's `skills_lint` reusable workflow | `skills_lint.yaml` |
-| Plugin validation | Validates plugin manifests via Claude Code CLI, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate .` |
-| Script tests | Runs every hook test suite, and checks the review agents' findings block has not drifted | `hooks/test_*.sh`, `agents/test_review_contract.sh` |
+| Plugin validation | Validates plugin manifests via Claude Code CLI, checks every shared copy matches its source, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate --strict plugin`, `tool/sync-shared.sh --check` |
+| Script tests | Runs every hook test suite, and checks the review agents' findings block has not drifted | `plugin/hooks/test_*.sh`, `plugin/agents/test_review_contract.sh` |
 
 Evals do **not** run on a pull request. They call real models, so they run after a merge to
 `main` instead, scoped to the skills that changed:

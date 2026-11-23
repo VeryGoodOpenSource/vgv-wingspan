@@ -7,8 +7,8 @@ on:
     branches:
       - main
     paths:
-      - 'skills/**'
-      - 'agents/**'
+      - 'plugin/skills/**'
+      - 'plugin/agents/**'
       - 'evals/**'
   workflow_dispatch:
     inputs:
@@ -81,7 +81,7 @@ jobs:
 
             SKILLS=$(
               {
-                echo "$CHANGED" | { grep -oE '^skills/[^/]+/' || true; } | cut -d/ -f2
+                echo "$CHANGED" | { grep -oE '^plugin/skills/[^/]+/' || true; } | cut -d/ -f3
                 echo "$CHANGED" | { grep -oE '^evals/[^_][^/]*/' || true; } | cut -d/ -f2
               } | sort -u | while read -r s; do
                     if [ -n "$s" ] && compgen -G "evals/$s/*/case.yaml" >/dev/null; then
@@ -90,7 +90,7 @@ jobs:
                   done
             )
 
-            if echo "$CHANGED" | grep -qE '^(evals/_fixture/|skills/shared/|agents/)'; then
+            if echo "$CHANGED" | grep -qE '^(evals/_fixture/|plugin/skills/shared/|plugin/agents/)'; then
               echo "shared eval input changed — widening to all skills"
               SKILLS=$(all_skills)
             fi
