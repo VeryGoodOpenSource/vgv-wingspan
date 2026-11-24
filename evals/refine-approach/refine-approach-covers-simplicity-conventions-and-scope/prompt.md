@@ -1,7 +1,7 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
+allowed_tools: [Read, Glob, Grep, Skill, Agent]
 tags: [refine-approach]
 description: "That a small hand-written plan is assessed on simplicity, on engineering conventions, and on whether its scope fits a single pull request."
 ---
