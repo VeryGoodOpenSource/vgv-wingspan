@@ -11,11 +11,18 @@ resolved:
 ```bash
 git diff --stat "$BASE"
 git diff --name-status "$BASE"
+git ls-files --others --exclude-standard
 ```
 
-Count changed lines as the insertions plus deletions on the last line of `--stat`. Leave out
-lockfiles and generated files (mocks, codegen output, `*.g.dart` and equivalents): they grow
-with the change without adding anything to review.
+The two `git diff` commands see only tracked files. When the implementation is still
+uncommitted, every file it created is untracked, so the third command lists them one by one
+(`git status --porcelain` would fold a new directory into a single entry). Treat each
+untracked file as an added file: it counts toward the files, its line count (`wc -l`) counts
+toward the changed lines, and it goes through the risk signals like any other change.
+
+Count changed lines as the insertions plus deletions on the last line of `--stat`, plus the
+lines of the untracked files. Leave out lockfiles and generated files (mocks, codegen output,
+`*.g.dart` and equivalents): they grow with the change without adding anything to review.
 
 ## Step 2: Pick the tier
 
