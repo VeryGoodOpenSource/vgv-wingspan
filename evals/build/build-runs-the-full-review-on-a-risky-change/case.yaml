@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: build-runs-the-full-review-on-a-risky-change
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

@@ -21,6 +21,8 @@ carries:
    table (a bare stem — the agent writes `<RAW_DIR>/<name>.md`).
 3. **The [writing rules](elements-of-style.md)** — paste the file's full text verbatim after the
    instructions. The agent cannot follow the relative link the instructions carry.
+4. **The Already gated note**, when the calling skill builds one: the checks earlier steps
+   already ran, and the merge strategy. Pass it verbatim.
 
 ## Companion reviewers
 

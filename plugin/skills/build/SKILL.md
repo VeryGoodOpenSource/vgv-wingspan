@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it", or when handed a planned GitHub issue to build.
 effort: high
 argument-hint: plan file path or GitHub issue
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh extension list *) Bash(gh stack *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
+allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh extension list *) Bash(gh stack *) Bash(gh pr view *) Bash(gh repo view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -31,7 +31,7 @@ Build Progress:
 - [ ] Phase 0: Load plan and confirm scope (or resume a phased build)
 - [ ] Phase 1: Read context for the current implementation phase
 - [ ] Phase 2: Loop implementation phases (implement → validate → commit or hand off → checkpoint → clear)
-- [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
+- [ ] Phase 3: Size the review to the change, run its agents in parallel, consolidate into one report
 - [ ] Phase 4: Drive to green, cleanup, and ship (one PR, or one stacked PR per phase)
 ```
 
@@ -243,13 +243,18 @@ what it costs, and run it. Reporting afterwards that the review was "skipped per
 instructions" is this phase failing, not this phase being waived. The user can decline to act
 on the findings; they cannot have the step deleted before it runs.
 
-**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
-would have run — five `Agent` calls, sent in parallel in a single message, each carrying the
-scope and the raw-reports directory. A reply that describes this phase without a dispatch in
-the trace has skipped it. If an agent is unavailable, say which and run the rest; if none can
-run, say so plainly rather than narrating the review as though it happened.
+First, follow [review scope](references/review-scope.md): measure the branch, pick the
+**light** or **full** tier, and build the **Already gated** note. A light review is still a
+review: it dispatches its agents like the full one.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
+**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
+would have run — one `Agent` call per agent in the tier, sent in parallel in a single message,
+each carrying the scope, the raw-reports directory, and the Already gated note. A reply that
+describes this phase without a dispatch in the trace has skipped it. If an agent is
+unavailable, say which and run the rest; if none can run, say so plainly rather than
+narrating the review as though it happened.
+
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
 
 | Agent | Report name |
 | ----- | ----------- |
@@ -263,8 +268,9 @@ Include the installed companion reviewers too, per the same dispatch reference.
 
 Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
 and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
-scope constraint and the report name from the table above, and send all five, plus any
-companion reviewers, in one message so they run at once rather than in turn.
+scope constraint, the Already gated note, and the report name from the table above, and send
+every agent in the tier, plus any companion reviewers, in one message so they run at once
+rather than in turn. When `references/review-scope.md` cannot be read, run the full review.
 
 Run them in the foreground (`run_in_background: false`) and wait for every result in this
 turn. Do not end your turn while a reviewer runs: the push and PR permissions in
@@ -275,7 +281,7 @@ background.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
+Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md), with the review scope line under the agents line. Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
 
 ## Phase 4 — Ship
 
@@ -303,7 +309,7 @@ In a stacked build, push and open the pull requests per [phase branches](referen
 
 ### Post-Ship
 
-Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. In a stacked build, list every pull request bottom to top and say how to keep the stack consistent after a fix or a squash merge. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
+Print an end-of-run summary: phases built, the review scope line, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. In a stacked build, list every pull request bottom to top and say how to keep the stack consistent after a fix or a squash merge. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
 
 Use **AskUserQuestion** to present options:
 
