@@ -108,6 +108,10 @@ grading keeps the ids stable:
 - **No IDs.** The caller assigns the stable `FINDING-NN` id after collecting every
   agent's list. Do not invent your own ids.
 - **`why` and `fix` are mandatory and one line each.** A finding with no fix is noise.
+- **Skip what is already gated.** When the caller passes an **Already gated** note, do not
+  report findings its checks cover: a formatter or analyzer it lists has passed or runs before push, and
+  under a squash-only merge strategy commit messages and commit splits do not matter. Report
+  everything else as usual.
 - **Write to the [writing rules](elements-of-style.md).** The caller pastes them below these
   instructions. Apply them to the detailed report and to every `title`, `why`, and `fix`.
 - Do not apply fixes. You review and report; the caller decides what to act on.
