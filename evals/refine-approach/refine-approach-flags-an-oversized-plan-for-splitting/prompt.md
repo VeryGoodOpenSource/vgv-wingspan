@@ -1,8 +1,8 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
-tags: [plan-technical-review]
+allowed_tools: [Read, Glob, Grep, Skill, Agent]
+tags: [refine-approach]
 description: "That a plan spanning a new package, a repository, state management and four screens is judged too large for one pull request and given concrete split boundaries."
 ---
 

@@ -106,9 +106,8 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 | Skill | Command | Description |
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
-| [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
+| [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach [doc path]` | Review and refine brainstorms or plans before proceeding — an externally-authored plan gets a technical review by the review agents; plans from `/plan` are already reviewed during creation |
 | [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, improvement, or issue>` | Transform brainstorm output into a reviewed, phased implementation plan |
-| [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
 | [**Build**](skills/build/SKILL.md) | `/build <plan file path or issue>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |

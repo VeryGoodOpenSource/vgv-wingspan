@@ -2,8 +2,8 @@
 
 Runs the plan-quality agents against a written plan, applies their findings to the plan
 inline, and resolves any scope-splitting recommendation. This is the single procedure shared
-by `/plan` (a mandatory step for standard and extensive plans) and `/plan-technical-review`
-(the entry point for externally-authored plans).
+by `/plan` (a mandatory step for standard and extensive plans) and the technical review mode
+of `/refine-approach` (the entry point for externally-authored plans).
 
 `<PLAN_PATH>` is the plan file under review.
 
@@ -65,4 +65,4 @@ The **skill**, not the agent, writes the files:
 ## Caller responsibilities
 
 - **`/plan`** invokes this after writing the draft and before presenting post-generation options. Skip it entirely for the `minimal` template. Do not present handoff options here — return to the plan flow.
-- **`/plan-technical-review`** invokes this on a user-supplied plan, then presents its own handoff options.
+- **`/refine-approach`** invokes this in technical review mode on a user-supplied plan, then presents its own handoff options.

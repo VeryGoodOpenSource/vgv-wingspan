@@ -1,5 +1,5 @@
 schema_version: "1.1"
-name: plan-technical-review-covers-simplicity-conventions-and-scope
+name: refine-approach-stays-out-of-a-code-question
 plugins: ["../../../plugin"]
 context:
   scaffold_script: fixture.sh

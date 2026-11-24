@@ -1,8 +1,8 @@
 ---
 max_turns: 12
 timeout_seconds: 600
-allowed_tools: [Read, Glob, Grep, Skill]
-tags: [plan-technical-review]
+allowed_tools: [Read, Glob, Grep, Skill, Agent]
+tags: [refine-approach]
 description: "That a plan shipping new behavior with no tests and no way to verify it is flagged for the gap before the work starts."
 ---
 
