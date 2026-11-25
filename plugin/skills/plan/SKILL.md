@@ -230,9 +230,9 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
   exactly as written, not a summary: the user is deciding whether to build on it, and a
   summary hides the part they would object to. Reading the file is not showing it: the user
   does not see tool output. Do not edit the plan while showing it; changes go through
-  **Other** or **Review and refine**. Then ask again with the same options, this one replaced by
-  **Open the plan file in my code editor**: open the plan file for review (the issue, once
-  published).
+  **Other**, or **Review and refine** while the plan is still local. Then ask again with
+  the same options, this one replaced by **Open the plan file in my code editor**: open
+  the plan file for review (the issue, once published).
 - **Open the plan file in my code editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **Review and refine** → Load `/refine-approach` skill. It runs a document critique, since the plan review above already covered the technical review.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
