@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: refine-approach-critiques-a-plan-already-in-docs-plan
+plugins: ["../../../plugin"]
+context:
+  scaffold_script: fixture.sh

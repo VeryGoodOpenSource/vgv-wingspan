@@ -1,5 +1,0 @@
-schema_version: "1.1"
-name: plan-technical-review-flags-an-oversized-plan-for-splitting
-plugins: ["../../../plugin"]
-context:
-  scaffold_script: fixture.sh

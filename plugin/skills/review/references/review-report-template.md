@@ -10,6 +10,7 @@ and Important rows verbatim (same ids, order, titles) and collapses Suggestions 
 
 <N> findings · 🔴 <critical> critical · 🟡 <important> important · 🔵 <suggestions> suggestions
 Across <F> files. Agents: <list of agents that ran>.<note any agent that failed><if any were dropped: " <d> dropped, not confirmed by the code."><for each companion that ran with no findings: " <name> ran, no findings: \"<its quoted reason>\"."><for each companion note beside its findings: " <name> notes: \"<its note>\".">
+<if the skill picked a review scope: "Review scope: <light|full> (<reason>)">
 
 ## Findings Index
 

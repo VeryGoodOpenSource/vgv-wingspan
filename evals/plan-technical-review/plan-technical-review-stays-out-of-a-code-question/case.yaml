@@ -1,5 +1,0 @@
-schema_version: "1.1"
-name: plan-technical-review-stays-out-of-a-code-question
-plugins: ["../../../plugin"]
-context:
-  scaffold_script: fixture.sh
