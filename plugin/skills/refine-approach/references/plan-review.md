@@ -32,8 +32,8 @@ the improved plan, not a list of findings to reconcile.
 
 When a split is recommended, present these options:
 
-1. **Restructure into phases in one plan (Recommended)** — keep a single plan file and add an `## Implementation Phases` section whose phases follow the proposed split boundaries. `/build` builds one phase per context window, but all phases ship in a single PR, so this does not produce the recommended split. For separate PRs, choose option 2.
-2. **Split into separate part-N files** — generate one standalone plan file per proposed PR. Build each part in its own session and git worktree, branched from the base branch after the previous part merges (in Claude Code: `claude --worktree <part-name>`). Each part then ships as its own PR.
+1. **Restructure into phases in one plan (Recommended)** — keep a single plan file and add an `## Implementation Phases` section whose phases follow the proposed split boundaries. `/build` builds one phase per context window and ships each phase as its own pull request: stacked on the previous phase's for a local plan, or once the previous phase merges for a plan on an issue.
+2. **Split into separate part-N files** — generate one standalone plan file per proposed PR. Build each part in its own session and git worktree, branched from the base branch after the previous part merges (in Claude Code: `claude --worktree <part-name>`). Each part then ships as its own PR, with no stack to rebase.
 3. **Keep as one plan, no phases** — proceed unchanged; `/build` builds everything in one pass and ships one larger PR.
 
 ### Restructure into phases
@@ -50,8 +50,9 @@ template defines:
 - **Validation:** a command (exit 0 = pass) or `manual <numbered steps>`
 
 Size each phase to fit comfortably in one AI context window. Do not create additional files.
-Phases split the build across context windows, not the review: every phase lands on the same
-branch and ships in one PR.
+Phases split the build across context windows and the review across pull requests. For a local
+plan, `/build` puts each phase on its own branch, cut from the previous phase's, and opens one
+stacked pull request per phase.
 
 ### Split into separate part-N files
 

@@ -64,6 +64,8 @@ Execute the plan — write code, write tests, run quality review, and open a PR:
 /build docs/plan/add-authentication.md
 ```
 
+A local plan with two or more phases ships as stacked PRs, one per phase, each targeting the previous phase's branch. It uses [`gh stack`](https://github.com/github/gh-stack) when installed, and plain `git` with `gh` or `glab` otherwise.
+
 Given a planned issue (`/build #123`), it builds the first open, unblocked phase and opens a PR that closes it.
 
 ### 4. `/review`

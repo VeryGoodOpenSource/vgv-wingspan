@@ -50,7 +50,9 @@ Commit message formats:
 
 `<type>` matches the plan's type (`feat`, `fix`, `refactor`, …). One commit per phase keeps
 the branch history clean and each phase independently reviewable; a single-phase plan
-produces one implementation commit. Review findings are fixed in place and the report is
+produces one implementation commit. A local plan with two or more phases commits each phase
+on its own branch, and each later fix on the branch of the phase it fixes, per
+[phase branches](phase-branches.md). Review findings are fixed in place and the report is
 deleted at cleanup, so no commit cites `FINDING-NN` ids — there would be no report left to
 map them to.
 
@@ -62,5 +64,6 @@ preference to push automatically, push and open the PR without asking. Otherwise
 
 1. **Review locally first (Recommended)** — stop here; the commits stay local and the user
    opens the PR when ready. Do not push or open the PR.
-2. **Push and open the PR now** — proceed this once.
+2. **Push and open the PR now** — proceed this once. In a stacked build, this pushes every
+   phase branch and opens one pull request per phase.
 3. **Always push automatically** — proceed, and remember the preference for future builds.

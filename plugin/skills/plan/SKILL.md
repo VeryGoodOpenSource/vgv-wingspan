@@ -191,7 +191,7 @@ e.g. `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`.
 After writing the plan file and before presenting options, run a mandatory quality pass on it. This is the technical review that `/refine-approach` runs on externally-authored plans — plans created here are reviewed here.
 
 - **Minimal template** → skip this section. The overhead is not worth it for a small plan.
-- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
+- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (one stacked PR per phase) or split it into part-N files (one PR per part, each built after the previous one merges).
 
 Planning from an issue, a recommended split offers only phases or no phases: each phase
 already ships as its own PR (see [plan on an issue](references/plan-on-issue.md)).

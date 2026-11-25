@@ -13,7 +13,8 @@ Rules:
 
 - Size each phase to fit comfortably in one AI context window.
 - Order phases so the codebase compiles and its tests pass after every phase.
-- Keep each phase self-contained enough to commit on its own.
+- Keep each phase self-contained enough to commit and review on its own: `/build` ships each
+  phase of a local plan as its own pull request, stacked on the previous phase's.
 
 Embed this block verbatim, one `### Phase N` per phase, filling in the placeholders:
 

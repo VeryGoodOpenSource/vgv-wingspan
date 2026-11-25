@@ -31,7 +31,7 @@ Never flag or remove these, even when they lack an obvious plan task:
 
 ## Step 4: Remove untraceable churn
 
-Edit the working tree to strip untraceable lines. Work at line-level granularity, not whole-hunk, because a single hunk often mixes a real change with a drive-by edit. If any work is already committed, do not rewrite history — correcting the working tree reaches the same end state, and the removal gets committed with the rest of the implementation.
+Edit the working tree to strip untraceable lines. Work at line-level granularity, not whole-hunk, because a single hunk often mixes a real change with a drive-by edit. If any work is already committed, do not rewrite history — correcting the working tree reaches the same end state, and the removal gets committed with the rest of the implementation. In a stacked build, each removal is made on the phase branch it belongs to instead, per [phase branches](phase-branches.md#landing-fixes-after-the-last-phase), which rebases the local branches above it before anything is pushed.
 
 ## Step 5: Revert safety
 
