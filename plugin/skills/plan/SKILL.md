@@ -204,7 +204,8 @@ Planning from an issue, publish the reviewed plan per
 [plan on an issue](references/plan-on-issue.md): confirm first, then post the plan comment,
 whose first line is `<!-- wingspan:plan -->`, create the phase sub-issues, and fill their
 numbers into the comment. Once published, `ISSUE_URL` replaces the plan file path
-everywhere below, **Read the plan here** prints the plan comment, **Open the plan file in
+everywhere below, **Read the plan here** prints the plan comment as posted (fetch it from
+the issue: the sub-issue numbers are filled in after the draft), **Open the plan file in
 my code editor** opens the issue instead (`gh issue view <number> --web`), and **Review and
 refine** is dropped: refine through **Edit** before publishing, not after. If the user
 declines, the local plan file stands and nothing below changes.
@@ -227,8 +228,9 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 - **Start building** → Call the `/build` skill with the plan file path
 - **Read the plan here** → Print the whole plan, exactly as written, not a summary: the
   user is deciding whether to build on it, and a summary hides the part they would object
-  to. Then ask again with the same options, **Open the plan file in my code editor** in
-  place of this one.
+  to. Then ask again with the same options, this one replaced by
+  **Open the plan file in my code editor**: open the plan file for review (the issue, once
+  published).
 - **Open the plan file in my code editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **Review and refine** → Load `/refine-approach` skill. It runs a document critique, since the plan review above already covered the technical review.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
