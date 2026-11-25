@@ -10,11 +10,18 @@ returns the block even when dispatched directly as an agent type, with no callin
 file holds the rules behind that block; when you change the block here, change it in each
 review agent too. `agents/test_review_contract.sh` fails CI when the copies drift.
 
+Each agent produces two outputs:
+
+1. **A detailed report on disk** (for deep reference), and
+2. **A structured findings list returned to the caller** (the single source the caller
+   uses to number, consolidate, and render both the file and the chat summary).
+
 ## Reading scope
 
-The finding scope you were given lists the changed files. It bounds what you may report on.
-It does not bound what you may read. A review that reads only the changed lines misses the
-defects that live at the seam between them and the code they call.
+The finding scope you were given (the changed files, the paths under review, or the whole
+project) bounds what you may report on. It does not bound what you may read. A review that
+reads only the lines in scope misses the defects that live at the seam between them and the
+code they call.
 
 Before reporting, read:
 
@@ -27,14 +34,8 @@ Before reporting, read:
 3. **The source of truth for any claim the change makes**, including a comment asserting what
    another system does.
 
-When a finding depends on behavior defined outside the changed files, cite that file and line
-in `why`.
-
-Each agent produces two outputs:
-
-1. **A detailed report on disk** (for deep reference), and
-2. **A structured findings list returned to the caller** (the single source the caller
-   uses to number, consolidate, and render both the file and the chat summary).
+When a finding depends on behavior defined outside the finding scope, place and cite it as the
+[Rules](#rules) below describe.
 
 ## 1 — Write the detailed report
 
@@ -102,9 +103,9 @@ grading keeps the ids stable:
 - **Every finding must have a `location`** — `file:line`, or the bare `file` path when the
   finding spans it. Never omit it: the caller deduplicates and sorts by location, so a
   location-less finding breaks stable numbering.
-- **When a finding depends on behavior defined outside the changed files**, keep `location`
-  and `quote` on the changed line the fix edits, and name the `file:line` that defines that
-  behavior in `why`. The finding then shows both where to fix and why the line is wrong.
+- **When a finding depends on behavior defined outside the finding scope**, keep `location`
+  and `quote` on the line in scope that the fix edits, and name the `file:line` that defines
+  that behavior in `why`. The finding then shows both where to fix and why the line is wrong.
 - **Every finding must have a `quote`** — the offending line copied verbatim from the file
   at `location`: the whole line, never shortened, paraphrased, or joined with another line.
   For a `file:start-end` range, quote one line inside it. With a bare file `location`, quote
