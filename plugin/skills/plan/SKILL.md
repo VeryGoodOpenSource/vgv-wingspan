@@ -226,9 +226,11 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 **For other selections:**
 
 - **Start building** → Call the `/build` skill with the plan file path
-- **Read the plan here** → Print the whole plan, exactly as written, not a summary: the
-  user is deciding whether to build on it, and a summary hides the part they would object
-  to. Then ask again with the same options, this one replaced by
+- **Read the plan here** → Read the file, then write the whole plan into your reply,
+  exactly as written, not a summary: the user is deciding whether to build on it, and a
+  summary hides the part they would object to. Reading the file is not showing it: the user
+  does not see tool output. Do not edit the plan while showing it; changes go through
+  **Other** or **Review and refine**. Then ask again with the same options, this one replaced by
   **Open the plan file in my code editor**: open the plan file for review (the issue, once
   published).
 - **Open the plan file in my code editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
