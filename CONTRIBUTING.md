@@ -115,7 +115,7 @@ Every section you write gets one of three verdicts.
   agent set to dispatch
 - VGV opinions the model would not reach by default — tests are non-negotiable, YAGNI, one
   implementation phase per context window, clear-context handoff offered first
-- Harness facts — **AskUserQuestion**, `$ARGUMENTS`, `${CLAUDE_SKILL_DIR}`, the skill
+- Harness facts — **AskUserQuestion**, `$ARGUMENTS`, `${CLAUDE_PLUGIN_ROOT}`, the skill
   directory boundary, `allowed-tools` patterns
 - Safety rules — never push without approval, never stage secret files
 
@@ -159,71 +159,46 @@ all; removing them cut roughly 2,400 tokens from every request.
 
 ### The skill directory boundary
 
-A skill can only reference files inside its own directory. Paths that escape the skill folder (e.g., `../shared/references/foo.md`) will fail validation with a `reference-exists` error. This applies to both markdown reference links and script paths in `!` blocks.
+A markdown link in a `SKILL.md` can only point at a file inside its own skill directory. `skills_lint` fails any other target with a "Linked file does not exist" error, including a link to `../shared/references/foo.md` and a link written as `${CLAUDE_PLUGIN_ROOT}/…`. Name files outside the skill directory as plain text in a code span, as the next section shows.
 
 ### Sharing content across skills
 
-When multiple skills need the same content (templates, instructions, procedures), store the canonical file in `plugin/skills/shared/` and put a **copy** inside each skill that needs it.
+When multiple skills need the same content (templates, instructions, procedures), store one canonical file in `plugin/shared/`. Skills and agents name it with `${CLAUDE_PLUGIN_ROOT}/shared/…`. There are no per-skill copies and no symlinks, so a harness installs the file once.
 
-The plugin folder holds no symbolic links, so each copy is a real file. Never edit a copy. Edit the source in `plugin/skills/shared/`, then run the sync script. CI fails when a copy differs from its source.
+`tool/check-plugin-paths.sh` runs in CI and fails on a symlink under `plugin/`, a file under `plugin/skills/` named like a shared file, a relative markdown link that does not resolve, and a `${CLAUDE_PLUGIN_ROOT}/…` path with no file behind it.
 
 **Directory layout:**
 
 ```text
-plugin/skills/
+plugin/
   shared/
     references/
       validate-and-fix.md          # canonical file
     scripts/
       detect-base-branch.sh        # canonical file
-  build/
-    references/
-      validate-and-fix.md          # copy of shared/references/validate-and-fix.md
-    SKILL.md
-  hotfix/
-    references/
-      validate-and-fix.md          # copy of shared/references/validate-and-fix.md
-    SKILL.md
+  skills/
+    build/SKILL.md                 # names ${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md
+    hotfix/SKILL.md                # same
 ```
 
-**Adding a copy:** add a line to `tool/shared-copies.txt`, then run the sync script:
-
-```text
-# <source in plugin/skills/shared> <copy in plugin/skills>
-references/validate-and-fix.md build/references/validate-and-fix.md
-```
-
-```bash
-# From the repo root
-bash tool/sync-shared.sh          # writes every copy
-bash tool/sync-shared.sh --check  # what CI runs
-```
-
-**Referencing in SKILL.md** — always use the local path:
+**Referencing in SKILL.md and agents** — write the path in a code span, not a markdown link, and word the sentence so it reads well with the path in place of the link text:
 
 ```markdown
-Follow the [validation and fix procedure](references/validate-and-fix.md).
+Follow the validation and fix procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md`).
 ```
 
-Never reference `../shared/` directly in a SKILL.md — the copy makes the shared file local.
+**Adding a shared file:** put it under `plugin/shared/` and reference it as above. Nothing else needs registering. A file that only one skill uses stays in that skill's own `references/` and is linked with a normal relative link.
 
 ### Shared scripts
 
-The same boundary rule applies to scripts. Store canonical scripts in `plugin/skills/shared/scripts/`, copy them into each skill's `scripts/` directory, and reference them with an absolute path via `${CLAUDE_SKILL_DIR}`.
+Store canonical scripts in `plugin/shared/scripts/` and call them by their full `${CLAUDE_PLUGIN_ROOT}` path.
 
-**Example — adding a shared script to a skill:**
-
-```bash
-echo "scripts/detect-base-branch.sh my-skill/scripts/detect-base-branch.sh" >> tool/shared-copies.txt
-bash tool/sync-shared.sh
-```
-
-**Referencing in SKILL.md** — use `${CLAUDE_SKILL_DIR}` in the skill body (substitutes to an absolute path at skill-load time) and a `*` glob in `allowed-tools` (frontmatter patterns do not substitute variables) to skip the per-invocation permission prompt:
+**Referencing in SKILL.md** — use `${CLAUDE_PLUGIN_ROOT}` in the skill body (substituted to an absolute path at skill-load time) and in `allowed-tools`, where the skills docs say it is also substituted for plugin skills, to skip the per-invocation permission prompt:
 
 ```yaml
 ---
 name: my-skill
-allowed-tools: Bash(*/scripts/detect-base-branch.sh)
+allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-base-branch.sh)
 ---
 ```
 
@@ -231,9 +206,11 @@ allowed-tools: Bash(*/scripts/detect-base-branch.sh)
 Run the detection script:
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
+${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-base-branch.sh
 ```
 ````
+
+A rule with no `*` matches one exact command, so add a trailing `*` after a space only when the script takes arguments.
 
 Keep scripts executable (`chmod +x`) so they can be invoked directly without a `bash` wrapper. Avoid the fenced `` ```! `` auto-execute form — under stricter permission checks (Claude Code v2.1.98+) it passes the literal block content (including the `!` prefix) to the permission matcher, which no longer aligns with a `Bash(<path>)` pattern.
 
@@ -351,7 +328,7 @@ It is static, so it confirms structure but does not replace the live checks abov
 | ------- | ------------ | --- |
 | Skill missing from `/help` | Invalid frontmatter | Run `claude plugin validate plugin` and fix the reported error |
 | Hook never fires | `jq` not installed, marker file left over, or script lacks `+x` / a shebang | Install `jq`; remove the `/tmp/wingspan-recommend-plugins-*` marker; `chmod +x` the script |
-| Skill references a shared file that 404s | Copy missing from the skill directory | Add it per [Sharing content across skills](#sharing-content-across-skills) |
+| Skill references a shared file that 404s | The `${CLAUDE_PLUGIN_ROOT}/shared/…` path is misspelled or the file moved | Run `bash tool/check-plugin-paths.sh`; see [Sharing content across skills](#sharing-content-across-skills) |
 | `${CLAUDE_PLUGIN_ROOT}` not resolving | Session not launched via `--plugin-dir` (or restart pending) | Restart with `claude --plugin-dir plugin` from the repo root |
 | Local marketplace won't install | `source.path` is relative | Use an absolute path in `marketplace.json` |
 
@@ -364,8 +341,8 @@ Every pull request runs the following checks automatically:
 | Markdown lint | Lints all `*.md` files | `config/custom.markdownlint.jsonc` |
 | Spelling | Runs cspell on all `*.md` files | `config/cspell.json` |
 | Skills lint | Validates every skill's `SKILL.md` frontmatter, structure, and links via VGV's `skills_lint` reusable workflow | `skills_lint.yaml` |
-| Plugin validation | Validates plugin manifests via Claude Code CLI, checks every shared copy matches its source, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate --strict plugin`, `tool/sync-shared.sh --check` |
-| Script tests | Runs every hook test suite, and checks the review agents' findings block has not drifted | `plugin/hooks/test_*.sh`, `plugin/agents/test_review_contract.sh` |
+| Plugin validation | Validates plugin manifests via Claude Code CLI, checks plugin paths resolve and nothing is symlinked or copied, and checks every eval case's `fixture.sh` is the expected symlink | `claude plugin validate --strict plugin`, `tool/check-plugin-paths.sh` |
+| Script tests | Runs every hook test suite, checks the review agents' findings block has not drifted, and tests the plugin path check | `plugin/hooks/test_*.sh`, `plugin/agents/test_review_contract.sh`, `tool/test_check_plugin_paths.sh` |
 
 Evals do **not** run on a pull request. They call real models, so they run after a merge to
 `main` instead, scoped to the skills that changed:

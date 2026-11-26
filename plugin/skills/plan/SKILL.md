@@ -18,7 +18,7 @@ Transform feature descriptions, bug reports, or improvement ideas into well-stru
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 **Never write code at this stage.** The output is a plan.
@@ -40,7 +40,7 @@ gh issue view <url-or-number> --json title,body
 Treat the issue body as the brainstorm document, announce "Found brainstorm issue: [title]", and proceed. If the command fails, fall back to the local search below.
 
 **Planned from an issue, the plan goes back to it**: one plan comment, and one sub-issue per
-phase, each blocked by the one before. Follow [plan on an issue](references/plan-on-issue.md)
+phase, each blocked by the one before. Follow plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`)
 from here on. Its _Before planning_ check runs now, and the steps below say where the rest
 applies.
 
@@ -120,7 +120,7 @@ After planning the issue structure, run the **user-flow-analysis-agent** to anal
 
 - Task @user-flow-analysis-agent(feature_description, research_findings, writing_rules)
 
-`writing_rules` is the full text of [elements-of-style.md](references/elements-of-style.md).
+`writing_rules` is the full text of `${CLAUDE_PLUGIN_ROOT}/shared/references/elements-of-style.md`.
 Paste it verbatim into the prompt so the agent writes its gaps and questions to those rules.
 
 **Flow Analysis Output:**
@@ -143,7 +143,7 @@ Surface every rejected or rewritten criterion to the user with **AskUserQuestion
 
 Planning from an issue, start from the acceptance criteria it already states, and surface any you rewrite the same way.
 
-These criteria populate the `success-criteria` block defined in [success-criteria.md](references/success-criteria.md); fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
+These criteria populate the `success-criteria` block defined in `${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/success-criteria.md`; fill it in when you write the plan file in Step 6. That reference shows the block's shape and the `verify:` convention.
 
 `/build` reads the block back, so its shape holds even when the reference cannot be read from
 here. The plan carries a `## Success Criteria` section, and every criterion names what proves
@@ -160,19 +160,19 @@ procedure can settle.
 
 | Level | When to use | Template |
 |-------|-------------|----------|
-| **Minimal** | Simple bugs, small enhancements, straightforward implementation | [minimal](references/minimal.md) |
-| **Standard** (default) | Most features and bug fixes needing moderate detail | [standard](references/standard.md) |
-| **Extensive** | Major features, architectural changes, significant risk or uncertainty | [extensive](references/extensive.md) |
+| **Minimal** | Simple bugs, small enhancements, straightforward implementation | minimal (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/minimal.md`) |
+| **Standard** (default) | Most features and bug fixes needing moderate detail | standard (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/standard.md`) |
+| **Extensive** | Major features, architectural changes, significant risk or uncertainty | extensive (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/extensive.md`) |
 
 Whatever the level, a plan that carries more than one phase embeds the
-[Implementation Phases block](references/implementation-phases.md) verbatim: `## Implementation Phases`,
+Implementation Phases block (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/implementation-phases.md`) verbatim: `## Implementation Phases`,
 one `### Phase N:` each, and the `**Status:**`, `**Scope:**`, `**Files touched:**`,
 `**Acceptance criteria:**` and `**Validation:**` fields. `/build` parses those names to execute one
 phase per context window — renaming them to anything of your own, however clear, breaks execution.
 
 ### 5.1. Set up workspace
 
-Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
+Run the feature branch check (`${CLAUDE_PLUGIN_ROOT}/shared/references/feature-branch.md`) before writing anything to disk.
 Planning from an issue, skip it: the draft leaves the repository once it is published. If
 the user declines to publish, run it then, before the plan continues as a local plan.
 
@@ -191,17 +191,17 @@ e.g. `docs/plan/2026-01-15-feat-user-authentication-flow-plan.md`.
 After writing the plan file and before presenting options, run a mandatory quality pass on it. This is the technical review that `/refine-approach` runs on externally-authored plans — plans created here are reviewed here.
 
 - **Minimal template** → skip this section. The overhead is not worth it for a small plan.
-- **Standard or Extensive template** → follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
+- **Standard or Extensive template** → follow the plan review procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-review.md`) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
 
 Planning from an issue, a recommended split offers only phases or no phases: each phase
-already ships as its own PR (see [plan on an issue](references/plan-on-issue.md)).
+already ships as its own PR (see plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`)).
 
 Return here once the review completes, then present the options below.
 
 ## Publish to the issue
 
 Planning from an issue, publish the reviewed plan per
-[plan on an issue](references/plan-on-issue.md): confirm first, then post the plan comment,
+plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`): confirm first, then post the plan comment,
 whose first line is `<!-- wingspan:plan -->`, create the phase sub-issues, and fill their
 numbers into the comment. Once published, `ISSUE_URL` replaces the plan file path
 everywhere below, **Open the plan file in my code editor** opens the issue instead
@@ -220,7 +220,7 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 3. **Open the plan file in my code editor**: open the plan file for review
 4. **Review and refine**: improve the plan through self-review
 
-**If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+**If the user selects "Clear context and build"** → Follow the clear context handoff (`${CLAUDE_PLUGIN_ROOT}/shared/references/clear-context-handoff.md`) for `/build` with the actual plan file path. Then stop.
 
 **For other selections:**
 

@@ -428,7 +428,7 @@ Every run writes `results/<timestamp>/` with `aggregate-result.json` and a self-
 `.github/workflows/evals.yaml` runs after a merge to `main`, never on a pull request,
 scoped by `--tag` to the changed skills, with-plugin arm only, and `continue-on-error`.
 
-- Changing `_fixture/`, `plugin/skills/shared/` or `plugin/agents/` widens the scope to every skill.
+- Changing `_fixture/`, `plugin/shared/` or `plugin/agents/` widens the scope to every skill.
 - A directory under `evals/` only becomes a `--tag` if it holds `*/case.yaml`. `results/`
   sits there without being a skill.
 - The scope job's `find` uses `-exec dirname {} \;` rather than `-printf '%h\n'`, which is

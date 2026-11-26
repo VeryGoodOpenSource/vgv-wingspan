@@ -17,7 +17,7 @@ Clarify **WHAT** to build before diving into **HOW** to build it. Explore user i
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 **Do not write code.** The output is a brainstorm document.
@@ -124,7 +124,7 @@ Use **AskUserQuestion tool** to ask which approach the user prefers.
 
 #### 1.4. Set up workspace
 
-Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
+Run the feature branch check (`${CLAUDE_PLUGIN_ROOT}/shared/references/feature-branch.md`) before writing anything to disk.
 
 ### 2. Capture the design document
 
@@ -148,7 +148,7 @@ Use the **AskUserQuestion tool**: "Brainstorm complete! What would you like to d
 3. **Publish as issue**: move the document to a GitHub issue, so the team tracks it there
 4. **Done for now**: brainstorm complete. To start planning later: `/plan`
 
-- **Clear context and plan** → follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path, then stop.
+- **Clear context and plan** → follow the clear context handoff (`${CLAUDE_PLUGIN_ROOT}/shared/references/clear-context-handoff.md`) for `/plan` with the actual brainstorm doc path, then stop.
 - **Review and refine approach** → apply the @refine-approach skill to the document, then present these same options again without the refine one.
 - **Publish as issue** → follow [publish as issue](references/publish-as-issue.md). Once the
   issue exists, `ISSUE_URL` replaces the doc path everywhere below, and only **Clear context

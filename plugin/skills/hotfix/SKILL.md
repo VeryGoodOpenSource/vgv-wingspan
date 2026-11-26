@@ -19,7 +19,7 @@ Apply a minimal, targeted fix fast. No brainstorm document, no plan document —
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Bug Description
@@ -100,7 +100,7 @@ Tests are non-negotiable, even for hotfixes:
 
 ### Step 3: Validate
 
-Follow the [validation and fix procedure](references/validate-and-fix.md).
+Follow the validation and fix procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md`).
 
 ### Execution Rules
 
@@ -124,7 +124,7 @@ it costs in time, and run it. Shipping an unreviewed fix into an incident is how
 incident starts. The user can still decline after seeing the findings; they cannot have the
 step deleted before it runs.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
+Dispatch them per review agent dispatch (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-dispatch.md`), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
 |-------|-------------|
@@ -133,7 +133,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and handle Important findings per [review autonomy](references/review-autonomy.md). `/hotfix` asks no question at the start, so the setting comes from a saved preference; with none, it asks at the Important findings stop. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+Follow the review consolidation procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-consolidation.md`): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the report template (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-report-template.md`). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and handle Important findings per review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`). `/hotfix` asks no question at the start, so the setting comes from a saved preference; with none, it asks at the Important findings stop. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
 
 ### The findings contract
 
@@ -165,7 +165,7 @@ rm -rf docs/hotfix-review/
 
 ### Drive to green
 
-A hotfix has no plan, so there is no `success-criteria` block. Follow the [drive to green procedure](references/drive-to-green.md) with the detected project suite (formatter, linter, test runner) as both the gate set and the authoritative command run once. It loops until green by real output, delegates to a matching installed verification skill when one exists, and escalates only on un-runnable or self-contradictory failures — never on an ordinary, fixable one. Do not proceed until it is green.
+A hotfix has no plan, so there is no `success-criteria` block. Follow the drive to green procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/drive-to-green.md`) with the detected project suite (formatter, linter, test runner) as both the gate set and the authoritative command run once. It loops until green by real output, delegates to a matching installed verification skill when one exists, and escalates only on un-runnable or self-contradictory failures — never on an ordinary, fixable one. Do not proceed until it is green.
 
 ### Ship
 
@@ -183,7 +183,7 @@ Push the branch and create a PR. **Title**: `fix: <concise description>` (max 72
 
 ### Post-Ship
 
-Print an end-of-run summary: root cause, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link.
+Print an end-of-run summary: root cause, review counts, the **Applied without asking** list from review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`) if any, and the PR link.
 
 Use **AskUserQuestion** to present options:
 

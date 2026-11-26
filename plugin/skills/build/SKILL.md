@@ -19,7 +19,7 @@ Take a plan from `docs/plan/`, or from a GitHub issue, and turn it into shipped 
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Build Progress
@@ -43,13 +43,13 @@ Build Progress:
 
 **Plan on a GitHub issue:** if `<plan_path>` is an issue URL or `#<number>`, the plan lives on
 that issue, in the comment whose first line is `<!-- wingspan:plan -->`. Skip the table below and pick the phase per
-[plan on an issue](references/plan-on-issue.md): the first open, unblocked phase, or the phase
+plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`): the first open, unblocked phase, or the phase
 given. Announce "Building Phase N: [name] (#<phase>)". This run builds that one phase and
 ships it as its own PR, so there is no resumed build; settle commit autonomy and confirm scope
 as below. Before Phase 1, cut a new branch for the phase from the up-to-date base branch,
 even when already on a feature branch: the previous phase merged, so its branch is finished.
 Resolve `<base>` as the [surgical-diff gate](references/surgical-diff-gate.md) does, and name
-the branch as the [feature branch check](references/feature-branch.md) does. Bring the local
+the branch as the feature branch check (`${CLAUDE_PLUGIN_ROOT}/shared/references/feature-branch.md`) does. Bring the local
 `<base>` up to date too, since the surgical-diff gate diffs against it:
 
 ```bash
@@ -125,7 +125,7 @@ Instead, use the plan itself as your guide:
 
 Determine the unit of work:
 
-- **Plan has an `## Implementation Phases` section** → build one phase at a time with the phase loop below. Each phase carries the fields defined in the [implementation phases block](references/implementation-phases.md) — Status, Scope, Files touched, Acceptance criteria, and Validation — and is sized to fit a single context window, so `/build` executes one phase per window.
+- **Plan has an `## Implementation Phases` section** → build one phase at a time with the phase loop below. Each phase carries the fields defined in the implementation phases block (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-templates/implementation-phases.md`) — Status, Scope, Files touched, Acceptance criteria, and Validation — and is sized to fit a single context window, so `/build` executes one phase per window.
 
   The field names are `**Status:**`, `**Scope:**`, `**Files touched:**`, `**Acceptance
   criteria:**` and `**Validation:**`, and they hold whether or not that reference can be read
@@ -186,7 +186,7 @@ Every new state management unit, repository, UI component, and data model must h
 
 #### Step 3: Validate
 
-Run the phase's **Validation** steps, then follow the [validation and fix procedure](references/validate-and-fix.md). Everything must pass before you record the phase.
+Run the phase's **Validation** steps, then follow the validation and fix procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md`). Everything must pass before you record the phase.
 
 #### Step 4: Record the phase
 
@@ -202,7 +202,7 @@ Brief progress update to the user: phase completed, phases remaining.
 
 - **Built from an issue** → the one phase this run takes is done; proceed to the Surgical-Diff Gate.
 - **More phases remain, auto-commit mode** → use **AskUserQuestion**:
-  1. **Clear context and continue (Recommended)**: build the next phase in a fresh window. Follow the [clear context handoff](references/clear-context-handoff.md) with `<NEXT_SKILL>` = `build`, `<DOC_PATH>` = this plan's path, and `<NEXT_ACTION>` = "the next phase". Then **stop**.
+  1. **Clear context and continue (Recommended)**: build the next phase in a fresh window. Follow the clear context handoff (`${CLAUDE_PLUGIN_ROOT}/shared/references/clear-context-handoff.md`) with `<NEXT_SKILL>` = `build`, `<DOC_PATH>` = this plan's path, and `<NEXT_ACTION>` = "the next phase". Then **stop**.
   2. **Continue in this context**: loop back and build the next phase now.
   3. **Stop here**: end the session; the plan's `**Status:**` markers record which phases remain.
 - **More phases remain, I'll-commit-myself mode** → **stop**. Tell the user the phase is ready to review and commit, then to run `/build` on this plan again to continue with the next phase (it resumes from the `**Status:**` markers).
@@ -242,7 +242,7 @@ describes this phase without a dispatch in the trace has skipped it. If an agent
 unavailable, say which and run the rest; if none can run, say so plainly rather than
 narrating the review as though it happened.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
+Dispatch them per review agent dispatch (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-dispatch.md`), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
 
 | Agent | Report name |
 | ----- | ----------- |
@@ -254,7 +254,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 Include the installed companion reviewers too, per the same dispatch reference.
 
-Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
+Hold that shape even when `${CLAUDE_PLUGIN_ROOT}/shared/references/review-dispatch.md` cannot be read from here: run `pwd`
 and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
 scope constraint, the Already gated note, and the report name from the table above, and send
 every agent in the tier, plus any companion reviewers, in one message so they run at once
@@ -269,7 +269,7 @@ background.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md), with the review scope line under the agents line. Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
+Follow the review consolidation procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-consolidation.md`): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the report template (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-report-template.md`), with the review scope line under the agents line. Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
 
 ## Phase 4 — Ship
 
@@ -291,11 +291,11 @@ Handle the outstanding changes — the drive-to-green loop, the surgical-diff ga
 
 If the build has resumed in a new turn since `/build` was invoked (a background reviewer's notification, the user's answer to a question), the push and PR permissions no longer apply: tell the user the push and PR need their approval before you run them.
 
-To push, push the branch per [push](references/push.md), then open the PR per [PR CLI](references/pr-cli.md), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md), with the `Closes` lines from [plan on an issue](references/plan-on-issue.md) when the plan came from one.
+To push, push the branch per push (`${CLAUDE_PLUGIN_ROOT}/shared/references/push.md`), then open the PR per PR CLI (`${CLAUDE_PLUGIN_ROOT}/shared/references/pr-cli.md`), with `BASE_BRANCH` set to the base branch the [surgical-diff gate](references/surgical-diff-gate.md) resolved. Do not call `/create-pr`: only the user can invoke it, and validation already ran above. **Title**: `<type>: <description>`, where `<description>` restates the plan title in imperative mood, lowercase after the colon, with no trailing period, max 72 characters (Conventional Commits, matching `/create-pr`). **Body**: the [PR template](references/pr-template.md), with the `Closes` lines from plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`) when the plan came from one.
 
 ### Post-Ship
 
-Print an end-of-run summary: phases built, the review scope line, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
+Print an end-of-run summary: phases built, the review scope line, review counts, the **Applied without asking** list from review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
 
 Use **AskUserQuestion** to present options:
 

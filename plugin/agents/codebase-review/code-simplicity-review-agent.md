@@ -122,7 +122,7 @@ With no findings, return the heading and the verdict line with every count at `0
 add finding ids; the caller assigns them.
 
 The review agent instructions at
-`${CLAUDE_PLUGIN_ROOT}/skills/shared/references/review-agent-instructions.md` define the
+`${CLAUDE_PLUGIN_ROOT}/shared/references/review-agent-instructions.md` define the
 severities, the quote rules, and the raw report. Read them before you answer, unless your
 task prompt already includes them. With a raw report path in your task prompt, write your
 full review there and return only the block. Without one, drop the **Report** line entirely

@@ -20,7 +20,7 @@ The layout is the contract between `/plan` and `/build`, so keep it exact.
   - **Title:** `Phase N: <name> (<plan title>)`
   - **Body:** `Part of #<ISSUE>.`, then the phase's `**Scope:**`, `**Files touched:**`,
     `**Acceptance criteria:**` and `**Validation:**` fields from the
-    [Implementation Phases block](implementation-phases.md). Leave out `**Status:**`: the
+    [Implementation Phases block](plan-templates/implementation-phases.md). Leave out `**Status:**`: the
     issue being open or closed is the status.
   - Phase N is **blocked by** phase N-1, so the phases are built in order.
 - **A plan with no phases** gets no sub-issues. Its pull request closes `ISSUE` itself.

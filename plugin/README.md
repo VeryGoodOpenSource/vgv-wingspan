@@ -120,7 +120,7 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 
 Wingspan ships subagents that Claude Code dispatches as isolated, specialized reviewers. Unlike skills, agents are **not** invoked as slash commands — the workflow skills dispatch them automatically, or you can ask Claude to run one by name (e.g. "review my changes with the vgv-review-agent").
 
-The review agents and the user flow analysis agent write to shared [writing rules](skills/shared/references/elements-of-style.md), based on Strunk's _Elements of Style_. The skill that dispatches an agent passes it the rules.
+The review agents and the user flow analysis agent write to shared [writing rules](shared/references/elements-of-style.md), based on Strunk's _Elements of Style_. The skill that dispatches an agent passes it the rules.
 
 | Agent | Description |
 | ----- | ----------- |
