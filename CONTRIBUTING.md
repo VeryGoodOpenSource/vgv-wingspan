@@ -165,7 +165,7 @@ A markdown link in a `SKILL.md` can only point at a file inside its own skill di
 
 When multiple skills need the same content (templates, instructions, procedures), store one canonical file in `plugin/shared/`. Skills and agents name it with `${CLAUDE_PLUGIN_ROOT}/shared/…`. There are no per-skill copies and no symlinks, so a harness installs the file once.
 
-`tool/check-plugin-paths.sh` runs in CI and fails on a symlink under `plugin/`, a file under `plugin/skills/` named like a shared file, a relative markdown link that does not resolve, and a `${CLAUDE_PLUGIN_ROOT}/…` path with no file behind it.
+`tool/check-plugin-paths.sh` runs in CI and fails on a symlink under `plugin/`, a file under `plugin/skills/` named like a shared file, a bare `references/` or `scripts/` path to a shared file, a relative markdown link that does not resolve, and a `${CLAUDE_PLUGIN_ROOT}/…` path with no file behind it.
 
 **Directory layout:**
 

@@ -18,7 +18,7 @@ evals/                 # `claude plugin eval` suite — one directory per skill
     fixture.sh         # The neutral workspace every case symlinks to
   <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
 tool/
-  check-plugin-paths.sh       # Fails CI on a symlink, a copied shared file, a dead link, or a missing ${CLAUDE_PLUGIN_ROOT} path
+  check-plugin-paths.sh       # Fails CI on a symlink, a copied shared file, a bare path to one, a dead link, or a missing ${CLAUDE_PLUGIN_ROOT} path
   test_check_plugin_paths.sh  # Tests for the path check
 plugin/                # The plugin folder: everything the plugin loads, and all a user installs
   LICENSE              # Copy of the root LICENSE, shipped with the plugin

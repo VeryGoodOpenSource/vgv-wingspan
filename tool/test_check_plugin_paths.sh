@@ -81,6 +81,13 @@ test_leftover_script_copy_fails() {
   expect "leftover script copy fails" fail "$dir" "skills/build/scripts/detect-base-branch.sh copies"
 }
 
+test_bare_shared_path_fails() {
+  local dir
+  dir="$(fresh_copy bare)"
+  append "$dir" 'Follow `references/push.md`.'
+  expect "a bare relative path to a shared file fails" fail "$dir" "names a shared file by a bare relative path"
+}
+
 test_dead_link_fails() {
   local dir
   dir="$(fresh_copy link)"
@@ -141,6 +148,7 @@ test_real_plugin_passes
 test_symlink_fails
 test_leftover_copy_fails
 test_leftover_script_copy_fails
+test_bare_shared_path_fails
 test_dead_link_fails
 test_tilde_and_nested_fences_are_ignored
 test_link_after_a_fence_is_still_checked
