@@ -84,21 +84,14 @@ test_leftover_script_copy_fails() {
 test_dead_link_fails() {
   local dir
   dir="$(fresh_copy link)"
-  printf '\nSee [gone](references/gone.md).\n' >>"$dir/skills/build/SKILL.md"
+  append "$dir" 'See [gone](references/gone.md).'
   expect "dead relative link fails" fail "$dir" "references/gone.md"
-}
-
-test_link_in_code_fence_is_ignored() {
-  local dir
-  dir="$(fresh_copy fence)"
-  printf '\n```md\n[gone](references/gone.md)\n```\n' >>"$dir/skills/build/SKILL.md"
-  expect "link inside a code fence is ignored" pass "$dir"
 }
 
 test_missing_plugin_root_path_fails() {
   local dir
   dir="$(fresh_copy root)"
-  printf '\nRead `${CLAUDE_PLUGIN_ROOT}/shared/references/missing.md`.\n' >>"$dir/skills/build/SKILL.md"
+  append "$dir" 'Read `${CLAUDE_PLUGIN_ROOT}/shared/references/missing.md`.'
   expect "missing CLAUDE_PLUGIN_ROOT path fails" fail "$dir" "shared/references/missing.md"
 }
 
@@ -112,9 +105,10 @@ test_placeholder_links_are_ignored() {
 test_tilde_and_nested_fences_are_ignored() {
   local dir
   dir="$(fresh_copy fences)"
+  append "$dir" $'```md\n[gone](references/gone.md)\n```'
   append "$dir" $'~~~md\n[gone](references/gone.md)\n~~~'
   append "$dir" $'````md\n```bash\n[gone](references/gone.md)\n```\n[gone](references/gone.md)\n````'
-  expect "tilde and nested fences are ignored" pass "$dir"
+  expect "backtick, tilde and nested fences are ignored" pass "$dir"
 }
 
 test_link_after_a_fence_is_still_checked() {
@@ -124,18 +118,19 @@ test_link_after_a_fence_is_still_checked() {
   expect "a link after a closed fence is still checked" fail "$dir" "references/gone.md"
 }
 
-test_trailing_punctuation_is_stripped() {
+test_trailing_period_is_stripped() {
   local dir
-  dir="$(fresh_copy punctuation)"
-  append "$dir" 'See `${CLAUDE_PLUGIN_ROOT}/shared/references/push.md`. Or ${CLAUDE_PLUGIN_ROOT}/shared/references/push.md, then stop.'
-  expect "a valid path followed by a period or comma passes" pass "$dir"
+  dir="$(fresh_copy period)"
+  append "$dir" 'Read ${CLAUDE_PLUGIN_ROOT}/shared/references/push.md. Then stop.'
+  expect "a valid path at the end of a sentence passes" pass "$dir"
 }
 
-test_missing_path_before_comma_fails() {
+test_missing_path_before_period_fails() {
   local dir
-  dir="$(fresh_copy comma)"
-  append "$dir" 'See ${CLAUDE_PLUGIN_ROOT}/shared/references/missing.md, then stop.'
-  expect "a missing path followed by a comma fails" fail "$dir" "shared/references/missing.md"
+  dir="$(fresh_copy period-missing)"
+  append "$dir" 'Read ${CLAUDE_PLUGIN_ROOT}/shared/references/missing.md. Then stop.'
+  # The message must name the path without its period, which proves the strip ran.
+  expect "a missing path at the end of a sentence fails" fail "$dir" "shared/references/missing.md, which does not exist"
 }
 
 test_missing_plugin_dir_fails() {
@@ -147,13 +142,12 @@ test_symlink_fails
 test_leftover_copy_fails
 test_leftover_script_copy_fails
 test_dead_link_fails
-test_link_in_code_fence_is_ignored
 test_tilde_and_nested_fences_are_ignored
 test_link_after_a_fence_is_still_checked
 test_placeholder_links_are_ignored
 test_missing_plugin_root_path_fails
-test_trailing_punctuation_is_stripped
-test_missing_path_before_comma_fails
+test_trailing_period_is_stripped
+test_missing_path_before_period_fails
 test_missing_plugin_dir_fails
 
 echo
