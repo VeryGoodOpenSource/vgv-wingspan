@@ -194,7 +194,7 @@ After writing the plan file and before presenting options, run a mandatory quali
 - **Standard or Extensive template** → follow the plan review procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-review.md`) with `<PLAN_PATH>` set to the plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their findings to the plan inline, and — if the plan is too large for one PR — offers to restructure the work into phases (still one PR) or split it into part-N files (one PR per part).
 
 Planning from an issue, a recommended split offers only phases or no phases: each phase
-already ships as its own PR (see plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`)).
+already ships as its own PR (see `${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`).
 
 Return here once the review completes, then present the options below.
 
