@@ -275,7 +275,7 @@ Follow the review consolidation procedure (`${CLAUDE_PLUGIN_ROOT}/shared/referen
 
 ### Drive to green
 
-Resolve the gate set and run the loop per [ship gate](references/ship-gate.md).
+Resolve the gate set and run the loop per [ship gate](references/ship-gate.md), which follows the drive to green procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/drive-to-green.md`).
 
 ### Cleanup
 

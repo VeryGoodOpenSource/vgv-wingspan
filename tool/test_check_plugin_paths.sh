@@ -37,7 +37,7 @@ expect() {
 }
 
 # The fixtures below need these files, so fail with a clear message if they move.
-for needed in skills/build/SKILL.md shared/references/push.md shared/scripts/detect-base-branch.sh; do
+for needed in skills/build/SKILL.md shared/references/push.md shared/scripts/detect-base-branch.sh agents/codebase-review/vgv-review-agent.md; do
   if [ ! -f "$PLUGIN/$needed" ]; then
     echo "error: test fixture plugin/$needed is missing; update this test" >&2
     exit 1
@@ -47,6 +47,11 @@ done
 # append <dir> <text>: add text to the end of a copy's build SKILL.md.
 append() {
   printf '%s\n' "$2" >>"$1/skills/build/SKILL.md"
+}
+
+# append_to <dir> <file> <text>: add text to the end of any file in a copy.
+append_to() {
+  printf '%s\n' "$3" >>"$1/$2"
 }
 
 # fresh_copy <name>: copy the plugin to $WORK/<name> and print the path.
@@ -85,7 +90,43 @@ test_bare_shared_path_fails() {
   local dir
   dir="$(fresh_copy bare)"
   append "$dir" 'Follow `references/push.md`.'
-  expect "a bare relative path to a shared file fails" fail "$dir" "names a shared file by a bare relative path"
+  expect "a bare relative path to a shared file fails" fail "$dir" "by the relative path references/push.md"
+}
+
+test_relative_shared_path_forms_fail() {
+  local form dir i=0
+  for form in \
+    'scripts/detect-base-branch.sh' \
+    './references/push.md' \
+    '../../../shared/references/push.md' \
+    '${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh' \
+    'references/plan-templates/standard.md'; do
+    i=$((i + 1))
+    dir="$(fresh_copy "form-$i")"
+    append "$dir" "Follow \`$form\`."
+    expect "relative path form $form fails" fail "$dir" "by the relative path $form"
+  done
+}
+
+test_bare_shared_path_in_agent_fails() {
+  local dir
+  dir="$(fresh_copy agent-bare)"
+  append_to "$dir" agents/codebase-review/vgv-review-agent.md 'Read `references/push.md`.'
+  expect "a bare shared path in an agent fails" fail "$dir" "agents/codebase-review/vgv-review-agent.md"
+}
+
+test_dead_link_in_agent_fails() {
+  local dir
+  dir="$(fresh_copy agent-link)"
+  append_to "$dir" agents/codebase-review/vgv-review-agent.md 'See [gone](gone.md).'
+  expect "a dead link in an agent fails" fail "$dir" "agents/codebase-review/vgv-review-agent.md links to gone.md"
+}
+
+test_dead_link_in_shared_fails() {
+  local dir
+  dir="$(fresh_copy shared-link)"
+  append_to "$dir" shared/references/push.md 'See [gone](gone.md).'
+  expect "a dead link in a shared file fails" fail "$dir" "shared/references/push.md links to gone.md"
 }
 
 test_dead_link_fails() {
@@ -149,7 +190,11 @@ test_symlink_fails
 test_leftover_copy_fails
 test_leftover_script_copy_fails
 test_bare_shared_path_fails
+test_relative_shared_path_forms_fail
+test_bare_shared_path_in_agent_fails
 test_dead_link_fails
+test_dead_link_in_agent_fails
+test_dead_link_in_shared_fails
 test_tilde_and_nested_fences_are_ignored
 test_link_after_a_fence_is_still_checked
 test_placeholder_links_are_ignored

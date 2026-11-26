@@ -7,7 +7,8 @@
 # Fails on:
 #   1. a symlink anywhere under the plugin folder;
 #   2. a file under skills/ named like a file under shared/ (a leftover copy),
-#      or a bare references/<name> or scripts/<name> path to a shared file;
+#      or a path to a shared file that does not start with
+#      ${CLAUDE_PLUGIN_ROOT}/shared/ (bare, ./, ../ or ${CLAUDE_SKILL_DIR}/);
 #   3. a relative markdown link in a plugin .md file that does not resolve;
 #   4. a ${CLAUDE_PLUGIN_ROOT}/<path> with no file at <plugin-dir>/<path>.
 #
@@ -61,10 +62,19 @@ if [ -d "$ROOT/shared" ] && [ -d "$ROOT/skills" ]; then
     while IFS= read -r copy; do
       fail "${copy#"$ROOT"/} copies ${shared_file#"$ROOT"/}. Delete the copy and reference the shared file"
     done < <(find "$ROOT/skills" -type f -name "$name")
-    pattern="(^|[^/])(references|scripts)/$(printf '%s' "$name" | sed 's/\./\\./g')"
+    # Any path ending in references/…/<name> or scripts/<name> must start with
+    # ${CLAUDE_PLUGIN_ROOT}/shared/. That rejects bare, ./, ../ and
+    # ${CLAUDE_SKILL_DIR}/ paths alike.
+    escaped="$(printf '%s' "$name" | sed 's/\./\\./g')"
+    pattern="[^[:space:]\`(\"'<>]*(references|scripts)/([A-Za-z0-9_-]+/)*$escaped"
     while IFS= read -r hit; do
-      fail "${hit#"$ROOT"/} names a shared file by a bare relative path. Use \${CLAUDE_PLUGIN_ROOT}/${shared_file#"$ROOT"/}"
-    done < <(grep -rn -E "$pattern" "$ROOT/skills" "$ROOT/agents" --include='*.md' 2>/dev/null | cut -d: -f1,2 || true)
+      token="${hit#*:*:}"
+      case "$token" in
+        '${CLAUDE_PLUGIN_ROOT}/shared/'*) continue ;;
+      esac
+      location="${hit%:"$token"}"
+      fail "${location#"$ROOT"/} names a shared file by the relative path $token. Use \${CLAUDE_PLUGIN_ROOT}/${shared_file#"$ROOT"/}"
+    done < <(grep -rn -o -E "$pattern" "$ROOT/skills" "$ROOT/agents" --include='*.md' 2>/dev/null || true)
   done < <(find "$ROOT/shared" -type f)
 fi
 

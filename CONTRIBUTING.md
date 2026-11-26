@@ -187,7 +187,7 @@ plugin/
 Follow the validation and fix procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md`).
 ```
 
-A reference file under a skill (`plugin/skills/<skill>/references/`) is read as plain text and never substituted, so a literal `${CLAUDE_PLUGIN_ROOT}` there stays unresolved. Link a shared file from such a file with a relative link, for example `[drive to green](../../../shared/references/drive-to-green.md)`; `tool/check-plugin-paths.sh` verifies it resolves.
+A reference file under a skill (`plugin/skills/<skill>/references/`) is read as plain text: nothing substitutes `${CLAUDE_PLUGIN_ROOT}` in it, and other harnesses copy the skill folder without `plugin/shared/`, so a relative link out of the skill breaks there. Name the shared file by its file name in such a file, and give its `${CLAUDE_PLUGIN_ROOT}/shared/…` path in the skill's `SKILL.md`.
 
 **Adding a shared file:** put it under `plugin/shared/` and reference it as above. Nothing else needs registering. A file that only one skill uses stays in that skill's own `references/` and is linked with a normal relative link.
 
