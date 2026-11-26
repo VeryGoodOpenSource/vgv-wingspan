@@ -13,6 +13,6 @@ the authoritative command before running the drive-to-green loop.
 
 Never treat an empty runnable set or an absent block as green.
 
-Then follow the drive to green procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/drive-to-green.md`) with that gate set and
+Then follow the [drive to green procedure](../../../shared/references/drive-to-green.md) with that gate set and
 authoritative command. Do not proceed to cleanup until the authoritative gate is green and
 any manual criteria are confirmed.

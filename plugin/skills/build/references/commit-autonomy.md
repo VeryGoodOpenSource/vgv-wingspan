@@ -6,7 +6,7 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
 - **Auto-commit each phase (Recommended)** — commit as each phase completes. Pushing and
   opening the PR still pause for approval.
 - **Auto-commit and apply review findings** — as above, and also apply Important review
-  findings without asking, per review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`).
+  findings without asking, per [review autonomy](../../../shared/references/review-autonomy.md).
 - **Run all phases unattended** — auto-commit each phase, and run each phase in its own
   subagent with no stop between phases, per [unattended phases](unattended-phases.md).
 - **I'll commit myself** — build one phase, then stop so the user reviews and commits.
@@ -15,7 +15,7 @@ Honor a saved preference if one exists. Otherwise use **AskUserQuestion**:
 Leave out **Run all phases unattended** when fewer than two phases are left to build: a single
 phase has nothing to run unattended between. Leave it out when building from a GitHub issue,
 for the same reason: each run builds one phase and ships it as its own pull request, per
-plan on an issue (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-on-issue.md`). Leave it out too when this session has no
+[plan on an issue](../../../shared/references/plan-on-issue.md). Leave it out too when this session has no
 subagent tool (such as `Agent`): the option exists to give each phase a fresh context, and
 building every phase in one session is what it prevents.
 

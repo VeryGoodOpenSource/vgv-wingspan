@@ -129,5 +129,5 @@ checks above, as unknown, never as done or blocked:
 
 - No subagent pushes. The push question in Phase 4 still applies.
 - The quality review runs once, in the main session, after the last phase. Important findings
-  follow review autonomy (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-autonomy.md`), so they still stop unless the user saved the
+  follow [review autonomy](../../../shared/references/review-autonomy.md), so they still stop unless the user saved the
   preference.

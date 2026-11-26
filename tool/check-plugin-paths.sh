@@ -10,12 +10,21 @@
 #   3. a relative markdown link in a plugin .md file that does not resolve;
 #   4. a ${CLAUDE_PLUGIN_ROOT}/<path> with no file at <plugin-dir>/<path>.
 #
-# Portable shell: no grep -P and no find -printf, so it runs on macOS and Linux.
+# Limits: rule 3 reads inline links `[text](path)` only. It does not read titled
+# links, reference-style definitions, or `#anchor` targets.
+#
+# Portable shell: no grep -P, find -printf or awk intervals, so it runs on macOS
+# and Linux.
 
 set -euo pipefail
 
 ROOT="${1:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/plugin"}"
 status=0
+
+if [ ! -d "$ROOT" ]; then
+  echo "error: $ROOT is not a directory" >&2
+  exit 1
+fi
 
 fail() {
   echo "error: $*" >&2
@@ -26,11 +35,14 @@ fail() {
 # text such as `[link](raw/x.md)` that is not meant to resolve.
 strip_fences() {
   awk '
-    match($0, /^[ \t]*(`{3,}|~{3,})/) {
-      fence = substr($0, RSTART, RLENGTH)
-      gsub(/[ \t]/, "", fence)
-      if (!open) { open = 1; len = length(fence); ch = substr(fence, 1, 1); next }
-      if (substr(fence, 1, 1) == ch && length(fence) >= len) { open = 0; next }
+    /^[ \t]*(```|~~~)/ {
+      line = $0
+      sub(/^[ \t]*/, "", line)
+      ch = substr(line, 1, 1)
+      n = 0
+      while (substr(line, n + 1, 1) == ch) n++
+      if (!open) { open = 1; len = n; fence_ch = ch; next }
+      if (ch == fence_ch && n >= len) { open = 0; next }
     }
     !open { print }
   ' "$1"
@@ -56,10 +68,9 @@ while IFS= read -r file; do
   dir="$(dirname "$file")"
   while IFS= read -r target; do
     case "$target" in
-      http://* | https://* | mailto:* | '#'* | '${'* | '<'*) continue ;;
+      http://* | https://* | '#'*) continue ;;
     esac
     path="${target%%#*}"
-    [ -z "$path" ] && continue
     # A bare word such as (link) is template placeholder text, not a file.
     case "$path" in *.* | */*) ;; *) continue ;; esac
     if [ ! -e "$dir/$path" ]; then

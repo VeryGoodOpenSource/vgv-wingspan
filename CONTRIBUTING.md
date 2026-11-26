@@ -187,6 +187,8 @@ plugin/
 Follow the validation and fix procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/validate-and-fix.md`).
 ```
 
+A reference file under a skill (`plugin/skills/<skill>/references/`) is read as plain text and never substituted, so a literal `${CLAUDE_PLUGIN_ROOT}` there stays unresolved. Link a shared file from such a file with a relative link, for example `[drive to green](../../../shared/references/drive-to-green.md)`; `tool/check-plugin-paths.sh` verifies it resolves.
+
 **Adding a shared file:** put it under `plugin/shared/` and reference it as above. Nothing else needs registering. A file that only one skill uses stays in that skill's own `references/` and is linked with a normal relative link.
 
 ### Shared scripts
@@ -209,8 +211,6 @@ Run the detection script:
 ${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-base-branch.sh
 ```
 ````
-
-A rule with no `*` matches one exact command, so add a trailing `*` after a space only when the script takes arguments.
 
 Keep scripts executable (`chmod +x`) so they can be invoked directly without a `bash` wrapper. Avoid the fenced `` ```! `` auto-execute form — under stricter permission checks (Claude Code v2.1.98+) it passes the literal block content (including the `!` prefix) to the permission matcher, which no longer aligns with a `Bash(<path>)` pattern.
 
