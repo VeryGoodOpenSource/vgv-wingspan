@@ -1,5 +1,56 @@
 # Changelog
 
+## [0.1.0](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.5...v0.1.0) (2026-11-25)
+
+
+### Features
+
+* add agent mode to run skills without a human ([#307](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/307)) ([89af63a](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/89af63a69462d0fc44002c81ae9d716c61ece35e))
+* add intelligent conflict resolution to rebase skill ([#173](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/173)) ([e5c0355](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/e5c0355a5ded52adee0f4c8360ed861c1993ee36))
+* **build:** apply review findings without asking ([#279](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/279)) ([4729df9](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/4729df9374749198d81f7e9f685641fb1aa65a93))
+* **build:** run all phases unattended after one approval ([#291](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/291)) ([6b87035](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/6b8703588c101d5e692d13de176b043285b717b4))
+* **build:** scale the final review to the change ([#317](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/317)) ([991d731](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/991d731cbd0a72696ea91c30cc4b910eea101bb7))
+* **evals:** add the skill eval suite and the checks that guard it ([#273](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/273)) ([851be5b](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/851be5b4e57ec3bfb22c0b5f34af2ba297b1d42a))
+* **evals:** measure the turn after the question ([#276](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/276)) ([cd236e3](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/cd236e34bfd0e1558b55799607190f8b06894897))
+* **hooks:** recommend the android-cli plugin ([#308](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/308)) ([debea97](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/debea978d70f9be62033aed86a9c9db96ca38e48))
+* let /plan and /build work from a GitHub issue ([#306](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/306)) ([5431c60](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/5431c607cf7ee11d4a97ed8f83cb616e728418bf))
+* publish a brainstorm as a GitHub issue and plan from it ([#241](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/241)) ([866ae4c](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/866ae4cb55e4fded234450a5e87f0e9a5e568688))
+* recommend the Xcode plugin and let /create detect it ([#312](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/312)) ([32f2baa](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/32f2baa21dee432a3d0b4efc23cfa8941f0e50ad))
+* **review:** require a verbatim quote for every finding ([#282](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/282)) ([062bb06](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/062bb0683177148feb1267356ff23685c1441940))
+* **review:** run review agents headless with a self-contained output contract ([#283](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/283)) ([e1d9298](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/e1d92982afafc19287ef49b51a31272b486e4a50))
+* support AGENTS.md standard by splitting CLAUDE.md ([#231](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/231)) ([a80de07](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a80de07eba6ec307a3678c23b025bf129921befd))
+
+
+### Bug Fixes
+
+* **build:** open the PR without calling /create-pr ([#281](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/281)) ([0e58da6](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/0e58da67a88a4b4930b077dc610605d87a2c0db5))
+* **build:** set back a Done marker a phase never committed ([#309](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/309)) ([bfb39b4](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/bfb39b48332c4a78cc1ae5d39d7e893ab4144ac6))
+* **hooks:** quote CLAUDE_PLUGIN_ROOT in the recommend-plugins hook ([#299](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/299)) ([9c1e853](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/9c1e85352ffaf42b8a54febd615a371ac0de7b43))
+* **plan:** say phased restructure ships as one PR ([#280](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/280)) ([38ff125](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/38ff125313dbcb17ec79b5def156e0993eac8b29))
+* **skills:** hold the contracts and the gates the evals found giving way ([#274](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/274)) ([0e31270](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/0e312709bebc12fa3750f15ce5a8247fcd8bccd4))
+
+
+### Refactors
+
+* merge plan-technical-review into refine-approach ([#315](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/315)) ([01cffbd](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/01cffbd130dc165b18656f5e5239a248fa3143ca))
+* prep skills and agents for Claude 5 models ([#244](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/244)) ([b6c8648](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/b6c86488acc82eb4f21111071e2b256ddfcb8157))
+* turn elements-of-style into a shared reference ([#314](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/314)) ([0024891](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/0024891274f5df79544450c993fb0545b279a9ab))
+
+
+### Miscellaneous Chores
+
+* add listing metadata and README banner ([#311](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/311)) ([0f7d9be](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/0f7d9be658885a07b4055f8bf4406b1eaa3723b5))
+* drop bundled context7 MCP server ([#260](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/260)) ([b5cc9b8](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/b5cc9b842d846aab2f82cd638447cf453c6763d8))
+* move the plugin into plugin/ and keep evals outside it ([#313](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/313)) ([5a7a93c](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/5a7a93c5fbce851a3066fb2c799d1b79ce40a878))
+* update contact email to tools@verygood.ventures ([#239](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/239)) ([a17bfad](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/a17bfad52bbfc0b9dacc3ea798f82071957dbdfb))
+* use standard 0.x versioning ([#246](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/246)) ([c48fa08](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/c48fa081eb9d4044ac4deb6b27589363f5b204db))
+
+
+### Docs
+
+* note PR titles must follow conventional commits ([#247](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/247)) ([19e0695](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/19e0695accb8b9db0be0235ecdfb7fcb23106820))
+* prepare README for the Claude plugin directory ([#316](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/316)) ([c5428f5](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/c5428f5b0c5365b90028ff434be4da1bd6ea8ec4))
+
 ## [0.0.5](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.4...v0.0.5) (2026-07-15)
 
 
