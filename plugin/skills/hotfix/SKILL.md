@@ -4,7 +4,6 @@ user-invocable: true
 description: Applies a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning phases. Use when the user says "hotfix", "emergency fix", "production is broken", "urgent bug", or needs a fix shipped fast without the full plan-and-build cycle.
 effort: high
 argument-hint: bug description, issue link, or error message
-allowed-tools: Bash(rm -rf docs/hotfix-review/)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -124,6 +123,11 @@ it costs in time, and run it. Shipping an unreviewed fix into an incident is how
 incident starts. The user can still decline after seeing the findings; they cannot have the
 step deleted before it runs.
 
+Before dispatching, write `<PWD>/docs/hotfix-review/.gitignore` containing the single line
+`*`, so git ignores the whole folder, this file included, whether or not the project's own
+`.gitignore` lists it. The reports can then never reach the fix commit, and nothing has to
+delete them.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
@@ -133,7 +137,7 @@ Dispatch them per [review agent dispatch](references/review-dispatch.md), with `
 
 ### After reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and handle Important findings per [review autonomy](references/review-autonomy.md). `/hotfix` asks no question at the start, so the setting comes from a saved preference; with none, it asks at the Important findings stop. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings. The report is deleted at Cleanup, so the fix commit does not cite `FINDING-NN` ids.
+Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/hotfix-review/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then fix Critical findings by id and handle Important findings per [review autonomy](references/review-autonomy.md). `/hotfix` asks no question at the start, so the setting comes from a saved preference; with none, it asks at the Important findings stop. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings. The report is git-ignored and the next run overwrites it, so the fix commit does not cite `FINDING-NN` ids.
 
 ### The findings contract
 
@@ -152,14 +156,6 @@ reference cannot be read:
 If a reference file cannot be read from here, say so once and produce the review in this
 shape anyway. A review without ids is a review the user cannot take apart, which is most of
 why it was run.
-
-### Cleanup
-
-Remove review reports after findings are addressed:
-
-```bash
-rm -rf docs/hotfix-review/
-```
 
 ## Phase 5 — Ship
 
@@ -194,5 +190,5 @@ Use **AskUserQuestion** to present options:
 - If the bug is in a shared dependency or utility, the fix may affect callers you did not expect. Grep for all usages before changing shared code.
 - If the fix requires a migration (database, config, schema), this is likely too large for a hotfix. Recommend switching to `/plan` → `/build`.
 - Hotfix branches use the `hotfix/` prefix, not `fix/`. Other skills use `fix/` — do not mix them.
-- If `docs/hotfix-review/` already exists from a previous interrupted hotfix, delete it before running Phase 4 to avoid stale reports contaminating the review.
+- `docs/hotfix-review/` stays in the working tree after the hotfix, git-ignored by its own `.gitignore`, and the next run overwrites `review.md` and the raw reports. Never delete it with `rm -rf`: many users deny it, and the skill does not need it. The consolidated report links only to the raw reports this run's agents wrote, so a leftover from an earlier run never feeds the review.
 - The blast radius check (Phase 3) uses a threshold of 5 files. A fix that touches exactly 5 files is within threshold; 6 triggers the warning.
