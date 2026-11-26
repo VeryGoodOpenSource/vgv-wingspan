@@ -191,5 +191,6 @@ those menus use.
   whatever its severity, even where the calling skill fixes that severity on its own.
 - **Commit trace** — when fixes are committed and the consolidated report is kept (as in
   `/review`), reference the ids in the commit body, e.g. `Addresses FINDING-01, FINDING-03
-  from review.` Skills that delete the report after acting (`/build`, `/hotfix`) fix findings
-  in place and do not cite ids, since the report they would point to no longer exists.
+  from review.` Skills whose report is git-ignored and overwritten by the next run (`/build`,
+  `/hotfix`) fix findings in place and do not cite ids, since the report they would point to
+  is not committed.

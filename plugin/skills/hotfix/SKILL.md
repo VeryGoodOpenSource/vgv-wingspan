@@ -128,6 +128,12 @@ Before dispatching, write `<PWD>/docs/hotfix-review/.gitignore` containing the s
 `.gitignore` lists it. The reports can then never reach the fix commit, and nothing has to
 delete them.
 
+Then, for each agent about to be dispatched, overwrite `<PWD>/docs/hotfix-review/raw/<name>.md`
+with the single line `Not written by this run.` using Write, reading the file first if it
+already exists. Otherwise, when an agent's own write fails, its details link would open the
+previous run's report, which may describe different code; the placeholder makes that failure
+visible instead of plausible.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/hotfix-review/raw` and these 2 agents:
 
 | Agent | Report name |
@@ -190,5 +196,5 @@ Use **AskUserQuestion** to present options:
 - If the bug is in a shared dependency or utility, the fix may affect callers you did not expect. Grep for all usages before changing shared code.
 - If the fix requires a migration (database, config, schema), this is likely too large for a hotfix. Recommend switching to `/plan` → `/build`.
 - Hotfix branches use the `hotfix/` prefix, not `fix/`. Other skills use `fix/` — do not mix them.
-- `docs/hotfix-review/` stays in the working tree after the hotfix, git-ignored by its own `.gitignore`, and the next run overwrites `review.md` and the raw reports. Never delete it with `rm -rf`: many users deny it, and the skill does not need it. The consolidated report links only to the raw reports this run's agents wrote, so a leftover from an earlier run never feeds the review.
+- `docs/hotfix-review/` stays in the working tree after the hotfix, git-ignored by its own `.gitignore`, and the next run overwrites `review.md` and the raw reports. Never delete it with `rm -rf`: many users deny it, and the skill does not need it. The consolidated report links only to agents dispatched this run, whose raw files were reset to a placeholder before dispatch, so a leftover from an earlier run never feeds the review. A linked file that still reads `Not written by this run.` means that agent's write failed: work from its one-line `fix` in `review.md`.
 - The blast radius check (Phase 3) uses a threshold of 5 files. A fix that touches exactly 5 files is within threshold; 6 triggers the warning.

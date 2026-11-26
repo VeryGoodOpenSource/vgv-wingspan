@@ -247,6 +247,12 @@ git ignores the whole folder, this file included, whether or not the project's o
 `.gitignore` lists it. The reports can then never reach a commit, and nothing has to delete
 them.
 
+Then, for every agent about to be dispatched, companion reviewers included, overwrite
+`<PWD>/docs/reviews/raw/<name>.md` with the single line `Not written by this run.` using
+Write, reading the file first if it already exists. Otherwise, when an agent's own write
+fails, its details link would open the previous run's report, which may describe different
+code; the placeholder makes that failure visible instead of plausible.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
 
 | Agent | Report name |
@@ -304,7 +310,7 @@ Use **AskUserQuestion** to present options:
 - If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
-- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) stay in the working tree after the build, git-ignored by the folder's own `.gitignore`, and the next run overwrites them. Never delete them with `rm -rf`: many users deny it, and the skill does not need it. A raw report from an agent that did not run this time may linger, but the consolidated report links only to this run's reports, so it never feeds the review.
+- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) stay in the working tree after the build, git-ignored by the folder's own `.gitignore`, and the next run overwrites them. Never delete them with `rm -rf`: many users deny it, and the skill does not need it. A raw report from an agent that did not run this time may linger, but the consolidated report links only to agents dispatched this run, whose raw files were reset to a placeholder before dispatch, so a stale report never feeds the review. A linked file that still reads `Not written by this run.` means that agent's write failed: work from its one-line `fix` in `review.md`.
 
 ## The handoff block
 
