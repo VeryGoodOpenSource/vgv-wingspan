@@ -20,7 +20,7 @@ subagent tool (such as `Agent`): the option exists to give each phase a fresh co
 building every phase in one session is what it prevents.
 
 The choice is a per-developer preference, not a repo convention, so it never belongs in the
-project's `CLAUDE.md`.
+project's `CLAUDE.md` or `AGENTS.md`.
 
 Review autonomy can also be saved on its own, through **Always apply** at the findings stop.
 When it is saved, leave out **Auto-commit and apply review findings** and say in the question

@@ -62,10 +62,11 @@ Each run gets its own directory `<PWD>/docs/code-review/<slug>/`, so one run nev
 another branch's kept report.
 
 Dispatch the **default agents** below per [review agent dispatch](references/review-dispatch.md),
-with `<RAW_DIR>` = `<PWD>/docs/code-review/<slug>/raw`. Projects may add agents in their
-`CLAUDE.md` (include them alongside the defaults) or replace the default set entirely. Include
-the installed companion reviewers too, per the same dispatch reference. Offer to retry any
-agent that fails.
+with `<RAW_DIR>` = `<PWD>/docs/code-review/<slug>/raw`. Projects may add agents in
+the project's conventions files (`CLAUDE.md` and/or `AGENTS.md`), including them alongside
+the defaults, or replace the default set entirely. When both files declare agents, honor
+both. Include the installed companion reviewers too, per the same dispatch reference.
+Offer to retry any agent that fails.
 
 | Agent | Report name |
 |-------|-------------|

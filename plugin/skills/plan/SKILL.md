@@ -83,7 +83,7 @@ Based on the findings from `0. Idea Refinement` and `1.1 Local research`, decide
 | Signal | Decision |
 |--------|----------|
 | High-risk topic (security, payments, external APIs, personal data) | Always research — cost of missing something is too high |
-| Strong local context (good patterns, CLAUDE.md guidance, clear user intent) | Skip external research |
+| Strong local context (good patterns, CLAUDE.md or AGENTS.md guidance, clear user intent) | Skip external research |
 | Uncertainty or unfamiliar territory (no codebase examples, new technology) | Research |
 
 Announce the decision briefly and proceed. User can redirect if needed.
@@ -105,7 +105,7 @@ After all research steps complete, consolidate findings:
 - **Include relevant institutional learnings** from project documentation (key insights, gotchas to avoid)
 - Note external documentation URLs and best practices (if external research was done)
 - List related issues or PRs discovered
-- Capture CLAUDE.md conventions
+- Capture conventions from the project's conventions files (`CLAUDE.md` and/or `AGENTS.md`)
 
 **Optional validation:** Briefly summarize findings and ask if anything looks off or missing before proceeding to planning.
 
