@@ -82,9 +82,9 @@ jobs:
       - name: Hook script tests
         run: |
           status=0
-          for f in plugin/hooks/test_*.sh; do
+          for f in test/hooks/test_*.sh; do
             bash "$f" || status=1
           done
           exit $status
       - name: Review contract tests
-        run: bash plugin/agents/test_review_contract.sh
+        run: bash test/agents/test_review_contract.sh

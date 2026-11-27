@@ -1,8 +1,8 @@
 #!/bin/bash
-# Shared helpers for the hook test suites (hooks/test_*.sh).
+# Shared helpers for the hook test suites (test/hooks/test_*.sh).
 #
 # Source this file; do not run it. It lives in lib/ so the CI loop over
-# hooks/test_*.sh never picks it up. It installs no traps and sets no shell
+# test/hooks/test_*.sh never picks it up. It installs no traps and sets no shell
 # options: each test file owns its own `set -euo pipefail`.
 #
 # Usage in a test file:
@@ -10,9 +10,9 @@
 #   ... define test_* functions, call them ...
 #   finish
 
-# Public globals test files may read: SCRIPT_DIR (the hooks/ directory), HOOK_SCRIPT,
-# TEST_DIR, MARKER, RECOMMENDATIONS_DIR, PASS, FAIL.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Public globals test files may read: SCRIPT_DIR (the plugin's hooks/ directory),
+# HOOK_SCRIPT, TEST_DIR, MARKER, RECOMMENDATIONS_DIR, PASS, FAIL.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../plugin/hooks" && pwd)"
 HOOK_SCRIPT="$SCRIPT_DIR/recommend-plugins.sh"
 
 PASS=0

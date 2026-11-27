@@ -2,7 +2,7 @@
 # Tests for the shipped android-cli recommendation rule
 # (hooks/recommendations/android-cli.json).
 #
-# Usage: bash plugin/hooks/test_recommendation_android_cli.sh
+# Usage: bash test/hooks/test_recommendation_android_cli.sh
 #
 # One question: does the rule fire on the right projects? Each detect entry
 # gets a positive and a negative. How the hook scans, installs and combines

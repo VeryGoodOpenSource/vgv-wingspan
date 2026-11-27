@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tests that the review agents' findings contract has not drifted.
 #
-# Usage: bash plugin/agents/test_review_contract.sh
+# Usage: bash test/agents/test_review_contract.sh
 #
 # Each review agent carries a copy of the findings block in its
 # `## Output Instructions` section, and
@@ -17,7 +17,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PLUGIN_ROOT="$(cd "$SCRIPT_DIR/../../plugin" && pwd)"
 
 AGENTS=(
   agents/codebase-review/vgv-review-agent.md
@@ -115,7 +115,7 @@ copy_fixture() {
   dir="$(mktemp -d)"
   for file in "${AGENTS[@]}" "$INSTRUCTIONS"; do
     mkdir -p "$dir/$(dirname "$file")"
-    cp "$REPO_ROOT/$file" "$dir/$file"
+    cp "$PLUGIN_ROOT/$file" "$dir/$file"
   done
   echo "$dir"
 }
@@ -144,7 +144,7 @@ replace_line() {
 }
 
 test_repository_has_no_drift() {
-  expect "repository contract has no drift" pass "$REPO_ROOT"
+  expect "repository contract has no drift" pass "$PLUGIN_ROOT"
 }
 
 test_field_added_to_one_agent_fails() {
