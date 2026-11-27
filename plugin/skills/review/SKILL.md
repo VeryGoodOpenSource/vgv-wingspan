@@ -54,7 +54,7 @@ ${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-review-scope.sh
 - **If `SCOPE=default`**: tell the user "You're on `<CURRENT_BRANCH>`. No branch diff
   available." Use **AskUserQuestion**: "What would you like to review?" with options:
   - **Specify files or directories**: accept paths; derive the slug from the first path as above.
-  - **Review entire project**: no scope constraint; slug `project`.
+  - **Review entire project**: the finding scope is the whole project; slug `project`.
 
 ## Step 2 — Run Reviews
 
