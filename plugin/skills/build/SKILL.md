@@ -267,7 +267,7 @@ Include the installed companion reviewers too, per the same dispatch reference.
 
 Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
 and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
-scope constraint, the Already gated note, and the report name from the table above, and send
+finding scope, the Already gated note, and the report name from the table above, and send
 every agent in the tier, plus any companion reviewers, in one message so they run at once
 rather than in turn. When `references/review-scope.md` cannot be read, run the full review.
 
