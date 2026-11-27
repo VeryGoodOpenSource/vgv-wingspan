@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.1.0...v0.2.0) (2026-11-27)
+
+
+### Features
+
+* git-ignore review reports instead of deleting with rm -rf ([#329](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/329)) ([baa6410](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/baa641018f1ddc3d5f48aed24a8b428884a9ab99))
+* **plan:** let users read the plan in the session before choosing a next step ([#326](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/326)) ([4b834a4](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/4b834a48ddf3eddd4ad5736436de24ca9d7a0e6d))
+* **review:** separate reading scope from finding scope ([#325](https://github.com/VeryGoodOpenSource/vgv-wingspan/issues/325)) ([c2e89a5](https://github.com/VeryGoodOpenSource/vgv-wingspan/commit/c2e89a5571987d2d44fdb5c2cd2dc9cd9a7c83c6))
+
 ## [0.1.0](https://github.com/VeryGoodOpenSource/vgv-wingspan/compare/v0.0.5...v0.1.0) (2026-11-25)
 
 
