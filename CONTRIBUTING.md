@@ -195,12 +195,12 @@ A reference file under a skill (`plugin/skills/<skill>/references/`) is read as 
 
 Store canonical scripts in `plugin/shared/scripts/` and call them by their full `${CLAUDE_PLUGIN_ROOT}` path.
 
-**Referencing in SKILL.md** — use `${CLAUDE_PLUGIN_ROOT}` in the skill body (substituted to an absolute path at skill-load time) and in `allowed-tools`, where the skills docs say it is also substituted for plugin skills, to skip the per-invocation permission prompt:
+**Referencing in SKILL.md** — use `${CLAUDE_PLUGIN_ROOT}` in the skill body (substituted to an absolute path at skill-load time), and a `*/<script-name>` glob in `allowed-tools` to skip the per-invocation permission prompt. Do not write `${CLAUDE_PLUGIN_ROOT}` in `allowed-tools`: `vgv_ai_cli` copies frontmatter as written, so other harnesses would get it unsubstituted:
 
 ```yaml
 ---
 name: my-skill
-allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-base-branch.sh)
+allowed-tools: Bash(*/detect-base-branch.sh)
 ---
 ```
 

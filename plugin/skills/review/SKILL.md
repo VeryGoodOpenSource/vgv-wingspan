@@ -3,7 +3,7 @@ name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user wants written code assessed rather than changed, and on "review this code", "code review", "check this code", "look this over", "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
-allowed-tools: Bash(${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
+allowed-tools: Bash(*/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
