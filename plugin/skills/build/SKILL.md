@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it", or when handed a planned GitHub issue to build.
 effort: high
 argument-hint: plan file path or GitHub issue
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh repo view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
+allowed-tools: Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh repo view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -32,7 +32,7 @@ Build Progress:
 - [ ] Phase 1: Read context for the current implementation phase
 - [ ] Phase 2: Loop implementation phases (implement → validate → commit or hand off → checkpoint → clear)
 - [ ] Phase 3: Size the review to the change, run its agents in parallel, consolidate into one report
-- [ ] Phase 4: Drive to green, cleanup, and ship
+- [ ] Phase 4: Drive to green and ship
 ```
 
 ## Plan Input
@@ -242,6 +242,17 @@ describes this phase without a dispatch in the trace has skipped it. If an agent
 unavailable, say which and run the rest; if none can run, say so plainly rather than
 narrating the review as though it happened.
 
+Before dispatching, write `<PWD>/docs/reviews/.gitignore` containing the single line `*`, so
+git ignores the whole folder, this file included, whether or not the project's own
+`.gitignore` lists it. The reports can then never reach a commit, and nothing has to delete
+them.
+
+Then, for every agent about to be dispatched, companion reviewers included, overwrite
+`<PWD>/docs/reviews/raw/<name>.md` with the single line `Not written by this run.` using
+Write, reading the file first if it already exists. Otherwise, when an agent's own write
+fails, its details link would open the previous run's report, which may describe different
+code; the placeholder makes that failure visible instead of plausible.
+
 Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
 
 | Agent | Report name |
@@ -277,14 +288,6 @@ Follow the [review consolidation procedure](references/review-consolidation.md):
 
 Resolve the gate set and run the loop per [ship gate](references/ship-gate.md).
 
-### Cleanup
-
-Remove the review reports — their findings have already been addressed or recorded:
-
-```bash
-rm -rf docs/reviews/
-```
-
 ### Commit and push
 
 Handle the outstanding changes — the drive-to-green loop, the surgical-diff gate, and the Phase 3 review fixes — per [commit autonomy](references/commit-autonomy.md), which also gates pushing.
@@ -307,7 +310,7 @@ Use **AskUserQuestion** to present options:
 - If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
-- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
+- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) stay in the working tree after the build, git-ignored by the folder's own `.gitignore`, and the next run overwrites them. Never delete them with `rm -rf`: many users deny it, and the skill does not need it. A raw report from an agent that did not run this time may linger, but the consolidated report links only to agents dispatched this run, whose raw files were reset to a placeholder before dispatch, so a stale report never feeds the review. A linked file that still reads `Not written by this run.` means that agent's write failed: work from its one-line `fix` in `review.md`.
 
 ## The handoff block
 

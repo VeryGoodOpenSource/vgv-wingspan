@@ -51,8 +51,8 @@ Commit message formats:
 `<type>` matches the plan's type (`feat`, `fix`, `refactor`, …). One commit per phase keeps
 the branch history clean and each phase independently reviewable; a single-phase plan
 produces one implementation commit. Review findings are fixed in place and the report is
-deleted at cleanup, so no commit cites `FINDING-NN` ids — there would be no report left to
-map them to.
+git-ignored and overwritten by the next run, so no commit cites `FINDING-NN` ids — there
+would be no report left to map them to.
 
 ## Pushing
 

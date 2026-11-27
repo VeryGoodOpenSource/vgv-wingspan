@@ -40,7 +40,8 @@ When a finding depends on behavior defined outside the finding scope, place and 
 ## 1 — Write the detailed report
 
 Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed) — e.g. with
-`<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. This is an absolute path — use
+`<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. A file left there by an
+earlier run is stale: replace it whole, reading it first if your write tool requires that. This is an absolute path — use
 it exactly as given, do not convert to relative. Use your normal Output Format. The caller reads this file
 only when acting on a finding needs more than the one-line `fix`, so be thorough but keep it
 scannable.
