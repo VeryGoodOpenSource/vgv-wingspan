@@ -204,10 +204,11 @@ Planning from an issue, publish the reviewed plan per
 [plan on an issue](references/plan-on-issue.md): confirm first, then post the plan comment,
 whose first line is `<!-- wingspan:plan -->`, create the phase sub-issues, and fill their
 numbers into the comment. Once published, `ISSUE_URL` replaces the plan file path
-everywhere below, **Open the plan file in my code editor** opens the issue instead
-(`gh issue view <number> --web`), and **Review and refine** is dropped: refine through
-**Edit** before publishing, not after. If the user declines, the local plan file stands and
-nothing below changes.
+everywhere below, **Read the plan here** prints the plan comment as posted (fetch it from
+the issue: the sub-issue numbers are filled in after the draft), **Open the plan file in
+my code editor** opens the issue instead (`gh issue view <number> --web`), and **Review and
+refine** is dropped: refine through **Edit** before publishing, not after. If the user
+declines, the local plan file stands and nothing below changes.
 
 ## Post-Generation Options
 
@@ -217,7 +218,7 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 
 1. **Clear context and build (Recommended)**: clear context for a fresh start, then build
 2. **Start building**: execute this plan with `/build`
-3. **Open the plan file in my code editor**: open the plan file for review
+3. **Read the plan here**: show the full plan in this session, then choose again
 4. **Review and refine**: improve the plan through self-review
 
 **If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
@@ -225,7 +226,14 @@ After the review completes, use the **AskUserQuestion tool** and present the fol
 **For other selections:**
 
 - **Start building** → Call the `/build` skill with the plan file path
-- **Open plan in editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
+- **Read the plan here** → Read the file, then write the whole plan into your reply,
+  exactly as written, not a summary: the user is deciding whether to build on it, and a
+  summary hides the part they would object to. Reading the file is not showing it: the user
+  does not see tool output. Do not edit the plan while showing it; changes go through
+  **Other**, or **Review and refine** while the plan is still local. Then ask again with
+  the same options, this one replaced by **Open the plan file in my code editor**: open
+  the plan file for review (the issue, once published).
+- **Open the plan file in my code editor** → Run `open docs/plan/<plan_filename>.md` to open the file in the user's default editor
 - **Review and refine** → Load `/refine-approach` skill. It runs a document critique, since the plan review above already covered the technical review.
 - **Other** (automatically provided) → Accept free text for rework or specific changes
 
