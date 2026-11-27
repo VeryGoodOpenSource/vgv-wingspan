@@ -8,7 +8,7 @@ absolute raw-reports directory the calling skill provides (each skill gives its 
 Each review agent also carries the findings block in its own `## Output Instructions`, so it
 returns the block even when dispatched directly as an agent type, with no calling skill. This
 file holds the rules behind that block; when you change the block here, change it in each
-review agent too. `test/agents/test_review_contract.sh` fails CI when the copies drift.
+review agent too. A CI test in the Wingspan repository fails when the copies drift.
 
 Each agent produces two outputs:
 
