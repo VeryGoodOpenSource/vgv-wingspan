@@ -35,7 +35,7 @@ Edit the working tree to strip untraceable lines. Work at line-level granularity
 
 ## Step 5: Revert safety
 
-After removals, re-run the linter and tests per [validate-and-fix](validate-and-fix.md). If a removal breaks the build, that hunk was load-bearing, not pure churn. Restore it and surface it to the user with **AskUserQuestion** rather than shipping a red build.
+After removals, re-run the linter and tests per validate-and-fix (`validate-and-fix.md`, a shared file whose path `SKILL.md` gives). If a removal breaks the build, that hunk was load-bearing, not pure churn. Restore it and surface it to the user with **AskUserQuestion** rather than shipping a red build.
 
 ## Step 6: Handle dead code — bias toward keeping
 

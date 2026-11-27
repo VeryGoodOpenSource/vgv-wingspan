@@ -18,7 +18,7 @@ Stage uncommitted changes, commit them, push the branch, and open a pull request
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Steps checklist
@@ -97,7 +97,7 @@ Use **AskUserQuestion** to confirm before committing (**Yes** / **No** / **Edit*
 
 ## Step 4: Push
 
-Consult `references/push.md` to push the branch and handle any failures.
+Consult `${CLAUDE_PLUGIN_ROOT}/shared/references/push.md` to push the branch and handle any failures.
 
 ## Step 5: Run CI checks (conditional)
 
@@ -171,6 +171,6 @@ Use **AskUserQuestion**:
 **Question:** "Do you want me to create this PR?"
 
 **Options:**
-1. **Yes** — consult `references/pr-cli.md` to detect the available CLI tool, check for an existing PR, and create it.
+1. **Yes** — consult `${CLAUDE_PLUGIN_ROOT}/shared/references/pr-cli.md` to detect the available CLI tool, check for an existing PR, and create it.
 2. **No** — stop; the Markdown above is ready for manual use.
 3. **Edit** — ask what to change, revise, ask again.

@@ -18,8 +18,8 @@ evals/                 # `claude plugin eval` suite — one directory per skill
     fixture.sh         # The neutral workspace every case symlinks to
   <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
 tool/
-  shared-copies.txt    # Every copy of a shared skill file: <source> <copy>
-  sync-shared.sh       # Writes the copies; --check fails CI on drift
+  check-plugin-paths.sh       # Fails CI on a symlink, a copied shared file, a bare path to one, a dead link, or a missing ${CLAUDE_PLUGIN_ROOT} path
+  test_check_plugin_paths.sh  # Tests for the path check
 plugin/                # The plugin folder: everything the plugin loads, and all a user installs
   LICENSE              # Copy of the root LICENSE, shipped with the plugin
   README.md            # Plugin README: installation, skills, agents, hooks
@@ -55,6 +55,26 @@ plugin/                # The plugin folder: everything the plugin loads, and all
       android-cli.json            # Detection rule + recommendation for the Android plugin
       vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin
       xcode.json                  # Detection rule + recommendation for Apple's Xcode plugin
+  shared/                # Shared references and scripts, named from skills and agents with ${CLAUDE_PLUGIN_ROOT}/shared/…
+    references/
+      agent-mode.md              # Run without a human: take the recommended option, log each decision
+      clear-context-handoff.md   # The "clear context and <next step>" handoff block
+      drive-to-green.md          # Loop until every gate is green by real output
+      elements-of-style.md       # Writing rules passed to review and flow-analysis agents
+      feature-branch.md          # Branch check run before anything is written to disk
+      file-findings-on-pr.md     # Post review findings as PR comments
+      plan-on-issue.md           # Plan on a GitHub issue: plan comment, phase sub-issues, picking a phase
+      plan-review.md             # Quality pass applied to a drafted plan
+      plan-templates/            # minimal, standard, extensive, phases, success criteria
+      pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
+      push.md                    # Push the branch and handle push failures
+      review-agent-instructions.md  # Instructions passed to each review agent
+      review-autonomy.md         # When /build and /hotfix apply Important findings without asking
+      review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
+      review-dispatch.md         # Caller-side procedure for launching review agents
+      review-report-template.md  # Shape of the consolidated report
+      validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
+    scripts/           # detect-base-branch.sh, detect-review-scope.sh
   skills/                # User-invocable and supporting skills (one dir per skill)
     brainstorm/SKILL.md            # Explore requirements and approaches
     plan/SKILL.md                  # Turn a brainstorm into an implementation plan
@@ -66,29 +86,9 @@ plugin/                # The plugin folder: everything the plugin loads, and all
     create-pr/SKILL.md             # Generate a PR title and description
     refine-approach/SKILL.md       # Review a plan or document: technical review or critique
     rebase/SKILL.md                # Sync a feature branch with its base
-    shared/              # Shared references and scripts used across skills
-      references/
-        agent-mode.md              # Run without a human: take the recommended option, log each decision
-        clear-context-handoff.md   # The "clear context and <next step>" handoff block
-        drive-to-green.md          # Loop until every gate is green by real output
-        elements-of-style.md       # Writing rules passed to review and flow-analysis agents
-        feature-branch.md          # Branch check run before anything is written to disk
-        file-findings-on-pr.md     # Post review findings as PR comments
-        plan-on-issue.md           # Plan on a GitHub issue: plan comment, phase sub-issues, picking a phase
-        plan-review.md             # Quality pass applied to a drafted plan
-        plan-templates/            # minimal, standard, extensive, phases, success criteria
-        pr-cli.md                  # Detect gh or glab, check for an existing PR, open it
-        push.md                    # Push the branch and handle push failures
-        review-agent-instructions.md  # Instructions passed to each review agent
-        review-autonomy.md         # When /build and /hotfix apply Important findings without asking
-        review-consolidation.md    # Verify quotes, deduplicate, order, and number findings
-        review-dispatch.md         # Caller-side procedure for launching review agents
-        review-report-template.md  # Shape of the consolidated report
-        validate-and-fix.md        # Run linter and tests, fix, retry up to 3 times
-      scripts/           # detect-base-branch.sh, detect-review-scope.sh
 ```
 
-Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A shared reference appears in each consuming skill as a real copy, so the skill always links it by its own local path. The plugin folder holds no symbolic links: edit the source in `plugin/skills/shared/` and run `bash tool/sync-shared.sh`.
+Each skill directory may also carry a `references/` folder (deeper procedure docs) and a `scripts/` folder (helper shell scripts). A file used by more than one skill lives once in `plugin/shared/`, and skills and agents name it with `${CLAUDE_PLUGIN_ROOT}/shared/…`. The plugin folder holds no symbolic links and no copies of shared files; `tool/check-plugin-paths.sh` enforces that.
 
 ## Authoring Conventions
 
@@ -128,13 +128,13 @@ Standalone Skills:
 
 - **`/debrief`** — Produce a structured, blameless debrief document after an incident, failed release, or significant bug.
 
-Each phase persists its output to `docs/` so the next phase can discover it from a cold start. Started from a GitHub issue, `/plan` and `/build` read from and write to the issue instead: `/plan` posts the plan and one sub-issue per phase, and `/build` ships the first open, unblocked phase as its own PR (see `plugin/skills/shared/references/plan-on-issue.md`).
+Each phase persists its output to `docs/` so the next phase can discover it from a cold start. Started from a GitHub issue, `/plan` and `/build` read from and write to the issue instead: `/plan` posts the plan and one sub-issue per phase, and `/build` ships the first open, unblocked phase as its own PR (see `plugin/shared/references/plan-on-issue.md`).
 
 **Fast path:** **`/hotfix`** — Streamlined workflow for emergency fixes. Skips brainstorm and planning but enforces review and testing. Use when speed matters but quality is still non-negotiable.
 
 **Clear context handoff:** User-invocable skills (`user-invocable: true`) that have a forward transition (e.g., brainstorm → plan) must present **"Clear context and [next step]"** as the first handoff option. When selected, clear the context, then present the next skill's invocation, then stop. This gives the model a fresh context window without losing work. Skills invoked by other skills must not offer this — they return control to the caller instead.
 
-**Agent mode:** for runs with no human at the keyboard, such as under an orchestrator. Turned on by `--agent-mode` in a skill's arguments or by asking to "use Wingspan in agent mode". Every skill still runs every step, but at each question it takes the recommended option instead of asking, and records the question, context, options, decision, and its impact in an ephemeral decision log for a human to review at the end. It never pushes, publishes, or deletes on its own unless the request allows it, and stops with a blocked status rather than guessing past a blocker. See `plugin/skills/shared/references/agent-mode.md`.
+**Agent mode:** for runs with no human at the keyboard, such as under an orchestrator. Turned on by `--agent-mode` in a skill's arguments or by asking to "use Wingspan in agent mode". Every skill still runs every step, but at each question it takes the recommended option instead of asking, and records the question, context, options, decision, and its impact in an ephemeral decision log for a human to review at the end. It never pushes, publishes, or deletes on its own unless the request allows it, and stops with a blocked status rather than guessing past a blocker. See `plugin/shared/references/agent-mode.md`.
 
 Supporting skills:
 
@@ -157,7 +157,7 @@ The calling skill drops findings the code does not confirm, marks the ones no fi
 confirm as unverified, deduplicates and orders the rest, assigns stable
 `FINDING-NN` ids (plus a stable `<category>/<rule>` id per finding for acting on a whole
 class), and renders one consolidated report plus a matching chat summary (see
-`plugin/skills/shared/references/review-consolidation.md`).
+`plugin/shared/references/review-consolidation.md`).
 
 ## Output Directories
 

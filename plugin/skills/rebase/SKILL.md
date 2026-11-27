@@ -3,7 +3,7 @@ name: rebase
 user-invocable: true
 disable-model-invocation: true
 description: Rebases the current feature branch onto the base branch (main/master/develop). Use when the user says "rebase", "sync branch", or "update branch".
-allowed-tools: Bash(*/scripts/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit AskUserQuestion
+allowed-tools: Bash(*/detect-base-branch.sh) Bash(git fetch *) Bash(git rebase *) Bash(GIT_EDITOR=true git rebase *) Bash(git stash *) Bash(git rev-parse *) Bash(git rev-list *) Bash(git status *) Bash(git merge-base *) Bash(git diff *) Bash(git add *) Read Edit AskUserQuestion
 effort: medium
 compatibility: Designed for Claude Code (or similar products with git access)
 ---
@@ -19,7 +19,7 @@ Rebase the current feature branch onto the latest base branch to keep it up-to-d
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Step 1: Validate preconditions
@@ -37,7 +37,7 @@ If the result is `main`, `master`, or `develop` — inform the user they're alre
 Detect the base branch:
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/detect-base-branch.sh
+${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-base-branch.sh
 ```
 
 If the script exits with an error, inform the user no base branch was found and stop.

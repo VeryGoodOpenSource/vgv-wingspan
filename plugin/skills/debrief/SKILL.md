@@ -18,7 +18,7 @@ Produce a structured, blameless debrief document after an incident, failed relea
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 **Do not make code changes.** This skill produces a document; its action items become separate tickets.
@@ -93,7 +93,7 @@ Action items are recorded in the document only — they become separate tickets.
 
 ### 5. Set up workspace
 
-Run the [feature branch check](references/feature-branch.md) before writing anything to disk.
+Run the feature branch check (`${CLAUDE_PLUGIN_ROOT}/shared/references/feature-branch.md`) before writing anything to disk.
 
 ### 6. Write the debrief document
 

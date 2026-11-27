@@ -18,7 +18,7 @@ Review a brainstorm, plan, or other document before the next step, and improve i
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Step 1. Get the document that needs review
@@ -53,7 +53,7 @@ mode instead.
 
 ## Step 3. Technical review
 
-Follow the [plan review procedure](references/plan-review.md) with `<PLAN_PATH>` set to the
+Follow the plan review procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/plan-review.md`) with `<PLAN_PATH>` set to the
 plan file. It runs the simplicity, VGV, and scope-splitting agents in parallel, applies their
 findings to the plan inline, and resolves any scope-splitting recommendation.
 
@@ -136,9 +136,9 @@ After changes are complete, ask:
 3. **Refine again** — another review pass
 4. **Done for now** — document is ready
 
-**If the user selects "Clear context and plan"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/plan` with the actual brainstorm doc path. Then stop.
+**If the user selects "Clear context and plan"** → Follow the clear context handoff (`${CLAUDE_PLUGIN_ROOT}/shared/references/clear-context-handoff.md`) for `/plan` with the actual brainstorm doc path. Then stop.
 
-**If the user selects "Clear context and build"** → Follow the [clear context handoff](references/clear-context-handoff.md) for `/build` with the actual plan file path. Then stop.
+**If the user selects "Clear context and build"** → Follow the clear context handoff (`${CLAUDE_PLUGIN_ROOT}/shared/references/clear-context-handoff.md`) for `/build` with the actual plan file path. Then stop.
 
 **If the user selects "Start building"** → Call the `/build` skill with the plan file path.
 

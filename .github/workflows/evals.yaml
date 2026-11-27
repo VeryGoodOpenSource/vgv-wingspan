@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - 'plugin/skills/**'
+      - 'plugin/shared/**'
       - 'plugin/agents/**'
       - 'evals/**'
   workflow_dispatch:
@@ -90,7 +91,7 @@ jobs:
                   done
             )
 
-            if echo "$CHANGED" | grep -qE '^(evals/_fixture/|plugin/skills/shared/|plugin/agents/)'; then
+            if echo "$CHANGED" | grep -qE '^(evals/_fixture/|plugin/shared/|plugin/agents/)'; then
               echo "shared eval input changed — widening to all skills"
               SKILLS=$(all_skills)
             fi

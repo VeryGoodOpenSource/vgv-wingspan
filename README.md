@@ -12,7 +12,7 @@ The plugin lives in [`plugin/`](plugin/). Its [README](plugin/README.md) covers 
 | ------------------------------------ | ----------------------------------------------------------------- |
 | [`plugin/`](plugin/)                 | Everything the plugin loads. This is the folder users install.    |
 | [`evals/`](evals/)                   | The `claude plugin eval` suite. Not part of the installed plugin. |
-| [`tool/`](tool/)                     | Repository tooling, such as the shared-file sync script.          |
+| [`tool/`](tool/)                     | Repository tooling, such as the plugin path check.                |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to add or change a skill, and how to test it locally.         |
 
 [vgv_link]: https://verygood.ventures

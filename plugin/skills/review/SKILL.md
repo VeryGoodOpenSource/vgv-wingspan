@@ -3,7 +3,7 @@ name: review
 user-invocable: true
 description: Runs quality review agents on demand — reviews code against VGV standards for architecture, tests, and simplicity, then writes one consolidated, numbered report. Use when the user wants written code assessed rather than changed, and on "review this code", "code review", "check this code", "look this over", "review before merging". Also use when the user pastes a file, a diff, or a branch summary and asks for it to be reviewed — code arriving in the message rather than on disk does not make it a different task.
 argument-hint: "[path/to/files/or/directories (optional)]"
-allowed-tools: Bash(*/scripts/detect-review-scope.sh) Bash(gh *) Bash(glab *)
+allowed-tools: Bash(*/detect-review-scope.sh) Bash(gh *) Bash(glab *)
 effort: high
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
@@ -21,7 +21,7 @@ numbered findings the user can act on by id.
 > is not a question, and a step that waits on one is not optional.
 >
 > **Except in agent mode.** When the user turned on agent mode (`--agent-mode`, or "use
-> Wingspan in agent mode"), follow [agent mode](references/agent-mode.md) instead: take the
+> Wingspan in agent mode"), follow agent mode (`${CLAUDE_PLUGIN_ROOT}/shared/references/agent-mode.md`) instead: take the
 > recommended option, record the decision in the decision log, and keep going.
 
 ## Review Scope
@@ -45,7 +45,7 @@ Parse the review scope above for optional file paths or directories.
 Run the scope detection script:
 
 ```bash
-${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
+${CLAUDE_PLUGIN_ROOT}/shared/scripts/detect-review-scope.sh
 ```
 
 - **If `SCOPE=branch`**: use the listed files as scope. The scope slug is the current
@@ -61,7 +61,7 @@ ${CLAUDE_SKILL_DIR}/scripts/detect-review-scope.sh
 Each run gets its own directory `<PWD>/docs/code-review/<slug>/`, so one run never clobbers
 another branch's kept report.
 
-Dispatch the **default agents** below per [review agent dispatch](references/review-dispatch.md),
+Dispatch the **default agents** below per review agent dispatch (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-dispatch.md`),
 with `<RAW_DIR>` = `<PWD>/docs/code-review/<slug>/raw`. Projects may add agents in their
 `CLAUDE.md` (include them alongside the defaults) or replace the default set entirely. Include
 the installed companion reviewers too, per the same dispatch reference. Offer to retry any
@@ -76,13 +76,13 @@ agent that fails.
 
 ## Step 3 — Consolidate & Present
 
-Follow the [review consolidation procedure](references/review-consolidation.md):
+Follow the review consolidation procedure (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-consolidation.md`):
 
 1. Collect every agent's structured findings, verify each against the code (dropping the
    findings it does not confirm), deduplicate, order deterministically, and assign stable
    `FINDING-NN` ids.
 2. Write **one** consolidated file to `<PWD>/docs/code-review/<slug>/review.md` using the
-   [report template](references/review-report-template.md).
+   report template (`${CLAUDE_PLUGIN_ROOT}/shared/references/review-report-template.md`).
 3. Print the aligned chat summary: lead with the report path, severity counts, and any
    dropped count, then reprint the Critical and Important rows verbatim (same ids, order,
    titles) and collapse Suggestions to a count.
@@ -120,7 +120,7 @@ present post-review options (the ids and rules follow the consolidation procedur
 - **Fix critical + important**: same, plus Important findings.
 - **Fix specific findings**: accept ids from the user (e.g. "FINDING-01, FINDING-04"), or a
   rule id to act on a whole class (e.g. "fix every `tests/missing-test-file`").
-- **File findings on the PR as comments**: follow [file findings on the PR](references/file-findings-on-pr.md)
+- **File findings on the PR as comments**: follow file findings on the PR (`${CLAUDE_PLUGIN_ROOT}/shared/references/file-findings-on-pr.md`)
   — a two-step flow that first asks which findings to include, then how to deliver them
   (inline comments, one summary comment, or print the drafts for the user to post manually).
 - **Keep report and exit**: the report stays at `docs/code-review/<slug>/` for manual review.

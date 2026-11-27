@@ -5,7 +5,7 @@
 #
 # Each review agent carries a copy of the findings block in its
 # `## Output Instructions` section, and
-# skills/shared/references/review-agent-instructions.md holds the annotated
+# shared/references/review-agent-instructions.md holds the annotated
 # version. This script fails when:
 #   - the agents' Output Instructions sections differ beyond the block heading;
 #   - an agent's block names different header or finding fields, or names them
@@ -26,7 +26,7 @@ AGENTS=(
   agents/quality-review/pr-readiness-review-agent.md
   agents/quality-review/test-quality-review-agent.md
 )
-INSTRUCTIONS=skills/shared/references/review-agent-instructions.md
+INSTRUCTIONS=shared/references/review-agent-instructions.md
 
 PASS=0
 FAIL=0

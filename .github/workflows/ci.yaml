@@ -54,8 +54,8 @@ jobs:
           echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Validate Plugin
         run: claude plugin validate --strict plugin
-      - name: Shared copies match their source
-        run: bash tool/sync-shared.sh --check
+      - name: Plugin paths resolve and nothing is symlinked or copied
+        run: bash tool/check-plugin-paths.sh
       - name: Eval fixtures are symlinks
         run: |
           set -euo pipefail
@@ -88,3 +88,5 @@ jobs:
           exit $status
       - name: Review contract tests
         run: bash plugin/agents/test_review_contract.sh
+      - name: Plugin path check tests
+        run: bash tool/test_check_plugin_paths.sh
