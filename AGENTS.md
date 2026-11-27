@@ -163,8 +163,8 @@ class), and renders one consolidated report plus a matching chat summary (see
 
 - `docs/brainstorm/` — Brainstorm documents from `/brainstorm`
 - `docs/plan/` — Implementation plans from `/plan`
-- `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, cleaned up by build)
-- `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, cleaned up by hotfix)
+- `docs/reviews/` — Consolidated `review.md` + per-agent `raw/` from `/build` (ephemeral, git-ignored by its own `.gitignore`, overwritten each run)
+- `docs/hotfix-review/` — Consolidated `review.md` + per-agent `raw/` from `/hotfix` (ephemeral, git-ignored by its own `.gitignore`, overwritten each run)
 - `docs/code-review/` — One `<slug>/` directory per run (`review.md` + per-agent `raw/`) from `/review` (standalone, user-managed)
 - `docs/debriefs/` — Debrief documents from `/debrief`
 - `docs/agent-decisions/` — Decision log from any skill run in agent mode (ephemeral, never committed, deleted once the human has reviewed it)
