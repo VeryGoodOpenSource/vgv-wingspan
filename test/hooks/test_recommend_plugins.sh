@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tests for recommend-plugins.sh
 #
-# Usage: bash plugin/hooks/test_recommend_plugins.sh
+# Usage: bash test/hooks/test_recommend_plugins.sh
 #
 # Creates a temporary project directory with controlled fixtures and runs
 # the hook script in isolation. Each test gets a fresh temp directory and

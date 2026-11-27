@@ -17,6 +17,15 @@ evals/                 # `claude plugin eval` suite — one directory per skill
   _fixture/
     fixture.sh         # The neutral workspace every case symlinks to
   <skill>/<case>/      # prompt.md, case.yaml, fixture.sh symlink, graders/
+test/                  # Script tests CI runs; kept out of plugin/ so they don't ship
+  agents/
+    test_review_contract.sh  # Fails when the review agents' findings block drifts
+  hooks/
+    test_recommend_plugins.sh     # Tests for the hook's detection and output logic
+    test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
+    test_recommendation_xcode.sh  # Tests for the shipped xcode rule
+    lib/
+      test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
 tool/
   shared-copies.txt    # Every copy of a shared skill file: <source> <copy>
   sync-shared.sh       # Writes the copies; --check fails CI on drift
@@ -39,18 +48,12 @@ plugin/                # The plugin folder: everything the plugin loads, and all
       architecture-review-agent.md  # Validates layer separation and dependency direction
       pr-readiness-review-agent.md  # Checks formatting, static analysis, commit hygiene
       test-quality-review-agent.md  # Verifies test coverage and quality
-    test_review_contract.sh  # Fails when the review agents' findings block drifts
     research/
       best-practices-research-agent.md  # Synthesizes best practices for the stack
       official-docs-research-agent.md   # Gathers official framework/library docs
   hooks/
     hooks.json                    # Hook definitions (PreToolUse)
     recommend-plugins.sh          # Detects project type, recommends companion plugins
-    test_recommend_plugins.sh     # Tests for the hook's detection and output logic
-    test_recommendation_android_cli.sh  # Tests for the shipped android-cli rule
-    test_recommendation_xcode.sh  # Tests for the shipped xcode rule
-    lib/
-      test_helpers.sh             # Shared fixtures and assertions, sourced by the test files
     recommendations/
       android-cli.json            # Detection rule + recommendation for the Android plugin
       vgv-ai-flutter-plugin.json  # Detection rule + recommendation for the Flutter plugin

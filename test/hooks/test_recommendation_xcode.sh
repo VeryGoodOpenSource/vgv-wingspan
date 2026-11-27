@@ -2,7 +2,7 @@
 # Tests for the shipped xcode recommendation rule
 # (hooks/recommendations/xcode.json).
 #
-# Usage: bash plugin/hooks/test_recommendation_xcode.sh
+# Usage: bash test/hooks/test_recommendation_xcode.sh
 #
 # One question: does the rule fire on the right projects? Each detect entry
 # gets a positive and a negative. How the hook scans, installs and combines
