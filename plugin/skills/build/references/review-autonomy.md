@@ -51,8 +51,8 @@ deferred, and say why.
 
 ## Record every applied finding
 
-Keep a list of each Important finding applied without asking. The report is deleted at
-cleanup, so record the content, not the id:
+Keep a list of each Important finding applied without asking. The report is git-ignored and
+the next run overwrites it, so record the content, not the id:
 
 ```markdown
 - `<rule id>` · `<location>` · <title> — <one line on what changed>

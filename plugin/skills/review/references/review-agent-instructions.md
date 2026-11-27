@@ -16,10 +16,32 @@ Each agent produces two outputs:
 2. **A structured findings list returned to the caller** (the single source the caller
    uses to number, consolidate, and render both the file and the chat summary).
 
+## Reading scope
+
+The finding scope you were given (the changed files, the paths under review, or the whole
+project) bounds what you may report on. It does not bound what you may read. A review that
+reads only the lines in scope misses the defects that live at the seam between them and the
+code they call.
+
+Before reporting, read:
+
+1. **The concrete implementation behind every interface the change calls.** Caching,
+   replay-on-subscribe, deduplication, and retry behavior are invisible from an interface and
+   routinely invalidate a caller that looks correct in the diff.
+2. **The nearest existing analogue.** New use cases, modules, and components usually have a
+   sibling solving the same problem. Differences from it are either deliberate, and belong in
+   the PR description, or accidental.
+3. **The source of truth for any claim the change makes**, including a comment asserting what
+   another system does.
+
+When a finding depends on behavior defined outside the finding scope, place and cite it as the
+[Rules](#rules) below describe.
+
 ## 1 — Write the detailed report
 
 Write your full report to `<RAW_DIR>/<name>.md` (create the directory if needed) — e.g. with
-`<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. This is an absolute path — use
+`<name>` = `vgv-review`, you write `<RAW_DIR>/vgv-review.md`. A file left there by an
+earlier run is stale: replace it whole, reading it first if your write tool requires that. This is an absolute path — use
 it exactly as given, do not convert to relative. Use your normal Output Format. The caller reads this file
 only when acting on a finding needs more than the one-line `fix`, so be thorough but keep it
 scannable.
@@ -82,6 +104,9 @@ grading keeps the ids stable:
 - **Every finding must have a `location`** — `file:line`, or the bare `file` path when the
   finding spans it. Never omit it: the caller deduplicates and sorts by location, so a
   location-less finding breaks stable numbering.
+- **When a finding depends on behavior defined outside the finding scope**, keep `location`
+  and `quote` on the line in scope that the fix edits, and name the `file:line` that defines
+  that behavior in `why`. The finding then shows both where to fix and why the line is wrong.
 - **Every finding must have a `quote`** — the offending line copied verbatim from the file
   at `location`: the whole line, never shortened, paraphrased, or joined with another line.
   For a `file:start-end` range, quote one line inside it. With a bare file `location`, quote
@@ -108,6 +133,10 @@ grading keeps the ids stable:
 - **No IDs.** The caller assigns the stable `FINDING-NN` id after collecting every
   agent's list. Do not invent your own ids.
 - **`why` and `fix` are mandatory and one line each.** A finding with no fix is noise.
+- **Skip what is already gated.** When the caller passes an **Already gated** note, do not
+  report findings its checks cover: a formatter or analyzer it lists has passed or runs before push, and
+  under a squash-only merge strategy commit messages and commit splits do not matter. Report
+  everything else as usual.
 - **Write to the [writing rules](elements-of-style.md).** The caller pastes them below these
   instructions. Apply them to the detailed report and to every `title`, `why`, and `fix`.
 - Do not apply fixes. You review and report; the caller decides what to act on.

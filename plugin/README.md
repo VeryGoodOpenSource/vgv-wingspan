@@ -13,7 +13,7 @@ Developed with 💙 by [Very Good Ventures][vgv_link] 🦄
 One-line install from your terminal:
 
 ```bash
-claude plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketplace && claude plugin install vgv-wingspan
+claude plugin install vgv-wingspan --marketplace VeryGoodOpenSource/very-good-claude-code-marketplace
 ```
 
 Or inside an active Claude Code session, run these as **two separate commands** (the second only after the first completes):
@@ -106,9 +106,8 @@ On a Flutter project with the Flutter Plugin installed, `/review` and `/build` a
 | Skill | Command | Description |
 |-------|---------|-------------|
 | [**Brainstorm**](skills/brainstorm/SKILL.md) | `/brainstorm <feature or idea>` | Explore requirements and approaches through collaborative dialogue |
-| [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach` | Review and refine brainstorms or plans before proceeding |
+| [**Refine Approach**](skills/refine-approach/SKILL.md) | `/refine-approach [doc path]` | Review and refine brainstorms or plans before proceeding — an externally-authored plan gets a technical review by the review agents; plans from `/plan` are already reviewed during creation |
 | [**Plan**](skills/plan/SKILL.md) | `/plan <feature, bug fix, improvement, or issue>` | Transform brainstorm output into a reviewed, phased implementation plan |
-| [**Plan Technical Review**](skills/plan-technical-review/SKILL.md) | `/plan-technical-review <plan path>` | Review an externally-authored plan — plans from `/plan` are already reviewed during creation |
 | [**Build**](skills/build/SKILL.md) | `/build <plan file path or issue>` | Execute a plan — write code and tests, run quality review, ship a PR |
 | [**Review**](skills/review/SKILL.md) | `/review [path]` | Run quality review agents on demand — assess code quality and identify issues |
 | [**Hotfix**](skills/hotfix/SKILL.md) | `/hotfix <bug description>` | Apply a minimal, targeted fix for emergency bugs — enforces review and testing without brainstorm or planning |
@@ -186,9 +185,21 @@ Wingspan includes a `PreToolUse` hook that detects your project type and recomme
 
 Detection rules live in `hooks/recommendations/`.
 
+What the hook reads and writes:
+
+- It reads `.claude/settings.local.json`, `.claude/settings.json` and `~/.claude/settings.json` to see which plugins are installed.
+- It writes an empty marker file, `/tmp/wingspan-recommend-plugins-<hash>`, so it recommends only once per project.
+- It makes no network calls.
+
 ### Prerequisites
 
 - **jq** — used to parse recommendation rules; the hook is skipped gracefully if `jq` is not installed
+
+## Scripts
+
+Some skills run helper scripts: `detect-base-branch.sh` and `detect-review-scope.sh`.
+They only read local git state.
+They write no files and make no network calls.
 
 ## Evals
 

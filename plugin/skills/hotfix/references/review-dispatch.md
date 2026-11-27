@@ -14,13 +14,16 @@ relative path to an agent.
 Run every agent in the skill's table **in parallel**, in a single message. Each agent prompt
 carries:
 
-1. **The scope constraint** — the changed-file list, the specific paths under review, or no
-   constraint, whichever the calling skill established.
+1. **The finding scope** — the changed-file list, the specific paths under review, or the
+   whole project, whichever the calling skill established. It bounds what the agent may
+   report and what a later fix may edit. It does not bound what the agent may read.
 2. **The [review agent instructions](review-agent-instructions.md)**, with `<RAW_DIR>` set to
    the resolved absolute directory and `<name>` set to that agent's report name from the
    table (a bare stem — the agent writes `<RAW_DIR>/<name>.md`).
 3. **The [writing rules](elements-of-style.md)** — paste the file's full text verbatim after the
    instructions. The agent cannot follow the relative link the instructions carry.
+4. **The Already gated note**, when the calling skill builds one: the checks earlier steps
+   already ran, and the merge strategy. Pass it verbatim.
 
 ## Companion reviewers
 
@@ -29,7 +32,7 @@ When the calling skill includes companion reviewers, read the plugin's
 field. Evaluate its `detect` rule against the current project, with the same logic the
 `recommend-plugins.sh` hook applies. When `detect` matches and the agent type named in
 `reviewAgent` is available, dispatch it in the same parallel message as the skill's own
-agents. Pass it only the scope constraint: a companion reviewer has its own output format,
+agents. Pass it only the finding scope: a companion reviewer has its own output format,
 so it gets no review agent instructions. Its report name is the agent name without the
 plugin prefix (`plugin-name:plugin-reviewer` → `plugin-reviewer`). When the agent type is
 not installed, skip it; the recommendation hook already suggests the plugin.

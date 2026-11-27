@@ -4,7 +4,7 @@ user-invocable: true
 description: Executes an implementation plan — writes code and tests, runs quality review, and ships a pull request. Use when the user says "build this", "implement the plan", "start coding", "execute the plan", or "ship it", or when handed a planned GitHub issue to build.
 effort: high
 argument-hint: plan file path or GitHub issue
-allowed-tools: Bash(rm -rf docs/reviews/) Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
+allowed-tools: Bash(git push *) Bash(gh --version *) Bash(gh pr view *) Bash(gh repo view *) Bash(gh pr create *) Bash(gh pr edit *) Bash(glab --version *) Bash(glab mr view *) Bash(glab mr create *) Bash(glab mr update *)
 compatibility: Designed for Claude Code (or similar products with agent support)
 ---
 
@@ -31,8 +31,8 @@ Build Progress:
 - [ ] Phase 0: Load plan and confirm scope (or resume a phased build)
 - [ ] Phase 1: Read context for the current implementation phase
 - [ ] Phase 2: Loop implementation phases (implement → validate → commit or hand off → checkpoint → clear)
-- [ ] Phase 3: Run review agents (5 in parallel), consolidate into one report
-- [ ] Phase 4: Drive to green, cleanup, and ship
+- [ ] Phase 3: Size the review to the change, run its agents in parallel, consolidate into one report
+- [ ] Phase 4: Drive to green and ship
 ```
 
 ## Plan Input
@@ -231,13 +231,29 @@ what it costs, and run it. Reporting afterwards that the review was "skipped per
 instructions" is this phase failing, not this phase being waived. The user can decline to act
 on the findings; they cannot have the step deleted before it runs.
 
-**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
-would have run — five `Agent` calls, sent in parallel in a single message, each carrying the
-scope and the raw-reports directory. A reply that describes this phase without a dispatch in
-the trace has skipped it. If an agent is unavailable, say which and run the rest; if none can
-run, say so plainly rather than narrating the review as though it happened.
+First, follow [review scope](references/review-scope.md): measure the branch, pick the
+**light** or **full** tier, and build the **Already gated** note. A light review is still a
+review: it dispatches its agents like the full one.
 
-Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw` and these 5 agents:
+**Dispatching them is the phase.** Not naming them, not listing them, not saying which ones
+would have run — one `Agent` call per agent in the tier, sent in parallel in a single message,
+each carrying the scope, the raw-reports directory, and the Already gated note. A reply that
+describes this phase without a dispatch in the trace has skipped it. If an agent is
+unavailable, say which and run the rest; if none can run, say so plainly rather than
+narrating the review as though it happened.
+
+Before dispatching, write `<PWD>/docs/reviews/.gitignore` containing the single line `*`, so
+git ignores the whole folder, this file included, whether or not the project's own
+`.gitignore` lists it. The reports can then never reach a commit, and nothing has to delete
+them.
+
+Then, for every agent about to be dispatched, companion reviewers included, overwrite
+`<PWD>/docs/reviews/raw/<name>.md` with the single line `Not written by this run.` using
+Write, reading the file first if it already exists. Otherwise, when an agent's own write
+fails, its details link would open the previous run's report, which may describe different
+code; the placeholder makes that failure visible instead of plausible.
+
+Dispatch them per [review agent dispatch](references/review-dispatch.md), with `<RAW_DIR>` = `<PWD>/docs/reviews/raw`. The full tier runs these 5 agents; the light tier runs the three that review scope names:
 
 | Agent | Report name |
 | ----- | ----------- |
@@ -251,8 +267,9 @@ Include the installed companion reviewers too, per the same dispatch reference.
 
 Hold that shape even when `references/review-dispatch.md` cannot be read from here: run `pwd`
 and substitute it into `<RAW_DIR>` so no agent gets a relative path, give every agent the
-scope constraint and the report name from the table above, and send all five, plus any
-companion reviewers, in one message so they run at once rather than in turn.
+finding scope, the Already gated note, and the report name from the table above, and send
+every agent in the tier, plus any companion reviewers, in one message so they run at once
+rather than in turn. When `references/review-scope.md` cannot be read, run the full review.
 
 Run them in the foreground (`run_in_background: false`) and wait for every result in this
 turn. Do not end your turn while a reviewer runs: the push and PR permissions in
@@ -263,21 +280,13 @@ background.
 
 ### After all reviews complete
 
-Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md). Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
+Follow the [review consolidation procedure](references/review-consolidation.md): verify each finding against the code (dropping the findings it does not confirm), deduplicate the agents' structured findings, order them deterministically, assign stable `FINDING-NN` ids, and write **one** consolidated file to `<PWD>/docs/reviews/review.md` using the [report template](references/review-report-template.md), with the review scope line under the agents line. Print the aligned chat summary (same ids, order, and titles as the file). Then act: auto-fix minor issues, fix Critical findings by id, handle Important findings per [review autonomy](references/review-autonomy.md) with the setting from the saved preference or Phase 0, and note any still-deferred findings in the PR description. A finding marked unverified is never fixed without asking, whatever its severity: present it with the Important findings.
 
 ## Phase 4 — Ship
 
 ### Drive to green
 
 Resolve the gate set and run the loop per [ship gate](references/ship-gate.md).
-
-### Cleanup
-
-Remove the review reports — their findings have already been addressed or recorded:
-
-```bash
-rm -rf docs/reviews/
-```
 
 ### Commit and push
 
@@ -289,7 +298,7 @@ To push, push the branch per [push](references/push.md), then open the PR per [P
 
 ### Post-Ship
 
-Print an end-of-run summary: phases built, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
+Print an end-of-run summary: phases built, the review scope line, review counts, the **Applied without asking** list from [review autonomy](references/review-autonomy.md) if any, and the PR link or the local commits. Built from an issue with phases left, name the next one and how to start it: merge this PR, then `/build #<issue>`.
 
 Use **AskUserQuestion** to present options:
 
@@ -301,7 +310,7 @@ Use **AskUserQuestion** to present options:
 - If tests fail mid-build, fix the failing test before moving to the next task. Do not accumulate broken tests across tasks.
 - Generated files (mocks, codegen output) must be regenerated after code changes — stale generated files cause confusing test failures.
 - If the plan specifies file paths that conflict with existing files, confirm with the user before overwriting. The codebase may have changed since the plan was written.
-- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) are deleted after Phase 4. If the build is interrupted, stale reports may remain — delete `docs/reviews/` manually before the next run.
+- The consolidated report (`docs/reviews/review.md`) and per-agent raw reports (`docs/reviews/raw/`) stay in the working tree after the build, git-ignored by the folder's own `.gitignore`, and the next run overwrites them. Never delete them with `rm -rf`: many users deny it, and the skill does not need it. A raw report from an agent that did not run this time may linger, but the consolidated report links only to agents dispatched this run, whose raw files were reset to a placeholder before dispatch, so a stale report never feeds the review. A linked file that still reads `Not written by this run.` means that agent's write failed: work from its one-line `fix` in `review.md`.
 
 ## The handoff block
 
